@@ -338,3 +338,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - DALE+SGNUP (dalesgn, ep16): 0.800 vs control 0.73 — the CHEAP-BIO combo (fixed-sign neurons + sign
   updates) BEATS unconstrained at screen horizon; sign updates drive hard early ([0.68,0.80]).
 - bsmm3: combo rescue generalizes to chip3 (0.21 -> 0.39 rising).
+- FREEZE-AT-PEAK CONFIRMED (dalefz): ANNS=5520->AFLOOR=0 holds 0.780 DEAD FLAT from ep32 to end (vs floor
+  0.4: 0.80best->0.62 drift). Best==final. THE deployment recipe for universal late drift.
+- nz90: 0.82@ep16 — noise dose peaks ~0.6 (0.66/0.86/0.82 at 0.15/0.6/0.9).
+- bsnz 0.39: noise does NOT stack on mismatch rescue (saturates ~0.45; residual = forward distortion).
+- GRAND COMBO LAUNCHED (grand/grandmm): DALE+SGNUP+BIASW+AUGJIT0.6+freeze@ep32, clean + dead-chip2.
+  The thesis run: cheap (Dale+sign) + robust (bias+sign) + fast (noise) + stable (freeze) all at once.
