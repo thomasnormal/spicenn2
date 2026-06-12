@@ -255,3 +255,12 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   nearest prior = single-ended keystone dead-end ~56% (not a true Dale design).
 - Q4 RUNNING (mmnz): AUGJIT=0.3 input jitter ON the 2mV mismatch chip (ref mm2=0.460) — noise as
   regularizer/mismatch-medicine hypothesis (user's). Clean-chip AUGJIT control to follow.
+- RUNNING sgn1: SIGN-SGD update (SGNUP=1, comparator per neuron feeds gprods sign(eps) full-swing).
+  Ref t2=0.840. If >=~0.8: justifies replacing 15T gprod with ~6T steered charge pump (sign extraction
+  amortized per-neuron, 60 comparators vs 240 gprods on depth-4).
+- RUNNING nzcl: AUGJIT=0.3 on CLEAN chip (noise-as-regularizer control; pairs with mmnz 2mV+noise).
+- DALE'S LAW SPEC (implement after sgn1 verdict): per-NEURON fixed sign s_j (50/50 E/I, rng-assigned);
+  inhibitory neurons' outgoing gsyn outputs CROSSED (free sign flip); weight caps diode-clamped positive
+  (clamp option exists); update cells get crossed eps (or a) for inhibitory parents to fix the chain-rule
+  sign. No synapse doubling needed at first (random fan-in mixes E/I parents). Cheaper single-ended cells
+  = phase 2; differential pairs stay as mismatch armor for now.

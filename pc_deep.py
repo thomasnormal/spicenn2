@@ -535,6 +535,10 @@ def gen_deck():
                     f"Xtem{l}_{j} {ep} {en} {gp} {gn} {emp} {emn} vdd vbsyn gsyn",
                     f"Xcmtem{l}_{j} {emp} {emn} vdd cmld",f"Rtem{l}_{j} {emp} {emn} {os.environ.get('REM',RNODE)}"]
                 ep,en=emp,emn
+            if int(os.environ.get("SGNUP","0")):   # SIGN-SGD update: dneuron comparator regenerates eps to full swing -> update = sign(eps).a
+                scp,scn=f"sce{l}p_{j}",f"sce{l}n_{j}"   # one comparator per NEURON, shared by its K update cells (cheap-cell amortization)
+                L+=[f"Xsce{l}_{j} {ep} {en} {scp} {scn} vdd vbneu dneuron"]
+                ep,en=scp,scn
             CHLon = out and int(os.environ.get("CHL","0"))
             if CHLon:   # contrastive: clamped charges +label.a (gblo), free charges -prediction.a (gblof) -> cap = (a.s)_clamp - (a.s)_free = gradient
                 xop,xon=(f"xo{j}p",f"xo{j}n") if SGNO>0 else (f"xo{j}n",f"xo{j}p")
