@@ -347,3 +347,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - BIASES = NEW CLEAN RECORD (bw064, NEP=64): 0.860 final==best vs 0.840 no-bias; curve plateaus 0.85-0.86
   with NO LATE DRIFT (drift was partly bias-error forced into weights!). User called it: every neuron needs
   a bias. Slow early (0.60@ep16, caps charging) -> screens must not kill bias configs early.
+- SPEED LADDER (user directives): S-tier 64-16-4/NTR20/NEP16 = 1480 slots ~25min (anchors: baseS, baseSmm
+  chip2, +STEP=4n fidelity probe — if 4n==2n, GLOBAL 2x speedup); M-tier depth-4 NEP16 ~2h; L-tier NEP64
+  finalists only. MONTE-CARLO BUDGET: 5 chips max per condition (user), dead/alive calls from S-tier.
