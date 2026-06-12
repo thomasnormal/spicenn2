@@ -398,3 +398,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
       solve (>=0.969); detect via train-acc~0 + restart = reliable-XOR recipe transferred.
   Net: 8/11 inits >=0.97 immediate, ~100% with <=2 restarts. mrelu8 escalation (digits M-tier NRW=800u
   upright) in flight; mrelu (old inverted polarity, NRW=200u) becomes the control.
+- Q-TIER 2D TRIPLE COMPLETE (upright nrelu NRW=800u + BIASW, ONE tiny 2-4-2 net, plain local PC, real
+  Spectre): circles 1.000/0.969 + restart->1.000 | rings 1.000/0.969 + restart->1.000 | spirals 5/7
+  >=0.969 (2x 1.000 flat) + restarts. Seed-2's WSEED draw anti-locks ALL THREE tasks (init-geometry
+  polarity, not task-dependent) and restarts (WSEED=22) fix all three -> detect+restart is a complete
+  remedy. This is the same neuron everywhere; no per-task tuning beyond the standard knobs.
