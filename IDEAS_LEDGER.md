@@ -430,3 +430,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - restart_run.sh added (controller-side anti-lock remedy): re-rolls WSEED (+10 per try) until best-acc
   >= THRESH; smoke-tested on the cursed spirals s2: 0.062 -> 0.031 -> 1.000 (deterministic reproduction
   of the manual probes). Use for all future seed sweeps / L-tier finals.
+- mrelu CONTROL VERDICT (M-tier digits, OLD inverted nrelu NRW=200u): 0.26 = chance for C=4, first eval
+  0.01 (anti-classification) -> climbs only to chance via bias flip. The old neuron FAILS at scale exactly
+  as Q predicted. Verdict awaits mrelu8 (upright 800u — possibly over-gained) and qdig/qdig4 (800 vs 400).
+- MULTI-CLASS Q LADDER LAUNCHED (attacks the C=10 wall cheaply): rings C=4, spirals C=4 (2-8-4), rings
+  C=8 (2-12-8), all upright NRW=400u + freeze. rings/spirals generators are natively C-class.
