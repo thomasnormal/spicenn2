@@ -465,3 +465,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - C=8 NEURON COMPARISON (rings 2-12-8 KOUT=8, Q): tanh 0.188 / tanh+bias 0.125 vs ReLU-200u 0.328 peak.
   THE NEW NEURON BEATS TANH THROUGH THE C-WALL (1.75x) — the wall is PC-dynamics/architecture, not the
   activation. Launched: qk8fz (freeze at the 0.33 peak) + qk8d16 (2x data at best config).
+- nzfz VERDICT (AUGJIT=0.6 + freeze@ep16, NEP=32 full horizon): 0.830 LOCKED FLAT [0.6,0.83,0.83,0.83].
+  Freeze-at-peak DEFEATS the noise-collapse (nz6064 was 0.87->0.25). But noise+freeze 0.83 does NOT beat
+  clean+bias 0.860 -> noise = accuracy null (confirmed at full horizon); freeze = the real control.
+- dnupe VERDICT: neuron+esub at 1mV + bias = 0.22 FLAT — STRICTLY CLEANER chip than dnupb (0.51) yet far
+  worse. Rescue outcomes at the 2mV edge are CHAOTIC (variance >> mean, again). dnupeg pending as 3rd pt.
