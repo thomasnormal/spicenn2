@@ -301,3 +301,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - USER CONFIRMS bias necessity (expressivity, not just mismatch): no-bias tanh = origin-locked boundaries;
   ReLU impossible (hinge position IS the bias). LAUNCHED bw0: BIASW on CLEAN baseline (ref 0.840) —
   expressivity gain test + prerequisite for one-sided/ReLU neuron work.
+- NRELU CELL (fastsim/charrel.cir measured): transistor cutoff = free ReLU. 4T+cmld; knee ~0.55V (vrl rail
+  + VT), flat below, linear mid, soft-sat top; per-neuron knee placement = BIASW (the user's point: ReLU
+  needs biases). NEUREL=1 knob wired; training run queues for a free slot (box saturated at 8 jobs).
