@@ -444,3 +444,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   then 0.156 collapse | rings C=8 DEAD at exact chance 0.125 flat. THE C-WALL REPRODUCES AT Q-TIER ->
   can iterate on the C=10 problem in minutes now. Q wave launched on rings C=8: KOUT=8 (readout fan-in),
   2-16-8 width, NTR=16 data, no-freeze control.
+- DNUP VERDICTS (dead chip2 @2mV, ep16 screens; ladder was none 0.25/sign 0.31/bias 0.39/combo 0.45):
+  dnup16 (neuron->0.5mV ALONE) 0.12 | dnup4 (neuron->1mV alone) 0.24 -> UPSIZING ALONE DOES NOT RESCUE
+  (damage distributed, consistent with ablations). BUT dnupb (neuron->1mV + BIASW) = 0.51 RISING — NEW
+  BEST RESCUE (+0.12 over bias-alone): cleaner neuron x bias absorption is multiplicative. Area cost of
+  the neuron 4x upsize ~ +4% total FETs. Ladder continues: dnupe (esub too, in flight), dnupeg (esub+
+  gprod at 1mV + bias, LAUNCHED — "harden everything but the synapse array", the affordable endpoint).
