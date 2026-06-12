@@ -304,3 +304,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - NRELU CELL (fastsim/charrel.cir measured): transistor cutoff = free ReLU. 4T+cmld; knee ~0.55V (vrl rail
   + VT), flat below, linear mid, soft-sat top; per-neuron knee placement = BIASW (the user's point: ReLU
   needs biases). NEUREL=1 knob wired; training run queues for a free slot (box saturated at 8 jobs).
+-
+- DALE VERDICT (dale1, NEP=64): 0.800best/0.620 final vs 0.840 unconstrained — fixed-sign neurons
+  (50/50 E/I, crossed wiring, positive init) cost only ~4 points at best. Biological sign constraint VIABLE.
+  Late drift 0.80->0.62 (usual signature; v2 = w>=0 enforcement or controller freeze).
+- FAST-EXPLORATION MODE (user directive): NEP=16 (2760 slots, ~4x faster) for ALL screens; NEP=64 only for
+  finalists. Killed+relaunched young probes fast: relu1(NEUREL+BIASW) bw0f bwmmf sgnmmf mm1s2f mm1s3f c10bkf.
