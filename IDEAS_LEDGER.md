@@ -274,3 +274,5 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   pull-ups (tail current constant, so static works) = 9T replaces 15T gprod. Comparator amortized per
   neuron (60 vs 240 cells on depth-4): net ~1.1k FETs saved (~12%) AND only 2 offset-critical input devices
   vs gprod's 8 -> possibly mismatch-friendlier update path. Gate: sgn1 (rule viability in full training).
+- RUNNING c10bk: C=10 TRAINED hidden + BKSIGN (LAYERS=64,32,16 K=4 KOUT=10) — record to beat: 0.587
+  (random hidden). Tests whether sign-faithful backward unlocks trained features at C=10 (the old wall).
