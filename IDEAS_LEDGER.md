@@ -280,3 +280,6 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   Dose-response (best-epoch, monotone): 0/1/2/5/10mV -> 0.840/0.56/0.52/0.37/0.38->chance. CONCLUSION:
   matching requirement <1mV => area scaling impractical; OFFSET CANCELLATION IS MANDATORY (sign-update
   cell's 2-device input + CDS autozero are the candidates). Finals noisier than bests (drift timing).
+- 2mV MONTE-CARLO VERDICTS (3 chips): 0.460/0.52 | 0.250/0.25 (CHANCE) | 0.210/0.31. Chip-to-chip variance
+  is huge; 2/3 chips DEAD at 2mV; the dose-response chip (MMSEED=1) was a LUCKY draw. Honest framing in
+  paper: yield, not just mean. Offset cancellation now overwhelmingly mandatory.
