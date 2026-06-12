@@ -289,3 +289,12 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   -> ~neutral (+1 best, the highest depth-4 best yet; level unswept). MISMATCH mmnz 0.450/0.520 vs mm2
   0.460/0.520 -> NULL: noise does NOT rescue mismatch (damage is structural offset-steering, not sharp
   minima). Honest paper note replaces the old "noise untested".
+- WHY MISMATCH BREAKS SELF-CALIBRATION (mechanism summary for user Q): (1) offsets corrupt the LEARNING
+  MACHINERY itself (esub trains toward m=x+delta; comparator offsets FLIP credit signs below 5mV signals;
+  gprod offsets add constant drift) — can't learn around a corrupted rule; (2) SNR death spiral: offsets
+  constant, errors SHRINK with convergence -> late drift always wins; (3) NO BIAS PARAMETERS: fan-in-4
+  weights must both compute and cancel gain-16 neuron offsets — biology has intrinsic plasticity, we didn't.
+- BIASW IMPLEMENTED (learnable per-neuron bias: unit-input gsyn + cap pair + gprod(eps,unit), 60 each on
+  depth-4; regression DALE/BIASW=0 byte-identical). RUNN
+ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip learning adapts to
+  manufacturing impurities GIVEN the parameters to adapt with".

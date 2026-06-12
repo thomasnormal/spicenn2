@@ -402,6 +402,14 @@ def gen_deck():
                 _dxp,_dxn=(xp,xn) if dsign.get((l-1,p),1)>0 else (xn,xp)
                 L+=[f"X_fm_{key} {pap} {pan} {wr0} {wr1} {_dmp} {_dmn} vdd vbsyn {fmcell}"]
                 if ((not out) and int(os.environ.get("NOHID","0"))<2) or (out and int(os.environ.get("SOFTC","0"))): L+=syn(f"fx_{key}",pap,pan,_dxp,_dxn,f"wp_{key}",f"wn_{key}")   # x copy (skipped for NOHID>=2 hidden)
+            if int(os.environ.get("BIASW","0")):   # learnable per-neuron BIAS (intrinsic plasticity): the self-calibration parameter that absorbs forward offsets
+                _bk=f"b_{l}_{j}"
+                L+=[f"Cwbp_{_bk} wbp_{_bk} 0 {CWW}",f"Cwbn_{_bk} wbn_{_bk} 0 {CWW}",
+                    f"Rwbp_{_bk} wbp_{_bk} wcm {RWL}",f"Rwbn_{_bk} wbn_{_bk} wcm {RWL}",
+                    f"X_fmb_{_bk} bup bun wbp_{_bk} wbn_{_bk} {mp} {mn} vdd vbsyn gsyn"]
+                ic+=[f".ic v(wbp_{_bk})=0.6 v(wbn_{_bk})=0.6"]
+                if ((not out) and int(os.environ.get("NOHID","0"))<2) or (out and int(os.environ.get("SOFTC","0"))):
+                    L+=[f"X_fxb_{_bk} bup bun wbp_{_bk} wbn_{_bk} {xp} {xn} vdd vbsyn gsyn"]
             # activation + error neuron
             if not out:
                 aap,aan=ap_(l,j)
@@ -430,6 +438,7 @@ def gen_deck():
             else: L+=[f"Xeh{l}_{j} {xp} {xn} {mp} {mn} {ehp} {ehn} vdd gm esub"]   # eps_l_j = x - m
     # backward error feedback: eps_{l+1}_k -> x_l_p through the SHARED cap w_{l+1}_{k}_{p}
     if int(os.environ.get("BKSIGN","0")): L+=[f"Vusp usp 0 0.2",f"Vusn usn 0 0.8"]
+    if int(os.environ.get("BIASW","0")): L+=[f"Vbup bup 0 {os.environ.get('BUP','0.75')}",f"Vbun bun 0 {os.environ.get('BUN','0.49')}"]   # constant unit input for learnable per-neuron biases
     if int(os.environ.get("LATINH","0")):
         L+=[f"Vulp ulp 0 0.8",f"Vuln uln 0 0.2",f"Vusp2 usp2 0 0.2",f"Vusn2 usn2 0 0.8"]
         for _l in range(1,NL-1):
@@ -549,6 +558,9 @@ def gen_deck():
                 scp,scn=f"sce{l}p_{j}",f"sce{l}n_{j}"   # one comparator per NEURON, shared by its K update cells (cheap-cell amortization)
                 L+=[f"Xsce{l}_{j} {ep} {en} {scp} {scn} vdd vbneu dneuron"]
                 ep,en=scp,scn
+            if int(os.environ.get("BIASW","0")) and not ((not out) and int(os.environ.get("NOHID","0"))):   # bias update: dW_b ~ eps . unit
+                _bk=f"b_{l}_{j}"
+                L+=[f"Xlrb_{_bk} {ep} {en} bup bun wbp_{_bk} wbn_{_bk} vdd {tail} gprod"]
             CHLon = out and int(os.environ.get("CHL","0"))
             if CHLon:   # contrastive: clamped charges +label.a (gblo), free charges -prediction.a (gblof) -> cap = (a.s)_clamp - (a.s)_free = gradient
                 xop,xon=(f"xo{j}p",f"xo{j}n") if SGNO>0 else (f"xo{j}n",f"xo{j}p")
