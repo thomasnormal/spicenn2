@@ -1,0 +1,27 @@
+* nrelu: one-sided V2I (cutoff = free ReLU) + mirror to differential out with half-scale reference
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 1.0
+Vs vsrl 0 0.33
+* input (single-ended use of the differential pair's p side)
+Vup up 0 0.6
+* rectifying V2I: knee at up = vsrl + VT + I*Rdeg
+Mr d1 up s1 0 NNR W=200u L=100u
+Rs s1 vsrl 12k
+* PMOS mirror: image of relu current pulls ap down... emulate load with resistors for DC char
+Mlp d1 d1 vdd vdd PNR W=200u L=100u
+Mlo an d1 vdd vdd PNR W=200u L=100u
+Ran an 0 50k
+* reference half-scale leg on the other side
+Mrr d2 vref s2 0 NNR W=200u L=100u
+Rs2 s2 vsrl 12k
+Vrf vref 0 0.66
+Mlp2 d2 d2 vdd vdd PNR W=200u L=100u
+Mlo2 ap d2 vdd vdd PNR W=200u L=100u
+Rap ap 0 50k
+.control
+dc Vup 0.30 0.90 0.02
+let aout = v(ap)-v(an)
+print aout > /tmp/relu.txt
+.endc
+.end

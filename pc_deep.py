@@ -139,6 +139,18 @@ M2 ap un tn 0 NNR W=200u L=100u
 Mt tn vbn 0 0 NNR W=200u L=100u
 Xcm ap an vdd cmld
 .ends
+.subckt nrelu up un ap an vdd vbn
+* one-sided neuron: cutoff = free ReLU. Knee at v(vbn)+VT (+I.R); un pin = fixed reference gate (global relref).
+Mr d1 up s1 0 NNR W=200u L=100u
+Rs s1 vbn 12k
+Mlp d1 d1 vdd vdd PNR W=200u L=100u
+Mlo an d1 vdd vdd PNR W=200u L=100u
+Mrr d2 un s2 0 NNR W=200u L=100u
+Rs2 s2 vbn 12k
+Mlp2 d2 d2 vdd vdd PNR W=200u L=100u
+Mlo2 ap d2 vdd vdd PNR W=200u L=100u
+Xcm ap an vdd cmld
+.ends
 .subckt dneuronT up un ap an tn vdd vbn
 M1 an up tn 0 NNR W=200u L=100u
 M2 ap un tn 0 NNR W=200u L=100u
@@ -427,6 +439,8 @@ def gen_deck():
                         f"Xcma{l}_{j} {aap} {aan} vdd cmld",f"Rna{l}_{j} {aap} {aan} {RNODE}"]
                 elif int(os.environ.get("TFG","0")) in (2,3):   # expose the tail node tn = native saturation signal (device-accurate f' proxy)
                     L+=[f"Xn{l}_{j} {xp} {xn} {aap} {aan} tnn{l}_{j} vdd vbneu dneuronT"]
+                elif int(os.environ.get("NEUREL","0")):   # one-sided ReLU neuron (knee = v(vrl)+VT, per-neuron placement via BIASW)
+                    L+=[f"Xn{l}_{j} {xp} relref {aap} {aan} vdd vrl nrelu"]
                 else:
                     L+=[f"Xn{l}_{j} {xp} {xn} {aap} {aan} vdd vbneu dneuron"]
             if (not out) and int(os.environ.get("LATINH","0")):
@@ -439,6 +453,7 @@ def gen_deck():
     # backward error feedback: eps_{l+1}_k -> x_l_p through the SHARED cap w_{l+1}_{k}_{p}
     if int(os.environ.get("BKSIGN","0")): L+=[f"Vusp usp 0 0.2",f"Vusn usn 0 0.8"]
     if int(os.environ.get("BIASW","0")): L+=[f"Vbup bup 0 {os.environ.get('BUP','0.75')}",f"Vbun bun 0 {os.environ.get('BUN','0.49')}"]   # constant unit input for learnable per-neuron biases
+    if int(os.environ.get("NEUREL","0")): L+=[f"Vrelref relref 0 {os.environ.get('RELREF','0.66')}",f"Vvrl vrl 0 {os.environ.get('VRL','0.33')}"]   # ReLU reference gate + knee rail
     if int(os.environ.get("LATINH","0")):
         L+=[f"Vulp ulp 0 0.8",f"Vuln uln 0 0.2",f"Vusp2 usp2 0 0.2",f"Vusn2 usn2 0 0.8"]
         for _l in range(1,NL-1):
