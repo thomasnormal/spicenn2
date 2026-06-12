@@ -435,3 +435,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   as Q predicted. Verdict awaits mrelu8 (upright 800u — possibly over-gained) and qdig/qdig4 (800 vs 400).
 - MULTI-CLASS Q LADDER LAUNCHED (attacks the C=10 wall cheaply): rings C=4, spirals C=4 (2-8-4), rings
   C=8 (2-12-8), all upright NRW=400u + freeze. rings/spirals generators are natively C-class.
+- qdig VERDICT (digits fast-cap screen, upright NRW=800u): curve [0.0, 0.5, 0.25, 0.25] -> first eval 0.0
+  = ANTI signature, peaks 0.5, decays to chance. OVER-GAINED at fan-in-4 readout, exactly as the width/gain
+  law predicted. qdig4 (NRW=400u) = the predicted-correct setting, pending. qxor sanity: 1.000 best.
