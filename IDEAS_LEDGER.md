@@ -310,3 +310,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   Late drift 0.80->0.62 (usual signature; v2 = w>=0 enforcement or controller freeze).
 - FAST-EXPLORATION MODE (user directive): NEP=16 (2760 slots, ~4x faster) for ALL screens; NEP=64 only for
   finalists. Killed+relaunched young probes fast: relu1(NEUREL+BIASW) bw0f bwmmf sgnmmf mm1s2f mm1s3f c10bkf.
+- SIGN-SGD VERDICT (sgn1, NEP=64): 0.830best/0.680 vs gprod 0.840/0.840 — sign(eps).a is WITHIN 1 POINT
+  of the full 4-quadrant multiply at best epoch. 9T cell GREEN-LIT (-12% FETs, 4x smaller offset cross-
+  section). Universal late drift again (0.83->0.68). sgnmmf (mismatch rescue) pending.
