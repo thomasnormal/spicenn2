@@ -450,3 +450,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   BEST RESCUE (+0.12 over bias-alone): cleaner neuron x bias absorption is multiplicative. Area cost of
   the neuron 4x upsize ~ +4% total FETs. Ladder continues: dnupe (esub too, in flight), dnupeg (esub+
   gprod at 1mV + bias, LAUNCHED — "harden everything but the synapse array", the affordable endpoint).
+- qdigT CONTROL = BREAKTHROUGH: tanh through the fast-cap digits screen (CWW=30p NEP=8 NTR=20) = 0.830
+  RISING [0.3,0.57,0.71,0.83] in ~25min — BEATS the M-tier NEP=16 300p trajectory (0.73@ep16, ~3h)!
+  (a) the screen is VALID for digits; (b) CWW=30p is a TRAINING ACCELERANT (10x weight speed compresses
+  the schedule); (c) ReLU digits 0.5-peak genuinely underperforms tanh 0.83 — the 2D ReLU win does NOT
+  transfer at depth-4 yet (gain compounding / one-sided info loss; diagnosis next). LAUNCHED: qdigT2
+  (tanh fast-cap FULL NEP=16 NTR=40) + qdigT2b (+BIASW) — candidate new clean record in <1h.
