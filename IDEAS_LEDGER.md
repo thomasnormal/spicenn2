@@ -438,3 +438,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - qdig VERDICT (digits fast-cap screen, upright NRW=800u): curve [0.0, 0.5, 0.25, 0.25] -> first eval 0.0
   = ANTI signature, peaks 0.5, decays to chance. OVER-GAINED at fan-in-4 readout, exactly as the width/gain
   law predicted. qdig4 (NRW=400u) = the predicted-correct setting, pending. qxor sanity: 1.000 best.
+- mbase4n VERDICT: 0.730 curve [0.28, 0.73] == base16's trajectory EXACTLY -> STEP=4n CONFIRMED at M-tier.
+  2x global speedup locked for all future runs.
+- MULTI-CLASS Q VERDICTS (new neuron): rings C=4 0.531 rising (2x chance, learns) | spirals C=4 peak 0.50
+  then 0.156 collapse | rings C=8 DEAD at exact chance 0.125 flat. THE C-WALL REPRODUCES AT Q-TIER ->
+  can iterate on the C=10 problem in minutes now. Q wave launched on rings C=8: KOUT=8 (readout fan-in),
+  2-16-8 width, NTR=16 data, no-freeze control.
