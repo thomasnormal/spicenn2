@@ -331,3 +331,10 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   early learning (0.60 vs 0.73). relu2 still chance — suspect relu/ref leg CM imbalance breaks downstream
   gsyn; PARKED pending CM-balanced redesign. c10bkf 0.30 rising @ep16 (inconclusive).
   FULL-HORIZON CONFIRMS LAUNCHED: bsmm64 (combo rescue), bw064 (biases clean), c10bk64.
+- NOISE DOSE-RESPONSE (ep16 screens, anchor 0.73): AUGJIT 0.15/0.3*/0.6 -> 0.66/~neutral/0.860 (!!).
+  HEAVY input jitter (0.6) beats clean control +13 AND the full-horizon baseline best (0.84) at ep16.
+  User's noise hypothesis VINDICATED at the right dose (we underdosed first). nz6064 full confirm + nz90
+  (0.9 dose) + bsnz (noise+bias+sign on dead chip2) launched.
+- DALE+SGNUP (dalesgn, ep16): 0.800 vs control 0.73 — the CHEAP-BIO combo (fixed-sign neurons + sign
+  updates) BEATS unconstrained at screen horizon; sign updates drive hard early ([0.68,0.80]).
+- bsmm3: combo rescue generalizes to chip3 (0.21 -> 0.39 rising).
