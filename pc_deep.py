@@ -144,11 +144,11 @@ Xcm ap an vdd cmld
 Mr d1 up s1 0 NNR W=200u L=100u
 Rs s1 vbn 12k
 Mlp d1 d1 vdd vdd PNR W=200u L=100u
-Mlo an d1 vdd vdd PNR W=200u L=100u
+Mlo an d1 vdd vdd PNR W={os.environ.get("NRW","200u")} L=100u
 Mrr d2 un s2 0 NNR W=200u L=100u
 Rs2 s2 vbn 12k
 Mlp2 d2 d2 vdd vdd PNR W=200u L=100u
-Mlo2 ap d2 vdd vdd PNR W=200u L=100u
+Mlo2 ap d2 vdd vdd PNR W={os.environ.get("NRW","200u")} L=100u
 Rop ap 0 50k
 Ron an 0 50k
 .ends
@@ -441,7 +441,11 @@ def gen_deck():
                 elif int(os.environ.get("TFG","0")) in (2,3):   # expose the tail node tn = native saturation signal (device-accurate f' proxy)
                     L+=[f"Xn{l}_{j} {xp} {xn} {aap} {aan} tnn{l}_{j} vdd vbneu dneuronT"]
                 elif int(os.environ.get("NEUREL","0")):   # one-sided ReLU neuron (knee = v(vrl)+VT, per-neuron placement via BIASW)
-                    L+=[f"Xn{l}_{j} {xp} relref {aap} {aan} vdd vrl nrelu"]
+                    # cell inverts (signal leg mirrors onto an): swap output pins so the ReLU is upright by
+                    # construction (Q-probe evidence: inverted polarity anti-classifies, and at NRW>=400u the
+                    # bias-flip snap can no longer rescue it -> 0.03 acc). NRINV=1 reproduces old wiring.
+                    _oap,_oan=((aan,aap) if not int(os.environ.get("NRINV","0")) else (aap,aan))
+                    L+=[f"Xn{l}_{j} {xp} relref {_oap} {_oan} vdd vrl nrelu"]
                 else:
                     L+=[f"Xn{l}_{j} {xp} {xn} {aap} {aan} vdd vbneu dneuron"]
             if (not out) and int(os.environ.get("LATINH","0")):

@@ -384,3 +384,17 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - BUG FOUND+FIXED: PMM had no "nrelu" entry -> ReLU nets were INVISIBLE to MMVT (a future ReLU mismatch
   screen would silently simulate a clean chip). Added "nrelu":[0,1] (Mr signal + per-instance Mrr ref VT).
   Verified: Q deck gen puts mmv sources on both nrelu pins; RNG stream unchanged for non-NEUREL runs.
+- NRELU UPGRADE WAVE (Q-tier real Spectre, spirals 2-4-2, NTE=16=32 test pts):
+  (1) NRW knob added: mirror-ratio gain on nrelu output (DC: gain 1.0 -> 2.6 @400u -> 5.1 @800u, swing 0.24->0.79).
+  (2) POLARITY FIX: nrelu cell inverts (signal leg mirrors onto an). At NRW>=400u the bias-flip snap can no
+      longer rescue inverted wiring -> nets train to PERFECT ANTI-classification (0.03). Fixed by swapping
+      output pins at instantiation (upright by construction); NRINV=1 reproduces old wiring.
+  (3) SPIRALS SOLVED AT Q-TIER: upright + NRW=800u -> 5/7 seeds >=0.969 (s5,s7 = 1.000 FLAT curves).
+      Previously spirals needed deep+Adam (surrogate workstream). Low gain (200u/400u) does NOT solve (~0.5).
+      GAIN is the unlock; polarity makes it usable.
+  (4) Anti-lock anatomy (failed seeds s2,s6): perfectly-wrong basin chosen AT INIT. NOT a sign bug: flipping
+      SGNO/SGNH does not convert wrong->right (stays ~0.1). Stronger nudge TD=0.2 no escape. Lower knee
+      VRL=0.23 escapes but oscillates between basins. RESTART (re-roll WSEED) is the remedy: 3/4 re-rolls
+      solve (>=0.969); detect via train-acc~0 + restart = reliable-XOR recipe transferred.
+  Net: 8/11 inits >=0.97 immediate, ~100% with <=2 restarts. mrelu8 escalation (digits M-tier NRW=800u
+  upright) in flight; mrelu (old inverted polarity, NRW=200u) becomes the control.
