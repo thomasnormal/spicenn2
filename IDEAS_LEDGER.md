@@ -268,3 +268,9 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   outgoing synapses output-crossed (fm/fx), transpose-crossed (bk/BKSIGN comparator input), update a-input
   crossed (chain rule); weights init |v| (positive). Regression: DALE=0 deck byte-identical. RUNNING dale1
   on depth-4 BKSIGN baseline (ref 0.840). v2 (enforcement of w>=0 + single-ended cheap cells) after verdict.
+- SIGN-UPDATE CELL CHARACTERIZED (fastsim/charsg.cir, ngspice DC = exact): 7T core (3T V2I on a + 4T
+  commutator steered by rail-to-rail sign(eps)) gives clean odd I_diff(a), EXACTLY mirrored under sign flip,
+  +/-6.5uA @ a=+/-0.2 (gprod: 8.5uA). Constant-tail CM droop on both caps -> cancel with 2 static PMOS
+  pull-ups (tail current constant, so static works) = 9T replaces 15T gprod. Comparator amortized per
+  neuron (60 vs 240 cells on depth-4): net ~1.1k FETs saved (~12%) AND only 2 offset-critical input devices
+  vs gprod's 8 -> possibly mismatch-friendlier update path. Gate: sgn1 (rule viability in full training).

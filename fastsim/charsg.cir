@@ -1,0 +1,35 @@
+* sign-update cell: V2I on a (3T) + 4-switch commutator steered by sign(eps) -> I(wp)-I(wn) ~ sign(eps)*a
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 1.0
+Vb vb 0 0.6
+* a input pair around CM 0.62
+Vap ap 0 0.62
+Van an 0 0.62
+* V2I core
+Mtail nt vb 0 0 NNR W=400u L=100u
+Ma1 da ap s1 0 NNR W=200u L=100u
+Rd1 s1 nt 12k
+Ma2 db an s2 0 NNR W=200u L=100u
+Rd2 s2 nt 12k
+* commutator: sp closes straight (da->wp, db->wn), sn closes crossed
+Ms1 wp sp da 0 NNR W=400u L=100u
+Ms2 wn sp db 0 NNR W=400u L=100u
+Ms3 wn sn da 0 NNR W=400u L=100u
+Ms4 wp sn db 0 NNR W=400u L=100u
+* sign drive (rail-to-rail; from comparator via 2T inverter pair in the real cell)
+Vsp sp 0 1.0
+Vsn sn 0 0.0
+* weight-cap probes held at typical cap voltage
+Vwp wp 0 0.6
+Vwn wn 0 0.6
+.control
+dc Vap 0.42 0.82 0.02
+let diffi = i(Vwp)-i(Vwn)
+print diffi > /tmp/sg_pos.txt
+alter Vsp 0.0
+alter Vsn 1.0
+dc Vap 0.42 0.82 0.02
+let diffi = i(Vwp)-i(Vwn)
+print diffi > /tmp/sg_neg.txt
+.endc
+.end
