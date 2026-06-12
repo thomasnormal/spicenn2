@@ -365,3 +365,15 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   chance; grand 0.71@ep8 then chance; c10bk64 0.30->0.10 (wall persists). EVERY hot config peaks then
   collapses -> FREEZE-AT-PEAK (proven flat by dalefz) is the master control; relaunched nzfz (freeze@ep16)
   + bsfz (freeze@ep40). Freeze timing must match each config's peak.
+
+## 2026-06-12 evening — selective dneuron upsizing (mismatch yield fix attempt)
+- HYPOTHESIS: dneuron is the worst mismatch offender (ablation: 2mV dneuron-only -> 0.17; gain~16
+  amplifies input-referred VT offset). sigma_VT ~ 1/sqrt(WL), and the dneuron diff pair is only ~3% of
+  total FET area -> selectively upsizing JUST the neuron is cheap: 4x area = sigma/2 (+~4% total area),
+  16x area = sigma/4 (+~19%). Emulated via MMVT_DNEURON override; everything else stays at 2mV.
+- LAUNCHED (M-tier NEP=16 STEP=4n ANNS=2560 AFLOOR=0.4, dead chip2 MMSEED=2, ~55min each):
+  dnup16 (dneuron 0.5mV =16x area), dnup4 (1mV =4x area), dnupb (1mV + BIASW — bias sits exactly at the
+  neuron input node mp/mn so it should absorb the residual dneuron offset by construction).
+  Comparison points (same screen): none 0.25 / SGNUP 0.31 / BIASW 0.39 / combo ~0.45.
+- Also still in flight: nzfz (freeze-locked noise record candidate ~0.87, ETA ~2.5h), bsfz (rescue+freeze
+  full horizon, ~5h), mrelu (ReLU+bias digits M), mbase4n (STEP=4n M-tier fidelity check).
