@@ -456,3 +456,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   the schedule); (c) ReLU digits 0.5-peak genuinely underperforms tanh 0.83 — the 2D ReLU win does NOT
   transfer at depth-4 yet (gain compounding / one-sided info loss; diagnosis next). LAUNCHED: qdigT2
   (tanh fast-cap FULL NEP=16 NTR=40) + qdigT2b (+BIASW) — candidate new clean record in <1h.
+- mrelu8 VERDICT (M-tier digits upright NRW=800u): 0.51 peak -> 0.31, over-gained, consistent with qdig.
+  ReLU digits underperforms tanh (0.83 fast-cap) at every gain tried so far.
+- NRLAYERS knob added (mixed nets: ReLU on listed layers only, tanh elsewhere); qdmix1 (ReLU L1 only) +
+  qdmix12 (L1,L2) digits screens launched. KOUT=8 C=8 ladder: best 0.328 peak (200u no-freeze) then
+  collapse; all configs peak 0.28-0.33 = 2.3-2.6x chance. Tanh C=8 controls launched (qw8T/qw8Tb) to
+  locate the wall (neuron vs PC dynamics).

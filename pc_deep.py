@@ -440,7 +440,7 @@ def gen_deck():
                         f"Xcma{l}_{j} {aap} {aan} vdd cmld",f"Rna{l}_{j} {aap} {aan} {RNODE}"]
                 elif int(os.environ.get("TFG","0")) in (2,3):   # expose the tail node tn = native saturation signal (device-accurate f' proxy)
                     L+=[f"Xn{l}_{j} {xp} {xn} {aap} {aan} tnn{l}_{j} vdd vbneu dneuronT"]
-                elif int(os.environ.get("NEUREL","0")):   # one-sided ReLU neuron (knee = v(vrl)+VT, per-neuron placement via BIASW)
+                elif int(os.environ.get("NEUREL","0")) and (not os.environ.get("NRLAYERS") or str(l) in os.environ["NRLAYERS"].split(",")):   # one-sided ReLU neuron (knee = v(vrl)+VT, per-neuron placement via BIASW); NRLAYERS=comma list -> ReLU only on those layers, tanh elsewhere
                     # cell inverts (signal leg mirrors onto an): swap output pins so the ReLU is upright by
                     # construction (Q-probe evidence: inverted polarity anti-classifies, and at NRW>=400u the
                     # bias-flip snap can no longer rescue it -> 0.03 acc). NRINV=1 reproduces old wiring.
