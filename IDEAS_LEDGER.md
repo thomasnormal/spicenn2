@@ -462,3 +462,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   qdmix12 (L1,L2) digits screens launched. KOUT=8 C=8 ladder: best 0.328 peak (200u no-freeze) then
   collapse; all configs peak 0.28-0.33 = 2.3-2.6x chance. Tanh C=8 controls launched (qw8T/qw8Tb) to
   locate the wall (neuron vs PC dynamics).
+- C=8 NEURON COMPARISON (rings 2-12-8 KOUT=8, Q): tanh 0.188 / tanh+bias 0.125 vs ReLU-200u 0.328 peak.
+  THE NEW NEURON BEATS TANH THROUGH THE C-WALL (1.75x) — the wall is PC-dynamics/architecture, not the
+  activation. Launched: qk8fz (freeze at the 0.33 peak) + qk8d16 (2x data at best config).
