@@ -415,3 +415,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   (0.656 best, ref too low); 0.72 -> solves then flips to 0.0 (same signature as 1600u). Defaults
   RELREF=0.66 + NRW=800u sit inside the stable region; freeze extends it. Net design rule: the
   (gain, reference) plane has a sharp basin-stability boundary; anneal-to-zero neutralizes it.
+- WIDTH/GAIN SCALING LAW (Q, spirals): 2-8-4 net ANTI-LOCKS at NRW=800u for ALL inits (3/3 — systematic,
+  not seed luck; output fan-in doubles 2->4 so layer gain doubles). NRW=400u -> 1.000 at FIRST EVAL then
+  peak-collapse; + freeze (ANNS=150 AFLOOR=0) -> 1.000 LOCKED FLAT. Rule: per-cell gain scales INVERSELY
+  with output/layer fan-in; freeze-at-peak then locks it. NTR=16 robustness: 0.969 (holds with 2x data).
+  IMPLICATION: digits (fan-in 4 readout) @NRW=800u (qdig, mrelu8) likely over-gained -> qdig4 launched
+  (NRW=400u fast screen) as the predicted-correct setting.
