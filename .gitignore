@@ -13,3 +13,17 @@ pd_*.log
 __pycache__/
 *.pyc
 nohup.out
+# stray run/debug artifacts in root (historical eras)
+.claude/
+*.ns@0
+*.lock
+diag_*.cir
+diaglay_*.cir
+digits_live_*.cir
+*.out
+*.txt
+!requirements.txt
+*.json
+*.png
+deep*.cir
+*.cir.bak

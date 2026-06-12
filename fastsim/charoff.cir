@@ -1,0 +1,44 @@
+* offset sensitivity: dneuron (tanh diff pair) vs nrelu (one-sided V2I)
+* series gate offset source Voff on the signal-input device = physical delta-VT (MMVT style).
+* Sweep input, for offsets 0/1/2/5 mV; report input-referred shift of each transfer curve.
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 1.0
+Vbn vbn 0 0.35
+Vsrl vsrl 0 0.33
+Vin up 0 0.6
+Vun un 0 0.6
+Voff upo up 0
+
+* ---------------- dneuron: M1/M2 diff pair + tail + cmld load ----------------
+M1 an1 upo tn 0 NNR W=200u L=100u
+M2 ap1 un  tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+Rcs1 ap1 cmx 300k
+Rcs2 an1 cmx 300k
+MLp ap1 cmx vdd vdd PNR W=1000u L=100u
+MLn an1 cmx vdd vdd PNR W=1000u L=100u
+
+* ---------------- nrelu: rectifying V2I + mirror + reference leg -------------
+Mr d1 upo s1 0 NNR W=200u L=100u
+Rs s1 vsrl 12k
+Mxlp d1 d1 vdd vdd PNR W=200u L=100u
+Mxlo an2 d1 vdd vdd PNR W=200u L=100u
+Mrr d2 vref s2 0 NNR W=200u L=100u
+Rs2 s2 vsrl 12k
+Vrf vref 0 0.66
+Mxlp2 d2 d2 vdd vdd PNR W=200u L=100u
+Mxlo2 ap2 d2 vdd vdd PNR W=200u L=100u
+Rop ap2 0 50k
+Ron an2 0 50k
+
+.control
+foreach o 0 0.001 0.002 0.005
+  alter Voff = $o
+  dc Vin 0.30 0.90 0.005
+  let dn = v(ap1)-v(an1)
+  let rl = v(ap2)-v(an2)
+  print dn rl >> /tmp/charoff.txt
+end
+.endc
+.end

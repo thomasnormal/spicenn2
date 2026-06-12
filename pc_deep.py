@@ -621,7 +621,7 @@ def gen_deck():
     if MMVT>0:   # DEVICE MISMATCH: per-instance series gate V-sources == input-pair VT offsets (real elements, not behavioral).
         # gsyn: signal pair + weight-read pair | dneuron: comparator offset (hits BKSIGN!) | esub: both pairs (error offset) | gprod: both pairs (-> static drift term dx*dy)
         rngm=np.random.RandomState(int(os.environ.get("MMSEED","0")))
-        PMM={"gsyn":[0,2],"gsynL":[0,2],"dneuron":[0],"dneuronT":[0],"esub":[0,2],"gprod":[0,2]}
+        PMM={"gsyn":[0,2],"gsynL":[0,2],"dneuron":[0],"dneuronT":[0],"esub":[0,2],"gprod":[0,2],"nrelu":[0,1]}
         if os.environ.get("MMCELLS"):   # ablation: mismatch only these cell types (comma list)
             _keep=set(os.environ["MMCELLS"].split(","))
             PMM={k:v for k,v in PMM.items() if k in _keep}

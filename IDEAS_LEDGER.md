@@ -377,3 +377,10 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   Comparison points (same screen): none 0.25 / SGNUP 0.31 / BIASW 0.39 / combo ~0.45.
 - Also still in flight: nzfz (freeze-locked noise record candidate ~0.87, ETA ~2.5h), bsfz (rescue+freeze
   full horizon, ~5h), mrelu (ReLU+bias digits M), mbase4n (STEP=4n M-tier fidelity check).
+- charoff.cir (real ngspice DC, fastsim/): offset sensitivity dneuron vs nrelu. Input-referred shift
+  = exactly deltaVT for BOTH neurons (5mV offset -> 5mV curve shift) — ReLU has NO intrinsic mismatch
+  advantage; output error per 1mV offset is 7.6mV (dneuron) vs 0.7mV (nrelu) but that is purely the
+  gain ratio, SNR identical. Rescue must come from BIASW (absorbs input-referred offset at mp/mn) or area.
+- BUG FOUND+FIXED: PMM had no "nrelu" entry -> ReLU nets were INVISIBLE to MMVT (a future ReLU mismatch
+  screen would silently simulate a clean chip). Added "nrelu":[0,1] (Mr signal + per-instance Mrr ref VT).
+  Verified: Q deck gen puts mmv sources on both nrelu pins; RNG stream unchanged for non-NEUREL runs.
