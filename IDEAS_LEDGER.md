@@ -407,3 +407,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   perfect-anti 0.0 mid-training (basin unstable at extreme gain) | NRW=600u only 0.875 (gain>=5 needed)
   -> NRW=800u (mirror 4x, gain 5.1) is the sweet spot. BIASW=0 -> DEAD AT CHANCE both tasks (user was
   right: ReLU mandatorily needs per-neuron biases; without them not even anti-lock, just nothing).
+- COMPOSABILITY (Q, spirals s1, upright NRW=800u): DALE=1 -> 0.969 FLAT (Dale's-law single-sign neurons
+  + high-gain ReLU coexist) | SGNUP=1 -> 0.969 best / 0.875 final (9T sign-update cell trains the ReLU
+  net, slightly noisier than gprod). The neuron upgrade composes with the whole cell library.
