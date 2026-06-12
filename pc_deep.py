@@ -81,7 +81,7 @@ NIN=LAYERS[0]   # input dims used (first NIN of the 2D+bias)
 parents={}   # parents[(l,j)] = list of parent indices p in layer l-1
 children={}  # children[(l-1,p)] = list of (j) in layer l connected to p
 for l in range(1,NL):
-    nprev=LAYERS[l-1]; nl=LAYERS[l]; kk=min(K,nprev)
+    nprev=LAYERS[l-1]; nl=LAYERS[l]; kk=min(int(os.environ.get("KOUT",K)) if l==NL-1 else K, nprev)   # KOUT: readout-specific fan-in (sizing law: ~C)
     for j in range(nl):
         ps=list(rng.choice(nprev,size=kk,replace=False)) if kk<nprev else list(range(nprev))
         parents[(l,j)]=ps
