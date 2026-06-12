@@ -356,3 +356,12 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   Q-probes relaunched: qa(anchor) qa4n(STEP fidelity) qamm(chip2) qarelu(fixed nrelu).
 - NRELU BUG FOUND IN SECONDS by Q-cell probe: outputs had NO sink path (all-PMOS) -> railed at VDD ->
   downstream saturation = the relu1/relu2 chance verdicts. Fixed: 50k ground loads in subckt.
+- Q WAVE: (1) STEP=4n curve-IDENTICAL to 2n at Q scale -> ADOPTED GLOBALLY, 2x all future sims (mbase4n
+  M-tier spot-check running). (2) qarelu: fixed nrelu+BIASW SOLVES circles (1.000 best vs tanh anchor
+  0.688!) — early ANTI-classification (inverted cell polarity) then bias-flip snap to 1.0. ReLU+bias is
+  a major unlock; mrelu escalation to digits M-tier running. (3) qamm==qa: Q-tier is mismatch-BLIND
+  (toy margins) — mismatch screens need M-tier.
+- L WAVE (the collapse pattern): nz6064 best 0.870 (RECORD!) then chance; bsmm64 rescue best 0.56 then
+  chance; grand 0.71@ep8 then chance; c10bk64 0.30->0.10 (wall persists). EVERY hot config peaks then
+  collapses -> FREEZE-AT-PEAK (proven flat by dalefz) is the master control; relaunched nzfz (freeze@ep16)
+  + bsfz (freeze@ep40). Freeze timing must match each config's peak.
