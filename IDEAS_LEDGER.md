@@ -243,3 +243,15 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
 - mmfx1 VERDICT (dneuron-only->1mV, rest@5mV): 0.310/0.450best — neurons-only hardening insufficient. With mmfx2
   (dn+esub->1mV)=0.560best: mismatch damage is DISTRIBUTED across cell types (interactions), no single-cell fix.
   The matching requirement is chip-wide; mm1s1 (all@1mV) quantifies it.
+
+## User-question arc (2026-06-12): signs, merged cells, Dale's law, noise
+- Q1 ANSWERED (two-sign): x-dot = -eps_l + W^T f' eps_{l+1} — same error enters different consumers with
+  OPPOSITE signs; no global polarity exists. The swap is FREE (cross the differential pair at the consumer).
+  Sharpen paper law #1 wording.
+- Q2 EXPERIMENT QUEUED (sign-SGD update): replace 15T gprod with comparator + ~4FET charge pump,
+  W-dot ∝ sign(eps)·a — BKSIGN's lesson applied to the update path. Biggest available component win.
+- Q3 EXPERIMENT DESIGNED (Dale's law): K single-sign 1-2FET synapses per connection, E/I populations,
+  half the caps; counterweight = differential pairs are our mismatch armor (and mismatch is the wall);
+  nearest prior = single-ended keystone dead-end ~56% (not a true Dale design).
+- Q4 RUNNING (mmnz): AUGJIT=0.3 input jitter ON the 2mV mismatch chip (ref mm2=0.460) — noise as
+  regularizer/mismatch-medicine hypothesis (user's). Clean-chip AUGJIT control to follow.
