@@ -1,0 +1,141 @@
+gprod characterization
+simulator lang=spice
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.subckt gsyn inp inn wp wn outp outn vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na wp s5 0 NNR W=200u L=100u
+Rd5 s5 nt 12k
+M6 nb wn s6 0 NNR W=200u L=100u
+Rd6 s6 nt 12k
+M1 outp inp s1 0 NNR W=200u L=100u
+Rd1 s1 na 12k
+M2 outn inn s2 0 NNR W=200u L=100u
+Rd2 s2 na 12k
+M3 outn inp s3 0 NNR W=200u L=100u
+Rd3 s3 nb 12k
+M4 outp inn s4 0 NNR W=200u L=100u
+Rd4 s4 nb 12k
+.ends
+.subckt gsynL inp inn wp wn outp outn vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na wp s5 0 NNR W=200u L=100u
+Rd5 s5 nt 60k
+M6 nb wn s6 0 NNR W=200u L=100u
+Rd6 s6 nt 60k
+M1 outp inp s1 0 NNR W=200u L=100u
+Rd1 s1 na 60k
+M2 outn inn s2 0 NNR W=200u L=100u
+Rd2 s2 na 60k
+M3 outn inp s3 0 NNR W=200u L=100u
+Rd3 s3 nb 60k
+M4 outp inn s4 0 NNR W=200u L=100u
+Rd4 s4 nb 60k
+.ends
+.subckt cmld p n vdd
+Rcs1 p cmx 300k
+Rcs2 n cmx 300k
+MLp p cmx vdd vdd PNR W=1000u L=100u
+MLn n cmx vdd vdd PNR W=1000u L=100u
+.ends
+.subckt dneuron up un ap an vdd vbn
+M1 an up tn 0 NNR W=200u L=100u
+M2 ap un tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+Xcm ap an vdd cmld
+.ends
+.subckt dneuronT up un ap an tn vdd vbn
+M1 an up tn 0 NNR W=200u L=100u
+M2 ap un tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+Xcm ap an vdd cmld
+.ends
+.subckt esub xp xn mp mn ep en vdd vbn
+Mt nt vbn 0 0 NNR W=400u L=100u
+M1x ep xn s1x 0 NNR W=200u L=100u
+Rs1x s1x nt 0
+M2x en xp s2x 0 NNR W=200u L=100u
+Rs2x s2x nt 0
+M1m ep mp s1m 0 NNR W=200u L=100u
+Rs1m s1m nt 0
+M2m en mn s2m 0 NNR W=200u L=100u
+Rs2m s2m nt 0
+RLp vdd ep 50k
+RLn vdd en 50k
+.ends
+.subckt gprod xp xn yp yn wp wn vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na yp sy5 0 NNR W=200u L=100u
+Rg5 sy5 nt 12k
+M6 nb yn sy6 0 NNR W=200u L=100u
+Rg6 sy6 nt 12k
+M1 iop xp sx1 0 NNR W=200u L=100u
+Rg1 sx1 na 12k
+M2 ion xn sx2 0 NNR W=200u L=100u
+Rg2 sx2 na 12k
+M3 ion xp sx3 0 NNR W=200u L=100u
+Rg3 sx3 nb 12k
+M4 iop xn sx4 0 NNR W=200u L=100u
+Rg4 sx4 nb 12k
+Mlp iop iop vdd vdd PNR W=200u L=100u
+Mln ion ion vdd vdd PNR W=200u L=100u
+Mpu_wp wp iop vdd vdd PNR W=200u L=100u
+MpRn nrn ion vdd vdd PNR W=200u L=100u
+MnRn nrn nrn 0 0 NNR W=200u L=100u
+Mpd_wp wp nrn 0 0 NNR W=200u L=100u
+Mpu_wn wn ion vdd vdd PNR W=200u L=100u
+MpRp nrp iop vdd vdd PNR W=200u L=100u
+MnRp nrp nrp 0 0 NNR W=200u L=100u
+Mpd_wn wn nrp 0 0 NNR W=200u L=100u
+.ends
+.subckt gprodC ap an bp bn yp yn wp wn ckd ckr pk vdd vbn
+* CHOPPER-EP update: input mux (a when ckd | b when ckr) + output H-bridge (direct ckd | crossed ckr)
+Mxa1 ap ckd xip 0 NNR W=200u L=100u
+Mxa2 an ckd xin 0 NNR W=200u L=100u
+Mxb1 bp ckr xip 0 NNR W=200u L=100u
+Mxb2 bn ckr xin 0 NNR W=200u L=100u
+Rpki xip pk 10meg
+Rpkj xin pk 10meg
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na yp sy5 0 NNR W=200u L=100u
+Rg5 sy5 nt 12k
+M6 nb yn sy6 0 NNR W=200u L=100u
+Rg6 sy6 nt 12k
+M1 iop xip sx1 0 NNR W=200u L=100u
+Rg1 sx1 na 12k
+M2 ion xin sx2 0 NNR W=200u L=100u
+Rg2 sx2 na 12k
+M3 ion xip sx3 0 NNR W=200u L=100u
+Rg3 sx3 nb 12k
+M4 iop xin sx4 0 NNR W=200u L=100u
+Rg4 sx4 nb 12k
+Mlp iop iop vdd vdd PNR W=200u L=100u
+Mln ion ion vdd vdd PNR W=200u L=100u
+Mpu_op op iop vdd vdd PNR W=200u L=100u
+MpRn nrn ion vdd vdd PNR W=200u L=100u
+MnRn nrn nrn 0 0 NNR W=200u L=100u
+Mpd_op op nrn 0 0 NNR W=200u L=100u
+Mpu_on on ion vdd vdd PNR W=200u L=100u
+MpRp nrp iop vdd vdd PNR W=200u L=100u
+MnRp nrp nrp 0 0 NNR W=200u L=100u
+Mpd_on on nrp 0 0 NNR W=200u L=100u
+Mbd1 op ckd wp 0 NNR W=200u L=100u
+Mbd2 on ckd wn 0 NNR W=200u L=100u
+Mbr1 op ckr wn 0 NNR W=200u L=100u
+Mbr2 on ckr wp 0 NNR W=200u L=100u
+Rpko op pk 10meg
+Rpkn on pk 10meg
+.ends
+Vdd vdd 0 1.0
+Vb gbl 0 0.6
+Vxp xp 0 PWL(0.0n 0.3500 39.9n 0.3500 40.0n 0.3500 79.9n 0.3500 80.0n 0.3500 119.9n 0.3500 120.0n 0.3500 159.9n 0.3500 160.0n 0.3500 199.9n 0.3500 200.0n 0.4250 239.9n 0.4250 240.0n 0.4250 279.9n 0.4250 280.0n 0.4250 319.9n 0.4250 320.0n 0.4250 359.9n 0.4250 360.0n 0.4250 399.9n 0.4250 400.0n 0.5000 439.9n 0.5000 440.0n 0.5000 479.9n 0.5000 480.0n 0.5000 519.9n 0.5000 520.0n 0.5000 559.9n 0.5000 560.0n 0.5000 599.9n 0.5000 600.0n 0.5750 639.9n 0.5750 640.0n 0.5750 679.9n 0.5750 680.0n 0.5750 719.9n 0.5750 720.0n 0.5750 759.9n 0.5750 760.0n 0.5750 799.9n 0.5750 800.0n 0.6500 839.9n 0.6500 840.0n 0.6500 879.9n 0.6500 880.0n 0.6500 919.9n 0.6500 920.0n 0.6500 959.9n 0.6500 960.0n 0.6500 999.9n 0.6500)
+Vxn xn 0 PWL(0.0n 0.6500 39.9n 0.6500 40.0n 0.6500 79.9n 0.6500 80.0n 0.6500 119.9n 0.6500 120.0n 0.6500 159.9n 0.6500 160.0n 0.6500 199.9n 0.6500 200.0n 0.5750 239.9n 0.5750 240.0n 0.5750 279.9n 0.5750 280.0n 0.5750 319.9n 0.5750 320.0n 0.5750 359.9n 0.5750 360.0n 0.5750 399.9n 0.5750 400.0n 0.5000 439.9n 0.5000 440.0n 0.5000 479.9n 0.5000 480.0n 0.5000 519.9n 0.5000 520.0n 0.5000 559.9n 0.5000 560.0n 0.5000 599.9n 0.5000 600.0n 0.4250 639.9n 0.4250 640.0n 0.4250 679.9n 0.4250 680.0n 0.4250 719.9n 0.4250 720.0n 0.4250 759.9n 0.4250 760.0n 0.4250 799.9n 0.4250 800.0n 0.3500 839.9n 0.3500 840.0n 0.3500 879.9n 0.3500 880.0n 0.3500 919.9n 0.3500 920.0n 0.3500 959.9n 0.3500 960.0n 0.3500 999.9n 0.3500)
+Vyp yp 0 PWL(0.0n 0.3500 39.9n 0.3500 40.0n 0.4250 79.9n 0.4250 80.0n 0.5000 119.9n 0.5000 120.0n 0.5750 159.9n 0.5750 160.0n 0.6500 199.9n 0.6500 200.0n 0.3500 239.9n 0.3500 240.0n 0.4250 279.9n 0.4250 280.0n 0.5000 319.9n 0.5000 320.0n 0.5750 359.9n 0.5750 360.0n 0.6500 399.9n 0.6500 400.0n 0.3500 439.9n 0.3500 440.0n 0.4250 479.9n 0.4250 480.0n 0.5000 519.9n 0.5000 520.0n 0.5750 559.9n 0.5750 560.0n 0.6500 599.9n 0.6500 600.0n 0.3500 639.9n 0.3500 640.0n 0.4250 679.9n 0.4250 680.0n 0.5000 719.9n 0.5000 720.0n 0.5750 759.9n 0.5750 760.0n 0.6500 799.9n 0.6500 800.0n 0.3500 839.9n 0.3500 840.0n 0.4250 879.9n 0.4250 880.0n 0.5000 919.9n 0.5000 920.0n 0.5750 959.9n 0.5750 960.0n 0.6500 999.9n 0.6500)
+Vyn yn 0 PWL(0.0n 0.6500 39.9n 0.6500 40.0n 0.5750 79.9n 0.5750 80.0n 0.5000 119.9n 0.5000 120.0n 0.4250 159.9n 0.4250 160.0n 0.3500 199.9n 0.3500 200.0n 0.6500 239.9n 0.6500 240.0n 0.5750 279.9n 0.5750 280.0n 0.5000 319.9n 0.5000 320.0n 0.4250 359.9n 0.4250 360.0n 0.3500 399.9n 0.3500 400.0n 0.6500 439.9n 0.6500 440.0n 0.5750 479.9n 0.5750 480.0n 0.5000 519.9n 0.5000 520.0n 0.4250 559.9n 0.4250 560.0n 0.3500 599.9n 0.3500 600.0n 0.6500 639.9n 0.6500 640.0n 0.5750 679.9n 0.5750 680.0n 0.5000 719.9n 0.5000 720.0n 0.4250 759.9n 0.4250 760.0n 0.3500 799.9n 0.3500 800.0n 0.6500 839.9n 0.6500 840.0n 0.5750 879.9n 0.5750 880.0n 0.5000 919.9n 0.5000 920.0n 0.4250 959.9n 0.4250 960.0n 0.3500 999.9n 0.3500)
+Cwp wp 0 30p
+Cwn wn 0 30p
+.ic v(wp)=0.5 v(wn)=0.5
+Xg xp xn yp yn wp wn vdd gbl gprod
+.tran 0.5n 1000n uic
+.save wp wn xp yp
+.end

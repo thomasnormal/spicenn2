@@ -1,0 +1,141 @@
+bk gsyn char at eps CM
+simulator lang=spice
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.subckt gsyn inp inn wp wn outp outn vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na wp s5 0 NNR W=200u L=100u
+Rd5 s5 nt 12k
+M6 nb wn s6 0 NNR W=200u L=100u
+Rd6 s6 nt 12k
+M1 outp inp s1 0 NNR W=200u L=100u
+Rd1 s1 na 12k
+M2 outn inn s2 0 NNR W=200u L=100u
+Rd2 s2 na 12k
+M3 outn inp s3 0 NNR W=200u L=100u
+Rd3 s3 nb 12k
+M4 outp inn s4 0 NNR W=200u L=100u
+Rd4 s4 nb 12k
+.ends
+.subckt gsynL inp inn wp wn outp outn vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na wp s5 0 NNR W=200u L=100u
+Rd5 s5 nt 60k
+M6 nb wn s6 0 NNR W=200u L=100u
+Rd6 s6 nt 60k
+M1 outp inp s1 0 NNR W=200u L=100u
+Rd1 s1 na 60k
+M2 outn inn s2 0 NNR W=200u L=100u
+Rd2 s2 na 60k
+M3 outn inp s3 0 NNR W=200u L=100u
+Rd3 s3 nb 60k
+M4 outp inn s4 0 NNR W=200u L=100u
+Rd4 s4 nb 60k
+.ends
+.subckt cmld p n vdd
+Rcs1 p cmx 300k
+Rcs2 n cmx 300k
+MLp p cmx vdd vdd PNR W=1000u L=100u
+MLn n cmx vdd vdd PNR W=1000u L=100u
+.ends
+.subckt dneuron up un ap an vdd vbn
+M1 an up tn 0 NNR W=200u L=100u
+M2 ap un tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+Xcm ap an vdd cmld
+.ends
+.subckt dneuronT up un ap an tn vdd vbn
+M1 an up tn 0 NNR W=200u L=100u
+M2 ap un tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+Xcm ap an vdd cmld
+.ends
+.subckt esub xp xn mp mn ep en vdd vbn
+Mt nt vbn 0 0 NNR W=400u L=100u
+M1x ep xn s1x 0 NNR W=200u L=100u
+Rs1x s1x nt 0
+M2x en xp s2x 0 NNR W=200u L=100u
+Rs2x s2x nt 0
+M1m ep mp s1m 0 NNR W=200u L=100u
+Rs1m s1m nt 0
+M2m en mn s2m 0 NNR W=200u L=100u
+Rs2m s2m nt 0
+RLp vdd ep 50k
+RLn vdd en 50k
+.ends
+.subckt gprod xp xn yp yn wp wn vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na yp sy5 0 NNR W=200u L=100u
+Rg5 sy5 nt 12k
+M6 nb yn sy6 0 NNR W=200u L=100u
+Rg6 sy6 nt 12k
+M1 iop xp sx1 0 NNR W=200u L=100u
+Rg1 sx1 na 12k
+M2 ion xn sx2 0 NNR W=200u L=100u
+Rg2 sx2 na 12k
+M3 ion xp sx3 0 NNR W=200u L=100u
+Rg3 sx3 nb 12k
+M4 iop xn sx4 0 NNR W=200u L=100u
+Rg4 sx4 nb 12k
+Mlp iop iop vdd vdd PNR W=200u L=100u
+Mln ion ion vdd vdd PNR W=200u L=100u
+Mpu_wp wp iop vdd vdd PNR W=200u L=100u
+MpRn nrn ion vdd vdd PNR W=200u L=100u
+MnRn nrn nrn 0 0 NNR W=200u L=100u
+Mpd_wp wp nrn 0 0 NNR W=200u L=100u
+Mpu_wn wn ion vdd vdd PNR W=200u L=100u
+MpRp nrp iop vdd vdd PNR W=200u L=100u
+MnRp nrp nrp 0 0 NNR W=200u L=100u
+Mpd_wn wn nrp 0 0 NNR W=200u L=100u
+.ends
+.subckt gprodC ap an bp bn yp yn wp wn ckd ckr pk vdd vbn
+* CHOPPER-EP update: input mux (a when ckd | b when ckr) + output H-bridge (direct ckd | crossed ckr)
+Mxa1 ap ckd xip 0 NNR W=200u L=100u
+Mxa2 an ckd xin 0 NNR W=200u L=100u
+Mxb1 bp ckr xip 0 NNR W=200u L=100u
+Mxb2 bn ckr xin 0 NNR W=200u L=100u
+Rpki xip pk 10meg
+Rpkj xin pk 10meg
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na yp sy5 0 NNR W=200u L=100u
+Rg5 sy5 nt 12k
+M6 nb yn sy6 0 NNR W=200u L=100u
+Rg6 sy6 nt 12k
+M1 iop xip sx1 0 NNR W=200u L=100u
+Rg1 sx1 na 12k
+M2 ion xin sx2 0 NNR W=200u L=100u
+Rg2 sx2 na 12k
+M3 ion xip sx3 0 NNR W=200u L=100u
+Rg3 sx3 nb 12k
+M4 iop xin sx4 0 NNR W=200u L=100u
+Rg4 sx4 nb 12k
+Mlp iop iop vdd vdd PNR W=200u L=100u
+Mln ion ion vdd vdd PNR W=200u L=100u
+Mpu_op op iop vdd vdd PNR W=200u L=100u
+MpRn nrn ion vdd vdd PNR W=200u L=100u
+MnRn nrn nrn 0 0 NNR W=200u L=100u
+Mpd_op op nrn 0 0 NNR W=200u L=100u
+Mpu_on on ion vdd vdd PNR W=200u L=100u
+MpRp nrp iop vdd vdd PNR W=200u L=100u
+MnRp nrp nrp 0 0 NNR W=200u L=100u
+Mpd_on on nrp 0 0 NNR W=200u L=100u
+Mbd1 op ckd wp 0 NNR W=200u L=100u
+Mbd2 on ckd wn 0 NNR W=200u L=100u
+Mbr1 op ckr wn 0 NNR W=200u L=100u
+Mbr2 on ckr wp 0 NNR W=200u L=100u
+Rpko op pk 10meg
+Rpkn on pk 10meg
+.ends
+Vdd vdd 0 1.0
+Vbb vbbk 0 0.60
+* input pair at CM 0.78, diff ramp -0.4..+0.4; weight fixed diff -0.3 (typical)
+Vip ip 0 PWL(0n 0.58 400n 0.98)
+Vin in 0 PWL(0n 0.98 400n 0.58)
+Vwp wp 0 0.35
+Vwn wn 0 0.65
+Xb ip in wp wn op on vdd vbbk gsyn
+Xc op on vdd cmld
+Rn op on 20k
+.tran 0.5n 400n
+.save op on ip
+.end

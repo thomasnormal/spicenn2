@@ -1,0 +1,15 @@
+# simulation artifacts (GBs)
+raw_*/
+*.srf
+*.psf
+pd_*.scs
+pd_*.cir
+pd_*.log
+*.dat
+*.npy
+*.log
+*.ic
+# misc
+__pycache__/
+*.pyc
+nohup.out

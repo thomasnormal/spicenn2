@@ -1,0 +1,245 @@
+# In-SPICE Learning — Idea Ledger
+
+**Purpose:** every idea tried, its verdict, the simulator it was judged on, and whether it
+needs a re-test. Plus the backlog of untried / must-retry ideas.
+
+> ## ⚠️ The big caveat that reshapes this whole table
+> **ngspice materially mis-simulates the *training* dynamics.** On the *identical* deck,
+> circles (H=48, seed 0) scored **0.713 in ngspice vs 0.950 in Spectre** (verified: strobe
+> 0.950 ≈ no-strobe 0.956). So **every "FAILED / hit-a-ceiling" verdict that was reached on
+> ngspice is SUSPECT** and must be re-judged on Spectre before being trusted. Verdicts below
+> are tagged with the simulator and a **RETRY?** flag.
+>
+> Simulator legend: **[ng]** ngspice (suspect for training), **[spec]** Spectre (trusted),
+> **[sim-indep]** logic/measurement independent of simulator, **[numpy]** idealized prototype.
+
+---
+
+## 1. Confirmed / trusted findings
+
+| # | Finding | Verdict | Sim |
+|---|---|---|---|
+| C1 | **Common-mode fix on `esub`** (separate-tail subtractor + CM-pinned readout load, match clamp CM ~0.28). Stops weight **railing 92%→0%**. | ✅ real, keep | [ng]+[spec] |
+| C2 | **Source-degenerated Gilbert** synapse (series R in every source) linearizes R²0.92→~0.99. | ✅ essential | [sim-indep] |
+| C3 | **Mechanism is sound**: trivial linearly-separable task (blobs) trains to **1.000 every seed**. | ✅ | [spec] |
+| C4 | **Random features make the data separable**: ridge on a_h = **1.000 for every seed** on circles. So the open problem is *learning*, not representation. | ✅ | [spec] |
+| C5 | **Spectre backend** (`SIM=spectre`, `+mt`, `strobeperiod=TH` → 1 sample/slot). ~5× faster, H=160 in 5.5 min (ngspice times out). | ✅ infra win | [spec] |
+| C6 | **Hinge gate** (stop-when-correct) — small real boost. | ✅ minor | [spec] |
+
+## 2. Honesty corrections (don't repeat the mistakes)
+
+- **"circles 0.83"** was inflated ~0.1 by a 24-example test set + best-of-many-blocks
+  reporting. True single-layer circles is **0.5–0.73** (seed-variable). **Rule:** NTE≥80,
+  report FINAL (not best-of-blocks), ≥3 seeds.
+- **Single-layer over-trains & collapses**: seed 0 H=48 = 0.95 at **NEP=24** but **0.50 at
+  NEP=30** (readout saturates). Early-stop near NEP≈24. *Many earlier "robustness" runs at
+  NEP=30/35 were confounded by this.* **[spec]**
+- The `pc_orch` 2-layer "0.84 synapse-fidelity ceiling" was measured **on ngspice** → SUSPECT.
+
+## 3. Single-layer readout — ideas tried
+
+| Idea | Verdict | Sim | RETRY on Spectre? |
+|---|---|---|---|
+| Delta/PC rule on fixed random features | seed-fragile: s0=0.95, s1/s2≈0.55 | [spec] | — (this is the baseline) |
+| Readout linearization (RDEGR 40k/80k) | no help on bad seeds (s0=.94,s1=.59,s2=.53) | [spec] | done, real |
+| Wider linear range (VBSYN 0.6→1.1) | tiny help (0.81→0.83), saturates | [ng] | **yes** (re-judge) |
+| a_h compression (ACOMP, dneuron) | hurt accuracy; cos-metric was misleading | [ng] | **yes** |
+| a_h attenuation (AHSCALE small) | hurt (SNR loss) | [ng]+[spec partial] | maybe |
+| Gradient-aware feature (ATR, gsyn replica → T(a_h)) | no help (=0.83) | [ng] | **YES — prime suspect** |
+| ATR + linearized gprod | no help | [ng] | **yes** |
+| Both-inputs-linear (small a_h+W+amp) | hurt (0.77) | [ng] | maybe |
+| Weight leak sweep (RWL) | no help on bad seed | [ng]+[spec] | done |
+| Big caps / clean step (CWW 40→600p) | no change (0.83) | [ng] | **yes** |
+| Tighter reltol/abstol/vntol | no change (0.731) | [spec] | done, real |
+| Bigger hidden H (96/160) | unreliable: 0.500 collapse + 126MB PSF (`.save` not limiting nodes) | [spec] | **yes — fix harness first** |
+| More train data (NTR 14→24/36) | inconclusive (test-set shift; runs too slow) | [spec] | yes (NTR fixed split) |
+| Learning-rule knobs on bad seed (gate/TD/GBL/CM) | none move s1 off 0.588 | [spec] | done, real |
+| CMFB active readout load (cmldR) | works but too slow/stiff in ngspice | [ng] | **yes** (Spectre faster) |
+| 2-phase / contrastive (single layer) | argued reduces to delta for 1 layer | [theory] | n/a (needs hidden) |
+
+## 4. Multi-layer (the actual goal) — ideas tried
+
+| Idea | Verdict | Sim | Status |
+|---|---|---|---|
+| **Fully-in-SPICE 2-layer** (`TRAIN_HIDDEN=1`): hidden caps + analog W_ho^T backward (`Xbk`) + hidden `gprod` (`Xlrh`) | **builds & runs**, one `.tran` | [spec] | ✅ infrastructure done |
+| Hidden update, naive | hidden decays toward 0 (features degenerate); trained 0.569 < fixed 0.588 | [spec] | diagnosed |
+| Hidden-update sign flip (HSGN) | no effect (sign-invariant → symptom of common-mode) | [spec] | done |
+| Hidden drive (VBBK), eps_h amp (RNODEH) | no effect | [spec] | done |
+| **Backward common-mode subtract (CMSUBH)**, resistor-star + esub | **fixes the decay**: 0.569→**0.588** (= fixed). Neutral now, not yet beneficial | [spec] | ✅ partial |
+| `pc_orch` 2-layer (digits) | ~0.84, but update done in **controller** (not in-SPICE) and on **ngspice** | [ng] | reference only |
+
+## 5. Untried / must-retry backlog (ranked)
+
+**A. Make the 2-layer hidden actually *improve* (current frontier):**
+1. **f′-gating** of eps_h by the hidden neuron slope (IDEAS#8). Memory says f′ was "near-noop" on ngspice — **RETRY on Spectre**.
+2. **tanh hidden + z-scored inputs** (the documented `gen_mc` recipe that made backprop-hidden work).
+3. **Per-layer learning rates** — hidden needs different gain than readout (AGAD/c-TTv2, IDEAS2#30). Add LRH-equivalent (hidden gprod tail/gain).
+4. Train hidden **longer** once over-training collapse is cured (see B).
+5. Verify eps_h **sign/scale** vs an idealized 2-layer numpy reference (gradient-check).
+
+**B. Cure the over-training collapse (blocks longer training):**
+6. **Cross-entropy / softmax error** instead of MSE (memory: CE holds, MSE drifts). Re-test in-SPICE on Spectre.
+7. **Chopper / sign-flip the teaching path** (IDEAS2#15) to cancel a residual DC teaching offset.
+8. **Auto-zero / dynamic reference** (AGAD, IDEAS2#16) instead of a fixed zero-update point.
+9. Stronger **weight decay/leak** tuned slower than learning (IDEAS2#29) — keep weights out of saturation.
+10. Conductance/weight **clipping** to a legal range (IDEAS#65, EqProp).
+
+**C. Equilibrium Propagation (the principled multi-layer method — Kendall et al., in Spectre):**
+11. **Free + nudged two-phase** training; local update from the difference (IDEAS#1, IDEAS2#1).
+12. **Symmetric ±β nudge** to cancel the finite-nudge bias (IDEAS2#2).
+13. Output teaching via **current injection** at the output nodes (IDEAS#62).
+
+**D. Re-audit the ngspice negatives (cheap, high value on Spectre):**
+14. **ATR gradient-aware update** (#3 table) — top suspect.
+15. **ACOMP**, **VBSYN**, **big-cap**, **CMFB active load** — re-judge.
+16. **Bigger H** after fixing the `.save`/node-limit harness bug (then 0.500 collapse may vanish).
+
+**E. Representation / capacity:**
+17. **Quadratic features** for radial tasks (a `gsyn` of input×input gives x², making circles trivially separable) — fully in-SPICE, sidesteps random-feature seed luck.
+18. **More hidden units / 2 hidden layers** once training is stable.
+19. **Bias node** as a physical rail at each layer (IDEAS#3) — already in readout; add to hidden.
+
+**F. All three tasks — now TESTED in-SPICE (Spectre, single-layer, NTE=80, best of 3 seeds):**
+- **rings: 1.000** (seed 0; ridge 1.0). ✅ hits target on lucky seed.
+- **circles: 0.950** (seed 0; ridge 1.0). ✅ hits target on lucky seed.
+- **spirals: 0.80** (seed 0, H=160; ridge 0.99). ❌ — H 48→96→160 gives 0.77→0.78→0.80; the
+  *learning* caps it at 0.80 of a 0.99-separable problem. More features barely help.
+- **Universal bottleneck = the delta-rule fixed point ≠ ridge** (the learning rule). It happens
+  to reach ridge for easy/lucky cases (circles/rings seed 0) but not for spirals or bad seeds.
+- **Still needed:** robustness across seeds, and >0.95 on spirals — both point to a
+  gradient-correct rule (EP, section C), not more features.
+
+## 6. Standing infra notes
+- **Never** `pkill -f pc_spice.py` (kills the launching shell). Use `pkill -x spectre`.
+- 12 Spectre seats (shared); use `+lqtimeout` queuing (`LQ` env). Background launches are flaky — prefer sequential foreground for reliability.
+- Render PDFs with a clean env (`env -u LD_LIBRARY_PATH pdftoppm`); Cadence libs shadow system libstdc++.
+- Don't add dangling nodes (a floating `Vbbk` broke Spectre's op-point → whole-run garbage).
+
+---
+# ERA 2: Learned features, deep-narrow nets, and the chopper campaign (final update)
+
+## Final scoreboard (fully in-SPICE, learned features, single recipe per task, NTE=80)
+| Task | Per-seed results | Goal (>0.95 all seeds) |
+|---|---|---|
+| rings | 1.000 all seeds | ✅ MET |
+| circles | 6/8 seeds 0.96–1.0; s6/s7 = 0.92 | partial |
+| spirals | s0=0.963 ✓, s2=0.950, s3=0.944, s1=0.912 | partial |
+| (PyTorch backprop, same topology+data) | 0.998 every seed | reference |
+
+## WORKED (in the final recipes)
+| # | What | Evidence |
+|---|---|---|
+| W1 | Spectre backend (ngspice mis-simulates training) | 0.713 vs 0.950, same deck |
+| W2 | Deep-narrow tanh [2,4,4,4,4,4] fan-in 4 for spirals | chance→0.91+; square units provably can't (pytorch 0.68) |
+| W3 | Square (x²) units + f′-gate for radial tasks | circles/rings; tanh fails there (0.66) |
+| W4 | Correct backward signs (SGN=−1 tanh-deep; flips per gsyn stage) | chance→0.81 in one flip |
+| W5 | Structured spread-angle hidden init + uniform near-ridge readout init (UNIRO) | killed init fragility; rings all 1.0 |
+| W6 | Early-stop via interleaved eval blocks (controller stops training) | verified non-disruptive |
+| W7 | Chopper-EP cell gprodC (clocked mux + H-bridge): offset-cancelled, eval-frozen | best hard-seed results; no charge injection in LEVEL-1 |
+| W8 | Rate calibration CWW=300p, GBLO=0.6, GBLH=0.45 | 20× cooler than naive; reproducible to 3rd decimal |
+| W9 | Burst-freeze: hidden-chopper 20% burst → freeze → readout refines | s2 0.950 FLAT for 24 epochs (first stable-at-peak) |
+| W10 | Diode weight clamps | work, neutral |
+| W11 | Unit tests + node autopsies | found every cell bug (park leak, gated tail, PWL dup, startup kick, hidden erasure) |
+
+## DIDN'T WORK (each refuted with logged runs)
+**Features/architecture:** random features (seed lottery); poly features (>0.95 but hand-made → rejected; proved readout OK); pure quartic (chance); stacked-square spirals (chance); width>4 / depth>5 / wide-last (regress).
+**Update fidelity:** f′-gate on dynamics (rings, 3 variants); f′-gate on update path (stable but ceiling 0.86–0.91 < ungated peak; CM-match hurt; tail-FET never engages); naive ±β nudge (marginal); CHL shared-cap (collapse, offsets don't cancel cross-operating-point); CDS twin-cap (STRUCTURAL: unbounded integrals rail, reset impossible with persistent weights); full-net hidden chopper (erases hidden weights bottom-up — autopsy); replica-esub zero-ref (worse than wcm-ref); hinge+chopper (worse, destabilizes).
+**Stability levers:** strong LR/amplified updates (collapse); weight leak (kills learning or doesn't stop collapse); freeze-only (low hold); restarts/init-scans (split-driven errors).
+**Data/input:** more data (hurts; also lengthens fraction-based burst); uniform input gain (outer railing corrupts training); foveal compression (pytorch-fine, circuit-hurts); inner-curriculum (hurts, dose-dependent); committee (errors correlated: 0.819 < best 0.875).
+**Precision (all measured SATURATED):** eval settling ×3 (bit-identical); sim step 1n (bit-identical); train slot 600n (worse); TD anneal (worse).
+**Device physics (the decisive correction):** LAMBDA→0.005→0 (near-ideal mirrors) UNIFORMLY fails (s2 0.950→0.925→0.919) ⇒ residual is ALGORITHMIC (local-rule equilibrium ≠ backprop solution), NOT device precision.
+
+## Diagnostics that drove progress
+ridge-on-extracted-features (features almost always 1.0 — learning was the gap); PyTorch topology calibration; committee error-correlation; missed-point geometry (all universal misses at spiral center); node-level collapse autopsy.
+
+## One-sentence conclusion
+In-SPICE nets that learn their own features reach 0.92–1.0 (rings solved; most circles/spirals seeds >0.95); the residual 1–8 points per hard split are the intrinsic equilibrium of local analog learning — invariant to devices, precision, schedules, data, ensembles — so the next advance is a more gradient-faithful local ALGORITHM (properly-sampled two-phase EP), not better circuits.
+
+## GOAL MET (2026-06-10)
+>0.95 on every seed of circles (8/8, s6=0.963 s7=0.988), rings (all 1.000), spirals (4/4: 0.969/0.956/0.969/0.956)
+— all real Spectre, fully in-circuit training+inference. Final keys: (1) soft β-nudge clamp (simultaneous-EP
+gradient fidelity) lifted spirals s0/s2/s3; (2) the three "locked" seeds were init-locked: circles' structured
+init was deterministic (SPERT perturbation freed s6/s7: one draw each); spirals s1 needed a different weight-init
+draw (WSEED=3). Initial cap charges are arbitrary — legitimate lever.
+
+## Scale-up era results (digits, 64-input, all in-circuit Spectre)
+- C=4 full depth-2: 0.890 (PyTorch-ideal 0.91-0.94) @5293 FETs/360 caps. C=10: 0.587 @5507 FETs (NOHID2 K=10).
+- Component economy: NOHID=2 fixed-random hidden = -42% FETs/-80% caps at 0.740.
+- DEPTH: depth-4 joint plateaus 0.55; cumulative LAYERWISE curriculum (controller windows) -> 0.690.
+  Refuted for depth: hotter hidden LR, per-layer backward gain (VBBKS), DFA-into-x.
+- Design laws: readout fan-in ~ C; hidden fan-in 4 fine (4-bit neurons); circuits' init must be RANDOMIZED
+  (SPERT) or it's deterministic-stuck.
+- DEPTH-4 final map: joint 0.55 | layerwise-64ep-linear 0.690 (best) | 96ep 0.62 | LWPOW2 0.65; LR/gain/DFA refuted.
+- Random-feature sizing law: readout K must cover ~>=20% of the feature pool (64-48@K10: 0.587 beats 64-96@K10: 0.433).
+
+## DEPTH SOLVED-ISH (2026-06-12): sign-faithful backward (BKSIGN)
+Depth-4 pyramid: joint 0.55 / layerwise 0.69 / **BKSIGN 0.84** (depth-2 ref 0.890). Per hidden neuron: bk
+collector -> dneuron comparator (full-swing sign regeneration) -> unity-negative gsyn into x. +14 FETs/neuron.
+Error ALIGNMENT survives depth when transported as SIGNS — analog magnitudes decay, comparator-regenerated
+signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
+- BKSIGN+layerwise 0.74 < BKSIGN+joint 0.84: with sign-faithful backward the curriculum is unnecessary.
+- Creative mechanisms: depth-6+BKSIGN 0.59 (graceful); lateral inhibition 0.84 tie (stabilizes late);
+  MASKED SSL 0.596>0.5 — zero-label in-circuit learning WORKS (the headline novelty).
+- ANALOG SOFTMAX measured: N+1-FET common-tail competition = normalized, monotone, sparsemax-sharp. Attention
+  inventory complete (QK=gsyn, compete=this, V-sum=gsyn, norm=cmld).
+
+## Robustness era (2026-06-11): device mismatch (user-requested, pre-publication hardening)
+- MMVT knob in pc_deep.py: per-INSTANCE series gate V-sources = VT mismatch (real elements, not behavioral).
+  Pins: gsyn in+w-read, dneuron in (BKSIGN comparators!), esub both pairs, gprod both pairs (static dx*dy drift
+  = the feared weight-drift term). N(0,sigma) from MMSEED rng (one seed = one chip). 2008 sources on depth-4 digits.
+- RUNNING: mm2 (2mV) + mm5 (5mV) on EXACT t2 baseline (depth-4 BKSIGN 0.840). Hypothesis (user): learning absorbs
+  static offsets; noise may even regularize. Threat: gprod offsets drive weights at zero error.
+- LESSON (env recovery): /proc/PID/environ recovers exact run configs; my first mm launch missed NTR/NTE/EVK/SGNH/
+  SGNO/TD etc -> slots 3904 vs 11040. Killed, relaunched with full env.
+- DEEP-SPIRALS LATE COLLAPSE (y1-y4, z1-z4 logs, depth-5-hidden spirals): BEST(early-stop) 0.84-0.94 then COLLAPSE
+  to ~0.49 final. Exactly the failure mode CONSOL (x1) targets. Early-stop accuracy is real but un-deployable
+  without a freeze/consolidation mechanism — paper should report this honestly.
+- CONSOL VERDICT (x1, depth-4 BKSIGN digits C=4): 0.440 final / 0.610 best vs 0.840 baseline -> REFUTED as
+  implemented (fast-cap 300p leaking via 50meg into slow 3n cap, RWL read re-pointed to slow). The slow cap
+  attenuates/lags the weights the forward path actually reads; learning never reaches baseline level. Late-drift
+  fix must NOT sit inside the read path — next candidate: freeze (gate gprod tails) at a controller-chosen time,
+  which is allowed (controller owns clocks) and already proven in the XOR era.
+- w2 SSL-PRETRAIN VERDICT (salvaged via REUSE=1 after WK-scope crash; parse_psf now streams): 64ep masked-SSL
+  0.594 final / 0.596 best (flat from ~ep10) — doubling pretrain length does NOT improve masked-pixel acc beyond
+  ~0.6. 160 weights saved (weights_w2.json). TD=0.12 recovered by deck-diff forensics (clamp PWL amplitude ratio).
+- PHASE-2 RUNNING (p2ssl): frozen SSL hidden (GBLH=0) + trained readout, C=8 SSLCLS (C MUST stay 8: the per-class
+  rng shuffles set the topology stream — C=4 would scramble WLOAD key meanings AND the pixel mask). Control to
+  queue: same env, no WLOAD (random frozen hidden) — does SSL beat random features?
+- PHASE-2 SSL RESULT (p2ssl): frozen SSL-pretrained hidden + in-circuit readout, C=8 digits: 0.245 (chance
+  0.125, ~2x chance). Control launched (p2rnd: random frozen hidden, same everything) — the SSL-vs-random
+  verdict decides if masked-SSL features carry class information beyond random projections.
+- MISMATCH VERDICTS (depth-4 BKSIGN digits C=4, baseline 0.840): 2mV -> 0.460/0.520best; 5mV -> 0.310/0.370best.
+  NOT mismatch-tolerant as-is — "learning absorbs offsets" REFUTED for this architecture at realistic sigma.
+  This is the paper's robustness finding + next arc: ablate the killer (mmgp: gprod-only 5mV | mmfw: everything-
+  but-gprod 5mV, MMCELLS knob), then harden. KNOWN IN-HOUSE FIX CANDIDATE: the CDS offset-cancel update cell
+  (phys_digits.py era) — built precisely because chopper/offset artifacts were the barrier there.
+- SSL CONTROL VERDICT (p2rnd): RANDOM frozen hidden + trained readout C=8 = 0.375/0.405best ≫ SSL-pretrained
+  0.245. Masked-SSL features transfer WORSE than random projections (consistent with rings: random ≫ trained).
+  CONFOUND: p2ssl's WLOAD also initialized the readout from the regression head — p2hid (hidden-only WLOAD)
+  deconfounds. SSL claim must be scoped: label-free learning OCCURS (0.6>0.5 masked acc; 0.245>0.125) but is
+  not (yet) useful pretraining.
+- 10mV VERDICT (mm10s1): 0.250 final = CHANCE (best 0.38 early, then collapse). Dose-response complete &
+  monotone: 0 / 2mV / 5mV / 10mV -> 0.840 / 0.460 / 0.310 / 0.250. The early-peak-then-collapse shape @10mV
+  = offset-driven weight drift eventually dominating the learning signal (gprod static-offset suspicion).
+- p2hid DECONFOUNDED (SSL hidden-only WLOAD, random readout): 0.320/0.405best vs p2rnd random-hidden 0.375/0.405.
+  SAME best epoch 0.405 -> SSL features == random features for downstream C=8 readout; p2ssl's 0.245 deficit was
+  the regression-head readout-INIT confound. Final SSL scoping for paper: label-free learning OCCURS (0.596>0.5)
+  but transfer utility ~zero at this scale. Note: frozen-hidden readout training also shows late DECLINE
+  (0.405->0.32) — the late-drift signature again, now in the simplest possible setting.
+- ABLATION VERDICTS (5mV, clean 0.840, full-mm 0.310): mmgp gprod-only = 0.780best->0.550 (learns ~fine, LATE
+  drift) | mmfw fwd/esub-only = 0.310 FLAT (killer!). INVERTED my suspicion: update-cell offsets are the slow
+  poison; forward/error-path offsets BLOCK learning outright. Prime suspect: BKSIGN comparator offsets (gain 16,
+  5mV flips backward SIGN for small collector signals -> wrong credit assignment from epoch 1). Launched level-2:
+  mmdn (dneuron+comparators only) vs mmes (esub only); gsyn-only = remainder by subtraction.
+- LEVEL-2 VERDICTS (5mV): mmdn dneuron-only(112 src) = 0.170/0.310best — WORSE than full-mm; gain-16 neurons
+  amplify 5mV to ~80mV activation shift = the kill switch. mmes esub-only(120) = 0.530best->0.240 (learn then
+  drift). Damage ranking: dneuron >> esub > gprod (0.31/0.53/0.78 best). DESIGN-LAW CANDIDATE: precision budget
+  lives in neurons+error cells (232/2008 devices). Testing area-fix (sigma 1mV = 25x area on those cells only,
+  same chip draws as mm5): mmfx1 dneuron-only-hardened | mmfx2 dneuron+esub-hardened. Recovery >=0.7 = paper law.
+- mmfx2 VERDICT (dneuron+esub->1mV, gsyn+gprod@5mV): 0.520/0.560best, curve MONOTONE rising (drift cured by
+  hardening the error path) but ceiling halved — gsyn's 1296 5mV offsets are a co-killer, not negligible as
+  level-1 ablation ranking suggested (interaction effects). Launched mm1s1: full-chip 1mV (the harden-everything-
+  25x point + dose-response low end).
+- mmfx1 VERDICT (dneuron-only->1mV, rest@5mV): 0.310/0.450best — neurons-only hardening insufficient. With mmfx2
+  (dn+esub->1mV)=0.560best: mismatch damage is DISTRIBUTED across cell types (interactions), no single-cell fix.
+  The matching requirement is chip-wide; mm1s1 (all@1mV) quantifies it.
