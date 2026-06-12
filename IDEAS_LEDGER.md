@@ -344,3 +344,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - bsnz 0.39: noise does NOT stack on mismatch rescue (saturates ~0.45; residual = forward distortion).
 - GRAND COMBO LAUNCHED (grand/grandmm): DALE+SGNUP+BIASW+AUGJIT0.6+freeze@ep32, clean + dead-chip2.
   The thesis run: cheap (Dale+sign) + robust (bias+sign) + fast (noise) + stable (freeze) all at once.
+- BIASES = NEW CLEAN RECORD (bw064, NEP=64): 0.860 final==best vs 0.840 no-bias; curve plateaus 0.85-0.86
+  with NO LATE DRIFT (drift was partly bias-error forced into weights!). User called it: every neuron needs
+  a bias. Slow early (0.60@ep16, caps charging) -> screens must not kill bias configs early.
