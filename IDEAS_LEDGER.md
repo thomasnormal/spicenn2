@@ -326,3 +326,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   truncated learning (0.46@ep16), not a drift test. LESSON: anneal-to-zero endpoint must align with the
   expected BEST epoch on the FULL horizon. Proper run dalefz: DALE NEP=64 ANNS=5520(~ep32) AFLOOR=0 —
   freeze-at-peak as the deployment recipe (kills the universal late drift).
+- FAST WAVE 3 + CONTROL: base16 clean@ep16 = 0.730 (the screen anchor). RESCUE LADDER COMPLETE (dead
+  chip2@2mV, ep16): none 0.25 / sign 0.31 / bias 0.39 / COMBO 0.45 — defenses STACK. bw0f biases slow
+  early learning (0.60 vs 0.73). relu2 still chance — suspect relu/ref leg CM imbalance breaks downstream
+  gsyn; PARKED pending CM-balanced redesign. c10bkf 0.30 rising @ep16 (inconclusive).
+  FULL-HORIZON CONFIRMS LAUNCHED: bsmm64 (combo rescue), bw064 (biases clean), c10bk64.
