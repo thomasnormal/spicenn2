@@ -427,3 +427,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   arch; narrow-800u solves it (0.969). The two configs COVER each other's failures: every spirals dataset
   s1-s7 solved by narrow-800u(+restart) or wide-400u+freeze. Q-tier data luck (NTR=8) is the residual
   noise; conclusions to carry forward = scaling law + freeze + restart, verdicts on digits from qdig/qdig4.
+- restart_run.sh added (controller-side anti-lock remedy): re-rolls WSEED (+10 per try) until best-acc
+  >= THRESH; smoke-tested on the cursed spirals s2: 0.062 -> 0.031 -> 1.000 (deterministic reproduction
+  of the manual probes). Use for all future seed sweeps / L-tier finals.
