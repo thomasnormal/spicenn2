@@ -410,3 +410,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - COMPOSABILITY (Q, spirals s1, upright NRW=800u): DALE=1 -> 0.969 FLAT (Dale's-law single-sign neurons
   + high-gain ReLU coexist) | SGNUP=1 -> 0.969 best / 0.875 final (9T sign-update cell trains the ReLU
   net, slightly noisier than gprod). The neuron upgrade composes with the whole cell library.
+- STABILITY BOUNDARY (Q, spirals s1): freeze-at-peak (ANNS=200 AFLOOR=0) FULLY rescues NRW=1600u ->
+  1.000 FLAT entire run (master control works on gain instability too). RELREF sweep: 0.60 -> mush
+  (0.656 best, ref too low); 0.72 -> solves then flips to 0.0 (same signature as 1600u). Defaults
+  RELREF=0.66 + NRW=800u sit inside the stable region; freeze extends it. Net design rule: the
+  (gain, reference) plane has a sharp basin-stability boundary; anneal-to-zero neutralizes it.
