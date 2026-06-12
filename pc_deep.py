@@ -149,7 +149,8 @@ Mrr d2 un s2 0 NNR W=200u L=100u
 Rs2 s2 vbn 12k
 Mlp2 d2 d2 vdd vdd PNR W=200u L=100u
 Mlo2 ap d2 vdd vdd PNR W=200u L=100u
-Xcm ap an vdd cmld
+Rop ap 0 50k
+Ron an 0 50k
 .ends
 .subckt dneuronT up un ap an tn vdd vbn
 M1 an up tn 0 NNR W=200u L=100u

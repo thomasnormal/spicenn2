@@ -350,3 +350,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - SPEED LADDER (user directives): S-tier 64-16-4/NTR20/NEP16 = 1480 slots ~25min (anchors: baseS, baseSmm
   chip2, +STEP=4n fidelity probe — if 4n==2n, GLOBAL 2x speedup); M-tier depth-4 NEP16 ~2h; L-tier NEP64
   finalists only. MONTE-CARLO BUDGET: 5 chips max per condition (user), dead/alive calls from S-tier.
+- Q-TIER CALIBRATED (user: 1-2min sims): circles 2-4-2, CWW=30p (SMALL WEIGHT CAPS = the fast-learning
+  screen knob; 10x weight speed), NEP=36, NTR=8 -> anchor ~0.69 rising in ~3min. Flat-curve dead end
+  diagnosed: 300p caps move 10mV/slot BY DESIGN -> no tiny-slot training without shrinking caps.
+  Q-probes relaunched: qa(anchor) qa4n(STEP fidelity) qamm(chip2) qarelu(fixed nrelu).
+- NRELU BUG FOUND IN SECONDS by Q-cell probe: outputs had NO sink path (all-PMOS) -> railed at VDD ->
+  downstream saturation = the relu1/relu2 chance verdicts. Fixed: 50k ground loads in subckt.
