@@ -298,3 +298,6 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   depth-4; regression DALE/BIASW=0 byte-identical). RUNN
 ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip learning adapts to
   manufacturing impurities GIVEN the parameters to adapt with".
+- USER CONFIRMS bias necessity (expressivity, not just mismatch): no-bias tanh = origin-locked boundaries;
+  ReLU impossible (hinge position IS the bias). LAUNCHED bw0: BIASW on CLEAN baseline (ref 0.840) —
+  expressivity gain test + prerequisite for one-sided/ReLU neuron work.
