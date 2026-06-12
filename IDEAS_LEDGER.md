@@ -318,3 +318,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   offset handling. relu1: 0.25 flat = dead-ReLU-at-init (knee too high?) -> relu2 probes VRL=0.25/RELREF=0.60.
   bw0f 0.60@ep16 uninterpretable without NEP=16 baseline -> base16 control launched (screening lesson:
   always launch the fast-mode control FIRST).
+- FAST WAVE 2: sgnmmf sign-rescue of dead chip2: 0.08->0.310 rising (vs 0.25 dead; bias rescue 0.39 stronger).
+  mm1s3f: 1mV chip3 ALIVE 0.29->0.40 rising => 1mV yield 2/3 (chip2 the bad die). LAUNCHED bsmm: BIAS+SIGN
+  combo on dead chip2 — the two offset defenses are complementary (bias absorbs forward, sign immunizes
+  update path); test stacking.
