@@ -276,3 +276,7 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   vs gprod's 8 -> possibly mismatch-friendlier update path. Gate: sgn1 (rule viability in full training).
 - RUNNING c10bk: C=10 TRAINED hidden + BKSIGN (LAYERS=64,32,16 K=4 KOUT=10) — record to beat: 0.587
   (random hidden). Tests whether sign-faithful backward unlocks trained features at C=10 (the old wall).
+- mm1s1 VERDICT (full-chip 1mV): 0.400/0.560best — even 1mV (already-large devices) halves the system.
+  Dose-response (best-epoch, monotone): 0/1/2/5/10mV -> 0.840/0.56/0.52/0.37/0.38->chance. CONCLUSION:
+  matching requirement <1mV => area scaling impractical; OFFSET CANCELLATION IS MANDATORY (sign-update
+  cell's 2-device input + CDS autozero are the candidates). Finals noisier than bests (drift timing).
