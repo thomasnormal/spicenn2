@@ -283,3 +283,5 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
 - 2mV MONTE-CARLO VERDICTS (3 chips): 0.460/0.52 | 0.250/0.25 (CHANCE) | 0.210/0.31. Chip-to-chip variance
   is huge; 2/3 chips DEAD at 2mV; the dose-response chip (MMSEED=1) was a LUCKY draw. Honest framing in
   paper: yield, not just mean. Offset cancellation now overwhelmingly mandatory.
+- LAUNCHED: mm1s2/mm1s3 (1mV yield — was the 0.40/0.56 chip lucky?); sgnmm (SGNUP on DEAD chip2@2mV,
+  ref 0.250 — does the sign-rule's 4x smaller update-path offset cross-section revive it?).
