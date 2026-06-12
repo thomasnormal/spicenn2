@@ -313,3 +313,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - SIGN-SGD VERDICT (sgn1, NEP=64): 0.830best/0.680 vs gprod 0.840/0.840 — sign(eps).a is WITHIN 1 POINT
   of the full 4-quadrant multiply at best epoch. 9T cell GREEN-LIT (-12% FETs, 4x smaller offset cross-
   section). Universal late drift again (0.83->0.68). sgnmmf (mismatch rescue) pending.
+- FAST WAVE 1 (NEP=16 screens): bwmmf BIAS RESCUE of dead chip2@2mV: 0.25 -> 0.39 RISING (self-calibration
+  works once bias parameters exist!). mm1s2f: chip2 DEAD at 1mV too (0.22) — yield catastrophic without
+  offset handling. relu1: 0.25 flat = dead-ReLU-at-init (knee too high?) -> relu2 probes VRL=0.25/RELREF=0.60.
+  bw0f 0.60@ep16 uninterpretable without NEP=16 baseline -> base16 control launched (screening lesson:
+  always launch the fast-mode control FIRST).
