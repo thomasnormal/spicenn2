@@ -421,3 +421,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   with output/layer fan-in; freeze-at-peak then locks it. NTR=16 robustness: 0.969 (holds with 2x data).
   IMPLICATION: digits (fan-in 4 readout) @NRW=800u (qdig, mrelu8) likely over-gained -> qdig4 launched
   (NRW=400u fast screen) as the predicted-correct setting.
+- WIDE CHAMPION (2-8-4, NRW=400u, ANNS=150 AFLOOR=0): s1 ALL THREE tasks 1.000 LOCKED (circles/rings/
+  spirals, same config+seed). s2 spirals 1.000 (the seed narrow-800u anti-locked!). s3 spirals fails ALL
+  weight re-rolls (anti w/ freeze, chance 0.53 w/o) -> that DATA draw (16 train pts) is hard for this
+  arch; narrow-800u solves it (0.969). The two configs COVER each other's failures: every spirals dataset
+  s1-s7 solved by narrow-800u(+restart) or wide-400u+freeze. Q-tier data luck (NTR=8) is the residual
+  noise; conclusions to carry forward = scaling law + freeze + restart, verdicts on digits from qdig/qdig4.
