@@ -264,3 +264,7 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   (clamp option exists); update cells get crossed eps (or a) for inhibitory parents to fix the chain-rule
   sign. No synapse doubling needed at first (random fan-in mixes E/I parents). Cheaper single-ended cells
   = phase 2; differential pairs stay as mismatch armor for now.
+- DALE IMPLEMENTED (DALE=1, DSEED): per-neuron fixed sign 50/50 E/I (hidden layers), inhibitory neurons'
+  outgoing synapses output-crossed (fm/fx), transpose-crossed (bk/BKSIGN comparator input), update a-input
+  crossed (chain rule); weights init |v| (positive). Regression: DALE=0 deck byte-identical. RUNNING dale1
+  on depth-4 BKSIGN baseline (ref 0.840). v2 (enforcement of w>=0 + single-ended cheap cells) after verdict.

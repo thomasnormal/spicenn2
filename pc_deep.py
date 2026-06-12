@@ -87,6 +87,12 @@ for l in range(1,NL):
         parents[(l,j)]=ps
         for p in ps: children.setdefault((l-1,p),[]).append(j)
 maxfo=max((len(v) for v in children.values()), default=0)
+DALE=int(os.environ.get("DALE","0"))
+dsign={}
+if DALE:   # Dale's law: per-neuron FIXED sign (hidden layers; inputs & outputs excitatory). Separate rng -> main weight/data streams untouched.
+    _drng=np.random.RandomState(int(os.environ.get("DSEED","0")))
+    for _l in range(1,NL-1):
+        for _j in range(LAYERS[_l]): dsign[(_l,_j)]=1 if _drng.rand()<0.5 else -1
 # ---------- cells (verbatim from gen_pcL) ----------
 _LAM=os.environ.get("LAM","0.02")
 SUB=f""".model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA={_LAM} GAMMA=0 PHI=0.7)
@@ -339,6 +345,7 @@ def gen_deck():
                     else: v=float(os.environ.get("WINITO","0.15"))*float(wrng.standard_normal())
                 else: v=WINIT*float(wrng.standard_normal())
                 if float(os.environ.get("SPERT","0"))>0: v+=float(os.environ.get("SPERT","0"))*float(wrng.standard_normal())   # perturb structured inits (gives WSEED leverage)
+                if DALE: v=abs(v)   # Dale: weights start positive; the connection's sign lives in the WIRING (parent neuron's fixed sign)
                 gp,gn=wgv(v)
                 if os.environ.get("WLOAD"):
                     import json as _json
@@ -391,8 +398,10 @@ def gen_deck():
             for p in parents[(l,j)]:
                 pap,pan=ap_(l-1,p); key=f"{l}_{j}_{p}"
                 wr0,wr1 = (f"wp_{key}",f"wq_{key}") if CHL2o else (f"wp_{key}",f"wn_{key}")   # CDS differential read: clamped-int minus free-int
-                L+=[f"X_fm_{key} {pap} {pan} {wr0} {wr1} {mp} {mn} vdd vbsyn {fmcell}"]
-                if ((not out) and int(os.environ.get("NOHID","0"))<2) or (out and int(os.environ.get("SOFTC","0"))): L+=syn(f"fx_{key}",pap,pan,xp,xn,f"wp_{key}",f"wn_{key}")   # x copy (skipped for NOHID>=2 hidden)
+                _dmp,_dmn=(mp,mn) if dsign.get((l-1,p),1)>0 else (mn,mp)   # DALE: inhibitory parent -> crossed outputs (free sign flip)
+                _dxp,_dxn=(xp,xn) if dsign.get((l-1,p),1)>0 else (xn,xp)
+                L+=[f"X_fm_{key} {pap} {pan} {wr0} {wr1} {_dmp} {_dmn} vdd vbsyn {fmcell}"]
+                if ((not out) and int(os.environ.get("NOHID","0"))<2) or (out and int(os.environ.get("SOFTC","0"))): L+=syn(f"fx_{key}",pap,pan,_dxp,_dxn,f"wp_{key}",f"wn_{key}")   # x copy (skipped for NOHID>=2 hidden)
             # activation + error neuron
             if not out:
                 aap,aan=ap_(l,j)
@@ -475,7 +484,7 @@ def gen_deck():
                     L+=syn(f"bk_{key}",ekp,ekn,bkp,bkn,f"wp_{key}",f"wn_{key}","vbbk")
                 L+=[f"Xcmsb{l}_{p} {bkp} {bkn} vdd cmld",f"Rsb{l}_{p} {bkp} {bkn} {RNODE}",
                     f"Csbp{l}_{p} {bkp} 0 0.4p",f"Csbn{l}_{p} {bkn} 0 0.4p",
-                    f"Xsg{l}_{p} {bkp} {bkn} sg{l}p_{p} sg{l}n_{p} vdd vbneu dneuron",
+                    f"Xsg{l}_{p} {(bkp if dsign.get((l,p),1)>0 else bkn)} {(bkn if dsign.get((l,p),1)>0 else bkp)} sg{l}p_{p} sg{l}n_{p} vdd vbneu dneuron",
                     f"Xsj{l}_{p} sg{l}p_{p} sg{l}n_{p} usp usn {xp} {xn} vdd vbbk gsyn"]
             elif int(os.environ.get("BKDFA","0")):   # DFA: output error broadcast DIRECTLY to every hidden layer via FIXED random weights (no caps, no deep transpose chain -> depth-uniform error quality)
                 oc=NL-1
@@ -485,13 +494,14 @@ def gen_deck():
                     L+=[f"Vwp_{key} wp_{key} 0 {gp_}",f"Vwn_{key} wn_{key} 0 {gn_}"]
                     L+=syn(f"bk_{key}",ekp,ekn,xp,xn,f"wp_{key}",f"wn_{key}","vbbk")
             else:
+                _dbxp,_dbxn=(xp,xn) if dsign.get((l,p),1)>0 else (xn,xp)   # DALE: transpose of a crossed forward synapse is crossed
                 for k in children.get((l,p),[]):
                     key=f"{l+1}_{k}_{p}"; ekp,ekn=f"e{l+1}p_{k}",f"e{l+1}n_{k}"
                     if int(os.environ.get("CHL","0"))==2 and l+1==NL-1:
-                        L+=[f"X_bk_{key} {ekp} {ekn} wp_{key} wq_{key} {xp} {xn} vdd vbbk gsyn"]
+                        L+=[f"X_bk_{key} {ekp} {ekn} wp_{key} wq_{key} {_dbxp} {_dbxn} vdd vbbk gsyn"]
                     else:
                         _bt=f"vbbk{l}" if float(os.environ.get("VBBKS","0"))>0 else "vbbk"
-                        L+=syn(f"bk_{key}",ekp,ekn,xp,xn,f"wp_{key}",f"wn_{key}",_bt)
+                        L+=syn(f"bk_{key}",ekp,ekn,_dbxp,_dbxn,f"wp_{key}",f"wn_{key}",_bt)
     if int(os.environ.get("TFG","0")):   # f'-gate reference: tref - a^2 > 0 in the linear region, ~0 when saturated
         TREF=float(os.environ.get("TREF","0.10")); L+=[f"Vtref tref 0 {0.5+TREF}",f"Vtrefn trefn 0 {0.5-TREF}"]
     if int(os.environ.get("TFG","0"))==2:   # global REPLICA dneuron (inputs at CM) -> tn0 = balanced tail reference
@@ -568,7 +578,8 @@ def gen_deck():
                     L+=[f"Xlrc_{key} {xop} {xon} {pap} {pan} wp_{key} wn_{key} vdd gblo gprod",
                         f"Xlrf_{key} {mop} {mon} {pap} {pan} wp_{key} wn_{key} vdd gblof gprod"]
                 else:
-                    L+=[f"Xlr_{key} {ep} {en} {pap} {pan} wp_{key} wn_{key} vdd {tail} gprod"]
+                    _dap,_dan=(pap,pan) if dsign.get((l-1,p),1)>0 else (pan,pap)   # DALE: chain-rule sign of inhibitory parent folded into the a-input
+                    L+=[f"Xlr_{key} {ep} {en} {_dap} {_dan} wp_{key} wn_{key} vdd {tail} gprod"]
     if HINGE:   # score = sum_c (label_c).(m_out_c) -> high when correct; comparator -> conf high -> pull gbl tails low
         oc=NL-1
         for c in range(C): L+=[f"Xsc_{c} xo{c}p xo{c}n m{oc}p_{c} m{oc}n_{c} sop son vdd vbsyn gsyn"]
