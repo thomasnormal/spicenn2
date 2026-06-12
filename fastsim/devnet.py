@@ -8,7 +8,7 @@ import os, numpy as np
 import devmodel as dm
 
 # ---------------- offline tables from validated solvers ----------------
-TBL="fastsim/devnet_tables.npz"
+TBL=__import__("os").path.join(__import__("os").path.dirname(__file__),"devnet_tables.npz")
 def build_tables():
     print("building 5D gsyn tables (in_d x in_cm x w_d x out_cm x OUT_D) — includes output conductance...")
     ind=np.linspace(-0.6,0.6,17); incm=np.array([0.45,0.50,0.55,0.65,0.78,0.85]); wd=np.linspace(-0.62,0.62,15)
@@ -78,7 +78,7 @@ def cmld_ext(Ip,In,clampP=None,clampN=None,RC=None,WL=10.0,RNODE=20e3,ito=30,itd
     return cm+d/2, cm-d/2
 
 # ---- cmld lookup tables (built from cmld_ext solver) ----
-CTBL="fastsim/cmld_tables.npz"
+CTBL=__import__("os").path.join(__import__("os").path.dirname(__file__),"cmld_tables.npz")
 def build_cmld_tables():
     print("building cmld tables...")
     Ig=np.linspace(0,40e-6,33)

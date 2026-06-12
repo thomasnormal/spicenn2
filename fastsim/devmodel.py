@@ -139,7 +139,7 @@ def esub(xp,xn,mp,mn,vbn=0.6,RL=50e3,ito=30):
 
 if __name__=="__main__":
     # ---- validate gsyn+cmld against fastsim/char.npz ----
-    d=np.load("fastsim/char.npz"); t=d["t"]
+    d=np.load(__import__("os").path.join(__import__("os").path.dirname(__file__),"char.npz")); t=d["t"]
     # reproduce: input ramp segments at 5 weight values; load = cmld(WL=1000u/100u=10)+RNODE 20k
     errs=[]
     for seg in range(5):
