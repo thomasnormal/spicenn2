@@ -403,3 +403,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   >=0.969 (2x 1.000 flat) + restarts. Seed-2's WSEED draw anti-locks ALL THREE tasks (init-geometry
   polarity, not task-dependent) and restarts (WSEED=22) fix all three -> detect+restart is a complete
   remedy. This is the same neuron everywhere; no per-task tuning beyond the standard knobs.
+- NRELU DESIGN RULES (Q probes, spirals/circles s1): NRW=1600u (gain~10) solves 1.000 then FLIPS to
+  perfect-anti 0.0 mid-training (basin unstable at extreme gain) | NRW=600u only 0.875 (gain>=5 needed)
+  -> NRW=800u (mirror 4x, gain 5.1) is the sweet spot. BIASW=0 -> DEAD AT CHANCE both tasks (user was
+  right: ReLU mandatorily needs per-neuron biases; without them not even anti-lock, just nothing).
