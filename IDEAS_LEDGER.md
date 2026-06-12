@@ -285,3 +285,7 @@ signs don't. (The 4-bit-neuron philosophy applied to the backward path.)
   paper: yield, not just mean. Offset cancellation now overwhelmingly mandatory.
 - LAUNCHED: mm1s2/mm1s3 (1mV yield — was the 0.40/0.56 chip lucky?); sgnmm (SGNUP on DEAD chip2@2mV,
   ref 0.250 — does the sign-rule's 4x smaller update-path offset cross-section revive it?).
+- NOISE VERDICTS (AUGJIT=0.3 input jitter, user hypothesis): CLEAN nzcl 0.850best/0.820 vs 0.840 baseline
+  -> ~neutral (+1 best, the highest depth-4 best yet; level unswept). MISMATCH mmnz 0.450/0.520 vs mm2
+  0.460/0.520 -> NULL: noise does NOT rescue mismatch (damage is structural offset-steering, not sharp
+  minima). Honest paper note replaces the old "noise untested".
