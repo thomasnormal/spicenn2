@@ -322,3 +322,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   mm1s3f: 1mV chip3 ALIVE 0.29->0.40 rising => 1mV yield 2/3 (chip2 the bad die). LAUNCHED bsmm: BIAS+SIGN
   combo on dead chip2 — the two offset defenses are complementary (bias absorbs forward, sign immunizes
   update path); test stacking.
+- dalef2 FLAWED DESIGN (my error): AFLOOR=0+ANNS=2560 inside a 16-ep screen = LR hits zero at ep15 ->
+  truncated learning (0.46@ep16), not a drift test. LESSON: anneal-to-zero endpoint must align with the
+  expected BEST epoch on the FULL horizon. Proper run dalefz: DALE NEP=64 ANNS=5520(~ep32) AFLOOR=0 —
+  freeze-at-peak as the deployment recipe (kills the universal late drift).
