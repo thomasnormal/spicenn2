@@ -470,3 +470,15 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   clean+bias 0.860 -> noise = accuracy null (confirmed at full horizon); freeze = the real control.
 - dnupe VERDICT: neuron+esub at 1mV + bias = 0.22 FLAT — STRICTLY CLEANER chip than dnupb (0.51) yet far
   worse. Rescue outcomes at the 2mV edge are CHAOTIC (variance >> mean, again). dnupeg pending as 3rd pt.
+
+## 2026-06-13 overnight — THE RESCUE HEADLINE + fast-cap horizon law
+- bsfz VERDICT (dead chip2 @2mV, BIASW+SGNUP, NEP=64 full horizon + freeze@ep40): RESCUED TO 0.72
+  LOCKED FLAT [0.45,0.42,0.61,0.72 x5]. The earlier "rescue saturates ~0.45" was a SHORT-SCREEN ARTIFACT
+  — at full horizon the rescue keeps climbing then locks. Dead chip (0.25) -> 0.72 vs clean 0.84, ZERO
+  new hardware (biases + sign-update + LR schedule). NEW MISMATCH HEADLINE. bsfz3 launched (chip3, 4n)
+  for generalization; 5-chip budget per user directive.
+- qdigT2/T2b (fast-cap FULL NEP=16): peaks 0.64/0.74 then CRASH (0.22/0.0) -> fast caps over-train at
+  long horizons. Horizon law: CWW=30p needs short runs (NEP=8: 0.83 rising) or freeze. qdigT3 launched
+  (fast-cap NEP=16 + BIASW + freeze@ep8) = record candidate (<1h).
+- qk8li: LATINH no help at C=8 (0.25 = KOUT=8 alone). dnupeg 0.19 = 3rd chaotic edge point (vs dnupb
+  0.51, dnupe 0.22) -> area-rescue near the cliff is luck; the PRINCIPLED rescue is bias+sign+freeze.
