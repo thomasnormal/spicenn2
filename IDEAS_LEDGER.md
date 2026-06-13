@@ -485,3 +485,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - qdigT3 (fast-cap NEP=16 + BIASW + freeze@ep8): 0.75 best, locked 0.73-0.74. Stable but NO record;
   bias does NOT help fast-cap (qdigT no-bias NEP=8 = 0.83 stays the fast champion). ROLE SETTLED:
   CWW=30p = 25-min screening tier for digits (0.83 ceiling-ish); records stay on standard caps.
+- qdmix3 (ReLU last-hidden only): 0.46 peak -> collapse; best ReLU-digits but << tanh 0.83. Placement is
+  NOT the issue -> ReLU = 2D champion, tanh = digits champion; PARKED pending a new idea. qw8deep: depth
+  does not crack C=8 (0.156). RESCUE MC COMPLETION LAUNCHED: bsfzc1 (living chip 0.46 — does rescue lift
+  it to ~0.8?), bsfzc4, bsfzc5 (fresh chips) — with bsfz(c2)+bsfz3 = the full 5-chip budget.
