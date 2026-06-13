@@ -482,3 +482,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   (fast-cap NEP=16 + BIASW + freeze@ep8) = record candidate (<1h).
 - qk8li: LATINH no help at C=8 (0.25 = KOUT=8 alone). dnupeg 0.19 = 3rd chaotic edge point (vs dnupb
   0.51, dnupe 0.22) -> area-rescue near the cliff is luck; the PRINCIPLED rescue is bias+sign+freeze.
+- qdigT3 (fast-cap NEP=16 + BIASW + freeze@ep8): 0.75 best, locked 0.73-0.74. Stable but NO record;
+  bias does NOT help fast-cap (qdigT no-bias NEP=8 = 0.83 stays the fast champion). ROLE SETTLED:
+  CWW=30p = 25-min screening tier for digits (0.83 ceiling-ish); records stay on standard caps.
