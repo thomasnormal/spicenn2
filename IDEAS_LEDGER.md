@@ -489,3 +489,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   NOT the issue -> ReLU = 2D champion, tanh = digits champion; PARKED pending a new idea. qw8deep: depth
   does not crack C=8 (0.156). RESCUE MC COMPLETION LAUNCHED: bsfzc1 (living chip 0.46 — does rescue lift
   it to ~0.8?), bsfzc4, bsfzc5 (fresh chips) — with bsfz(c2)+bsfz3 = the full 5-chip budget.
+- L-TIER 2D FINALS (NEP=64, NTE=128/class=256 test pts, freeze@400, real Spectre, 2-4-2 upright NRW=800u
+  + bias): circles 0.992 / rings 0.988 / spirals 0.992 — ALL LOCKED FLAT across the full 4x horizon.
+  Beats pc_batch (0.955/1.000/0.965) and all backprop-workstream 2D numbers, with ONE tiny net and plain
+  local PC. The nrelu paper section upgrades from screening-tier to final.
