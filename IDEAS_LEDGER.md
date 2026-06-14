@@ -573,3 +573,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   0.064 anti-lock) worse than deep 4-feat -> HIERARCHICAL POOLING (depth), not feature count, is what
   helps. C=10 WALL persists ~0.22-0.25 but now STABLE + principled (spatial 2x2 pyramid + freeze) +
   understood (locality essential: random sparse = chance 0.10). Mechanism of the wall itself still open.
+- ZEROSUM target fix (port of the documented C=10 gen_mc cure to pc_deep: correct +tdv, others -tdv/(C-1)
+  so each target vector sums to 0, vs default -(C-2)tdv downward drift). Q-proxy rings C=8 (tanh, weak
+  proxy): ZEROSUM 0.172 vs control 0.156 (+10% rel, modest). ReLU pair anti-locked (freeze config, n/a).
+  Real test = digits C=10 (zs1/zs1nf/zsrand) where the drift-collapse was actually diagnosed; pending.
