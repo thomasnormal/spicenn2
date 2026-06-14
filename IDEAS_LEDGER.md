@@ -658,3 +658,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   77-83%), not random-hidden. cifcol (192-64 random) is suboptimal (capped 0.345); next run = direct 192->10.
   Lesson: compute the ideal ceiling per architecture in numpy FIRST -> spend Spectre tokens only on the
   architecture that can actually win. (Esp. valuable under the <=6-token serial limit.)
+- CIFAR REALISTIC ANALOG CEILING (numpy, direct readout, color-8): ideal float 0.407, railed ±3sig 0.404
+  (wide rail OK), railed ±1.5sig 0.353 (tight rail hurts most), 4-bit 0.372, 3-bit 0.309, realistic
+  (railed 2sig + 4-bit) = 0.372. So honest analog CIFAR ceiling ~0.37; KOUT=40 ~0.35 ideal -> expect
+  ~0.18-0.25 in-circuit at normal efficiency. COMPLETE token-free CIFAR characterization: input(color>res),
+  architecture(direct>random-hidden), ceiling(0.37 analog). ngspice (SIM=ngspice) = TOKEN-FREE workhorse
+  for exploration; reserve Spectre (<=6 tokens) for finalists. cifng = first direct-readout ngspice run.
