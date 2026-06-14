@@ -78,12 +78,23 @@ if MASKSSL:   # masked self-supervised PC: inputs = unmasked pixels; clamp targe
     Xtr=Xtr[:,_keep]; Xte=Xte[:,_keep]
 NIN=LAYERS[0]   # input dims used (first NIN of the 2D+bias)
 # ---------- sparse connectivity: per layer l>=1, each neuron picks K parents in layer l-1 ----------
+# RFGRID=1: spatial receptive fields. When BOTH layer l-1 and l are perfect squares, neuron (r,c) of the
+# WcxWc output grid pools an RFKxRFK window of the WpxWp input grid at stride Wp/Wc (conv-like local
+# pooling, the vision inductive bias the random-sparse net throws away at the flatten step). Non-square
+# layers (e.g. the C-class readout) fall back to random/full fan-in. RFK=2 default (stride-2 pooling).
+RFGRID=int(os.environ.get("RFGRID","0")); RFK=int(os.environ.get("RFK","2"))
+def _issq(n): r=int(round(n**0.5)); return r if r*r==n else 0
 parents={}   # parents[(l,j)] = list of parent indices p in layer l-1
 children={}  # children[(l-1,p)] = list of (j) in layer l connected to p
 for l in range(1,NL):
     nprev=LAYERS[l-1]; nl=LAYERS[l]; kk=min(int(os.environ.get("KOUT",K)) if l==NL-1 else K, nprev)   # KOUT: readout-specific fan-in (sizing law: ~C)
+    Wp=_issq(nprev); Wc=_issq(nl)
     for j in range(nl):
-        ps=list(rng.choice(nprev,size=kk,replace=False)) if kk<nprev else list(range(nprev))
+        if RFGRID and Wp and Wc:   # spatial local window
+            rc,cc=divmod(j,Wc); st=Wp/Wc; r0=int(rc*st); c0=int(cc*st)
+            ps=sorted({min(r0+dr,Wp-1)*Wp+min(c0+dc,Wp-1) for dr in range(RFK) for dc in range(RFK)})
+        else:
+            ps=list(rng.choice(nprev,size=kk,replace=False)) if kk<nprev else list(range(nprev))
         parents[(l,j)]=ps
         for p in ps: children.setdefault((l-1,p),[]).append(j)
 maxfo=max((len(v) for v in children.values()), default=0)
