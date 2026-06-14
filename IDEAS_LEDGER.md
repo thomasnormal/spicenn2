@@ -557,3 +557,13 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   LOCALITY makes it learnable. Collapse returns at long horizon (earlier "no-collapse" was short-screen
   luck) -> needs freeze. WAVE launched to lock+push: rf2fz (freeze@ep2), rf2td (gentler TD=0.04 broader
   peak), rf3 (overlapping 3x3 RFK=3 richer fields), rf1c (64,16 16-feat readout). Target: beat 0.244 stable.
+
+## 2026-06-14 — LAW HUNT 4: MISMATCH-YIELD vs DEPTH (connects cascade-gain + mismatch threads)
+- spirals, each depth at its cascade-law gain (d1@800u, d2@400u), best-epoch, MMVT sigma sweep:
+    d1 (2-4-2): sig 0/1/2/5mV -> 1.0 / 0.97 / 1.0 / 0.09(dead)  = tolerates ~2mV
+    d2 (2-4-4-2): sig 0/1mV   -> 1.0 / DEAD (chip1 0.0, chip2 0.03, chip3 1.0) = ~1/3 YIELD at 1mV
+  Restarts do NOT recover (mismatch-fatal, not basin-luck); lower gain (NRW=200u) does NOT rescue d2.
+  LAW: MISMATCH YIELD DROPS SHARPLY WITH DEPTH — each gain stage amplifies upstream VT offsets, the
+  cascade compounds them past what any weight init absorbs. Shallow nets tolerate ~2-3x more sigma.
+  DESIGN IMPLICATION: for mismatch-limited analog, SHALLOW-WIDE > DEEP-NARROW (inverts the noise-free
+  cascade-gain preference for depth). Ties together: depth buys representation but costs robustness.
