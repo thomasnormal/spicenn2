@@ -542,3 +542,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   best; every random run decays) = structural regularization, no freeze needed. Deeper spatial pyramid
   (2 pools -> 4 feats) beats shallow (16 feats) -> locality+depth > width. Best stable C=10 = 0.224.
 - ESCALATING rf2 (winner) with 2x data to test if locality+data climbs past the ~0.22 ceiling.
+- RC TIMESCALE (LAW HUNT 3), spirals 2-4-2 NRW=800 sweep CWW{15..240p}, NEP=48 EVK=4: net trains TOO FAST
+  (1.0 by first eval ep4 for ALL caps) -> convergence side unresolved. BUT the COLLAPSE side scales: 15p
+  drifts 1.0->0.66 by ep44; 30-60p stable; 120-240p flat & slightly undertrained (0.969 cap). =>
+  DRIFT/COLLAPSE timescale ∝ C_weight (small cap=fast everything incl. drift; big cap=slow & stable).
+  Refining with slower drive (TD=0.05) to resolve CONVERGENCE epoch ∝ C quantitatively.
