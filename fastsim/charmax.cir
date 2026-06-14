@@ -1,0 +1,26 @@
+* analog MAX-pool: K NMOS source-followers share one output node + pull-down.
+* highest gate wins -> out ~= max(inputs) - Vgs. (avg-pool by contrast = resistor average.)
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.param SC=0.5
+Vdd vdd 0 1.0
+Vi0 i0 0 {SC}
+Vi1 i1 0 0.45
+Vi2 i2 0 0.40
+Vi3 i3 0 0.35
+* source followers: drain=vdd, gate=input, source=common out node
+Mf0 vdd i0 omax 0 NNR W=200u L=100u
+Mf1 vdd i1 omax 0 NNR W=200u L=100u
+Mf2 vdd i2 omax 0 NNR W=200u L=100u
+Mf3 vdd i3 omax 0 NNR W=200u L=100u
+Rpd omax 0 50k
+* avg-pool reference: resistor average of the same inputs
+Ra0 i0 oavg 40k
+Ra1 i1 oavg 40k
+Ra2 i2 oavg 40k
+Ra3 i3 oavg 40k
+Cavg oavg 0 0.1p
+.control
+dc Vi0 0.30 0.70 0.04
+print omax oavg > /tmp/charmax.txt
+.endc
+.end

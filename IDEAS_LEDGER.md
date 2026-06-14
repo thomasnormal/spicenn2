@@ -625,3 +625,10 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   (the problem residual cures). An identity skip doesn't reduce forward gain. The correct medicine is the
   CASCADE-GAIN LAW (lower per-stage NRW for deep) -> 8-hidden trains fine at 400u with NO residual. So depth
   IS usable in analog, just via gain budgeting, not residuals. RES kept behind flag (default off, neutral).
+- ANALOG POOLING PRIMITIVES characterized (fastsim/charmax.cir, real ngspice):
+    AVG-pool = resistor star -> tracks TRUE AVERAGE EXACTLY (cheap: K resistors; = cmld's averaging).
+    MAX-pool = K source-followers sharing an output node + pulldown -> output = max(inputs) - Vgs
+      (flat when a unit loses, rises when it becomes the winner; constant ~0.32V level shift). 4T+1R.
+  Both "make sense in analog". RFGRID (learnable local pooling) already subsumes avg; fixed avg/max-pool
+  save weight caps (less precision) for downsample layers. Analog-DL primitive map now complete:
+  residual (built, negative - wrong failure mode), avg/max pool (char'd), batchnorm=cmld (have), dropout=AUGJIT (on).
