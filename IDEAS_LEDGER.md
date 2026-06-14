@@ -670,3 +670,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   = ~47% of ceiling. Honest first datapoint; CIFAR is hard for analog (input-limited, see characterization).
 - VBBK magnitude verified at SEED 2: magnitude-preserving (0.32)=0.60 > sign-like (0.65)=0.55. With seed 1
   (0.62 vs 0.52), BOTH seeds agree: keeping error magnitude beats sign for TRANSPORT. Finding is robust.
+- CIFAR TRAINED HIDDEN helps (numpy, 64 color feat): direct linear 0.345 vs TRAINED MLP H=32 0.409 / H=64
+  0.433 (+9pts nonlinear headroom). Overturns earlier "random hidden hurts -> use direct": the key is
+  TRAINED (not random) features. So CIFAR wants a trained depth-2 net (64-64-10, sparse fan-in = modest
+  width/precision), ceiling ~0.43. Launched scifh (trained hidden) on Spectre.
