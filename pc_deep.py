@@ -400,6 +400,9 @@ def gen_deck():
                 if int(os.environ.get("NOHID","0")) and l<NL-1:   # FIXED random hidden: weights = plain sources, NO caps
                     L+=[f"Vwp_{key} wp_{key} 0 {gp}",f"Vwn_{key} wn_{key} 0 {gn}"]
                     continue
+                if int(os.environ.get("POOLAVG","0")) and l<NL-1 and _issq(LAYERS[l-1]) and _issq(LAYERS[l]) and LAYERS[l]<LAYERS[l-1]:   # AVG-POOL: downsample layer = FIXED uniform weight (no cap, no update) -> fewer params/precision
+                    _pgp,_pgn=wgv(float(os.environ.get("POOLW","1.0"))); L+=[f"Vwp_{key} wp_{key} 0 {_pgp}",f"Vwn_{key} wn_{key} 0 {_pgn}"]
+                    continue
                 if int(os.environ.get("CONSOL","0")):   # synaptic consolidation: fast cap leaks toward a SLOW long-term cap (decay toward consolidated history, not neutral)
                     _rc=os.environ.get("RCON","50meg"); _cs=os.environ.get("CWS","3n")
                     L+=[f"Cwp_{key} wp_{key} 0 {CWW}",f"Cwn_{key} wn_{key} 0 {CWW}",
@@ -670,6 +673,7 @@ def gen_deck():
                 else:
                     mop,mon=(f"m{NL-1}n_{j}",f"m{NL-1}p_{j}") if SGNO>0 else (f"m{NL-1}p_{j}",f"m{NL-1}n_{j}")
             if (not out) and int(os.environ.get("NOHID","0")): continue   # NOHID: no hidden update cells (fixed random hidden)
+            if int(os.environ.get("POOLAVG","0")) and (not out) and _issq(LAYERS[l-1]) and _issq(LAYERS[l]) and LAYERS[l]<LAYERS[l-1]: continue   # AVG-POOL layer has fixed weights -> no update cells
             for p in parents[(l,j)]:
                 pap,pan=ap_(l-1,p); key=f"{l}_{j}_{p}"
                 if CHLon and int(os.environ.get("CHL","0"))==3:   # chopper-EP: one cell, +label.a (ckd) / -pred.a (ckr), offsets cancel
