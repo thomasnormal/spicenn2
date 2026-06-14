@@ -512,3 +512,11 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - DC CONFIRMED (fastsim/charleak.cir, real ngspice): off has FLAT dead zone (+0.304 at both 0.35 & 0.45);
   100k turns it into a slope (+0.638 -> +0.499 -> knee +0.177 -> -0.05) = sub-knee info preserved. 50k steeper.
 - LAUNCHED digits fast-cap screens: NRLEAK 200k/100k/50k @ NRW=400u (vs ReLU 0.5 / tanh 0.83 baselines).
+
+## 2026-06-14 — SCALING-LAW HUNT (rigorous, replacing the fan-in guess)
+- EXPT 1 (FAN-IN): spirals 2-H-2, FANIN uncapped so output fan-in=H, sweep H{4,8,16} x NRW{200,400,800,1600},
+  best-epoch. RESULT: critical NRW ~800u INDEPENDENT of H (all H: fail@200/400, train@800/1600). FAN-IN
+  DOES NOT SET THE GAIN BOUNDARY. The "gain ∝ 1/fan-in law" was a MISATTRIBUTION: the original 2-4-2(800)
+  vs "2-8-4"(400) comparison actually varied DEPTH — LAYERS=2,8,4 expands to [2,8,4,2] = 2 hidden layers.
+- HYPOTHESIS REVISED: CASCADE-GAIN BUDGET — the PRODUCT of per-stage gains must stay under a stability
+  ceiling, so per-stage gain must fall as depth grows. EXPT 2 (DEPTH, fixed width 4) launched to confirm.
