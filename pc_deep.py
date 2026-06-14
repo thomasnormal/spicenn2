@@ -454,7 +454,7 @@ def gen_deck():
                 _dxp,_dxn=(xp,xn) if dsign.get((l-1,p),1)>0 else (xn,xp)
                 L+=[f"X_fm_{key} {pap} {pan} {wr0} {wr1} {_dmp} {_dmn} vdd vbsyn {fmcell}"]
                 if ((not out) and int(os.environ.get("NOHID","0"))<2) or (out and int(os.environ.get("SOFTC","0"))): L+=syn(f"fx_{key}",pap,pan,_dxp,_dxn,f"wp_{key}",f"wn_{key}")   # x copy (skipped for NOHID>=2 hidden)
-            if RES and (not out) and j < LAYERS[l-1]:   # RESIDUAL: identity skip a_{l-1}_j -> this node (unity synapse, currents sum)
+            if RES and (not out) and LAYERS[l]==LAYERS[l-1]:   # RESIDUAL: identity skip a_{l-1}_j -> this node (only same-size blocks; pooling layers downsample without skip)
                 sap,san=ap_(l-1,j)
                 L+=[f"X_res_m_{l}_{j} {sap} {san} wresp wresn {mp} {mn} vdd vbsyn gsyn"]
                 if int(os.environ.get("NOHID","0"))<2: L+=[f"X_res_x_{l}_{j} {sap} {san} wresp wresn {xp} {xn} vdd vbsyn gsyn"]
@@ -528,6 +528,8 @@ def gen_deck():
     for l in range(1,NL-1):   # only hidden layers receive top-down
         for p in range(LAYERS[l]):
             xp,xn=f"x{l}p_{p}",f"x{l}n_{p}"
+            if RES and LAYERS[l+1]==LAYERS[l]:   # RESIDUAL BACKWARD (gradient highway): transpose of the forward identity skip a_l->x_{l+1} is eps_{l+1}_p -> x_l_p (unity, no weight, no comparator). This is what makes residuals help TRAINING, not just forward signal.
+                L+=[f"X_resb_{l}_{p} e{l+1}p_{p} e{l+1}n_{p} wresp wresn {xp} {xn} vdd vbbk gsyn"]
             if FGATE:
                 bkp,bkn=f"bk{l}p_{p}",f"bk{l}n_{p}"
                 for k in children.get((l,p),[]):
