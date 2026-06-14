@@ -597,3 +597,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   does NOT transfer: differential rails + zero-sum already remove the per-class offset PERAZ targets, so
   AC-coupling the error just discards signal. Lesson: keystone(single-ended)-path fixes don't auto-port to
   the differential deep path. PERAZ kept behind flag (default off). ZSNEG crossover is the live lever.
+- ZSNEG freeze-sweep CONFOUNDED: ANNS=2600 (~ep5) froze before the ep10 peak -> all ~0.21 (capped early),
+  masking ZSNEG. Redo no-freeze (AFLOOR=1, read peak). Mapping "optimal ZSNEG vs C" as a LAW: C=4 prefers
+  high negativity (ZSNEG~1.0=0.83 > 0.33=0.70), C=10 prefers low (0.111=0.30 > 1.0=0.22) -> optimal target
+  negativity DECREASES with class count (imbalance drift overtakes contrast benefit as C grows).
