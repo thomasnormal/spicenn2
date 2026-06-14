@@ -49,6 +49,14 @@ def gen():
         d=load_digits(); Xd=d.data.astype(float); yd=d.target
         keep=yd<C
         return Xd[keep], yd[keep]
+    elif TASK=="cifar":   # CIFAR-10 grayscale, downsampled to GxG (CIFG=8 -> 64 inputs, drop-in for the digits pipeline)
+        G=int(os.environ.get("CIFG","8"))
+        d=np.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),f"data/cifar_gray_{G}.npz"))
+        Xtr,ytr,Xte,yte=d["Xtr"],d["ytr"],d["Xte"],d["yte"]
+        keep_tr=ytr<C; keep_te=yte<C
+        # return train+test concatenated; the splitter below re-splits per class by NTR/NTE
+        Xd=np.concatenate([Xtr[keep_tr],Xte[keep_te]]); yd=np.concatenate([ytr[keep_tr],yte[keep_te]])
+        return Xd.astype(float), yd
     elif TASK=="xor":
         for a in (0,1):
             for b in (0,1):
@@ -294,7 +302,7 @@ def gen_deck():
     for g,(kind,k,pol) in enumerate(SLOTS):
         t=g*TH
         xv = Xtr[k] if kind=="tr" else Xte[k]
-        if kind=="tr" and float(os.environ.get("AUGJIT","0"))>0: xv = xv + float(os.environ.get("AUGJIT","0"))*rng.standard_normal(len(xv))   # train-time input jitter (controller-side augmentation)
+        if kind=="tr" and float(os.environ.get("AUGJIT","0.2"))>0: xv = xv + float(os.environ.get("AUGJIT","0.2"))*rng.standard_normal(len(xv))   # train-time input jitter = ALWAYS-ON dropout-style noise (default 0.2; ReLU rectifies sub-knee noise -> robust)
         for d in range(NIN): inp[d].append((t,0.5+IND*float(np.clip(xv[d] if d<len(xv) else 1.0,-3,3))/3.0*2))
         lab = ytr[k] if kind=="tr" else yte[k]
         tdv = TD*(1.0-float(os.environ.get("TDAN","0"))*tr_count/max(1,total_tr))   # TD anneal: strong clamp early, weak late (don't over-drive the equilibrium)
@@ -413,6 +421,10 @@ def gen_deck():
                     ic+=[f".ic v(wq_{key})={gn:.4f} v(wr_{key})={gp:.4f}"]
     # hidden + output layer nodes & forward synapses
     SMAX=int(os.environ.get("SMAX","0"))   # categorical-CE output: shared-tail softmax normalizer -> eps = label - softmax(m)
+    RES=int(os.environ.get("RES","0"))     # residual/skip connections: identity-add a_{l-1}_j into the node (analog = unity synapse summing currents) -> gradient bypasses the cascade, fixes depth
+    if RES:
+        _rgp,_rgn=wgv(float(os.environ.get("RESW","1.0")))   # fixed unity weight rails for the skip
+        L+=[f"Vwresp wresp 0 {_rgp}",f"Vwresn wresn 0 {_rgn}"]
     outx={}
     for l in range(1,NL):
         out = (l==NL-1)
@@ -442,6 +454,10 @@ def gen_deck():
                 _dxp,_dxn=(xp,xn) if dsign.get((l-1,p),1)>0 else (xn,xp)
                 L+=[f"X_fm_{key} {pap} {pan} {wr0} {wr1} {_dmp} {_dmn} vdd vbsyn {fmcell}"]
                 if ((not out) and int(os.environ.get("NOHID","0"))<2) or (out and int(os.environ.get("SOFTC","0"))): L+=syn(f"fx_{key}",pap,pan,_dxp,_dxn,f"wp_{key}",f"wn_{key}")   # x copy (skipped for NOHID>=2 hidden)
+            if RES and (not out) and j < LAYERS[l-1]:   # RESIDUAL: identity skip a_{l-1}_j -> this node (unity synapse, currents sum)
+                sap,san=ap_(l-1,j)
+                L+=[f"X_res_m_{l}_{j} {sap} {san} wresp wresn {mp} {mn} vdd vbsyn gsyn"]
+                if int(os.environ.get("NOHID","0"))<2: L+=[f"X_res_x_{l}_{j} {sap} {san} wresp wresn {xp} {xn} vdd vbsyn gsyn"]
             if int(os.environ.get("BIASW","0")):   # learnable per-neuron BIAS (intrinsic plasticity): the self-calibration parameter that absorbs forward offsets
                 _bk=f"b_{l}_{j}"
                 L+=[f"Cwbp_{_bk} wbp_{_bk} 0 {CWW}",f"Cwbn_{_bk} wbn_{_bk} 0 {CWW}",
