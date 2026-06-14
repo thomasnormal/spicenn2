@@ -552,3 +552,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   fast-training net; do NOT claim the exponent. ROBUST measured form: cap size = weight-update timescale;
   small caps (30p) hit 1.0 then drift; large caps (480p) cap UNDERTRAINED (0.938) but flat-stable. The
   speed/stability tradeoff IS the RC law; 30p = sweet spot (max peak, acceptable drift). Honest partial.
+- C=10 ESCALATION (2x data, NEP=12): rf2L spatial PEAKS 0.244 (2.4x chance) then collapses; rand2L random
+  = FLAT CHANCE 0.10 (never learns). KEY: at this tiny size random sparse CANNOT learn C=10 at all;
+  LOCALITY makes it learnable. Collapse returns at long horizon (earlier "no-collapse" was short-screen
+  luck) -> needs freeze. WAVE launched to lock+push: rf2fz (freeze@ep2), rf2td (gentler TD=0.04 broader
+  peak), rf3 (overlapping 3x3 RFK=3 richer fields), rf1c (64,16 16-feat readout). Target: beat 0.244 stable.
