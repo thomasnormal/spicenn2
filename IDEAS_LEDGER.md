@@ -643,3 +643,12 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   CAVEAT: single-seed fast-cap screen; verify with seeds/full-horizon (1 spectre at a time, MT=4, token-limited).
 - SPECTRE TOKEN LIMIT (shared license): keep <=6 tokens. Killed all my runs (was 8 procs x mt=8 incl zombies
   drg100/drg400). New policy: MT=4, ONE spectre at a time. Slower iteration, but courteous to shared license.
+
+## 2026-06-14 — CIFAR-10 added (avoid MNIST overfit); INPUT is the bottleneck
+- First CIFAR run: gray 8x8 (64 inputs), shallow random features = 0.156 (chance 0.10). LOW because the
+  INPUT is degraded, not the net. IDEAL linear-ridge ceilings (numpy, token-free):
+    gray 8x8 = 0.295 | gray 16x16 = 0.295 (resolution NO help) | COLOR 8x8 = 0.407 | color 16x16 = 0.403
+  => COLOR is worth +11 pts; RESOLUTION is worthless at this scale. Our 0.156 = 53% of the gray ceiling
+  (normal in-circuit efficiency). digits linear ceiling for ref = 0.883 (CIFAR is just much harder).
+- ADDED CIFCOLOR=1 (color GxG, 3*G*G inputs). Color 8x8 = 192 inputs, ceiling 0.41 = the right baseline.
+  Launched cifcol (192-64-10 random features, color). Token policy: 1 spectre @MT=4.
