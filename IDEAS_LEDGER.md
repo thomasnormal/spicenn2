@@ -601,3 +601,13 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   masking ZSNEG. Redo no-freeze (AFLOOR=1, read peak). Mapping "optimal ZSNEG vs C" as a LAW: C=4 prefers
   high negativity (ZSNEG~1.0=0.83 > 0.33=0.70), C=10 prefers low (0.111=0.30 > 1.0=0.22) -> optimal target
   negativity DECREASES with class count (imbalance drift overtakes contrast benefit as C grows).
+
+## 2026-06-14 — LAW: optimal target-negativity vs class count (mapped)
+- ZSNEG (negative-class target scale; 1.0=unbalanced, 1/(C-1)=zero-sum) optimum vs C (no-freeze best-ep):
+    C=4:  1.5=0.78  1.0=0.83*  0.6=0.71  0.33=0.70   -> optimum ZSNEG~1.0 (unbalanced)
+    C=6:  1.0=0.42*  0.4=0.25  0.2=0.24                -> optimum ZSNEG~1.0 (unbalanced)
+    C=10: 1.0=0.20  0.2=0.29  0.111=0.30*  0.05=0.30   -> optimum ZSNEG~0.05-0.11 (zero-sum)
+  LAW: small C (<=6) prefers UNBALANCED targets (sharp contrast helps); large C (>=10) prefers ZERO-SUM
+  (drift-free). Crossover ~C=8, where the imbalance drift (grows ~(C-2)tdv) overtakes the contrast benefit.
+  Predictive: set target negativity ~1.0 for few classes, ~1/(C-1) for many. (Deep-path high-C acc still
+  low: C=6 0.42, C=10 0.30 = ~2.5-3x chance; the law is about the OPTIMAL encoding, not the ceiling.)
