@@ -10,12 +10,14 @@ training or inference path.
 
 | Result | Number |
 |---|---|
-| Nonlinear 2D benchmarks (circles / rings / spirals), every seed | **> 0.95** (rings 1.000) |
+| Nonlinear 2D benchmarks (circles / rings / spirals), every seed | **> 0.95** (L-finals 0.99) |
 | 8×8 digits, 4-class, sparse fan-in-4 net | **0.890** (backprop ideal 0.91–0.94) |
-| Depth-4 pyramid via **sign-faithful error transport** (BKSIGN) | 0.55 → **0.84** |
+| 8×8 digits, 10-class (shallow random features) | **0.587** (deep-conv path underperforms this) |
+| Depth-4 pyramid via **amplitude-restoring error transport** (BKSIGN) | 0.55 → **0.84** |
 | Component economy (fixed random hidden) | 0.74 @ −42% FETs / −80% caps |
 | Label-free (masked-pixel PC, no labels in hardware) | 0.596 (chance 0.5) |
 | VT-mismatch dose-response (σ = 0/2/5/10 mV) | 0.84 / 0.46 / 0.31 / chance |
+| VT-mismatch **rescue** (bias + sign-update + freeze, 5-chip MC @2mV) | dead → **0.78 mean**, yield 1/3 → **5/5** |
 
 The full worked/refuted experiment record is **[IDEAS_LEDGER.md](IDEAS_LEDGER.md)** — every idea tried,
 every number, including the failures.
