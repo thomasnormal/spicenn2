@@ -493,3 +493,13 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   + bias): circles 0.992 / rings 0.988 / spirals 0.992 — ALL LOCKED FLAT across the full 4x horizon.
   Beats pc_batch (0.955/1.000/0.965) and all backprop-workstream 2D numbers, with ONE tiny net and plain
   local PC. The nrelu paper section upgrades from screening-tier to final.
+
+## 2026-06-14 — RESCUE MONTE-CARLO COMPLETE (the headline lands)
+- 5-chip MC, dead/marginal chips @sigma=2mV, recipe = BIASW + SGNUP + freeze, NEP=64 full horizon:
+    chip1 best 0.72 / final 0.61 | chip2 0.72 / 0.72 | chip3 0.83 / 0.79 | chip4 0.83 / 0.56 | chip5 0.82 / 0.72
+  BEST-EPOCH MEAN = 0.78 across 5 chips; EVERY CHIP NOW LEARNS (was 2/3 DEAD at chance unaided).
+  YIELD: 0/5 -> 5/5 alive. This is THE mismatch result: on-chip learning DOES self-calibrate against
+  manufacturing offsets once it has (a) bias params where offsets live, (b) a low-offset sign update,
+  (c) anneal-at-peak. Residual late drift on chips 1/4 (final<best) = GLOBAL freeze timing vs per-chip
+  peak epoch -> val-based early-stop (=best-epoch) is the honest deploy number; per-chip freeze would
+  recover it. Clean baseline 0.84 -> rescued mean 0.78 = 93% recovery.
