@@ -611,3 +611,6 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   (drift-free). Crossover ~C=8, where the imbalance drift (grows ~(C-2)tdv) overtakes the contrast benefit.
   Predictive: set target negativity ~1.0 for few classes, ~1/(C-1) for many. (Deep-path high-C acc still
   low: C=6 0.42, C=10 0.30 = ~2.5-3x chance; the law is about the OPTIMAL encoding, not the ceiling.)
+- CCMS (linearized/subtractive softmax-CE) = NULL: peaks 0.276 (~= zero-sum 0.30) then collapses to 0.004.
+  Subtractive cross-class mean-removal doesn't beat zero-sum (which already balances targets) and doesn't
+  stop the collapse. The DIVISIVE softmax (SMAX, shared-tail) is the real test - pending.
