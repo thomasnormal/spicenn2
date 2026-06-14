@@ -528,3 +528,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   multiplies total gain -> per-stage gain must DROP as ~G*^(1/depth); too-high per-stage over-drives a
   deep net into anti-lock (d2@1600=0.34). Single-stage nets conversely need the gain CRANKED to reach lo.
   This REPLACES the retracted fan-in law and explains the original 2-4-2(800)/[2,8,4,2](400) datapoints.
+- LEAKY-NRELU = NULL for digits (C=4, NRW=400u, NRLEAK 200k/100k/50k all -> 0.50-0.51 best, == plain ReLU
+  0.5, vs tanh 0.83). DC char confirmed the leak DOES add sub-knee slope, but it does NOT recover digit
+  accuracy -> ReLU's digit weakness is NOT one-sided info loss. Hypothesis refuted. tanh stays the digit
+  neuron; nrelu stays the 2D champion. (leaky cell kept behind NRLEAK, default off / harmless.)
