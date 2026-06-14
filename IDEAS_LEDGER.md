@@ -652,3 +652,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   (normal in-circuit efficiency). digits linear ceiling for ref = 0.883 (CIFAR is just much harder).
 - ADDED CIFCOLOR=1 (color GxG, 3*G*G inputs). Color 8x8 = 192 inputs, ceiling 0.41 = the right baseline.
   Launched cifcol (192-64-10 random features, color). Token policy: 1 spectre @MT=4.
+- CIFAR color-8 ARCHITECTURE (numpy ceilings, token-free): data is ~LINEARLY SEPARABLE to the ceiling ->
+  DIRECT linear readout (192->10, NO hidden) = 0.407; 64 random hidden HURTS (0.345, bottlenecks 192 inputs);
+  256 random recovers (0.390). So the RIGHT in-circuit CIFAR net = DIRECT readout (like MNIST z-score+direct
+  77-83%), not random-hidden. cifcol (192-64 random) is suboptimal (capped 0.345); next run = direct 192->10.
+  Lesson: compute the ideal ceiling per architecture in numpy FIRST -> spend Spectre tokens only on the
+  architecture that can actually win. (Esp. valuable under the <=6-token serial limit.)
