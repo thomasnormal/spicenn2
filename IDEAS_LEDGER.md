@@ -705,3 +705,15 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   0.64 (VBBK=0.45), +0.08. Consistent across all configs (fast-cap noise 0.62/0.57; noise-free 0.85;
   NEP=12 0.72/0.64). VBBK 0.45->0.35 default is SOLID. (Both collapse late at NEP=12 w/o freeze = the
   known universal late-drift, orthogonal to VBBK; freeze-at-peak locks the 0.72.)
+
+## 2026-06-14 — VBBK "magnitude beats sign" was a NOISE ARTIFACT (walked back)
+- NO-NOISE VBBK sweep (depth-4 digits fast-cap, AUGJIT=0): VBBK 0.32=0.73, 0.45=0.83, 0.65=0.76.
+  OPTIMUM AT 0.45 (the original default); BOTH extremes worse. This REVERSES the under-noise result
+  (0.32=0.62 > 0.45=0.57 > 0.65=0.52). So "lower VBBK / keep magnitude wins" was ENTIRELY an artifact of
+  the AUGJIT=0.2 noise (which I'd added and since reverted as harmful). HONEST PICTURE: the backward
+  regeneration has a TUNED OPTIMUM at the default; neither pure-magnitude (low drive) nor pure-sign (high
+  drive) helps. ACTIONS: reverted VBBK default 0.35->0.45 (original); rewrote paper §6.3 to remove the
+  magnitude-wins sub-claim (kept the core amplitude-restoring result, which stands: depth 0.55->0.84).
+- LESSON: never draw a tuning conclusion from data measured under a confound (the noise). The user's
+  original skepticism ("sure throwing away magnitude is good?") was right to probe — answer: neither
+  extreme is good; the tuned middle (original default) is best. Caught by re-checking noise-free.
