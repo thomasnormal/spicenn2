@@ -303,7 +303,11 @@ def gen_deck():
             if MASKSSL:
                 v = cl*tdv*float(Ttr[k,c]) if kind=="tr" else 0.0   # clamp to the masked pixel's VALUE (regression)
             else:
-                v = (cl*tdv if c==lab else -cl*tdv) if kind=="tr" else 0.0
+                # ZEROSUM: balanced per-output pressure. Default targets pull correct class +tdv and EACH
+                # of the C-1 others -tdv -> net -(C-2)tdv downward drift = the documented C=10 rich-get-
+                # richer collapse. Zero-sum spreads the negative over C-1 so each pattern's target sums to 0.
+                _neg = (-cl*tdv/(C-1)) if int(os.environ.get("ZEROSUM","0")) else (-cl*tdv)
+                v = (cl*tdv if c==lab else _neg) if kind=="tr" else 0.0
             clp_p[c].append((t,0.5+v))
         if kind=="tr" and g>0:
             ckd.append((t,1.0 if pol==1 else 0.0)); ckr.append((t,1.0 if pol==0 else 0.0))
