@@ -567,3 +567,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   cascade compounds them past what any weight init absorbs. Shallow nets tolerate ~2-3x more sigma.
   DESIGN IMPLICATION: for mismatch-limited analog, SHALLOW-WIDE > DEEP-NARROW (inverts the noise-free
   cascade-gain preference for depth). Ties together: depth buys representation but costs robustness.
+- C=10 DESIGN WAVE verdict: rf2fz (spatial 2x2 pyramid 64-16-4 + freeze@ep2) = 0.248 best / 0.220 STABLE
+  = BEST in-circuit C=10 (vs old c10bk64 0.30->collapse-to-chance). Ablations: gentle drive (rf2td 0.20
+  collapses) no help; overlapping 3x3 (rf3 0.164) WORSE than clean 2x2; shallow 16-feat readout (rf1c
+  0.064 anti-lock) worse than deep 4-feat -> HIERARCHICAL POOLING (depth), not feature count, is what
+  helps. C=10 WALL persists ~0.22-0.25 but now STABLE + principled (spatial 2x2 pyramid + freeze) +
+  understood (locality essential: random sparse = chance 0.10). Mechanism of the wall itself still open.
