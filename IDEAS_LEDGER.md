@@ -520,3 +520,11 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   vs "2-8-4"(400) comparison actually varied DEPTH — LAYERS=2,8,4 expands to [2,8,4,2] = 2 hidden layers.
 - HYPOTHESIS REVISED: CASCADE-GAIN BUDGET — the PRODUCT of per-stage gains must stay under a stability
   ceiling, so per-stage gain must fall as depth grows. EXPT 2 (DEPTH, fixed width 4) launched to confirm.
+- EXPT 2 (DEPTH) RESULT -> CASCADE-GAIN BUDGET LAW (spirals, width 4, best-epoch, NRW=mirror width):
+    d1 (2-4-2):    trains {800,1600}, fails {200,400}      -> needs HIGH gain, no ceiling <=1600
+    d2 (2-4-4-2):  trains {100,200,400,800}, FAILS {1600}  -> lower floor AND a ceiling appears
+    d3 (2-4-4-4-2):trains {100,200,400,800}, marg {50}     -> wide low-gain band
+  LAW: total cascade gain ~ (per-stage gain)^depth must stay in a stable [lo,hi] band. Adding a layer
+  multiplies total gain -> per-stage gain must DROP as ~G*^(1/depth); too-high per-stage over-drives a
+  deep net into anti-lock (d2@1600=0.34). Single-stage nets conversely need the gain CRANKED to reach lo.
+  This REPLACES the retracted fan-in law and explains the original 2-4-2(800)/[2,8,4,2](400) datapoints.
