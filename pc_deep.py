@@ -149,6 +149,14 @@ Mrr d2 un s2 0 NNR W=200u L=100u
 Rs2 s2 vbn 12k
 Mlp2 d2 d2 vdd vdd PNR W=200u L=100u
 Mlo2 ap d2 vdd vdd PNR W={os.environ.get("NRW","200u")} L=100u
+* LEAKY path: weak source-to-GROUND degenerated legs conduct across the whole input range
+* (not just above knee), adding a small linear slope below the knee -> leaky ReLU. NRLEAK large = off
+* (~standard ReLU); ~100k = meaningful leak. Symmetric on signal (up) and reference (un) legs so the
+* differential zero is preserved. Currents sum into the SAME mirror diodes d1/d2 as the rectifying legs.
+Mlk d1 up slk 0 NNR W=200u L=100u
+Rlk slk 0 {os.environ.get("NRLEAK","1e9")}
+Mlk2 d2 un slk2 0 NNR W=200u L=100u
+Rlk2 slk2 0 {os.environ.get("NRLEAK","1e9")}
 Rop ap 0 50k
 Ron an 0 50k
 .ends

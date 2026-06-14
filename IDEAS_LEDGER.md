@@ -503,3 +503,12 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   (c) anneal-at-peak. Residual late drift on chips 1/4 (final<best) = GLOBAL freeze timing vs per-chip
   peak epoch -> val-based early-stop (=best-epoch) is the honest deploy number; per-chip freeze would
   recover it. Clean baseline 0.84 -> rescued mean 0.78 = 93% recovery.
+
+## 2026-06-14 — leaky-nrelu (fixing ReLU's digits gap)
+- DIAGNOSIS: one-sided ReLU discards sub-knee info -> loses to tanh on deep digits (0.5 vs 0.83). FIX:
+  leaky-nrelu = 2 weak source-to-GROUND degenerated legs (signal+reference, symmetric) summing into the
+  same mirror diodes -> conduct across the whole range, adding a sub-knee slope. NRLEAK=resistor: 1e9=off
+  (=standard ReLU, default, regression-safe since legs carry ~0), 100k/50k=leaky. +4 devices.
+- DC CONFIRMED (fastsim/charleak.cir, real ngspice): off has FLAT dead zone (+0.304 at both 0.35 & 0.45);
+  100k turns it into a slope (+0.638 -> +0.499 -> knee +0.177 -> -0.05) = sub-knee info preserved. 50k steeper.
+- LAUNCHED digits fast-cap screens: NRLEAK 200k/100k/50k @ NRW=400u (vs ReLU 0.5 / tanh 0.83 baselines).

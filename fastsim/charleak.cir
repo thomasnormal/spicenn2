@@ -1,0 +1,35 @@
+* leaky-nrelu transfer: sweep input, compare NRLEAK off (1e9) vs leaky (100k/50k)
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.param RLEAK=1e9
+Vdd vdd 0 1.0
+Vbn vbn 0 0.33
+Vref un 0 0.66
+Vin up 0 0.6
+* rectifying signal leg + mirror (NRW=800u mirror)
+Mr d1 up s1 0 NNR W=200u L=100u
+Rs s1 vbn 12k
+Mlp d1 d1 vdd vdd PNR W=200u L=100u
+Mlo an d1 vdd vdd PNR W=800u L=100u
+* reference leg
+Mrr d2 un s2 0 NNR W=200u L=100u
+Rs2 s2 vbn 12k
+Mxlp2 d2 d2 vdd vdd PNR W=200u L=100u
+Mxlo2 ap d2 vdd vdd PNR W=800u L=100u
+* leaky legs to ground (Rleak swept)
+Mlk d1 up slk 0 NNR W=200u L=100u
+Rlk slk 0 {RLEAK}
+Mlk2 d2 un slk2 0 NNR W=200u L=100u
+Rlk2 slk2 0 {RLEAK}
+Rop ap 0 50k
+Ron an 0 50k
+.control
+foreach rl 1e9 100k 50k
+  alterparam RLEAK = $rl
+  reset
+  dc Vin 0.30 0.90 0.05
+  let aout = v(ap)-v(an)
+  print aout >> /tmp/charleak.txt
+end
+.endc
+.end
