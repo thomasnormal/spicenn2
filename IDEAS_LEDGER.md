@@ -547,3 +547,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   drifts 1.0->0.66 by ep44; 30-60p stable; 120-240p flat & slightly undertrained (0.969 cap). =>
   DRIFT/COLLAPSE timescale ∝ C_weight (small cap=fast everything incl. drift; big cap=slow & stable).
   Refining with slower drive (TD=0.05) to resolve CONVERGENCE epoch ∝ C quantitatively.
+- RC LAW (refined, TD=0.05, CWW 30p/120p/480p): convergence STILL sub-eval-resolution (1.0 by ep0-2 for
+  all caps, even 16x range + 2x slower drive) -> "convergence-epoch ∝ C" NOT cleanly resolvable in this
+  fast-training net; do NOT claim the exponent. ROBUST measured form: cap size = weight-update timescale;
+  small caps (30p) hit 1.0 then drift; large caps (480p) cap UNDERTRAINED (0.938) but flat-stable. The
+  speed/stability tradeoff IS the RC law; 30p = sweet spot (max peak, acceptable drift). Honest partial.
