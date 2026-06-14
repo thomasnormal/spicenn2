@@ -569,6 +569,16 @@ def gen_deck():
         out=(l==NL-1); tail="gblo" if out else (f"gblhL{l}" if int(os.environ.get("LWISE","0")) else "gblh")
         for j in range(LAYERS[l]):
             ep,en = eo(j) if out else eh(l,j)
+            if out and int(os.environ.get("PERAZ","0")):   # PER-CLASS AUTO-ZERO: subtract each class's SLOW-AVG error
+                # (RC low-pass of eps_c) -> high-passed error removes that class's systematic DC offset (the
+                # residual per-class drift that ZEROSUM's global balance doesn't catch). gen_mc: +9..13 pts at C=10.
+                RAZ=os.environ.get("RAZ","2meg"); CAZ=os.environ.get("CAZ","8p")
+                lpp,lpn,eap,ean=f"azlp{j}",f"azln{j}",f"eaz{j}p",f"eaz{j}n"
+                L+=[f"Razp{j} {ep} {lpp} {RAZ}",f"Cazp{j} {lpp} wcm {CAZ}",
+                    f"Razn{j} {en} {lpn} {RAZ}",f"Cazn{j} {lpn} wcm {CAZ}",
+                    f"Xaz{j} {ep} {en} {lpp} {lpn} {eap} {ean} vdd gm esub",   # eps - lowpass(eps)
+                    f"Xcmaz{j} {eap} {ean} vdd cmld",f"Raz{j} {eap} {ean} {RNODE}"]
+                ep,en=eap,ean
             if int(os.environ.get("SQ","0")) and not out:   # f'-gate for SQUARE unit: modulate hidden error by x_l (square derivative 2x)
                 xp,xn=f"x{l}p_{j}",f"x{l}n_{j}"; emp,emn=f"em{l}p_{j}",f"em{l}n_{j}"
                 L+=[f"Xfg{l}_{j} {ep} {en} {xp} {xn} {emp} {emn} vdd vbsyn gsyn",
