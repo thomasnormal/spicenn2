@@ -412,6 +412,8 @@ def gen_deck():
                         f"Rwq_{key} wq_{key} wcm {RWL}",f"Rwr_{key} wr_{key} wcm {RWL}"]
                     ic+=[f".ic v(wq_{key})={gn:.4f} v(wr_{key})={gp:.4f}"]
     # hidden + output layer nodes & forward synapses
+    SMAX=int(os.environ.get("SMAX","0"))   # categorical-CE output: shared-tail softmax normalizer -> eps = label - softmax(m)
+    outx={}
     for l in range(1,NL):
         out = (l==NL-1)
         for j in range(LAYERS[l]):
@@ -477,9 +479,23 @@ def gen_deck():
                 aap3,aan3=ap_(l,j)
                 L+=[f"Xli_a{l}_{j} {aap3} {aan3} ulp uln lat{l}p lat{l}n vdd vbsyn gsyn",
                     f"Xli_x{l}_{j} lat{l}p lat{l}n usp2 usn2 {xp} {xn} vdd vbsyn gsyn"]
+            if out: outx[j]=(xp,xn)   # remember output label/value pair for the SMAX block
             ehp,ehn=f"e{l}p_{j}",f"e{l}n_{j}"
             if (not out) and int(os.environ.get("NOHID","0"))>=2: pass   # NOHID=2: hidden eps unused (no bk, no hidden updates)
+            elif out and SMAX: pass   # output error built by the SMAX normalizer block below
             else: L+=[f"Xeh{l}_{j} {xp} {xn} {mp} {mn} {ehp} {ehn} vdd gm esub"]   # eps_l_j = x - m
+    if SMAX:   # CATEGORICAL-CE OUTPUT: C prediction scores steer one shared tail current (analog softmax,
+        # sum of branch currents pinned -> normalized competition). p_c = davg - d_c (zero-sum by construction).
+        # eps_c = label_c - p_c = the softmax-CE gradient. Replaces Gaussian eps=x-m; backward/update unchanged.
+        SMR=os.environ.get("SMR","40k"); SMRA=os.environ.get("SMRA","200k"); SMVB=os.environ.get("SMVB","0.45")
+        L+=[f"Vsmvb smvb 0 {SMVB}",f"Msmt smnt smvb 0 0 NNR W={C*200}u L=100u"]   # shared tail (sized ~C branches)
+        for c in range(C):
+            L+=[f"Msm{c} smd{c} m{NL-1}p_{c} smnt 0 NNR W=200u L=100u",f"Rsm{c} vdd smd{c} {SMR}",
+                f"Rsma{c} smd{c} smdavg {SMRA}"]   # branch gated by score m_cp; load; tap to average node
+        L+=[f"Csma smdavg 0 0.1p"]
+        for c in range(C):
+            xp,xn=outx[c]   # label/value pair; m-side = (davg, d_c) so esub gives label - (davg-d_c) = label - p_c
+            L+=[f"Xsme{c} {xp} {xn} smdavg smd{c} e{NL-1}p_{c} e{NL-1}n_{c} vdd gm esub"]
     # backward error feedback: eps_{l+1}_k -> x_l_p through the SHARED cap w_{l+1}_{k}_{p}
     if int(os.environ.get("BKSIGN","0")): L+=[f"Vusp usp 0 0.2",f"Vusn usn 0 0.8"]
     if int(os.environ.get("BIASW","0")): L+=[f"Vbup bup 0 {os.environ.get('BUP','0.75')}",f"Vbun bun 0 {os.environ.get('BUN','0.49')}"]   # constant unit input for learnable per-neuron biases
