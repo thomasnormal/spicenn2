@@ -614,3 +614,14 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - CCMS (linearized/subtractive softmax-CE) = NULL: peaks 0.276 (~= zero-sum 0.30) then collapses to 0.004.
   Subtractive cross-class mean-removal doesn't beat zero-sum (which already balances targets) and doesn't
   stop the collapse. The DIVISIVE softmax (SMAX, shared-tail) is the real test - pending.
+
+## 2026-06-14 — RESIDUAL CONNECTIONS: honest negative (wrong failure mode)
+- Built forward+backward (bidirectional gradient-highway) residual skips (RES knob). Tested on deliberately-
+  deep nets (5,8 hidden, same-size for identity skip), spirals:
+    8-hidden @800u: RES 0.031 / no-RES 0.031 (both dead) | @400u: RES 0.781 / no-RES 0.875 (RES slightly WORSE)
+    5-hidden: RES == no-RES (0.875@400, 0.969@800)
+- CONCLUSION: residual does NOT help in this analog-PC setting. WHY (interesting): the deep failure mode here
+  is FORWARD OVER-GAIN (cascade multiplies per-stage gain ~G^depth -> rails), NOT backward vanishing-gradient
+  (the problem residual cures). An identity skip doesn't reduce forward gain. The correct medicine is the
+  CASCADE-GAIN LAW (lower per-stage NRW for deep) -> 8-hidden trains fine at 400u with NO residual. So depth
+  IS usable in analog, just via gain budgeting, not residuals. RES kept behind flag (default off, neutral).
