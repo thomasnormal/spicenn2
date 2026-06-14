@@ -592,3 +592,8 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - EXTENDED-HORIZON zero-sum C=10: zsLg climbs 0.30 @ep10 then COLLAPSES to 0 (zero-sum delays but doesn't
   fully stop collapse at long horizon); zsL (NTR=60) UNSTABLE (too much data, tiny net). Peak ~0.30 holds;
   long runs need freeze. So best C=10 recipe = spatial + zero-sum + FREEZE at the ~ep10 peak.
+- PERAZ = NULL in pc_deep (per-class auto-zero, high-pass error): on top of spatial+zero-sum, all RC
+  settings 0.20-0.24 < zero-sum-alone 0.30 (RC-insensitive -> not tuning). The gen_mc +9-13pt PERAZ win
+  does NOT transfer: differential rails + zero-sum already remove the per-class offset PERAZ targets, so
+  AC-coupling the error just discards signal. Lesson: keystone(single-ended)-path fixes don't auto-port to
+  the differential deep path. PERAZ kept behind flag (default off). ZSNEG crossover is the live lever.
