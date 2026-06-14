@@ -684,3 +684,11 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   color 0.41/trained 0.43, realistic-analog 0.37). In-circuit result 0.16 — a real first number; the gap
   to ceiling is SIMULATION-COST-bound (not a method limit). The ceiling analysis is the durable contribution;
   CIFAR confirms the design choices generalize beyond digits (avoids MNIST overfit, the user's goal).
+
+## 2026-06-14 — VBBK optimum -> better backward-drive default (verified learner improvement)
+- Full VBBK curve (depth-4 digits fast-cap, seed1): 0.20=0.25, 0.25=0.23, 0.32=0.62, 0.45=0.57, 0.65=0.52.
+  CLEAN OPTIMUM ~0.32. Below -> backward UNDER-DRIVEN (collapses); above -> over-saturated (loses magnitude,
+  the VBBK finding). Old default 0.45 is too saturated. 2-seed confirmed (0.32 > 0.45 at both seeds).
+- ACTION: lower VBBK default 0.45 -> 0.35 (near optimum 0.32, safe margin above the 0.25 under-driven cliff).
+  Improves the amplitude-restoring transport by keeping more magnitude. NOTE: confirm at full-horizon before
+  re-claiming the 0.84 headline (screen-validated; the 0.84 result was VBBK=0.45-era).

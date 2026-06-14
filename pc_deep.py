@@ -277,7 +277,7 @@ def ap_(l,i): return (f"a{l}p_{i}",f"a{l}n_{i}")   # activation of layer l, neur
 def syn(tag,ip,inn,op,on,wp,wn,vb="vbsyn"): return [f"X_{tag} {ip} {inn} {wp} {wn} {op} {on} vdd {vb} gsyn"]
 def gen_deck():
     EVK=int(os.environ.get("EVK","0"))   # interval eval: insert a test block every EVK epochs (0 = only final) -> per-seed early-stop
-    AFL=float(os.environ.get("AFLOOR","0.6")); VBBK=float(os.environ.get("VBBK",VBSYN)); gBLH=float(GBLH); gBLO=float(GBLO)
+    AFL=float(os.environ.get("AFLOOR","0.6")); VBBK=float(os.environ.get("VBBK","0.35"))   # lowered from VBSYN=0.45: VBBK sweep optimum ~0.32 (amplitude-restoring keeps magnitude; below ~0.28 under-drives); gBLH=float(GBLH); gBLO=float(GBLO)
     SYM=int(os.environ.get("SYMNUDGE","0"))   # symmetric +/-beta nudge
     CHL=int(os.environ.get("CHL","0"))   # contrastive (EP): free phase (pol=0) then clamped phase (pol=1); readout charged by (a.x)_clamp - (a.x)_free
     OV=int(os.environ.get("OVERIN","0"))   # curriculum: oversample INNER-radius train points (controller-side data cycling)
