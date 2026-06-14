@@ -632,3 +632,14 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   Both "make sense in analog". RFGRID (learnable local pooling) already subsumes avg; fixed avg/max-pool
   save weight caps (less precision) for downsample layers. Analog-DL primitive map now complete:
   residual (built, negative - wrong failure mode), avg/max pool (char'd), batchnorm=cmld (have), dropout=AUGJIT (on).
+
+## 2026-06-14 — MAGNITUDE MATTERS for transport (VBBK sweep; answers "is discarding magnitude good?")
+- Backward regeneration saturation sweep (depth-4 digits C=4 fast-cap, VBBK = backward drive; low=linear/
+  magnitude-preserving, high=saturated/sign-like): VBBK 0.32->0.62, 0.45->0.57, 0.65->0.52. MONOTONE:
+  LESS saturation (keep magnitude) is BETTER; hard-sign is WORST. So "throw away magnitude" is WRONG for
+  TRANSPORT. The win = AMPLITUDE RESTORATION with magnitude PRESERVED (fights attenuation, keeps proportion).
+  NUANCE: the UPDATE separately tolerates sign-only (sign-update 0.83~0.84) -> magnitude matters for credit
+  PROPAGATION, not for the local update. Corrected the paper's premature "insensitive to gain" line.
+  CAVEAT: single-seed fast-cap screen; verify with seeds/full-horizon (1 spectre at a time, MT=4, token-limited).
+- SPECTRE TOKEN LIMIT (shared license): keep <=6 tokens. Killed all my runs (was 8 procs x mt=8 incl zombies
+  drg100/drg400). New policy: MT=4, ONE spectre at a time. Slower iteration, but courteous to shared license.
