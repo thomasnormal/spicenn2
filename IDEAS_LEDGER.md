@@ -701,3 +701,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - SILVER LINING: VBBK=0.35 default VALIDATED noise-free: aug0 (VBBK=0.35, AUGJIT=0) = 0.85 > old VBBK=0.45
   era qdigT 0.83. So the backward-drive default improvement (0.45->0.35) holds independent of noise. Net: two
   learner tunings settled this cycle — VBBK 0.45->0.35 (better), AUGJIT 0.2->0 (the always-on noise hurt).
+- VBBK=0.35 CONFIRMED at fuller training (NEP=12 full data, no noise): best-epoch 0.72 (VBBK=0.35) vs
+  0.64 (VBBK=0.45), +0.08. Consistent across all configs (fast-cap noise 0.62/0.57; noise-free 0.85;
+  NEP=12 0.72/0.64). VBBK 0.45->0.35 default is SOLID. (Both collapse late at NEP=12 w/o freeze = the
+  known universal late-drift, orthogonal to VBBK; freeze-at-peak locks the 0.72.)
