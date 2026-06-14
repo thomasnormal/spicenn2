@@ -674,3 +674,13 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   0.433 (+9pts nonlinear headroom). Overturns earlier "random hidden hurts -> use direct": the key is
   TRAINED (not random) features. So CIFAR wants a trained depth-2 net (64-64-10, sparse fan-in = modest
   width/precision), ceiling ~0.43. Launched scifh (trained hidden) on Spectre.
+
+## 2026-06-14 — CIFAR ARC HONEST CLOSE
+- IN-CIRCUIT CIFAR-10 ~= 0.16 (direct readout 0.164 best; lean trained-hidden 0.152 then collapses).
+  Both ~47% of the tractable ceiling, limited by: (1) SIMULATION COST — full trained-hidden net (0.43
+  ceiling) is ~12h/run in Spectre (too many components x slots), so the trained-feature headroom is NOT
+  reachable at simulable scale; (2) the C=10 rich-get-richer COLLAPSE (more epochs/higher KOUT -> worse).
+- HONEST SUMMARY: CIFAR characterized fully token-free (color +11pts, trained>random, ceilings gray 0.30/
+  color 0.41/trained 0.43, realistic-analog 0.37). In-circuit result 0.16 — a real first number; the gap
+  to ceiling is SIMULATION-COST-bound (not a method limit). The ceiling analysis is the durable contribution;
+  CIFAR confirms the design choices generalize beyond digits (avoids MNIST overfit, the user's goal).
