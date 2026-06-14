@@ -13,6 +13,7 @@ training or inference path.
 | Nonlinear 2D benchmarks (circles / rings / spirals), every seed | **> 0.95** (L-finals 0.99) |
 | 8×8 digits, 4-class, sparse fan-in-4 net | **0.890** (backprop ideal 0.91–0.94) |
 | 8×8 digits, 10-class (shallow random features) | **0.587** (deep-conv path underperforms this) |
+| CIFAR-10 (color 8×8, in-circuit) | **0.164** (ceiling 0.41; gap is simulation-cost-bound) |
 | Depth-4 pyramid via **amplitude-restoring error transport** (BKSIGN) | 0.55 → **0.84** |
 | Component economy (fixed random hidden) | 0.74 @ −42% FETs / −80% caps |
 | Label-free (masked-pixel PC, no labels in hardware) | 0.596 (chance 0.5) |
