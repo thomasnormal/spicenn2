@@ -564,6 +564,12 @@ def gen_deck():
         L+=[f"Xzref wcm wcm wcm wcm ezp ezn vdd gm esub"]
     if int(os.environ.get("TFG","0"))==3:   # glow = source ref of the per-neuron LR-gate transistor (engage threshold = glow+VTO)
         L+=[f"Vglow glow 0 {os.environ.get('GLOW','0.10')}"]
+    if int(os.environ.get("CCMS","0")):   # CROSS-CLASS common-mode subtraction: eccp/eccn = mean of the output
+        # error rails over all C classes. Subtracting it from each class's error removes the uniform drift that
+        # drives the rich-get-richer collapse, while leaving relative class scores (what argmax needs) untouched.
+        RCC=os.environ.get("RCC","200k")
+        for j in range(C): L+=[f"Rccp{j} e{NL-1}p_{j} eccp {RCC}",f"Rccn{j} e{NL-1}n_{j} eccn {RCC}"]
+        L+=[f"Cccp eccp 0 1p",f"Cccn eccn 0 1p"]
     # LEARNING: gprod charges each shared cap by eps_l_j . a_{l-1}_p
     eh=lambda l,j:((f"e{l}p_{j}",f"e{l}n_{j}") if SGNH>0 else (f"e{l}n_{j}",f"e{l}p_{j}"))
     eo=lambda j:((f"e{NL-1}p_{j}",f"e{NL-1}n_{j}") if SGNO>0 else (f"e{NL-1}n_{j}",f"e{NL-1}p_{j}"))
@@ -571,6 +577,12 @@ def gen_deck():
         out=(l==NL-1); tail="gblo" if out else (f"gblhL{l}" if int(os.environ.get("LWISE","0")) else "gblh")
         for j in range(LAYERS[l]):
             ep,en = eo(j) if out else eh(l,j)
+            if out and int(os.environ.get("CCMS","0")):   # subtract cross-class mean error (built above)
+                _ap,_bp = ("eccp","eccn") if SGNO>0 else ("eccn","eccp")
+                e2p,e2n=f"ecc{j}p",f"ecc{j}n"
+                L+=[f"Xcc{j} {ep} {en} {_ap} {_bp} {e2p} {e2n} vdd gm esub",
+                    f"Xcmcc{j} {e2p} {e2n} vdd cmld",f"Rccx{j} {e2p} {e2n} {RNODE}"]
+                ep,en=e2p,e2n
             if out and int(os.environ.get("PERAZ","0")):   # PER-CLASS AUTO-ZERO: subtract each class's SLOW-AVG error
                 # (RC low-pass of eps_c) -> high-passed error removes that class's systematic DC offset (the
                 # residual per-class drift that ZEROSUM's global balance doesn't catch). gen_mc: +9..13 pts at C=10.
