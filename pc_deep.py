@@ -306,7 +306,7 @@ def gen_deck():
     for g,(kind,k,pol) in enumerate(SLOTS):
         t=g*TH
         xv = Xtr[k] if kind=="tr" else Xte[k]
-        if kind=="tr" and float(os.environ.get("AUGJIT","0.2"))>0: xv = xv + float(os.environ.get("AUGJIT","0.2"))*rng.standard_normal(len(xv))   # train-time input jitter = ALWAYS-ON dropout-style noise (default 0.2; ReLU rectifies sub-knee noise -> robust)
+        if kind=="tr" and float(os.environ.get("AUGJIT","0"))>0: xv = xv + float(os.environ.get("AUGJIT","0"))*rng.standard_normal(len(xv))   # train-time input jitter (opt-in). MEASURED: hurts accuracy here (0.85->0.75->0.59 at 0/0.05/0.2) — these tasks don't overfit and the analog HW is already noisy, so added jitter is pure signal loss, not beneficial dropout.
         for d in range(NIN): inp[d].append((t,0.5+IND*float(np.clip(xv[d] if d<len(xv) else 1.0,-3,3))/3.0*2))
         lab = ytr[k] if kind=="tr" else yte[k]
         tdv = TD*(1.0-float(os.environ.get("TDAN","0"))*tr_count/max(1,total_tr))   # TD anneal: strong clamp early, weak late (don't over-drive the equilibrium)

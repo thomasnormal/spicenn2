@@ -692,3 +692,12 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - ACTION: lower VBBK default 0.45 -> 0.35 (near optimum 0.32, safe margin above the 0.25 under-driven cliff).
   Improves the amplitude-restoring transport by keeping more magnitude. NOTE: confirm at full-horizon before
   re-claiming the 0.84 headline (screen-validated; the 0.84 result was VBBK=0.45-era).
+
+## 2026-06-14 — NOISE (AUGJIT) calibration: always-on noise HURTS here (reverted)
+- AUGJIT sweep (depth-4 digits, VBBK=0.35): 0=0.85, 0.05=0.75, 0.2=0.59. Noise MONOTONICALLY HURTS.
+  WHY: tasks don't overfit (small nets, modest train/test gap) + analog HW already has intrinsic noise
+  (mismatch/thermal) -> added input jitter = pure signal loss, NOT beneficial dropout. The "always use
+  noise" default (0.2) I'd set was a -26pt regression. REVERTED AUGJIT default 0.2->0 (kept as opt-in knob).
+- SILVER LINING: VBBK=0.35 default VALIDATED noise-free: aug0 (VBBK=0.35, AUGJIT=0) = 0.85 > old VBBK=0.45
+  era qdigT 0.83. So the backward-drive default improvement (0.45->0.35) holds independent of noise. Net: two
+  learner tunings settled this cycle — VBBK 0.45->0.35 (better), AUGJIT 0.2->0 (the always-on noise hurt).
