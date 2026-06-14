@@ -577,3 +577,11 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   so each target vector sums to 0, vs default -(C-2)tdv downward drift). Q-proxy rings C=8 (tanh, weak
   proxy): ZEROSUM 0.172 vs control 0.156 (+10% rel, modest). ReLU pair anti-locked (freeze config, n/a).
   Real test = digits C=10 (zs1/zs1nf/zsrand) where the drift-collapse was actually diagnosed; pending.
+
+## 2026-06-14 — ZEROSUM BREAKS THE C=10 DRIFT (the missing port lands)
+- digits C=10 (chance 0.10): zs1nf (spatial + zero-sum, NO freeze) = 0.300 best, curve CLIMBING
+  [0.2,0.192,0.264,0.22,0.3,0.268] no collapse | zs1 (+freeze) 0.236 stable | zsrand (random+zero-sum)
+  0.200 (REVIVED from chance 0.10!). FINDINGS: (1) best in-circuit C=10 deep-path = 0.30, up from 0.22
+  (+36%); (2) zero-sum STOPS the collapse by itself (no freeze needed) = confirms the gen_mc drift
+  mechanism in pc_deep; (3) imbalance was KILLING random nets (revived 0.10->0.20); (4) spatial locality
+  still adds on top (0.30 vs 0.20). zs1nf still climbing at ep10 -> extending horizon+data to find ceiling.
