@@ -585,3 +585,10 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   (+36%); (2) zero-sum STOPS the collapse by itself (no freeze needed) = confirms the gen_mc drift
   mechanism in pc_deep; (3) imbalance was KILLING random nets (revived 0.10->0.20); (4) spatial locality
   still adds on top (0.30 vs 0.20). zs1nf still climbing at ep10 -> extending horizon+data to find ceiling.
+- ZEROSUM IS C-DEPENDENT (key correction): C=4 ZEROSUM=1 -> 0.70 vs unbalanced 0.83 (HURTS small C!);
+  C=10 zero-sum 0.30 vs unbalanced 0.22 (HELPS large C). Mild imbalance (C=4, -2tdv) -> extra negative
+  pressure = useful contrast; severe (C=10, -8tdv) -> drift collapse. There's a CROSSOVER. Added ZSNEG knob
+  (negative-class target scale: 1.0=unbalanced, 1/(C-1)=zero-sum) to sweep the optimum. Default unchanged.
+- EXTENDED-HORIZON zero-sum C=10: zsLg climbs 0.30 @ep10 then COLLAPSES to 0 (zero-sum delays but doesn't
+  fully stop collapse at long horizon); zsL (NTR=60) UNSTABLE (too much data, tiny net). Peak ~0.30 holds;
+  long runs need freeze. So best C=10 recipe = spatial + zero-sum + FREEZE at the ~ep10 peak.
