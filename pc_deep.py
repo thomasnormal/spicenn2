@@ -49,10 +49,13 @@ def gen():
         d=load_digits(); Xd=d.data.astype(float); yd=d.target
         keep=yd<C
         return Xd[keep], yd[keep]
-    elif TASK=="cifar":   # CIFAR-10 downsampled. CIFCOLOR=1 -> color GxG (3*G*G inputs, ceiling ~0.41 at 8x8);
-        G=int(os.environ.get("CIFG","8"))                                                 # else grayscale (ceiling ~0.30)
-        _kind="color" if int(os.environ.get("CIFCOLOR","0")) else "gray"
-        d=np.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),f"data/cifar_{_kind}_{G}.npz"))
+    elif TASK=="cifar":   # CIFAR-10 downsampled. CIF64=1 -> top-64 color features (ngspice-tractable, ceiling 0.345);
+        G=int(os.environ.get("CIFG","8"))                          # CIFCOLOR=1 -> color GxG (ceiling 0.41); else grayscale (0.30)
+        if int(os.environ.get("CIF64","0")):
+            d=np.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),"data/cifar_c64.npz"))
+        else:
+            _kind="color" if int(os.environ.get("CIFCOLOR","0")) else "gray"
+            d=np.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),f"data/cifar_{_kind}_{G}.npz"))
         Xtr,ytr,Xte,yte=d["Xtr"],d["ytr"],d["Xte"],d["yte"]
         keep_tr=ytr<C; keep_te=yte<C
         # return train+test concatenated; the splitter below re-splits per class by NTR/NTE
