@@ -664,3 +664,9 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   ~0.18-0.25 in-circuit at normal efficiency. COMPLETE token-free CIFAR characterization: input(color>res),
   architecture(direct>random-hidden), ceiling(0.37 analog). ngspice (SIM=ngspice) = TOKEN-FREE workhorse
   for exploration; reserve Spectre (<=6 tokens) for finalists. cifng = first direct-readout ngspice run.
+
+## 2026-06-14 late — CIFAR first number + VBBK 2-seed confirm (Spectre, ≤6 procs MT=4)
+- FIRST in-circuit CIFAR-10: 0.164 (64-feat color, direct readout KOUT=20, ceiling 0.345, chance 0.10)
+  = ~47% of ceiling. Honest first datapoint; CIFAR is hard for analog (input-limited, see characterization).
+- VBBK magnitude verified at SEED 2: magnitude-preserving (0.32)=0.60 > sign-like (0.65)=0.55. With seed 1
+  (0.62 vs 0.52), BOTH seeds agree: keeping error magnitude beats sign for TRANSPORT. Finding is robust.
