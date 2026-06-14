@@ -532,3 +532,13 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   0.5, vs tanh 0.83). DC char confirmed the leak DOES add sub-knee slope, but it does NOT recover digit
   accuracy -> ReLU's digit weakness is NOT one-sided info loss. Hypothesis refuted. tanh stays the digit
   neuron; nrelu stays the 2D champion. (leaky cell kept behind NRLEAK, default off / harmless.)
+
+## 2026-06-14 — SPATIAL RECEPTIVE FIELDS for C=10 (user's local-perceptive-field idea)
+- RFGRID=1: conv-like 2x2 stride-2 local pooling (verified exact windows) vs random sparse, C=10 digits,
+  tanh, fast-cap NEP=8, identical sizes. RESULT (chance 0.10):
+    rf2 spatial 64-16-4: 0.224 best / 0.224 FINAL (stable) | rand2 random: 0.228 / 0.116 (COLLAPSES)
+    rf1 spatial 64-16:   0.148 / 0.148 (stable)            | rand1 random: 0.128 / 0.112 (collapses)
+  FINDING: locality does NOT raise the peak but ELIMINATES post-peak collapse (every spatial run holds
+  best; every random run decays) = structural regularization, no freeze needed. Deeper spatial pyramid
+  (2 pools -> 4 feats) beats shallow (16 feats) -> locality+depth > width. Best stable C=10 = 0.224.
+- ESCALATING rf2 (winner) with 2x data to test if locality+data climbs past the ~0.22 ceiling.
