@@ -832,3 +832,14 @@ Tested 3 one-cap synapse designs (all HALVE the weight caps, verified in deck):
 LAW (proposed): a single storage cap suffices iff EITHER (a) weights are unipolar (Dale: sign in wiring), OR
 (b) the node common-mode is separately anchored (strong-enough resistor). Bipolar + weak anchor needs 2 caps.
 Next: push non-Dale diff one-cap CM-anchor strength + epochs toward the 0.83 two-cap ceiling (one cap, full acc).
+
+## 2026-06-15 — one-cap final: ~0.67 ceiling non-Dale (NOT closable by epochs); ~0.16 cost is genuine
+- CM-anchor sweep (CWW=15p): 30meg=0.65, 50meg=0.67(best), 100meg/8ep=0.64, 100meg/12ep=best 0.67 then
+  DECLINES to 0.59 (peaks ~epoch5, overfits). => anchor strength saturates ~0.65-0.67; MORE EPOCHS DO NOT
+  CLOSE the gap to two-cap 0.83. The residual ~0.16 is a real single-cap cost (half-rate I/C integration +
+  residual CM imperfection + wp-wn cap-coupling instability), not a tuning artifact.
+- BOTTOM LINE (no free lunch): one cap halves the weight caps (dominant area) but costs ~0.16 acc on digits
+  C=4, in BOTH regimes (non-Dale diff+anchor 0.67; Dale unipolar 0.65 vs Dale two-cap 0.56). The two-cap
+  differential genuinely does 3 jobs: bipolar storage, per-node common-mode anchoring, AND 2x integration rate.
+  Verdict: keep two-cap as default; one-cap is a viable area-vs-accuracy knob (~half caps for ~0.16 acc), best
+  paired with Dale where it's free relative to that regime's own ceiling.
