@@ -922,3 +922,11 @@ LAWS:
   (synapse saturation / rich-get-richer among neurons). This is exactly what FREEZING bypassed (but user wants
   full PC). Testing HIDDEN-faithful brakes (keep all layers learning): WCLAMP (diode weight clamp vs runaway),
   RWL leak (pull weights back), single-hidden 64,64,10 (shorter backward path = less compounding).
+
+## 2026-06-15 — DEPTH drives the C=10 hidden collapse; single-hidden is far milder
+- Hidden brakes (full PC): WCLAMP=0.3 -> 0.076 (collapse), RWL=100meg leak -> 0.068 (collapse) on DEEP
+  64,32,16,10. But SINGLE-HIDDEN 64,64,10 -> peak 0.252, holds 0.22-0.25 for epochs 2-6, declines to 0.144
+  (curve [0.112,0.252,0.228,0.144]) = MUCH milder, different trajectory. => compounding through stacked hidden
+  layers makes the collapse catastrophic; one hidden layer training HELPS (0.11->0.25) then mildly overshoots.
+- Hidden update is USEFUL but overshoots. PC-faithful fix: keep all layers learning, just SLOW the hidden rate
+  (gblh < gblo) so it asymptotes at the peak. Testing single-hidden + slow-hidden-LR + wider.
