@@ -894,3 +894,12 @@ LAWS:
 - PROVEN C=10 path = the gen_mc / pc1_orch KEYSTONE in ngspice (token-free): C=10 ~0.747, C=5 ~0.87. Pivot
   there to push past 0.747. pc_deep stays the vehicle for the SHALLOW/low-C analog-laws work (Dale, one-cap,
   width) where it's reliable (C=4 ~0.83).
+
+## 2026-06-15 — keystone C=10 readout: tractable harness + AVGW lever; weak-class confusion is the limiter
+- Tractable run (run_iso.sh, 2500 slots, NTR=30, ngspice ~14min train): in-circuit 68.8%, ideal(LogReg) 80.4%
+  -> ~86% readout efficiency, consistent with the full-config 0.747/0.853. (8000-slot runs took 49min+, killed.)
+- Inference-only lever (reuse trained weights, no retrain): AVGW 20->40 gives 68.8->70.4% (+1.6, better readout
+  SNR). Diminishing; the real limiter is PER-CLASS CONFUSION: classes 2,5,9 stuck at 28-40% while others 72-96%,
+  mean-margin only ~0.11. Those digits are genuinely hard for random-features + single-ended linear readout.
+- => past ~0.75 the lever is readout DISCRIMINATION for the weak classes (4-quadrant pc1_orch readout, or
+  per-class margin shaping), NOT features (ideal saturates at N=96) and NOT slots/averaging (diminishing).
