@@ -95,3 +95,14 @@ a 64→64→10 MLP with sharp activation (gain 6–12) reaches ~0.91–0.92 (qui
 
 **Status:** path fully analyzed and grounded; the deploy pipeline is a defined multi-step build (steps 1–5),
 borderline-0.95 on 8×8 / clean on 28×28. This is the recommended next focused effort for a >0.95 number.
+
+## Deploy feasibility, MEASURED with the actual device transfers (fasttrain cell fits)
+
+Trained a device-matched MLP (clean backprop) using pc_deep's *fitted* cell transfers — synapse
+`-0.105·tanh(2.25·in)·tanh(2.6·w)` (Gilbert product, saturating in both in AND w), neuron `0.537·tanh(15.7·x)`,
+weights clipped to the wgv range ±1.33 — on real MNIST 8×8:
+- **64→128→10 device-matched: 92.9%** (vs standard-tanh MLP 0.953, ideal kernel 0.956).
+The device nonlinearities (the tanh·tanh synapse "multiply" that saturates in the weight, the sharp neuron,
+and the ±1.33 weight clip) cost **~3 points**. So idea #10 on 8×8 deploys to **~0.93 — below 0.95.**
+The synapse's weight-saturation (tanh(2.6·w), so effective weight range is compressed) is the main loss.
+[Checking whether 28×28 or wider hidden recovers the margin.]
