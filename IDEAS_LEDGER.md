@@ -774,3 +774,13 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   translate in-circuit (eff ~87.5% both). So C=10 is CAPPED ~0.75 in-circuit (data + efficiency limited).
   0.747 headline is near-optimal & well-justified; NOT changing it (75.0 confirms the ceiling, within noise).
   C=10 THREAD FULLY BOUNDED: best 0.747 (robust 3-seed), ceiling ~0.75, ideal ~86.5% (data-limited), ngspice.
+
+## 2026-06-15 — keystone+PERAZ does NOT transfer to CIFAR cleanly (digit-specific pipeline)
+- Tried keystone (random feats + zero-sum + PERAZ) on CIFAR color-8: ideal collapses (random tanh feats
+  29.2%, raw-feats-via-pipeline 26.3%) vs CIFAR's true linear ideal 0.41. TWO mismatches: (1) random
+  features HURT CIFAR (linearly separable -> projection loses info; opposite of digits where they help);
+  (2) run_iso's PER-SAMPLE z-score (per-image, good for digits) loses CIFAR's per-feature color/intensity
+  signal (CIFAR needs per-FEATURE norm). So the keystone PIPELINE is digit-specific. The PERAZ MECHANISM
+  may still work but needs a CIFAR-appropriate front-end (per-feature norm + direct readout). NOT pursuing
+  the full adaptation (modest payoff, CIFAR fundamentally ~0.41-ceiling at 8x8). CIFAR result stands: pc_deep
+  direct readout 0.16, characterized ceiling 0.37-0.41. Honest transferability bound on the keystone.
