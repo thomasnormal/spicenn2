@@ -57,3 +57,15 @@ Current in-circuit best (keystone, ngspice): **0.747**. Decomposition:
 4. **#4, #9** are cheap stackable points; **#7, #8, #6** are the harder learning/efficiency frontier.
 
 **Biggest risk / honest caveat:** simulation cost. 28×28 conv nets are far larger than anything simulated here (the 17 MB keystone deck already stalls Spectre; ngspice is single-threaded). Realistically this needs either the device-faithful fast surrogate for exploration (with the known caveat that it under-predicts), batched/scanning architectures to shrink the deck, or a faster simulator — itself a prerequisite for the whole program.
+
+---
+
+## Update (grounded ceiling re-analysis on REAL MNIST)
+
+Two corrections to the analysis above, from measuring on *real* MNIST (not sklearn digits):
+
+- **Resolution is NOT the bottleneck.** Real MNIST at **8×8** already reaches **0.956 with a kernel** (RBF-SVM); 12×12 ≈ 0.955. So 8×8 is sufficient resolution to clear 0.95 — the earlier "need 28×28" was an artifact of the smaller/noisier *sklearn digits* set (capped 0.948). 8×8 stays circuit-tractable (64 inputs). [Idea #1 ⇒ use *real* MNIST, not necessarily higher res.]
+- **The lever is nonlinearity, and trained ≫ random for it.** Linear (logistic) caps ~0.90; the kernel/nonlinear ceiling is ~0.956. Random features approach it only slowly (real MNIST 8×8: N=96→0.869, 600→0.910, 1200→0.929; ~0.95 needs N≈2400 = impractical cell count). **Trained features reach the ceiling with far fewer units** ⇒ Idea #3 (trained features) dominates Idea #4 (more random features).
+- **The binding constraint for >0.95 *in-circuit* is efficiency, not the ceiling.** At our ~88% in-circuit/ideal efficiency, even a 0.95 ideal yields ~0.84 in-circuit. So Idea #5 (offset-canceling cells → push efficiency toward ~0.98) is *required*, not optional, for a >0.95 in-circuit number.
+
+**Refined recommended path:** real MNIST 8×8 (done: `data/mnist_real_8x8.npz`) + trained nonlinear features (#3, via the amplitude-restoring backward) to reach a ~0.95 ideal at modest cell count, + offset cancellation (#5) to convert that into >0.95 in-circuit. Idea #10 (deploy trained weights) remains the fastest route to a labeled >0.95 inference number meanwhile.
