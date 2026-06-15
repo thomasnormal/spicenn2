@@ -749,3 +749,10 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - PROVENANCE CARE: this is NGSPICE (gen_mc.py), paper claims all-Spectre. The paper's 0.587 may be the
   Spectre port (spectre_mc.py). Do NOT silently swap 0.587->0.747 across simulators. Either (a) run the
   Spectre port for matching provenance, or (b) report 74.7% explicitly labeled ngspice. Checking spectre_mc.
+- README updated: best C=10 = 0.747 (keystone zero-sum+PERAZ, ngspice-labeled), distinct from the 0.587
+  Spectre/random-feature line. KEY INSIGHT: zero-sum+PERAZ flips the feature-count ordering — paper notes
+  "N=48 beats N=96 (0.587 vs 0.433)" WITHOUT PERAZ; WITH PERAZ, N=96=0.747 (more features now help).
+- PAPER C=10 update is PENDING Spectre-provenance: the paper claims all-Cadence-Spectre; the keystone runs
+  in ngspice (gen_mc.py). Clean follow-up = run the keystone via the existing spectre_mc.py port at a
+  tractable N (the 17MB N=96 deck risks stalling Spectre like the CIFAR decks did; try N~32-48). Until then
+  the 0.747 stays in README/ledger with explicit ngspice label, NOT silently swapped into the Spectre paper.
