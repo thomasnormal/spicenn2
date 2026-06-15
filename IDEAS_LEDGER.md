@@ -766,3 +766,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   explicitly. Best honest C=10 = 0.747 (ngspice), un-Spectre-verifiable (deck won't converge) = documentable fact.
 - KEYSTONE C=10 = 0.747 SEED-ROBUST: 3 init seeds = 74.7/74.8/74.7% (spread 0.1%). Solid headline, not
   seed-luck. (Varies init seed; data fixed -> init-robust. Confirms the paper's C=10=0.747 is reliable.)
+- KEYSTONE C=10 CEILING (numpy, token-free): ideal vs data/class = 40:82.5, 80:86.5, 120:86.2, 160:86.3
+  -> more data helps to ~80/cls then SATURATES at ~86.5%. Trained MLP features = 87.5% (barely > random
+  86.5% -> data-limited, not feature-limited). So C=10 in-circuit ceiling ~0.76 (88% eff of 86.5); 0.747
+  (NTR=40) is already near-optimal. Running NTR=80 to confirm in-circuit follows the ideal toward ~0.76.
