@@ -784,3 +784,10 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   may still work but needs a CIFAR-appropriate front-end (per-feature norm + direct readout). NOT pursuing
   the full adaptation (modest payoff, CIFAR fundamentally ~0.41-ceiling at 8x8). CIFAR result stands: pc_deep
   direct readout 0.16, characterized ceiling 0.37-0.41. Honest transferability bound on the keystone.
+
+## 2026-06-15 — synapse linearization (path to >0.95): asymmetric weight-pair degeneration
+- gsyn weight-response linearity (ngspice, fix input, sweep weight): UNIFORM RDEG makes it WORSE (R^2
+  0.89->0.67, kills swing). But ASYMMETRIC degeneration (degenerate ONLY the weight pair M5/M6, keep input
+  quad at 12k) LINEARIZES: RDW 12k->40k->100k->200k gives R^2 0.889->0.912->0.925->0.935 (swing 0.204->
+  0.142->0.084->0.051). Sweet spot RDW=40k (R^2 0.912, 70% swing). Real cell improvement = a more-linear
+  synapse weight response via asymmetric degeneration. Testing if it recovers the device-MLP toward 0.95.

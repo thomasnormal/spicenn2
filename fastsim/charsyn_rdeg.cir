@@ -1,0 +1,40 @@
+* gsyn weight-response linearity vs source degeneration RDEG.
+* Fix input differential, sweep weight (wp-wn), measure output differential. More RDEG -> more linear in w (lower gain).
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.param RDEG=12k
+Vdd vdd 0 1.0
+Vbn vbn 0 0.45
+* input fixed at a representative differential (inp=0.6, inn=0.4)
+Vinp inp 0 0.6
+Vinn inn 0 0.4
+* weight differential swept: wp = 0.5+x, wn = 0.5-x  (x = WD/2)
+Vwp wp 0 0.5
+Vwn wn 0 0.5
+* gsyn core (degenerated Gilbert)
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na wp s5 0 NNR W=200u L=100u
+Rd5 s5 nt {RDEG}
+M6 nb wn s6 0 NNR W=200u L=100u
+Rd6 s6 nt {RDEG}
+M1 outp inp s1 0 NNR W=200u L=100u
+Rd1 s1 na {RDEG}
+M2 outn inn s2 0 NNR W=200u L=100u
+Rd2 s2 na {RDEG}
+M3 outn inp s3 0 NNR W=200u L=100u
+Rd3 s3 nb {RDEG}
+M4 outp inn s4 0 NNR W=200u L=100u
+Rd4 s4 nb {RDEG}
+* resistive loads to vdd for DC readout
+RLp vdd outp 50k
+RLn vdd outn 50k
+.control
+foreach rd 12k 40k 80k 150k
+  alterparam RDEG = $rd
+  reset
+  dc Vwp 0.30 0.70 0.04
+  let od = v(outp)-v(outn)
+  print od >> /tmp/charsyn.txt
+end
+.endc
+.end
