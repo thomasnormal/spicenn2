@@ -876,3 +876,12 @@ LAWS:
   efficiency), NOT width. Confirms user's "don't go too wide" instinct for the unconstrained case.
 - One-cap scales to neither width nor the bipolar-tanh regime; free only narrow + unipolar (Dale/ReLU). The
   competitive analog design is TWO-CAP: non-Dale narrow (0.83) or Dale wide (0.80, biological + signed).
+
+## 2026-06-15 — C=10 collapse is TRAINING-DYNAMICS, not capacity (width doesn't help)
+- C=10 (sklearn digits, ZEROSUM=1): narrow(64,32,16,10) peak 0.288->0.08; wide(64,64,32,10) peak 0.296->0.052.
+  BOTH start ~0.29 at epoch 1 then COLLAPSE during training. Width does NOT prevent it.
+- => the C=10 wall is a TRAINING-DYNAMICS / target-pressure instability, NOT a capacity shortfall. The "more
+  neurons rescues constrained regimes" law applies to the Dale SIGN-constraint (a capacity cut), NOT to the
+  C=10 collapse (a dynamics problem). ZEROSUM gives the 0.29 start but doesn't stabilize the descent.
+- Next: the documented C=10 movers are PERAZ (per-class auto-zero) + RFGRID (spatial receptive fields), per
+  prior gen_mc evidence (keystone hits 0.71-0.75). Apply those to stabilize + climb, not width.
