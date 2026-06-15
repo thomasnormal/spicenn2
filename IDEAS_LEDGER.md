@@ -903,3 +903,12 @@ LAWS:
   mean-margin only ~0.11. Those digits are genuinely hard for random-features + single-ended linear readout.
 - => past ~0.75 the lever is readout DISCRIMINATION for the weak classes (4-quadrant pc1_orch readout, or
   per-class margin shaping), NOT features (ideal saturates at N=96) and NOT slots/averaging (diminishing).
+
+## 2026-06-15 — SPECTRE C=10 BREAKTHROUGH: freeze hidden (keystone arch) stops the collapse, climbs
+- The C=10 collapse in pc_deep/Spectre was the DEEP TRAINING, not the device: HFREEZE=0 (freeze hidden at
+  random init, train ONLY the readout = keystone architecture) STOPS the collapse and CLIMBS in real Spectre:
+    c10_fz0  (deep 64,32,16,10 frozen): 0.192 climbing (vs full-train collapse to 0.08)
+    c10_fz0w (wide 64,64,10 frozen):    0.360 climbing, still rising at NEP=8 (vs collapse to 0.05)
+- WIDE single random-feature layer >> deep (more random features, like keystone's N=96). Both still climbing
+  at 8 epochs -> more features + more epochs should push toward the ngspice keystone's 0.747, but now in SPECTRE
+  (trustworthy transistor-level). This is the path to a real Spectre C=10 number, not ngspice-only.
