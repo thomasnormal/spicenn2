@@ -417,6 +417,8 @@ def gen_deck():
                         f"Cwsp_{key} wsp_{key} 0 {_cs}",f"Cwsn_{key} wsn_{key} 0 {_cs}",
                         f"Rcp_{key} wp_{key} wsp_{key} {_rc}",f"Rcn_{key} wn_{key} wsn_{key} {_rc}",
                         f"Rwp_{key} wsp_{key} wcm {RWL}",f"Rwn_{key} wsn_{key} wcm {RWL}"]
+                elif int(os.environ.get("ONECAP","0")):   # ONE cap per synapse: wn = FIXED reference (VW0); weight = wp-VW0 (bipolar via single cap, flips sign as wp crosses VW0). Halves the capacitor count.
+                    L+=[f"Cwp_{key} wp_{key} 0 {CWW}",f"Rwp_{key} wp_{key} wcm {RWL}",f"Vwn_{key} wn_{key} 0 {VW0}"]
                 else:
                     L+=[f"Cwp_{key} wp_{key} 0 {CWW}",f"Cwn_{key} wn_{key} 0 {CWW}",
                         f"Rwp_{key} wp_{key} wcm {RWL}",f"Rwn_{key} wn_{key} wcm {RWL}"]
@@ -424,7 +426,8 @@ def gen_deck():
                     for wn_ in (f"wp_{key}",f"wn_{key}"):
                         L+=[f"Mch_{wn_} {wn_} {wn_} wch 0 NNR W=400u L=100u",
                             f"Mcl_{wn_} wcl wcl {wn_} 0 NNR W=400u L=100u"]
-                ic+=[f".ic v(wp_{key})={gp:.4f} v(wn_{key})={gn:.4f}"]
+                if int(os.environ.get("ONECAP","0")): ic+=[f".ic v(wp_{key})={VW0+(gp-gn):.4f}"]   # one cap: init wp so wp-VW0 == the two-cap differential (gp-gn)
+                else: ic+=[f".ic v(wp_{key})={gp:.4f} v(wn_{key})={gn:.4f}"]
                 if int(os.environ.get("CONSOL","0")): ic+=[f".ic v(wsp_{key})={gp:.4f} v(wsn_{key})={gn:.4f}"]
                 if int(os.environ.get("CHL","0"))==2 and l==NL-1:   # CDS: second cap pair for the FREE-phase integral
                     L+=[f"Cwq_{key} wq_{key} 0 {CWW}",f"Cwr_{key} wr_{key} 0 {CWW}",
