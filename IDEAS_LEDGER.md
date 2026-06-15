@@ -843,3 +843,12 @@ Next: push non-Dale diff one-cap CM-anchor strength + epochs toward the 0.83 two
   differential genuinely does 3 jobs: bipolar storage, per-node common-mode anchoring, AND 2x integration rate.
   Verdict: keep two-cap as default; one-cap is a viable area-vs-accuracy knob (~half caps for ~0.16 acc), best
   paired with Dale where it's free relative to that regime's own ceiling.
+
+## 2026-06-15 — one-cap "free" generalizes to ReLU (unipolar acts); but ReLU hurts digits C=4
+- Option B (ReLU neurons + bipolar synapse): rl_1cap (ReLU+diff 1cap)=0.36, rl_2cap (ReLU+2cap)=0.34.
+  => one-cap is FREE under ReLU too (0.36 vs 0.34), same as Dale -> the one-cap penalty only appears with
+  BIPOLAR activations (tanh). With unipolar acts (ReLU/Dale) the single cap is fine. BUT ReLU tanks digits C=4
+  (0.34-0.36 vs tanh 0.83) -> tanh still wins digits (ReLU's win was at C=10). Not a useful operating point here.
+- REFINED LAW: one storage cap is free when ACTIVATIONS are unipolar (ReLU or Dale-signed neurons); the 2nd
+  cap is only needed for the bipolar-tanh regime (where it also gives CM-anchor + 2x rate). Pairs with the
+  user's "positive neurons -> one cap" intuition.
