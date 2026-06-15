@@ -143,3 +143,24 @@ Identified the synapse weight-saturation as the wall, then characterized + teste
 MNIST 8×8, and (2) linearize the synapse weight response via asymmetric weight-pair degeneration [#5/#6].
 That reaches ~0.948 (at the boundary); a softer neuron pushes it clearly over. It is a *cell-linearity*
 problem, fully characterized — not a data/resolution/depth problem.
+
+---
+
+## CORRECTION (user, 2026-06-15): deploy-offline is a WRONG TURN
+
+Idea #10 (train offline, deploy weights, infer in-circuit) **abandons the project's premise** — which is
+*learning in the circuit dynamics*. A >0.95 from deployed weights would be hollow; it does not demonstrate
+in-circuit training. **STRIKE #10 as a goal.** The target is >0.95 via *in-circuit training*.
+
+This also reframes the synapse fix. The weight-saturation lives in the **4-quadrant Gilbert** synapse
+(weight = tanh-steered differential, `tanh(2.6·w)`). The clean fix is architectural, not a degeneration patch:
+- **Signed (Dale's-law) neurons + ReLU activations ⇒ single-quadrant conductance synapse.** With the weight
+  sign carried by excitatory/inhibitory neuron type (in the wiring) and activations ≥0 (ReLU), the synapse
+  becomes a one-quadrant `w·a` *conductance* multiply — Ohmic/linear by construction, no tanh steering, no
+  saturation. This is the biological arrangement and removes the wall at the source.
+- We already have `DALE` (signed neurons, crossed wiring) and `nrelu`. The missing piece is a single-sign
+  *conductance* synapse cell (vs the 4-quadrant Gilbert), then verify it trains better IN-CIRCUIT.
+
+**Refocused path to >0.95 (in-circuit training):** ReLU + signed neurons + linear single-quadrant synapse,
+trained by the in-circuit PC/EP dynamics on real MNIST 8×8. Then close the learning-efficiency gap. No offline
+deploy.
