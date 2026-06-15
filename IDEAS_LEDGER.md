@@ -930,3 +930,14 @@ LAWS:
   layers makes the collapse catastrophic; one hidden layer training HELPS (0.11->0.25) then mildly overshoots.
 - Hidden update is USEFUL but overshoots. PC-faithful fix: keep all layers learning, just SLOW the hidden rate
   (gblh < gblo) so it asymptotes at the peak. Testing single-hidden + slow-hidden-LR + wider.
+
+## 2026-06-15 — full-PC C=10 in SPECTRE: comprehensive ceiling ~0.26 (early-stop); collapse robust to ~13 fixes
+- Best full-PC (all layers learn) C=10 in real Spectre: single-hidden 64,64,10 ~0.26 (early-stopped), then
+  declines with more training. Wider hidden (96) WORSE (0.16). Deep (64,32,16,10) collapses to 0.068.
+- Collapse RESISTS: TD(0.05/0.1/0.2), TD-anneal, gain(0.5), ZEROSUM, PERAZ, CCMS, CCMS+PERAZ, WCLAMP, RWL-leak,
+  depth-reduction, hidden-LR(GBLH 0.3/0.5), width. Backward common-mode IS already handled (x-node cmld).
+- ROOT: training the hidden PC features at C=10 is STRICTLY HARMFUL vs random — the SAME 64,64,10 FROZEN climbs
+  to 0.36 while TRAINED peaks 0.26 then declines. So the PC hidden update destroys discriminative features at
+  high C. Not LR, not output-error, not weight-runaway. The mechanism is in the hidden update direction itself.
+- DECISION POINT (asked user): diagnose-the-collapse / C-curriculum warm-start / two-phase-EP rework / accept
+  lower-C-where-PC-works. ngspice keystone 0.75 and freezing 0.36 both ruled out by user (untrusted / not PC).
