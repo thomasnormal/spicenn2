@@ -756,3 +756,11 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   in ngspice (gen_mc.py). Clean follow-up = run the keystone via the existing spectre_mc.py port at a
   tractable N (the 17MB N=96 deck risks stalling Spectre like the CIFAR decks did; try N~32-48). Until then
   the 0.747 stays in README/ledger with explicit ngspice label, NOT silently swapped into the Spectre paper.
+
+## 2026-06-15 — PROVENANCE RESOLVED: keystone C=10 is ngspice-only (Spectre STALLS)
+- Keystone C=10 N=48 (7.7MB deck) on SPECTRE via spectre_mc.py STALLED at 333ns (trapezoidal ringing,
+  non-convergence). Spectre cannot run keystone decks -> the gen_mc keystone workstream uses ngspice for
+  this reason. So keystone C=10 (paper's 0.587 AND new 0.747) are NGSPICE, not Cadence Spectre.
+- PAPER HONESTY: "all numbers are Cadence Spectre" is too strong for the many-class/keystone row. Deep
+  pc_deep path (2D, depth-4 0.84, mismatch) IS Spectre; gen_mc keystone (C=10) is ngspice. Carve out
+  explicitly. Best honest C=10 = 0.747 (ngspice), un-Spectre-verifiable (deck won't converge) = documentable fact.
