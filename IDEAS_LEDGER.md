@@ -885,3 +885,12 @@ LAWS:
   C=10 collapse (a dynamics problem). ZEROSUM gives the 0.29 start but doesn't stabilize the descent.
 - Next: the documented C=10 movers are PERAZ (per-class auto-zero) + RFGRID (spatial receptive fields), per
   prior gen_mc evidence (keystone hits 0.71-0.75). Apply those to stabilize + climb, not width.
+
+## 2026-06-15 — pc_deep C=10 is a CONFIRMED dead-end (collapse survives every lever); pivot to keystone/ngspice
+- C=10 in pc_deep (Spectre), all collapse from a ~0.20-0.29 epoch-1 peak: ZEROSUM-only ->0.05/0.08;
+  +PERAZ ->0.068; +RFGRID(deep 64,16,4) ->0.052 (4-neuron bottleneck too tight); width (wide) ->0.052.
+  => NO pc_deep lever (width, ZEROSUM, PERAZ, RFGRID) stops the C=10 collapse. Matches the standing note that
+  device-model training-rule fixes don't transfer to ngspice's deep path. STOP fighting pc_deep for C=10.
+- PROVEN C=10 path = the gen_mc / pc1_orch KEYSTONE in ngspice (token-free): C=10 ~0.747, C=5 ~0.87. Pivot
+  there to push past 0.747. pc_deep stays the vehicle for the SHALLOW/low-C analog-laws work (Dale, one-cap,
+  width) where it's reliable (C=4 ~0.83).
