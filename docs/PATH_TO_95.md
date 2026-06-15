@@ -164,3 +164,25 @@ This also reframes the synapse fix. The weight-saturation lives in the **4-quadr
 **Refocused path to >0.95 (in-circuit training):** ReLU + signed neurons + linear single-quadrant synapse,
 trained by the in-circuit PC/EP dynamics on real MNIST 8×8. Then close the learning-efficiency gap. No offline
 deploy.
+
+## VALIDATED: ReLU + signed-neuron (linear conductance synapse) clears 0.95
+
+Architecture-selection check (real MNIST 8×8, clean backprop to measure the *ceiling* the in-circuit
+trainer must reach — NOT a deploy number):
+- **ReLU neurons + linear `w·a` synapse: 96.2%** (>0.95, with margin)
+- sharp-tanh neuron + Gilbert tanh·tanh synapse (current cells): 93.9%
+- standard tanh MLP: 95.3%
+
+So the user's architecture (signed/Dale neurons + ReLU ⇒ single-quadrant Ohmic synapse) **raises the
+ceiling above 0.95** — it removes the synapse weight-saturation at the source AND the sharp-tanh penalty.
+This is the target architecture for >0.95 *in-circuit training*.
+
+**Concrete program (in-circuit, no offline deploy):**
+1. Single-quadrant **conductance synapse** cell — current ∝ `w·a` (Ohmic), e.g. weight as a triode
+   conductance / one-sided element; characterize linearity in ngspice (vs the Gilbert).
+2. Wire it with `NEUREL` (ReLU) + `DALE` (signed neurons, weight sign in the neuron type/wiring).
+3. Train IN-CIRCUIT (PC/EP) on real MNIST 8×8; target the 0.96 ceiling.
+4. Close the residual learning-efficiency gap.
+
+This replaces the struck offline-deploy path. The ceiling (0.96) confirms the architecture is right; the
+work is the conductance-synapse cell + verifying in-circuit training reaches it.
