@@ -186,3 +186,18 @@ This is the target architecture for >0.95 *in-circuit training*.
 
 This replaces the struck offline-deploy path. The ceiling (0.96) confirms the architecture is right; the
 work is the conductance-synapse cell + verifying in-circuit training reaches it.
+
+## Conductance-synapse cell — first characterization (ngspice)
+
+Tested the naive triode multiplier (weight→gate, activation→drain): I ∝ ... measured:
+- **Linear in activation** (constant slope per weight, for small Vds) — good, this is the property the
+  Gilbert lacked (it tanh-saturated in the input).
+- **Square-law in the weight control** (slope ∝ (w−Vt)²: 4.9/26/60/97 µA/V) and saturates at low-w/high-a.
+So the naive triode is *not* a clean `w·a` — but with **signed (Dale) weights** (one sign, so (w−Vt)² is
+monotonic → a valid effective weight) and a **small activation swing** (stay in triode), it is a reasonable
+single-quadrant conductance synapse, far better in activation-linearity than the Gilbert. The cleaner cell
+is a **source-degenerated transconductor with weight-set bias current** (linear in a, weight as gain).
+
+**Status of the corrected (in-circuit) path:** architecture validated (ReLU+signed ⇒ 96.2% ceiling); the
+conductance-synapse cell is a real but well-scoped design (triode candidate characterized; degenerated-gm
+the cleaner option). Next: finalize the cell, wire with NEUREL+DALE, train IN-CIRCUIT on real MNIST 8×8.

@@ -1,0 +1,22 @@
+* Single-quadrant CONDUCTANCE synapse (user's ReLU+signed-neuron regime): weight=gate, activation=drain (triode).
+* I_ds ~= beta*(Vgs-Vt)*Vds for small Vds  => I proportional to w*a (linear product). Test linearity in BOTH.
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.param VW=0.6
+Vw vw 0 {VW}
+Va va 0 0.2
+* triode multiplier: gate=weight, drain=activation (kept small for triode), source=0
+M1 va vw 0 0 NNR W=200u L=100u
+* sense current via a small series source on the drain path
+Vsense vd 0 0.2
+Fmeas 0 0 Vsense 1
+.control
+* sweep activation Va for several weight gate voltages -> check I ~ w*a linearity
+foreach w 0.35 0.5 0.65 0.8
+  alterparam VW = $w
+  reset
+  dc Va 0.0 0.4 0.04
+  let iout = -i(Va)
+  print iout >> /tmp/condsyn.txt
+end
+.endc
+.end
