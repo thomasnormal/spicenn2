@@ -852,3 +852,12 @@ Next: push non-Dale diff one-cap CM-anchor strength + epochs toward the 0.83 two
 - REFINED LAW: one storage cap is free when ACTIVATIONS are unipolar (ReLU or Dale-signed neurons); the 2nd
   cap is only needed for the bipolar-tanh regime (where it also gives CM-anchor + 2x rate). Pairs with the
   user's "positive neurons -> one cap" intuition.
+
+## 2026-06-15 — MORE NEURONS recovers Dale (0.56->0.80 ~= non-Dale 0.83)! but one-cap collapses at width
+- Dale, digits C=4, 2x hidden width (64,32,16,8 -> 64,64,32,16):
+  - two-cap: narrow 0.56 -> WIDE 0.80 (curve 0.54,0.8,0.71,0.8). MORE NEURONS RECOVERS DALE'S ACCURACY,
+    nearly matching non-Dale two-cap 0.83. Validates user's "randomly-signed neurons + use more neurons" plan.
+  - one-cap (fixed-ref ONECAP=2): narrow 0.65 -> WIDE 0.23 (collapsed!). The one-cap does NOT scale with width.
+    Hypothesis: single-ended/half-rate update can't train the larger weight set in the same epochs -> undertrain.
+- So one-cap and "more neurons" DON'T combine: the competitive Dale config (wide, 0.80) needs two caps.
+  Testing whether rate-compensation (2x nudge / more epochs) or seed rescues the wide one-cap.
