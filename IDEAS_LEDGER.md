@@ -733,3 +733,11 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - Paper's claim (line 456: d1 tolerates 2mV, d2 drops to ~1/3 @1mV) STANDS as a d1->d2 statement; I will
   NOT add a misleading "monotone with depth" gradient. Lesson (again): 3-chip yields are too noisy for
   fine trends; only the shallow->deep cliff is statistically clear.
+
+## 2026-06-15 — HINGE anti-collapse = NULL for C=10 (wall confirmed robust)
+- HINGE=1 (freeze-when-confidently-correct) on C=10 spatial+zerosum: 0.304 vs control 0.300 — NO effect
+  (gate doesn't engage; outputs never reach the confidence threshold for C=10). Another null.
+- C=10 DEEP-PATH WALL is now robustly confirmed ~0.30: resisted CCMS, PERAZ, HINGE, feature-count, depth,
+  trained-hidden. ONLY zero-sum targets helped (0.22->0.30). CONCLUSION: pc_deep's deep differential path
+  is structurally walled at C=10; the keystone path (gen_mc, zero-sum+PERAZ) reaches 0.71 and is the answer
+  for many-class. This is a clean, well-tested negative bound — not for lack of trying.
