@@ -912,3 +912,13 @@ LAWS:
 - WIDE single random-feature layer >> deep (more random features, like keystone's N=96). Both still climbing
   at 8 epochs -> more features + more epochs should push toward the ngspice keystone's 0.747, but now in SPECTRE
   (trustworthy transistor-level). This is the path to a real Spectre C=10 number, not ngspice-only.
+
+## 2026-06-15 — C=10 collapse is in the HIDDEN PC dynamics (output-error fixes all fail identically)
+- Full-PC C=10 (all layers learn) collapses to EXACTLY 0.068 with an IDENTICAL trajectory [peak~0.20-0.29 @ep1
+  -> 0.13 -> 0.05 -> 0.068] regardless of: TD (0.05/0.1/0.2), TD-anneal (0.85), update gain (0.5), ZEROSUM,
+  PERAZ, CCMS (cross-class CM subtraction), and CCMS+PERAZ. NONE of the OUTPUT-error knobs change the trajectory.
+- => the collapse is NOT learning-rate and NOT output-error shaping; it is the HIDDEN-LAYER PC dynamics. One
+  epoch HELPS (0.10->0.20) then a positive-feedback collapse takes over = hidden features running away
+  (synapse saturation / rich-get-richer among neurons). This is exactly what FREEZING bypassed (but user wants
+  full PC). Testing HIDDEN-faithful brakes (keep all layers learning): WCLAMP (diode weight clamp vs runaway),
+  RWL leak (pull weights back), single-hidden 64,64,10 (shorter backward path = less compounding).
