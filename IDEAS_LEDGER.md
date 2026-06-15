@@ -770,3 +770,7 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   -> more data helps to ~80/cls then SATURATES at ~86.5%. Trained MLP features = 87.5% (barely > random
   86.5% -> data-limited, not feature-limited). So C=10 in-circuit ceiling ~0.76 (88% eff of 86.5); 0.747
   (NTR=40) is already near-optimal. Running NTR=80 to confirm in-circuit follows the ideal toward ~0.76.
+- KEYSTONE C=10 NTR=80 (2x data) = 75.0% vs NTR=40 74.7% (+0.3 only). The ideal's +3pt data gain did NOT
+  translate in-circuit (eff ~87.5% both). So C=10 is CAPPED ~0.75 in-circuit (data + efficiency limited).
+  0.747 headline is near-optimal & well-justified; NOT changing it (75.0 confirms the ceiling, within noise).
+  C=10 THREAD FULLY BOUNDED: best 0.747 (robust 3-seed), ceiling ~0.75, ideal ~86.5% (data-limited), ngspice.
