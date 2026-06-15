@@ -804,3 +804,14 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   the differential pair wasn't just storage, it was drift-rejection. One-cap is achievable but needs the
   single-cap drift handled (per-synapse auto-zero, or a reference that tracks common-mode, or drift-robust
   update) before it's free. Naive 1-cap costs ~0.45 accuracy in-circuit.
+
+## 2026-06-15 — one-cap deficit is STRUCTURAL (not rate); needs a balanced single-cap update
+- ONECAP rate-compensation test: more epochs (NEP=16) plateaus at 0.37; 2x nudge (TD=0.2) -> 0.46. NEITHER
+  recovers the two-cap 0.83. So the one-cap deficit is NOT just the halved update rate -- it's STRUCTURAL.
+- ROOT CAUSE: gprod update is push-pull differential (iop charges wp UP, ion charges wn DOWN; weight=wp-wn
+  integrates iop-ion). With wn=fixed source, ion sinks into the source -> only iop acts AND the update is
+  ASYMMETRIC (up-drive works, down-drive lost) -> worse equilibrium. To get one-cap WITHOUT the loss needs a
+  BALANCED single-cap update: route (iop - ion) into the single wp cap (current subtraction before the cap),
+  so the bipolar weight integrates the full differential gradient on one node. That's a real gprod-output
+  rewire (cell redesign), not a knob. VERDICT: one-cap halves caps but needs the balanced-update redesign;
+  naive fixed-ref costs ~0.4 acc. The user's 1-cap constraint is achievable but is a cell-design task.
