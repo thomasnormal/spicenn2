@@ -77,3 +77,21 @@ Real MNIST 8×8, trained MLP (exactly pc_deep's input→tanh-hidden→readout ar
 So idea #10 is now a concrete target: train 64→64→10 offline (0.953), deploy weights via WLOAD, run
 in-circuit INFERENCE (training-assisted). If inference is high-fidelity (cf. "deploy ridge→1.0"), this is
 a >0.95 in-circuit-inference number — no 28×28, no exotic cells. Building the deploy pipeline now.
+
+## Deploy-pipeline feasibility (#10), measured
+
+pc_deep's neuron is a *sharp* tanh ($0.537\tanh(15.7u)$, near-binary), not standard tanh. Deploying
+standard-MLP weights would mismatch, so the MLP must be trained with the device transfer. Measured cost:
+a 64→64→10 MLP with sharp activation (gain 6–12) reaches ~0.91–0.92 (quick training) vs ~0.93 at gain 1 —
+**the sharp neuron costs ~1–2 points.** So device-matched deploy on 8×8 lands ~0.93–0.95: **borderline** for
+>0.95. Clean margin needs either (a) 128 hidden + thorough device-matched training, or (b) 28×28 input.
+
+**Concrete #10 build (the executable recipe):**
+1. Replicate pc_deep's exact forward in numpy (sharp neuron + degenerated-synapse gain + wgv rail map).
+2. Train 64→128→10 on real MNIST 8×8 with that forward (target ~0.95 device-matched).
+3. Export weights → WLOAD JSON (keys `L_j_p`, biases `wbp_b_L_j`), dense (FANIN=64, KOUT=128/64).
+4. Run pc_deep TASK=mnist with WLOAD + learning-gate OFF (deploy + inference-only) → read eval accuracy.
+5. Gap to verify: does in-circuit inference match the device-matched offline number (cf. "deploy ridge→1.0")?
+
+**Status:** path fully analyzed and grounded; the deploy pipeline is a defined multi-step build (steps 1–5),
+borderline-0.95 on 8×8 / clean on 28×28. This is the recommended next focused effort for a >0.95 number.
