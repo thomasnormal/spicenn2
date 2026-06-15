@@ -741,3 +741,11 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   trained-hidden. ONLY zero-sum targets helped (0.22->0.30). CONCLUSION: pc_deep's deep differential path
   is structurally walled at C=10; the keystone path (gen_mc, zero-sum+PERAZ) reaches 0.71 and is the answer
   for many-class. This is a clean, well-tested negative bound — not for lack of trying.
+
+## 2026-06-15 — keystone C=10 reproduced: 74.7% (ngspice, token-free)
+- run_iso.sh N=96 (zero-sum targets TGHI=0.8/TGLO=0.467 + tuned PERAZ RAZ=6e3/CAZ=3e-3), real ngspice:
+  acc=74.7% (n=600, ALL 10 classes alive per-class [92,90,75,67,78,62,58,85,88,52], ideal 85.3%, eff 88%).
+  BEATS memory's 71.2% and the paper's current 0.587. BEST in-circuit C=10.
+- PROVENANCE CARE: this is NGSPICE (gen_mc.py), paper claims all-Spectre. The paper's 0.587 may be the
+  Spectre port (spectre_mc.py). Do NOT silently swap 0.587->0.747 across simulators. Either (a) run the
+  Spectre port for matching provenance, or (b) report 74.7% explicitly labeled ngspice. Checking spectre_mc.
