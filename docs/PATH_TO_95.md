@@ -106,3 +106,24 @@ The device nonlinearities (the tanh·tanh synapse "multiply" that saturates in t
 and the ±1.33 weight clip) cost **~3 points**. So idea #10 on 8×8 deploys to **~0.93 — below 0.95.**
 The synapse's weight-saturation (tanh(2.6·w), so effective weight range is compressed) is the main loss.
 [Checking whether 28×28 or wider hidden recovers the margin.]
+
+## Deploy feasibility — FINAL (device-matched, measured)
+
+| device-matched MLP (pc_deep transfers + ±1.33 weight clip) | acc |
+|---|---|
+| 8×8 64→128→10 | 0.929 |
+| 8×8 64→256→10 | **0.939** |
+| 28×28 784→128→10 | 0.916 |
+
+**Conclusion: idea #10 deploys to ~0.94 on 8×8 — borderline below 0.95.** The binding wall is the
+**synapse cell's weight-saturation** (`tanh(2.6·w)` compresses the effective weight range): summing more
+inputs saturates it harder, which is why **28×28 is *worse* (0.916), not better** — resolution is not the
+lever. So:
+- A >0.95 *learned* in-circuit number is out of reach with these cells (deploy is the ceiling, and it's ~0.94).
+- The single highest-leverage change for >0.95 is **a more linear synapse** (degeneration is already in; need
+  more, or a different multiplier topology) — i.e. ideas #5/#6 (cell efficiency), not more data/resolution/depth.
+- ~0.94 inference-in-circuit (training-assisted, device-matched) is itself a strong result (vs 0.747 learned)
+  and is the realistic near-term headline; >0.95 is a cell-design problem.
+
+**Net answer to "path to >0.95":** representation is solved (8×8 trained net is enough); the wall is the
+analog **synapse linearity** (deploy ceiling ~0.94). Fund the synapse-cell redesign, not bigger inputs.
