@@ -815,3 +815,20 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   so the bipolar weight integrates the full differential gradient on one node. That's a real gprod-output
   rewire (cell redesign), not a knob. VERDICT: one-cap halves caps but needs the balanced-update redesign;
   naive fixed-ref costs ~0.4 acc. The user's 1-cap constraint is achievable but is a cell-design task.
+
+## 2026-06-15 — one-cap is REGIME-DEPENDENT; the 2nd cap's hidden job = common-mode anchoring (digits C=4)
+Baselines: non-Dale two-cap 0.83; Dale two-cap 0.56 (Dale sign-constraint costs ~0.27 on its own).
+Tested 3 one-cap synapse designs (all HALVE the weight caps, verified in deck):
+- Naive fixed-ref (wn=VW0), BIPOLAR/non-Dale: 0.38. Breaks the gprod push-pull (only wp moves, asymmetric).
+  More epochs / 2x nudge do NOT recover -> not just halved-rate.
+- Differential cap (Cw across wp-wn), weak anchor RWL=2g: 0.23. ROOT CAUSE found by elimination
+  (not bleed @2g, not half-rate @15p=0.29, not nudge @0.26): the single cap holds only the DIFFERENCE,
+  leaving the common-mode of wp/wn unanchored -> nodes drift out of operating region.
+- Differential cap + STRONG CM anchor RWL=100meg (diff tau still >> sim): 0.64 and still climbing. CONFIRMS
+  CM-drift was the failure. => the two-cap's "redundant" 2nd cap is doing DOUBLE duty: differential storage
+  AND per-node DC operating-point (common-mode) anchoring. One cap can hold one of those, not both, for free.
+- Dale (UNIPOLAR) fixed-ref one-cap: 0.65 vs Dale two-cap 0.56 -> one-cap is FREE in the Dale regime
+  (unipolar weight needs no push-pull, so single-ended is fine). Validates user's positive-neuron+1cap pairing.
+LAW (proposed): a single storage cap suffices iff EITHER (a) weights are unipolar (Dale: sign in wiring), OR
+(b) the node common-mode is separately anchored (strong-enough resistor). Bipolar + weak anchor needs 2 caps.
+Next: push non-Dale diff one-cap CM-anchor strength + epochs toward the 0.83 two-cap ceiling (one cap, full acc).
