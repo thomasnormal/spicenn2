@@ -764,3 +764,5 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - PAPER HONESTY: "all numbers are Cadence Spectre" is too strong for the many-class/keystone row. Deep
   pc_deep path (2D, depth-4 0.84, mismatch) IS Spectre; gen_mc keystone (C=10) is ngspice. Carve out
   explicitly. Best honest C=10 = 0.747 (ngspice), un-Spectre-verifiable (deck won't converge) = documentable fact.
+- KEYSTONE C=10 = 0.747 SEED-ROBUST: 3 init seeds = 74.7/74.8/74.7% (spread 0.1%). Solid headline, not
+  seed-luck. (Varies init seed; data fixed -> init-robust. Confirms the paper's C=10=0.747 is reliable.)
