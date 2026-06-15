@@ -861,3 +861,18 @@ Next: push non-Dale diff one-cap CM-anchor strength + epochs toward the 0.83 two
     Hypothesis: single-ended/half-rate update can't train the larger weight set in the same epochs -> undertrain.
 - So one-cap and "more neurons" DON'T combine: the competitive Dale config (wide, 0.80) needs two caps.
   Testing whether rate-compensation (2x nudge / more epochs) or seed rescues the wide one-cap.
+
+## 2026-06-15 — COMPLETE Dale x width x cap map (digits C=4); width = capacity-restorer, not general lever
+                          narrow(64,32,16,8)   wide(64,64,32,16)
+  non-Dale two-cap            0.83                0.82          <- width does NOT help unconstrained net
+  Dale     two-cap            0.56                0.80          <- MORE NEURONS RESCUES Dale (capacity restore)
+  Dale     one-cap            0.65                0.23 unstable <- one-cap COLLAPSES at width; rate-comp (16ep+
+                                                                   2x nudge) does NOT fix (0.23 flat) => fundamental
+  non-Dale one-cap(diff+anch) 0.67                 -
+LAWS:
+- "More neurons" is a CAPACITY-RESTORING lever for CONSTRAINED regimes (Dale sign-constraint), NOT a general
+  accuracy booster. Unconstrained non-Dale is already at its depth/arch ceiling ~0.83; width can't break it.
+- => the path past 0.83 toward 0.96 is FEATURE/LEARNING quality (depth, better features, in-circuit learning
+  efficiency), NOT width. Confirms user's "don't go too wide" instinct for the unconstrained case.
+- One-cap scales to neither width nor the bipolar-tanh regime; free only narrow + unipolar (Dale/ReLU). The
+  competitive analog design is TWO-CAP: non-Dale narrow (0.83) or Dale wide (0.80, biological + signed).
