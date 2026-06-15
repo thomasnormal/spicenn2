@@ -69,3 +69,11 @@ Two corrections to the analysis above, from measuring on *real* MNIST (not sklea
 - **The binding constraint for >0.95 *in-circuit* is efficiency, not the ceiling.** At our ~88% in-circuit/ideal efficiency, even a 0.95 ideal yields ~0.84 in-circuit. So Idea #5 (offset-canceling cells → push efficiency toward ~0.98) is *required*, not optional, for a >0.95 in-circuit number.
 
 **Refined recommended path:** real MNIST 8×8 (done: `data/mnist_real_8x8.npz`) + trained nonlinear features (#3, via the amplitude-restoring backward) to reach a ~0.95 ideal at modest cell count, + offset cancellation (#5) to convert that into >0.95 in-circuit. Idea #10 (deploy trained weights) remains the fastest route to a labeled >0.95 inference number meanwhile.
+
+## BREAKTHROUGH: >0.95 is deployable on 8×8 (idea #10 is concrete)
+
+Real MNIST 8×8, trained MLP (exactly pc_deep's input→tanh-hidden→readout architecture):
+`64→64→10 = 0.953`, `64→128→10 = 0.960`, `64→128→64→10 = 0.964` — **>0.95 on a 64-input circuit**.
+So idea #10 is now a concrete target: train 64→64→10 offline (0.953), deploy weights via WLOAD, run
+in-circuit INFERENCE (training-assisted). If inference is high-fidelity (cf. "deploy ridge→1.0"), this is
+a >0.95 in-circuit-inference number — no 28×28, no exotic cells. Building the deploy pipeline now.
