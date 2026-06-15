@@ -717,3 +717,10 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
 - LESSON: never draw a tuning conclusion from data measured under a confound (the noise). The user's
   original skepticism ("sure throwing away magnitude is good?") was right to probe — answer: neither
   extreme is good; the tuned middle (original default) is best. Caught by re-checking noise-free.
+
+## 2026-06-15 — cascade-gain law: d4 point completes the depth axis
+- d4 (4 hidden, spirals): NRW 100=0.84, 200=1.0, 400=1.0, 800=0.0(FAILS). Over-gain ceiling = ~400-800.
+- FULL DEPTH AXIS (over-gain ceiling, where anti-lock starts): d1 >1600 / d2 ~800-1600 / d3 ~800 / d4 ~400-800.
+  Ceiling MONOTONICALLY DROPS with depth -> confirms cascade-gain budget (per-stage gain ~G*^(1/depth));
+  deeper nets MUST run lower per-stage gain or the cascade over-drives into anti-lock. 4 clean depth points.
+  (Method note: ngspice can't run deep nets even at 480 slots = single-threaded; deep needs Spectre +mt.)
