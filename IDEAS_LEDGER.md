@@ -724,3 +724,12 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   Ceiling MONOTONICALLY DROPS with depth -> confirms cascade-gain budget (per-stage gain ~G*^(1/depth));
   deeper nets MUST run lower per-stage gain or the cascade over-drives into anti-lock. 4 clean depth points.
   (Method note: ngspice can't run deep nets even at 480 slots = single-threaded; deep needs Spectre +mt.)
+
+## 2026-06-15 — mismatch-yield-vs-depth: d3 point does NOT confirm fine monotonicity (honest)
+- d3 (2-4-4-4-2 @NRW200) yield at 1mV = 2/3 (chips 1.0/0.0/1.0). HIGHER than d2's 1/3. So the effect is a
+  CLIFF (d1 robust @2mV -> deep fragile @1mV), NOT a fine monotone gradient: d2(1/3) vs d3(2/3) are within
+  3-chip sampling noise. Predicted d3<d2 (monotone); got d3>d2. The d1->deep transition is the real,
+  clear effect; finer depth ordering needs many more chips than the 3-chip budget resolves.
+- Paper's claim (line 456: d1 tolerates 2mV, d2 drops to ~1/3 @1mV) STANDS as a d1->d2 statement; I will
+  NOT add a misleading "monotone with depth" gradient. Lesson (again): 3-chip yields are too noisy for
+  fine trends; only the shallow->deep cliff is statistically clear.
