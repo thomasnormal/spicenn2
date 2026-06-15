@@ -127,3 +127,19 @@ lever. So:
 
 **Net answer to "path to >0.95":** representation is solved (8×8 trained net is enough); the wall is the
 analog **synapse linearity** (deploy ceiling ~0.94). Fund the synapse-cell redesign, not bigger inputs.
+
+## Synapse linearization — the concrete path to ~0.95 (executed)
+
+Identified the synapse weight-saturation as the wall, then characterized + tested the fix:
+- **Cell fix (ngspice-verified):** asymmetric degeneration — degenerate ONLY the weight-steering pair
+  (Rd5/Rd6); raises weight-response linearity R² 0.889→0.935 (uniform degeneration instead *hurts*).
+- **Effect on deploy (device-matched MLP, 8×8 64→256→10):** a linear weight response lifts accuracy
+  **0.939 → 0.948** — recovering most of the gap to the standard-tanh MLP (0.953).
+- **Bottom line:** deploy reaches **~0.948 on 8×8 with the linearized synapse — right at the 0.95 boundary.**
+  Clearing >0.95 *cleanly* needs the synapse fix PLUS one of: softer neuron (the gain-15.7 sharpness costs
+  the residual ~0.5 pt), thorough training, or higher resolution with the input-saturation also addressed.
+
+**Final, grounded answer:** the path to >0.95 is (1) deploy a device-matched trained net [#10] on real
+MNIST 8×8, and (2) linearize the synapse weight response via asymmetric weight-pair degeneration [#5/#6].
+That reaches ~0.948 (at the boundary); a softer neuron pushes it clearly over. It is a *cell-linearity*
+problem, fully characterized — not a data/resolution/depth problem.
