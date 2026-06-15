@@ -791,3 +791,16 @@ ING bwmm: BIASW=1 on DEAD chip2@2mV (ref 0.250) — the proper test of "on-chip 
   quad at 12k) LINEARIZES: RDW 12k->40k->100k->200k gives R^2 0.889->0.912->0.925->0.935 (swing 0.204->
   0.142->0.084->0.051). Sweet spot RDW=40k (R^2 0.912, 70% swing). Real cell improvement = a more-linear
   synapse weight response via asymmetric degeneration. Testing if it recovers the device-MLP toward 0.95.
+
+## 2026-06-15 — ReLU+signed in-circuit + ONE-CAP synapse (user directions, tested in-circuit)
+- ReLU+signed on real MNIST C=10 in-circuit (narrow spatial 16,4): tanh 0.136 / ReLU 0.200 / ReLU+Dale 0.200
+  (then collapses). ReLU HELPS in-circuit (0.20 vs 0.136) — direction confirmed; but all ~0.20 << 0.96
+  architecture ceiling -> the in-circuit LEARNING at narrow width is the wall (only 4 features; validated
+  arch is H~64). Real MNIST is harder than sklearn at narrow width.
+- ONE-CAP synapse (user's "1 cap/synapse"): structurally DONE (ONECAP knob, wn=fixed ref -> 120 caps vs 240,
+  HALVED). BUT trains WORSE: digits C=4 one-cap 0.38 vs two-cap 0.83. WHY: the differential 2-cap storage
+  provides COMMON-MODE REJECTION (wp,wn move oppositely -> drift cancels in wp-wn); a single cap vs fixed
+  reference has NO such cancellation -> the cap's drift/offset corrupts the weight directly. HONEST FINDING:
+  the differential pair wasn't just storage, it was drift-rejection. One-cap is achievable but needs the
+  single-cap drift handled (per-synapse auto-zero, or a reference that tracks common-mode, or drift-robust
+  update) before it's free. Naive 1-cap costs ~0.45 accuracy in-circuit.
