@@ -201,3 +201,19 @@ is a **source-degenerated transconductor with weight-set bias current** (linear 
 **Status of the corrected (in-circuit) path:** architecture validated (ReLU+signed ⇒ 96.2% ceiling); the
 conductance-synapse cell is a real but well-scoped design (triode candidate characterized; degenerated-gm
 the cleaner option). Next: finalize the cell, wire with NEUREL+DALE, train IN-CIRCUIT on real MNIST 8×8.
+
+## VALIDATED: ReLU + random-fixed-sign neurons (Dale's law) — the brain architecture is nearly free
+
+User's refinement: unsigned (ReLU, a≥0) neurons, each randomly assigned a FIXED sign (excitatory/inhibitory),
+overprovision the count. Consequence: synapse operands are BOTH non-negative (a≥0, |w|≥0; ± carried by the
+presynaptic neuron's type via routing) ⇒ a **pure positive×positive conductance multiply** — the cleanest,
+most-linear synapse possible (no sign-steering at all). Architecture ceiling (real MNIST 8×8, clean backprop):
+| H | Dale (random fixed signs) | unconstrained |
+|---|---|---|
+| 64 | **95.6%** | 95.9% |
+| 128 | **96.4%** | 96.2% |
+| 256 | 96.4% | 97.0% |
+The Dale sign-constraint costs **~0.3 pt at H=64 and is FREE by H=128** — overprovisioning pays for it
+exactly as predicted. So the target architecture is settled: **ReLU + random-fixed-sign neurons (H~64-128) +
+positive×positive conductance synapse**, ceiling ~0.96. Biologically faithful AND the cleanest analog cell.
+This is now the architecture for the in-circuit >0.95 effort (replaces the Gilbert 4-quadrant synapse).
