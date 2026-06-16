@@ -951,3 +951,13 @@ LAWS:
 - MATCHES the known "target-negativity-vs-C crossover @C~8": zero-sum targets push 9 classes DOWN vs 1 UP;
   net-negative pressure shrinks weights at high C. => the mechanism-correct lever is TARGET NEGATIVITY (ZSNEG),
   not learning rate / clamp / curriculum / two-phase. Testing ZSNEG sweep at C=10.
+
+## 2026-06-16 — ZSNEG flat too; full-PC C=10 single-hidden is a ROBUST ~0.25 ceiling (15+ levers fail)
+- ZSNEG sweep (0.0/0.05/0.20) at C=10: BEST 0.252/0.256/0.264 -- FLAT, byte-identical curves. Target negativity
+  does NOT control the collapse (diagnosis was right that weights shrink, but ZSNEG isn't the driver).
+- ROBUST CEILING: full-PC C=10 single-hidden tops out ~0.25 (early-stop) then declines to ~0.14, INVARIANT to:
+  TD/anneal/gain, ZEROSUM, PERAZ, CCMS, WCLAMP, RWL-leak, depth, hidden-LR(GBLH), width, two-phase EP (CHL),
+  curriculum warm-start, ZSNEG. The trajectory is near-deterministic across all of these.
+- HONEST STATE: trustworthy full-PC C=10 in Spectre = ~0.25 early-stopped. The collapse (weights shrink ->
+  uniform output) is robust to every standard + several non-standard levers. Remaining directions are DEEP
+  reworks (forward-settling stability, output representation, input/feature encoding), not knobs. Reported to user.
