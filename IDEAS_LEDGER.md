@@ -961,3 +961,15 @@ LAWS:
 - HONEST STATE: trustworthy full-PC C=10 in Spectre = ~0.25 early-stopped. The collapse (weights shrink ->
   uniform output) is robust to every standard + several non-standard levers. Remaining directions are DEEP
   reworks (forward-settling stability, output representation, input/feature encoding), not knobs. Reported to user.
+
+## 2026-06-16 — LITERATURE: EP many-class collapse = one-sided NUDGE BIAS; fix = SYMMETRIC (+/-beta) nudging
+- Laborieux et al. (Front. Neurosci. 2021, arXiv 2006.03824): one-sided EP gradient has O(beta) bias that
+  accumulates and "does not scale to tasks harder than MNIST" (86% CIFAR err). SYMMETRIC/centered nudging
+  (run +beta AND -beta equilibration phases, update on (grad_+ - grad_-)/2beta) cancels the leading bias ->
+  O(beta^2). This MATCHES our C~8 cliff exactly (fine easy, collapse harder).
+- PC+EP ImageNet (arXiv 2606.03584): symmetric/centered nudging + CE-nudge (softmax) + layerwise ASYNC updates
+  (even-then-odd, avoids synchronous collapse) + weight-align (equal leakage) -> 1000-class PC works.
+- WE ALREADY HAVE: CE+softmax (SOFTC), fwd/bwd weight alignment (shared-cap transpose). MISSING: SYMMETRIC
+  nudging. CRUCIAL: our CHL=1 is FREE-vs-CLAMPED = the ONE-SIDED biased estimate, NOT symmetric +/-beta. So the
+  real fix was never tested. ACTION: implement symmetric nudge (+beta clamp toward label, -beta clamp away,
+  update on difference) and test at C=10. Also try layerwise async update ordering.
