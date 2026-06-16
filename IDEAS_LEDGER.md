@@ -941,3 +941,13 @@ LAWS:
   high C. Not LR, not output-error, not weight-runaway. The mechanism is in the hidden update direction itself.
 - DECISION POINT (asked user): diagnose-the-collapse / C-curriculum warm-start / two-phase-EP rework / accept
   lower-C-where-PC-works. ngspice keystone 0.75 and freezing 0.36 both ruled out by user (untrusted / not PC).
+
+## 2026-06-16 — DIAGNOSIS: C=10 collapse = weights SHRINK to zero (target negativity), not saturation
+- All-parallel directions: Dir3 two-phase EP (CHL) NO fix (0.20/0.21); Dir2 curriculum warm-start C6->C8 NO
+  fix (0.18 < cold 0.23); Dir4 crossover = CLIFF at C~7-8 (C4 0.76, C6 0.51, C8 0.23, C10 0.26).
+- Dir1 DIAGNOSIS (compare saved weights C6-healthy vs C8-collapsed): collapsed net has SMALLER weight std
+  (HID 0.022 vs 0.033, OUT 0.033 vs 0.046), satfrac=0. => weights SHRINK toward zero (uniform output ->
+  below-chance), NOT runaway/saturation. Explains why WCLAMP/leak/LR all failed (wrong mechanism).
+- MATCHES the known "target-negativity-vs-C crossover @C~8": zero-sum targets push 9 classes DOWN vs 1 UP;
+  net-negative pressure shrinks weights at high C. => the mechanism-correct lever is TARGET NEGATIVITY (ZSNEG),
+  not learning rate / clamp / curriculum / two-phase. Testing ZSNEG sweep at C=10.
