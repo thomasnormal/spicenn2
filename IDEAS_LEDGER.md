@@ -1077,3 +1077,11 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   DSEED=0, SEED=1/2: indiv 0.492/0.460 -> VOTE(sum margins, argmax) = 0.556 (+6-9pt). Diverse analog nets make
   different errors -> voting corrects. Hardware-cheap (sum output rails, no new cell). Scaling to 5-10 nets.
 - Conv (idea 1) scaling pending (K=4=0.392 low; K=8/16 running). Ensemble is the cheapest big lever so far.
+
+## 2026-06-17 — CONV (idea 1) underperforms; ENSEMBLE (idea 7) is the lever toward 0.90
+- Conv weight-shared sweep (8x8): K=4=0.392, K=8=0.364, K=16=0.316 (MORE filters WORSE); 16x16 conv K=2=0.304,
+  K=4=0.368. All BELOW RFGRID 0.452 and dense 0.41. Weight-sharing cut per-filter capacity + bigger conv layers
+  undertrain in the horizon; single conv layer + PC update didn't yield diverse useful filters. Conv-as-built is
+  NOT the path (big-filter decks also 5hr+ impractical). Built+working (wkey sharing) but not a win as-is.
+- ENSEMBLE is the winner: 2-net vote 0.49/0.46 -> 0.556 (+6-9pt). Scaling to 8-10 nets (DSEED fixed test set).
+  Cheap (sum rails), hardware-friendly, compounds. THE clearest line to 0.90.
