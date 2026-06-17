@@ -1091,3 +1091,8 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   Vote >> any individual (~0.45). Climbing; pushing to 9-11 nets. Cheap (sum output rails), hardware-friendly.
 - Combined plan to 0.90: ensemble (this) x stronger single nets (RFGRID 0.452 base, symmetric+decay). Conv ruled
   out as-built. Diminishing returns expected as vote saturates at consensus ceiling, but 0.45->0.62 is the lever.
+
+## 2026-06-17 — ENSEMBLE 7-net = 0.696 (mean indiv 0.41, best 0.49); strong scaling, the path to 0.90
+- deep+decay C=10 DSEED=0 (fixed test set), vote=argmax(sum margins): 2-net 0.48, 3-net 0.57, 5-net 0.60,
+  7-net 0.696. Vote +0.20 over mean individual (0.41). Still climbing -> scaling to 14 nets. Hardware-trivial
+  (sum output rails). THE lever. (n=175-250 test, some noise, but trend clear.) Combine w/ stronger base nets.
