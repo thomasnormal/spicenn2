@@ -1062,3 +1062,12 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
 - CONCLUSION: the real lever (idea 1 FULL) = MULTI-CHANNEL WEIGHT-SHARED CONV (dense 2x2 local windows, K filters
   per position, shared caps). Single-channel RFGRID + sparse fan-in can't exploit more pixels. Next build: conv
   layer generator in pc_deep (K channels, weight-shared, dense local RF). Ensemble (idea 7) vote pending (4 seeds).
+
+## 2026-06-17 — first-strike VERDICT + next build = multi-channel weight-shared conv
+- Confirmed bottleneck: 8x8 single-channel ~0.45 ceiling is FEATURE CAPACITY (data/hinge/resolution-via-sparse
+  all neutral-or-worse). The ONLY lever that adds usable features = idea 1 FULL: multi-channel weight-shared
+  conv (dense 2x2 local windows x K filters per position, shared weight caps). This is the next build.
+- Ensemble (idea 7) caveat: SEED controls BOTH data-split AND connectivity (pc_deep line 17), so different-SEED
+  runs have DIFFERENT test sets -> mout files not aligned -> can't per-example vote. To ensemble properly: add a
+  separate DSEED (data split) knob, fix it, vary the net seed -> same test set, diverse nets -> vote. TODO.
+- Best so far on C=10 (deep, full-PC, Spectre): symmetric+decay ~0.41-0.45 (RFGRID local RFs best at 0.452).
