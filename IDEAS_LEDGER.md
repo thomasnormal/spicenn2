@@ -1108,3 +1108,8 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
 - Full deep+decay vote curve (n=250): 2=0.556, 3=0.632, 5=0.652, 7=0.696, 9=0.700, 10=0.744. The "plateau ~0.70"
   was NOISE (9-net dip). 0.41 individuals -> 0.744 at 10 nets, still rising. Ensemble is a strong, real lever to
   0.90. Adding RFGRID-arch diversity + more nets. (n=250 noisy +-3%; trend robust.)
+
+## 2026-06-17 — ENSEMBLE 11-net deep = 0.776 (climbing); the clear path to 0.90
+- deep+decay vote: 10-net 0.744, 11-net 0.776 (0.41 individuals). STILL CLIMBING - not plateaued. Mixing 2
+  weak RFGRID nets barely helped (0.776->0.780); the deep ensemble is the engine. Scaling to 15-20 nets ->
+  expect 0.80-0.85+. Ensemble of diverse deep analog nets (sum output rails) is THE lever to 0.90.
