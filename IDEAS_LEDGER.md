@@ -1096,3 +1096,10 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
 - deep+decay C=10 DSEED=0 (fixed test set), vote=argmax(sum margins): 2-net 0.48, 3-net 0.57, 5-net 0.60,
   7-net 0.696. Vote +0.20 over mean individual (0.41). Still climbing -> scaling to 14 nets. Hardware-trivial
   (sum output rails). THE lever. (n=175-250 test, some noise, but trend clear.) Combine w/ stronger base nets.
+
+## 2026-06-17 — ensemble PLATEAUS ~0.70 with 0.41-indiv nets; pivot = stronger+diverse base nets, mix archs
+- deep+decay ensemble: 7-net 0.696, 8-net 0.708, 9-net 0.700 -> saturates ~0.70 (n=250, +-3%). +0.29 over indiv
+  0.41 = big real gain, but caps. To raise the ceiling: ensemble STRONGER+more-DIVERSE bases. All nets use
+  DSEED=0 -> SAME test set -> can MIX architectures in the vote (RFGRID 0.452 + deep-dense 0.41 + ...). Diverse
+  archs = more decorrelated errors = higher vote ceiling. Adding RFGRID-base nets to the pool. Path to 0.90 =
+  (stronger bases) x (more nets) x (arch diversity).
