@@ -80,8 +80,9 @@ if RC>0:   # compressive radial normalization (foveal/retinal gain): expand cent
     _r=np.linalg.norm(X,axis=1,keepdims=True); X=X/(RC+_r)
 m=X.mean(0); s=X.std(0)+1e-6; X=(X-m)/s*SCALE
 Xtr=[];ytr=[];Xte=[];yte=[]
+_drng=np.random.default_rng(int(os.environ.get("DSEED",SEED)))   # DSEED: data split seed, decoupled from net seed -> ensemble nets share a FIXED test set
 for c in range(C):
-    i=np.where(y==c)[0]; rng.shuffle(i)
+    i=np.where(y==c)[0]; _drng.shuffle(i)
     for k in i[:NTR]: Xtr.append(X[k]); ytr.append(c)
     for k in i[NTR:NTR+NTE]: Xte.append(X[k]); yte.append(c)
 Xtr=np.array(Xtr); ytr=np.array(ytr); Xte=np.array(Xte); yte=np.array(yte)
