@@ -53,6 +53,10 @@ def gen():
         dd=np.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),"data/mnist_real_8x8.npz"))
         Xd=dd["X"].astype(float); yd=dd["y"]; keep=yd<C
         return Xd[keep], yd[keep]
+    elif TASK=="mnist16":   # REAL MNIST 16x16 (256 inputs; ideal ceiling ~93% vs 8x8 ~85%) for conv/RFGRID depth
+        dd=np.load(os.path.join(os.path.dirname(os.path.abspath(__file__)),"mnist_16x16.npz"))
+        Xd=dd["X"].astype(float); yd=dd["y"]; keep=yd<C
+        return Xd[keep], yd[keep]
     elif TASK=="cifar":   # CIFAR-10 downsampled. CIF64=1 -> top-64 color features (ngspice-tractable, ceiling 0.345);
         G=int(os.environ.get("CIFG","8"))                          # CIFCOLOR=1 -> color GxG (ceiling 0.41); else grayscale (0.30)
         if int(os.environ.get("CIF64","0")):
