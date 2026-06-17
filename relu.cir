@@ -1,0 +1,13 @@
+* transistor ReLU
+.model NMOS1 NMOS (LEVEL=1 VTO=0.5 KP=120u LAMBDA=0.02 GAMMA=0.4 PHI=0.7)
+M1 d g 0 0 NMOS1 W=10u L=1u
+Vds d 0 dc 0.6
+Vg  g 0 dc 0
+.control
+  dc Vg -0.5 1.6 0.005
+  let id = -i(Vds)
+  let gm = deriv(id)
+  wrdata relu.txt id gm
+  echo reludone
+.endc
+.end

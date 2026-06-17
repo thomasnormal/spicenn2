@@ -1,0 +1,344 @@
+* frozen inference
+.model NSYN NMOS (LEVEL=1 VTO=0.2 KP=50u LAMBDA=0 GAMMA=0 PHI=0.7)
+.model NMIR NMOS (LEVEL=1 VTO=0.5 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PMIR PMOS (LEVEL=1 VTO=-0.5 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model NREL NMOS (LEVEL=1 VTO=0.5 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vvdd vdd 0 3
+Vrefh vrefh 0 0.5
+Vrefo vrefo 0 0.5
+Vg0 vg0 0 0.7
+Vvc vcn 0 1.8
+Vvmid vmid 0 0.5
+Vvtb vtb 0 1.4
+Va1 a1 0 PWL(0.0000 0.7000 0.1800 0.7000 0.2000 0.7000 0.3800 0.7000 0.4000 1.3000 0.5800 1.3000 0.6000 1.3000 0.7800 1.3000 0.8000 1.3000)
+Va2 a2 0 PWL(0.0000 0.7000 0.1800 0.7000 0.2000 1.3000 0.3800 1.3000 0.4000 0.7000 0.5800 0.7000 0.6000 1.3000 0.7800 1.3000 0.8000 1.3000)
+Vtg tg 0 PWL(0.0000 0.0000 0.1800 0.0000 0.2000 1.0000 0.3800 1.0000 0.4000 1.0000 0.5800 1.0000 0.6000 0.0000 0.7800 0.0000 0.8000 0.0000)
+Vbx bx 0 dc 1.3
+Vg_1_1_1 g_1_1_1 0 2.1762
+Mp_1_1_1 a1 g_1_1_1 colp1 0 NSYN W=10u L=1u
+Mn_1_1_1 a1 vcn coln1 0 NSYN W=10u L=1u
+Vg_1_1_2 g_1_1_2 0 0.8190
+Mp_1_1_2 a2 g_1_1_2 colp1 0 NSYN W=10u L=1u
+Mn_1_1_2 a2 vcn coln1 0 NSYN W=10u L=1u
+Vg_1_1_b g_1_1_b 0 1.6810
+Mp_1_1_b bx g_1_1_b colp1 0 NSYN W=10u L=1u
+Mn_1_1_b bx vcn coln1 0 NSYN W=10u L=1u
+Msa_h1 coln1 coln1 0 0 NMIR W=20u L=1u
+Msb_h1 z1_1 coln1 0 0 NMIR W=20u L=1u
+Msc_h1 colp1 colp1 0 0 NMIR W=20u L=1u
+Msd_h1 dpf_h1 colp1 0 0 NMIR W=20u L=1u
+Mse_h1 dpf_h1 dpf_h1 vdd vdd PMIR W=60u L=1u
+Msf_h1 z1_1 dpf_h1 vdd vdd PMIR W=60u L=1u
+R_h1 z1_1 vrefh 8000.0
+Mr_1  hdd_1 z1_1 tail_1 0 NREL W=12u L=1u
+Mr2_1 dmp_1  vmid  tail_1 0 NREL W=12u L=1u
+Mtl_1 tail_1 vtb 0 0 NREL W=32.0u L=1u
+Mdm_1 dmp_1 dmp_1 vdd vdd PMIR W=40u L=1u
+Mrp1_1 hdd_1 hdd_1 vdd vdd PMIR W=40u L=1u
+Mrp2_1 hv_1 hdd_1 vdd vdd PMIR W=40u L=1u
+Rhv_1 hv_1 vg0 8000.0
+Vg_1_2_1 g_1_2_1 0 2.1675
+Mp_1_2_1 a1 g_1_2_1 colp2 0 NSYN W=10u L=1u
+Mn_1_2_1 a1 vcn coln2 0 NSYN W=10u L=1u
+Vg_1_2_2 g_1_2_2 0 0.8383
+Mp_1_2_2 a2 g_1_2_2 colp2 0 NSYN W=10u L=1u
+Mn_1_2_2 a2 vcn coln2 0 NSYN W=10u L=1u
+Vg_1_2_b g_1_2_b 0 1.6800
+Mp_1_2_b bx g_1_2_b colp2 0 NSYN W=10u L=1u
+Mn_1_2_b bx vcn coln2 0 NSYN W=10u L=1u
+Msa_h2 coln2 coln2 0 0 NMIR W=20u L=1u
+Msb_h2 z1_2 coln2 0 0 NMIR W=20u L=1u
+Msc_h2 colp2 colp2 0 0 NMIR W=20u L=1u
+Msd_h2 dpf_h2 colp2 0 0 NMIR W=20u L=1u
+Mse_h2 dpf_h2 dpf_h2 vdd vdd PMIR W=60u L=1u
+Msf_h2 z1_2 dpf_h2 vdd vdd PMIR W=60u L=1u
+R_h2 z1_2 vrefh 8000.0
+Mr_2  hdd_2 z1_2 tail_2 0 NREL W=12u L=1u
+Mr2_2 dmp_2  vmid  tail_2 0 NREL W=12u L=1u
+Mtl_2 tail_2 vtb 0 0 NREL W=32.0u L=1u
+Mdm_2 dmp_2 dmp_2 vdd vdd PMIR W=40u L=1u
+Mrp1_2 hdd_2 hdd_2 vdd vdd PMIR W=40u L=1u
+Mrp2_2 hv_2 hdd_2 vdd vdd PMIR W=40u L=1u
+Rhv_2 hv_2 vg0 8000.0
+Vg_1_3_1 g_1_3_1 0 0.6301
+Mp_1_3_1 a1 g_1_3_1 colp3 0 NSYN W=10u L=1u
+Mn_1_3_1 a1 vcn coln3 0 NSYN W=10u L=1u
+Vg_1_3_2 g_1_3_2 0 0.5909
+Mp_1_3_2 a2 g_1_3_2 colp3 0 NSYN W=10u L=1u
+Mn_1_3_2 a2 vcn coln3 0 NSYN W=10u L=1u
+Vg_1_3_b g_1_3_b 0 1.9662
+Mp_1_3_b bx g_1_3_b colp3 0 NSYN W=10u L=1u
+Mn_1_3_b bx vcn coln3 0 NSYN W=10u L=1u
+Msa_h3 coln3 coln3 0 0 NMIR W=20u L=1u
+Msb_h3 z1_3 coln3 0 0 NMIR W=20u L=1u
+Msc_h3 colp3 colp3 0 0 NMIR W=20u L=1u
+Msd_h3 dpf_h3 colp3 0 0 NMIR W=20u L=1u
+Mse_h3 dpf_h3 dpf_h3 vdd vdd PMIR W=60u L=1u
+Msf_h3 z1_3 dpf_h3 vdd vdd PMIR W=60u L=1u
+R_h3 z1_3 vrefh 8000.0
+Mr_3  hdd_3 z1_3 tail_3 0 NREL W=12u L=1u
+Mr2_3 dmp_3  vmid  tail_3 0 NREL W=12u L=1u
+Mtl_3 tail_3 vtb 0 0 NREL W=32.0u L=1u
+Mdm_3 dmp_3 dmp_3 vdd vdd PMIR W=40u L=1u
+Mrp1_3 hdd_3 hdd_3 vdd vdd PMIR W=40u L=1u
+Mrp2_3 hv_3 hdd_3 vdd vdd PMIR W=40u L=1u
+Rhv_3 hv_3 vg0 8000.0
+Vg_1_4_1 g_1_4_1 0 0.6225
+Mp_1_4_1 a1 g_1_4_1 colp4 0 NSYN W=10u L=1u
+Mn_1_4_1 a1 vcn coln4 0 NSYN W=10u L=1u
+Vg_1_4_2 g_1_4_2 0 2.5545
+Mp_1_4_2 a2 g_1_4_2 colp4 0 NSYN W=10u L=1u
+Mn_1_4_2 a2 vcn coln4 0 NSYN W=10u L=1u
+Vg_1_4_b g_1_4_b 0 1.5704
+Mp_1_4_b bx g_1_4_b colp4 0 NSYN W=10u L=1u
+Mn_1_4_b bx vcn coln4 0 NSYN W=10u L=1u
+Msa_h4 coln4 coln4 0 0 NMIR W=20u L=1u
+Msb_h4 z1_4 coln4 0 0 NMIR W=20u L=1u
+Msc_h4 colp4 colp4 0 0 NMIR W=20u L=1u
+Msd_h4 dpf_h4 colp4 0 0 NMIR W=20u L=1u
+Mse_h4 dpf_h4 dpf_h4 vdd vdd PMIR W=60u L=1u
+Msf_h4 z1_4 dpf_h4 vdd vdd PMIR W=60u L=1u
+R_h4 z1_4 vrefh 8000.0
+Mr_4  hdd_4 z1_4 tail_4 0 NREL W=12u L=1u
+Mr2_4 dmp_4  vmid  tail_4 0 NREL W=12u L=1u
+Mtl_4 tail_4 vtb 0 0 NREL W=32.0u L=1u
+Mdm_4 dmp_4 dmp_4 vdd vdd PMIR W=40u L=1u
+Mrp1_4 hdd_4 hdd_4 vdd vdd PMIR W=40u L=1u
+Mrp2_4 hv_4 hdd_4 vdd vdd PMIR W=40u L=1u
+Rhv_4 hv_4 vg0 8000.0
+Vg_1_5_1 g_1_5_1 0 2.2239
+Mp_1_5_1 a1 g_1_5_1 colp5 0 NSYN W=10u L=1u
+Mn_1_5_1 a1 vcn coln5 0 NSYN W=10u L=1u
+Vg_1_5_2 g_1_5_2 0 0.6711
+Mp_1_5_2 a2 g_1_5_2 colp5 0 NSYN W=10u L=1u
+Mn_1_5_2 a2 vcn coln5 0 NSYN W=10u L=1u
+Vg_1_5_b g_1_5_b 0 1.6867
+Mp_1_5_b bx g_1_5_b colp5 0 NSYN W=10u L=1u
+Mn_1_5_b bx vcn coln5 0 NSYN W=10u L=1u
+Msa_h5 coln5 coln5 0 0 NMIR W=20u L=1u
+Msb_h5 z1_5 coln5 0 0 NMIR W=20u L=1u
+Msc_h5 colp5 colp5 0 0 NMIR W=20u L=1u
+Msd_h5 dpf_h5 colp5 0 0 NMIR W=20u L=1u
+Mse_h5 dpf_h5 dpf_h5 vdd vdd PMIR W=60u L=1u
+Msf_h5 z1_5 dpf_h5 vdd vdd PMIR W=60u L=1u
+R_h5 z1_5 vrefh 8000.0
+Mr_5  hdd_5 z1_5 tail_5 0 NREL W=12u L=1u
+Mr2_5 dmp_5  vmid  tail_5 0 NREL W=12u L=1u
+Mtl_5 tail_5 vtb 0 0 NREL W=32.0u L=1u
+Mdm_5 dmp_5 dmp_5 vdd vdd PMIR W=40u L=1u
+Mrp1_5 hdd_5 hdd_5 vdd vdd PMIR W=40u L=1u
+Mrp2_5 hv_5 hdd_5 vdd vdd PMIR W=40u L=1u
+Rhv_5 hv_5 vg0 8000.0
+Vg_1_6_1 g_1_6_1 0 2.2239
+Mp_1_6_1 a1 g_1_6_1 colp6 0 NSYN W=10u L=1u
+Mn_1_6_1 a1 vcn coln6 0 NSYN W=10u L=1u
+Vg_1_6_2 g_1_6_2 0 0.6711
+Mp_1_6_2 a2 g_1_6_2 colp6 0 NSYN W=10u L=1u
+Mn_1_6_2 a2 vcn coln6 0 NSYN W=10u L=1u
+Vg_1_6_b g_1_6_b 0 1.6867
+Mp_1_6_b bx g_1_6_b colp6 0 NSYN W=10u L=1u
+Mn_1_6_b bx vcn coln6 0 NSYN W=10u L=1u
+Msa_h6 coln6 coln6 0 0 NMIR W=20u L=1u
+Msb_h6 z1_6 coln6 0 0 NMIR W=20u L=1u
+Msc_h6 colp6 colp6 0 0 NMIR W=20u L=1u
+Msd_h6 dpf_h6 colp6 0 0 NMIR W=20u L=1u
+Mse_h6 dpf_h6 dpf_h6 vdd vdd PMIR W=60u L=1u
+Msf_h6 z1_6 dpf_h6 vdd vdd PMIR W=60u L=1u
+R_h6 z1_6 vrefh 8000.0
+Mr_6  hdd_6 z1_6 tail_6 0 NREL W=12u L=1u
+Mr2_6 dmp_6  vmid  tail_6 0 NREL W=12u L=1u
+Mtl_6 tail_6 vtb 0 0 NREL W=32.0u L=1u
+Mdm_6 dmp_6 dmp_6 vdd vdd PMIR W=40u L=1u
+Mrp1_6 hdd_6 hdd_6 vdd vdd PMIR W=40u L=1u
+Mrp2_6 hv_6 hdd_6 vdd vdd PMIR W=40u L=1u
+Rhv_6 hv_6 vg0 8000.0
+Vg_1_7_1 g_1_7_1 0 0.6301
+Mp_1_7_1 a1 g_1_7_1 colp7 0 NSYN W=10u L=1u
+Mn_1_7_1 a1 vcn coln7 0 NSYN W=10u L=1u
+Vg_1_7_2 g_1_7_2 0 0.5909
+Mp_1_7_2 a2 g_1_7_2 colp7 0 NSYN W=10u L=1u
+Mn_1_7_2 a2 vcn coln7 0 NSYN W=10u L=1u
+Vg_1_7_b g_1_7_b 0 1.9662
+Mp_1_7_b bx g_1_7_b colp7 0 NSYN W=10u L=1u
+Mn_1_7_b bx vcn coln7 0 NSYN W=10u L=1u
+Msa_h7 coln7 coln7 0 0 NMIR W=20u L=1u
+Msb_h7 z1_7 coln7 0 0 NMIR W=20u L=1u
+Msc_h7 colp7 colp7 0 0 NMIR W=20u L=1u
+Msd_h7 dpf_h7 colp7 0 0 NMIR W=20u L=1u
+Mse_h7 dpf_h7 dpf_h7 vdd vdd PMIR W=60u L=1u
+Msf_h7 z1_7 dpf_h7 vdd vdd PMIR W=60u L=1u
+R_h7 z1_7 vrefh 8000.0
+Mr_7  hdd_7 z1_7 tail_7 0 NREL W=12u L=1u
+Mr2_7 dmp_7  vmid  tail_7 0 NREL W=12u L=1u
+Mtl_7 tail_7 vtb 0 0 NREL W=32.0u L=1u
+Mdm_7 dmp_7 dmp_7 vdd vdd PMIR W=40u L=1u
+Mrp1_7 hdd_7 hdd_7 vdd vdd PMIR W=40u L=1u
+Mrp2_7 hv_7 hdd_7 vdd vdd PMIR W=40u L=1u
+Rhv_7 hv_7 vg0 8000.0
+Vg_1_8_1 g_1_8_1 0 0.6225
+Mp_1_8_1 a1 g_1_8_1 colp8 0 NSYN W=10u L=1u
+Mn_1_8_1 a1 vcn coln8 0 NSYN W=10u L=1u
+Vg_1_8_2 g_1_8_2 0 2.5543
+Mp_1_8_2 a2 g_1_8_2 colp8 0 NSYN W=10u L=1u
+Mn_1_8_2 a2 vcn coln8 0 NSYN W=10u L=1u
+Vg_1_8_b g_1_8_b 0 1.5719
+Mp_1_8_b bx g_1_8_b colp8 0 NSYN W=10u L=1u
+Mn_1_8_b bx vcn coln8 0 NSYN W=10u L=1u
+Msa_h8 coln8 coln8 0 0 NMIR W=20u L=1u
+Msb_h8 z1_8 coln8 0 0 NMIR W=20u L=1u
+Msc_h8 colp8 colp8 0 0 NMIR W=20u L=1u
+Msd_h8 dpf_h8 colp8 0 0 NMIR W=20u L=1u
+Mse_h8 dpf_h8 dpf_h8 vdd vdd PMIR W=60u L=1u
+Msf_h8 z1_8 dpf_h8 vdd vdd PMIR W=60u L=1u
+R_h8 z1_8 vrefh 8000.0
+Mr_8  hdd_8 z1_8 tail_8 0 NREL W=12u L=1u
+Mr2_8 dmp_8  vmid  tail_8 0 NREL W=12u L=1u
+Mtl_8 tail_8 vtb 0 0 NREL W=32.0u L=1u
+Mdm_8 dmp_8 dmp_8 vdd vdd PMIR W=40u L=1u
+Mrp1_8 hdd_8 hdd_8 vdd vdd PMIR W=40u L=1u
+Mrp2_8 hv_8 hdd_8 vdd vdd PMIR W=40u L=1u
+Rhv_8 hv_8 vg0 8000.0
+Vg_1_9_1 g_1_9_1 0 1.9692
+Mp_1_9_1 a1 g_1_9_1 colp9 0 NSYN W=10u L=1u
+Mn_1_9_1 a1 vcn coln9 0 NSYN W=10u L=1u
+Vg_1_9_2 g_1_9_2 0 1.2624
+Mp_1_9_2 a2 g_1_9_2 colp9 0 NSYN W=10u L=1u
+Mn_1_9_2 a2 vcn coln9 0 NSYN W=10u L=1u
+Vg_1_9_b g_1_9_b 0 1.0824
+Mp_1_9_b bx g_1_9_b colp9 0 NSYN W=10u L=1u
+Mn_1_9_b bx vcn coln9 0 NSYN W=10u L=1u
+Msa_h9 coln9 coln9 0 0 NMIR W=20u L=1u
+Msb_h9 z1_9 coln9 0 0 NMIR W=20u L=1u
+Msc_h9 colp9 colp9 0 0 NMIR W=20u L=1u
+Msd_h9 dpf_h9 colp9 0 0 NMIR W=20u L=1u
+Mse_h9 dpf_h9 dpf_h9 vdd vdd PMIR W=60u L=1u
+Msf_h9 z1_9 dpf_h9 vdd vdd PMIR W=60u L=1u
+R_h9 z1_9 vrefh 8000.0
+Mr_9  hdd_9 z1_9 tail_9 0 NREL W=12u L=1u
+Mr2_9 dmp_9  vmid  tail_9 0 NREL W=12u L=1u
+Mtl_9 tail_9 vtb 0 0 NREL W=32.0u L=1u
+Mdm_9 dmp_9 dmp_9 vdd vdd PMIR W=40u L=1u
+Mrp1_9 hdd_9 hdd_9 vdd vdd PMIR W=40u L=1u
+Mrp2_9 hv_9 hdd_9 vdd vdd PMIR W=40u L=1u
+Rhv_9 hv_9 vg0 8000.0
+Vg_1_10_1 g_1_10_1 0 1.9772
+Mp_1_10_1 a1 g_1_10_1 colp10 0 NSYN W=10u L=1u
+Mn_1_10_1 a1 vcn coln10 0 NSYN W=10u L=1u
+Vg_1_10_2 g_1_10_2 0 1.3529
+Mp_1_10_2 a2 g_1_10_2 colp10 0 NSYN W=10u L=1u
+Mn_1_10_2 a2 vcn coln10 0 NSYN W=10u L=1u
+Vg_1_10_b g_1_10_b 0 1.4737
+Mp_1_10_b bx g_1_10_b colp10 0 NSYN W=10u L=1u
+Mn_1_10_b bx vcn coln10 0 NSYN W=10u L=1u
+Msa_h10 coln10 coln10 0 0 NMIR W=20u L=1u
+Msb_h10 z1_10 coln10 0 0 NMIR W=20u L=1u
+Msc_h10 colp10 colp10 0 0 NMIR W=20u L=1u
+Msd_h10 dpf_h10 colp10 0 0 NMIR W=20u L=1u
+Mse_h10 dpf_h10 dpf_h10 vdd vdd PMIR W=60u L=1u
+Msf_h10 z1_10 dpf_h10 vdd vdd PMIR W=60u L=1u
+R_h10 z1_10 vrefh 8000.0
+Mr_10  hdd_10 z1_10 tail_10 0 NREL W=12u L=1u
+Mr2_10 dmp_10  vmid  tail_10 0 NREL W=12u L=1u
+Mtl_10 tail_10 vtb 0 0 NREL W=32.0u L=1u
+Mdm_10 dmp_10 dmp_10 vdd vdd PMIR W=40u L=1u
+Mrp1_10 hdd_10 hdd_10 vdd vdd PMIR W=40u L=1u
+Mrp2_10 hv_10 hdd_10 vdd vdd PMIR W=40u L=1u
+Rhv_10 hv_10 vg0 8000.0
+Vg_1_11_1 g_1_11_1 0 2.4789
+Mp_1_11_1 a1 g_1_11_1 colp11 0 NSYN W=10u L=1u
+Mn_1_11_1 a1 vcn coln11 0 NSYN W=10u L=1u
+Vg_1_11_2 g_1_11_2 0 2.4728
+Mp_1_11_2 a2 g_1_11_2 colp11 0 NSYN W=10u L=1u
+Mn_1_11_2 a2 vcn coln11 0 NSYN W=10u L=1u
+Vg_1_11_b g_1_11_b 0 0.6585
+Mp_1_11_b bx g_1_11_b colp11 0 NSYN W=10u L=1u
+Mn_1_11_b bx vcn coln11 0 NSYN W=10u L=1u
+Msa_h11 coln11 coln11 0 0 NMIR W=20u L=1u
+Msb_h11 z1_11 coln11 0 0 NMIR W=20u L=1u
+Msc_h11 colp11 colp11 0 0 NMIR W=20u L=1u
+Msd_h11 dpf_h11 colp11 0 0 NMIR W=20u L=1u
+Mse_h11 dpf_h11 dpf_h11 vdd vdd PMIR W=60u L=1u
+Msf_h11 z1_11 dpf_h11 vdd vdd PMIR W=60u L=1u
+R_h11 z1_11 vrefh 8000.0
+Mr_11  hdd_11 z1_11 tail_11 0 NREL W=12u L=1u
+Mr2_11 dmp_11  vmid  tail_11 0 NREL W=12u L=1u
+Mtl_11 tail_11 vtb 0 0 NREL W=32.0u L=1u
+Mdm_11 dmp_11 dmp_11 vdd vdd PMIR W=40u L=1u
+Mrp1_11 hdd_11 hdd_11 vdd vdd PMIR W=40u L=1u
+Mrp2_11 hv_11 hdd_11 vdd vdd PMIR W=40u L=1u
+Rhv_11 hv_11 vg0 8000.0
+Vg_1_12_1 g_1_12_1 0 2.4789
+Mp_1_12_1 a1 g_1_12_1 colp12 0 NSYN W=10u L=1u
+Mn_1_12_1 a1 vcn coln12 0 NSYN W=10u L=1u
+Vg_1_12_2 g_1_12_2 0 2.4728
+Mp_1_12_2 a2 g_1_12_2 colp12 0 NSYN W=10u L=1u
+Mn_1_12_2 a2 vcn coln12 0 NSYN W=10u L=1u
+Vg_1_12_b g_1_12_b 0 0.6585
+Mp_1_12_b bx g_1_12_b colp12 0 NSYN W=10u L=1u
+Mn_1_12_b bx vcn coln12 0 NSYN W=10u L=1u
+Msa_h12 coln12 coln12 0 0 NMIR W=20u L=1u
+Msb_h12 z1_12 coln12 0 0 NMIR W=20u L=1u
+Msc_h12 colp12 colp12 0 0 NMIR W=20u L=1u
+Msd_h12 dpf_h12 colp12 0 0 NMIR W=20u L=1u
+Mse_h12 dpf_h12 dpf_h12 vdd vdd PMIR W=60u L=1u
+Msf_h12 z1_12 dpf_h12 vdd vdd PMIR W=60u L=1u
+R_h12 z1_12 vrefh 8000.0
+Mr_12  hdd_12 z1_12 tail_12 0 NREL W=12u L=1u
+Mr2_12 dmp_12  vmid  tail_12 0 NREL W=12u L=1u
+Mtl_12 tail_12 vtb 0 0 NREL W=32.0u L=1u
+Mdm_12 dmp_12 dmp_12 vdd vdd PMIR W=40u L=1u
+Mrp1_12 hdd_12 hdd_12 vdd vdd PMIR W=40u L=1u
+Mrp2_12 hv_12 hdd_12 vdd vdd PMIR W=40u L=1u
+Rhv_12 hv_12 vg0 8000.0
+Vg_2_1 g_2_1 0 2.1819
+Mp_2_1 hv_1 g_2_1 colpo 0 NSYN W=10u L=1u
+Mn_2_1 hv_1 vcn colno 0 NSYN W=10u L=1u
+Vg_2_2 g_2_2 0 2.1811
+Mp_2_2 hv_2 g_2_2 colpo 0 NSYN W=10u L=1u
+Mn_2_2 hv_2 vcn colno 0 NSYN W=10u L=1u
+Vg_2_3 g_2_3 0 0.6424
+Mp_2_3 hv_3 g_2_3 colpo 0 NSYN W=10u L=1u
+Mn_2_3 hv_3 vcn colno 0 NSYN W=10u L=1u
+Vg_2_4 g_2_4 0 2.6569
+Mp_2_4 hv_4 g_2_4 colpo 0 NSYN W=10u L=1u
+Mn_2_4 hv_4 vcn colno 0 NSYN W=10u L=1u
+Vg_2_5 g_2_5 0 2.1958
+Mp_2_5 hv_5 g_2_5 colpo 0 NSYN W=10u L=1u
+Mn_2_5 hv_5 vcn colno 0 NSYN W=10u L=1u
+Vg_2_6 g_2_6 0 2.1958
+Mp_2_6 hv_6 g_2_6 colpo 0 NSYN W=10u L=1u
+Mn_2_6 hv_6 vcn colno 0 NSYN W=10u L=1u
+Vg_2_7 g_2_7 0 0.6424
+Mp_2_7 hv_7 g_2_7 colpo 0 NSYN W=10u L=1u
+Mn_2_7 hv_7 vcn colno 0 NSYN W=10u L=1u
+Vg_2_8 g_2_8 0 2.6567
+Mp_2_8 hv_8 g_2_8 colpo 0 NSYN W=10u L=1u
+Mn_2_8 hv_8 vcn colno 0 NSYN W=10u L=1u
+Vg_2_9 g_2_9 0 1.7622
+Mp_2_9 hv_9 g_2_9 colpo 0 NSYN W=10u L=1u
+Mn_2_9 hv_9 vcn colno 0 NSYN W=10u L=1u
+Vg_2_10 g_2_10 0 1.8816
+Mp_2_10 hv_10 g_2_10 colpo 0 NSYN W=10u L=1u
+Mn_2_10 hv_10 vcn colno 0 NSYN W=10u L=1u
+Vg_2_11 g_2_11 0 0.6434
+Mp_2_11 hv_11 g_2_11 colpo 0 NSYN W=10u L=1u
+Mn_2_11 hv_11 vcn colno 0 NSYN W=10u L=1u
+Vg_2_12 g_2_12 0 0.6434
+Mp_2_12 hv_12 g_2_12 colpo 0 NSYN W=10u L=1u
+Mn_2_12 hv_12 vcn colno 0 NSYN W=10u L=1u
+Vg_2_b g_2_b 0 0.6519
+Mp_2_b bx g_2_b colpo 0 NSYN W=10u L=1u
+Mn_2_b bx vcn colno 0 NSYN W=10u L=1u
+Msa_o colno colno 0 0 NMIR W=20u L=1u
+Msb_o y colno 0 0 NMIR W=20u L=1u
+Msc_o colpo colpo 0 0 NMIR W=20u L=1u
+Msd_o dpf_o colpo 0 0 NMIR W=20u L=1u
+Mse_o dpf_o dpf_o vdd vdd PMIR W=60u L=1u
+Msf_o y dpf_o vdd vdd PMIR W=60u L=1u
+R_o y vrefo 7000.0
+.control
+  tran 0.02 0.8 uic
+  wrdata xor_infer_trace.txt v(y) v(a1) v(a2) v(tg) v(hv_1) v(hv_2) v(hv_3) v(hv_4) v(hv_5) v(hv_6)
+  echo INFER_OK
+.endc
+.end

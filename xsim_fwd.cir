@@ -1,0 +1,47 @@
+2-layer forward cell chain cross-sim test
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.subckt gsyn inp inn wp wn outp outn vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na wp nt 0 NNR W=200u L=100u
+M6 nb wn nt 0 NNR W=200u L=100u
+M1 outp inp na 0 NNR W=200u L=100u
+M2 outn inn na 0 NNR W=200u L=100u
+M3 outn inp nb 0 NNR W=200u L=100u
+M4 outp inn nb 0 NNR W=200u L=100u
+.ends
+.subckt cmld p n vdd
+Rcs1 p cmx 300k
+Rcs2 n cmx 300k
+MLp p cmx vdd vdd PNR W=1000u L=100u
+MLn n cmx vdd vdd PNR W=1000u L=100u
+.ends
+.subckt dneuron up un ap an vdd vbn
+M1 an up tn 0 NNR W=200u L=100u
+M2 ap un tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+Xcm ap an vdd cmld
+.ends
+Vdd vdd 0 1.0
+Vbsyn vbsyn 0 0.45
+Vbneu vbneu 0 0.35
+Vxp xp 0 0.65
+Vxn xn 0 0.35
+Vwp1 wp1 0 0.60
+Vwn1 wn1 0 0.40
+Vwp2 wp2 0 0.55
+Vwn2 wn2 0 0.45
+* layer 1: synapse -> hidden node (cmld) -> neuron
+Xs1 xp xn wp1 wn1 hp hn vdd vbsyn gsyn
+Xc1 hp hn vdd cmld
+Rl1 hp hn 20k
+Ch1p hp 0 0.2p
+Ch1n hn 0 0.2p
+Xn1 hp hn ap an vdd vbneu dneuron
+* layer 2: synapse from a_h -> output node (cmld)
+Xs2 ap an wp2 wn2 op on vdd vbsyn gsyn
+Xc2 op on vdd cmld
+Rl2 op on 20k
+Co2p op 0 0.2p
+Co2n on 0 0.2p
+.end

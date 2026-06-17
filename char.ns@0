@@ -1,0 +1,44 @@
+
+* time = 0.000000e+00 
+
+*** BEGIN: Saved Operating Point ***
+simulator lang=spice
+.nodeset v(vdd)=1.000000e+00
+.nodeset v(vbsyn)=4.500000e-01
+.nodeset v(vbneu)=3.500000e-01
+.nodeset v(gm)=6.000000e-01
+.nodeset v(inp)=3.000000e-01
+.nodeset v(inn)=7.000000e-01
+.nodeset v(wp)=3.500000e-01
+.nodeset v(wn)=6.500000e-01
+.nodeset v(gop)=6.495457e-01
+.nodeset v(gon)=6.971872e-01
+.nodeset v(dinp)=3.000000e-01
+.nodeset v(dinn)=7.000000e-01
+.nodeset v(dap)=4.373651e-01
+.nodeset v(dan)=9.725907e-01
+.nodeset v(exp)=3.500000e-01
+.nodeset v(exn)=6.500000e-01
+.nodeset v(emp)=5.000000e-01
+.nodeset v(emn)=5.000000e-01
+.nodeset v(eep)=2.817637e-01
+.nodeset v(een)=7.806134e-01
+.nodeset v(Xg.nt)=6.123679e-02
+.nodeset v(Xg.na)=4.111862e-01
+.nodeset v(Xg.s5)=7.041873e-02
+.nodeset v(Xg.nb)=2.147239e-01
+.nodeset v(Xg.s6)=1.295308e-01
+.nodeset v(Xg.s1)=4.111862e-01
+.nodeset v(Xg.s2)=4.203681e-01
+.nodeset v(Xg.s3)=2.147239e-01
+.nodeset v(Xg.s4)=2.830179e-01
+.nodeset v(Xgc.cmx)=6.733665e-01
+.nodeset v(Xd.tn)=3.371213e-01
+.nodeset v(Xd.Xcm.cmx)=7.049779e-01
+.nodeset v(Xe.nt)=1.135705e-01
+.nodeset v(Xe.s1x)=1.135705e-01
+.nodeset v(Xe.s2x)=1.135705e-01
+.nodeset v(Xe.s1m)=1.135705e-01
+.nodeset v(Xe.s2m)=1.135705e-01
+
+*** END: Saved Operating Point ***

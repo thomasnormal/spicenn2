@@ -1,0 +1,50 @@
+differential signed synapse + node test  (common-mode/offset rejection)
+* signed synapse = two crossed NMOS diff pairs (6T): w+ normal, w- crossed.
+*   (op-on) = -RL*(gm(wp)-gm(wn))*(inp-inn)   -> signed by wp vs wn, offset rejected.
+* node = differential pair (op,on) loaded by RL to vdd.
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 1.0
+.subckt dsyn inp inn outp outn wp wn vdd
+M1 outp inp tp 0 NNR W=200u L=100u
+M2 outn inn tp 0 NNR W=200u L=100u
+Mtp tp wp 0 0 NNR W=200u L=100u
+M3 outn inp tn 0 NNR W=200u L=100u
+M4 outp inn tn 0 NNR W=200u L=100u
+Mtn tn wn 0 0 NNR W=200u L=100u
+.ends
+* state node loads
+RLp vdd op 25k
+RLn vdd on 25k
+Xs inp inn op on wp wn vdd dsyn
+* differential input drive about a common mode
+Vcm vcm 0 0.5
+Vd  vd  0 0
+Bnone dummy 0 V=0
+Binp inp 0 V=V(vcm)+V(vd)/2
+Binn inn 0 V=V(vcm)-V(vd)/2
+Vwp wp 0 0.6
+Vwn wn 0 0.5
+.control
+* signed transfer: sweep differential input at positive weight (wp>wn)
+alter Vwp 0.6
+alter Vwn 0.5
+dc Vd -0.4 0.4 0.01
+wrdata dsyn_pos.dat v(op) v(on)
+* negative weight (wp<wn)
+alter Vwp 0.5
+alter Vwn 0.6
+dc Vd -0.4 0.4 0.01
+wrdata dsyn_neg.dat v(op) v(on)
+* zero weight (wp=wn): output differential should be ~0 (no offset)
+alter Vwp 0.55
+alter Vwn 0.55
+dc Vd -0.4 0.4 0.01
+wrdata dsyn_zero.dat v(op) v(on)
+* common-mode rejection: fix differential, sweep common mode; (op-on) should stay flat
+alter Vwp 0.6
+alter Vwn 0.5
+alter Vd 0.2
+dc Vcm 0.3 0.7 0.01
+wrdata dsyn_cm.dat v(op) v(on)
+.endc
+.end

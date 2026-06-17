@@ -1,0 +1,44 @@
+EP active-neuron XOR forward test
+Vx1 x1 0 0.5
+Vx2 x2 0 0.5
+Bx1c x1c 0 V=1-V(x1)
+Bx2c x2c 0 V=1-V(x2)
+R1 x1 u1 3526.0
+R2 x2 u1 10937.2
+Rl1 u1 nmid 1e4
+R3 x1 u2 6508.6
+R4 x2 u2 14521.1
+Rl2 u2 nmid 1e4
+Rb1 u1 nlo 7994.0
+Rb2 u2 nhi 19278.1
+Vmid nmid 0 0.5
+Vhi nhi 0 1
+Vlo nlo 0 0
+Ba1 a1 0 V=min(1,max(0,0.5+16*(V(u1)-0.5)))
+Ba2 a2 0 V=min(1,max(0,0.5+16*(V(u2)-0.5)))
+Ba1c a1c 0 V=1-V(a1)
+Ba2c a2c 0 V=1-V(a2)
+R5 a1c uo 7249.1
+R6 a2 uo 4400.0
+Rlo uo nmid 1e4
+Rbo uo nlo 4034.1
+Bao ao 0 V=min(1,max(0,0.5+16*(V(uo)-0.5)))
+.control
+alter Vx1 0.15
+alter Vx2 0.15
+op
+wrdata act0.dat v(ao)
+alter Vx1 0.15
+alter Vx2 0.85
+op
+wrdata act1.dat v(ao)
+alter Vx1 0.85
+alter Vx2 0.15
+op
+wrdata act2.dat v(ao)
+alter Vx1 0.85
+alter Vx2 0.85
+op
+wrdata act3.dat v(ao)
+.endc
+.end

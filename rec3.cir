@@ -1,0 +1,48 @@
+EP idea2 reciprocal cell CMOS transmission gate vs single NMOS
+* Reciprocity (energy) condition: dI/dCM = 0  (current independent of common mode).
+* Single NMOS: source reference rides with CM -> dI/dCM = -KP(W/L)*Vds (breaks at large Vds).
+* T-gate: NMOS conductance falls with CM, PMOS rises; matched slopes cancel -> dI/dCM ~ 0.
+* Stimulus: both terminals driven about a common mode CM (swept) at differential dv (fixed).
+*   a = CM + dv/2 , b = CM - dv/2 .  Read device current via series ammeter.
+
+.model NSYN NMOS (LEVEL=1 VTO=0.2  KP=50u LAMBDA=0 GAMMA=0 PHI=0.7)
+.model PSYN PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0 GAMMA=0 PHI=0.7)
+
+Vdd vdd 0 1.5
+Vcm cm 0 0.5
+Vdv dv 0 0.2
+* ideal stimulus rails (testbench only)
+Bap nap 0 V=V(cm)+V(dv)/2
+Bbp nbp 0 V=V(cm)-V(dv)/2
+
+* ---- DUT 1: single NMOS, gate = 1.2 (matches RISK2, ~50uS at CM=0.5) ----
+Vsa1 nap a1 0
+Vsb1 nbp b1 0
+M1 a1 ngn b1 0 NSYN W=200u L=100u
+Vngn ngn 0 1.2
+
+* ---- DUT 2: transmission gate (NMOS W=200, PMOS W=250 -> matched slopes) ----
+* NMOS gate 1.2, PMOS gate -0.2 -> each ~50uS at CM=0.5, dGn/dCM=-100uS/V cancels dGp/dCM=+100uS/V
+Vsa2 nap a2 0
+Vsb2 nbp b2 0
+Mn a2 ngn2 b2 0   NSYN W=200u L=100u
+Mp a2 ngp2 b2 vdd PSYN W=250u L=100u
+Vngn2 ngn2 0 1.2
+Vngp2 ngp2 0 -0.2
+
+.control
+* sweep common mode at three differential voltages (small, medium, large swing)
+alter Vdv 0.1
+dc Vcm 0.2 0.8 0.01
+wrdata rec3_single_dv1.dat i(Vsa1)
+wrdata rec3_tgate_dv1.dat  i(Vsa2)
+alter Vdv 0.3
+dc Vcm 0.2 0.8 0.01
+wrdata rec3_single_dv3.dat i(Vsa1)
+wrdata rec3_tgate_dv3.dat  i(Vsa2)
+alter Vdv 0.5
+dc Vcm 0.2 0.8 0.01
+wrdata rec3_single_dv5.dat i(Vsa1)
+wrdata rec3_tgate_dv5.dat  i(Vsa2)
+.endc
+.end

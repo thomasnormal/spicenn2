@@ -1,0 +1,40 @@
+transconductor cell OTA programmable-gm current-mode synapse
+* 5-T OTA: diff pair (a_in vs 0.5) + PMOS mirror load + weight-set tail current.
+* Output current into node 'out' = gm(Vw)*(a_in-0.5), HIGH Zout (saturated drains).
+* Validate: (1) I_out linear-ish & signed in (a_in-0.5); (2) gm settable by Vw;
+*           (3) high Zout (I_out ~ independent of out node voltage) = true current source.
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 2.0
+Vref vref 0 0.5
+Vain ain 0 0.5
+Vw  vw  0 0.8
+Vout out 0 0.5           ; output node held by ammeter source (measure I_out)
+
+* diff pair (low-Vt -> proper saturation at CM=0.5)
+M1 d1 ain  tail 0 NNR W=200u L=100u
+M2 out vref tail 0 NNR W=200u L=100u
+* tail current source (weight sets tail current = gm)
+Mt tail vw 0 0 NNR W=200u L=100u
+* PMOS mirror load (mirror I_d1 to out)
+M3 d1 d1 vdd vdd PNR W=500u L=100u
+M4 out d1 vdd vdd PNR W=500u L=100u
+
+.control
+* (1)+(2): sweep a_in at several weights, measure I into out node (= i(Vout))
+alter Vw 0.6
+dc Vain 0.2 0.8 0.01
+wrdata tc_w08.dat i(Vout)
+alter Vw 0.9
+dc Vain 0.2 0.8 0.01
+wrdata tc_w11.dat i(Vout)
+alter Vw 1.2
+dc Vain 0.2 0.8 0.01
+wrdata tc_w14.dat i(Vout)
+* (3): high Zout? sweep out node voltage at fixed a_in=0.7,w=1.1; I should stay ~flat
+alter Vw 0.9
+alter Vain 0.7
+dc Vout 0.2 1.2 0.02
+wrdata tc_zout.dat i(Vout)
+.endc
+.end

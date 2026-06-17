@@ -1,0 +1,28 @@
+* signed synapse: forward multiply  I = (G+ - G-)*Vin , triode conductance pair
+.model NMOS1 NMOS (LEVEL=1 VTO=0.5 KP=50u LAMBDA=0 GAMMA=0 PHI=0.7)
+Mp vin gp cp 0 NMOS1 W=10u L=1u
+Mn vin gn cn 0 NMOS1 W=10u L=1u
+Vmp cp 0 dc 0
+Vmn cn 0 dc 0
+Vgp gp 0 dc 1.25
+Vgn gn 0 dc 1.25
+Vin vin 0 dc 0
+.control
+  alter Vgp = 1.55
+  alter Vgn = 0.95
+  dc Vin 0 0.3 0.005
+  let inet = (i(Vmp)-i(Vmn))*1e6
+  wrdata syn_fwd_pos.txt inet
+  alter Vgp = 1.25
+  alter Vgn = 1.25
+  dc Vin 0 0.3 0.005
+  let inet = (i(Vmp)-i(Vmn))*1e6
+  wrdata syn_fwd_zero.txt inet
+  alter Vgp = 0.95
+  alter Vgn = 1.55
+  dc Vin 0 0.3 0.005
+  let inet = (i(Vmp)-i(Vmn))*1e6
+  wrdata syn_fwd_neg.txt inet
+  echo fwddone
+.endc
+.end

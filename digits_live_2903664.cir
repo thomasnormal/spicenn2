@@ -1,0 +1,1584 @@
+digits differential current-mode EP (live)
+.model NNR NMOS (LEVEL=1 VTO=0.2  KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u  LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.subckt dsyn inp inn outp outn wp wn vdd
+M1 outp inp tp 0 NNR W=200u L=100u
+M2 outn inn tp 0 NNR W=200u L=100u
+Mtp tp wp 0 0 NNR W=200u L=100u
+M3 outn inp tn 0 NNR W=200u L=100u
+M4 outp inn tn 0 NNR W=200u L=100u
+Mtn tn wn 0 0 NNR W=200u L=100u
+.ends
+.subckt dneuron up un ap an vdd vbn
+M1 an up tn 0 NNR W=200u L=100u
+M2 ap un tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+RLa vdd ap 800k
+RLb vdd an 800k
+.ends
+
+Vdd vdd 0 1.0
+Vbn vbn 0 0.30
+Vbp_hi bp_hi 0 0.8
+Vbp_lo bp_lo 0 0.2
+Vaxp0 a_xp0 0 0.5
+Vaxn0 a_xn0 0 0.5
+Vaxp1 a_xp1 0 0.5
+Vaxn1 a_xn1 0 0.5
+Vtp0 vtp0 0 0.5
+Vtn0 vtn0 0 0.5
+Vtp1 vtp1 0 0.5
+Vtn1 vtn1 0 0.5
+Mlp_h0 up_h0 up_h0 vdd vdd PNR W=1500u L=100u
+Mln_h0 un_h0 un_h0 vdd vdd PNR W=1500u L=100u
+Xn_h0 up_h0 un_h0 ap_h0 an_h0 vdd vbn dneuron
+Vwp_ih_0_0 wp_ih_0_0 0 0.5016
+Vwn_ih_0_0 wn_ih_0_0 0 0.3384
+X_ih_0_0 a_xp0 a_xn0 up_h0 un_h0 wp_ih_0_0 wn_ih_0_0 vdd dsyn
+Vwp_ih_1_0 wp_ih_1_0 0 0.3178
+Vwn_ih_1_0 wn_ih_1_0 0 0.5222
+X_ih_1_0 a_xp1 a_xn1 up_h0 un_h0 wp_ih_1_0 wn_ih_1_0 vdd dsyn
+Vwp_bk_0_0 wp_bk_0_0 0 0.4367
+Vwn_bk_0_0 wn_bk_0_0 0 0.4033
+X_bk_0_0 up_o0 un_o0 up_h0 un_h0 wp_bk_0_0 wn_bk_0_0 vdd dsyn
+Vwp_bk_0_1 wp_bk_0_1 0 0.3973
+Vwn_bk_0_1 wn_bk_0_1 0 0.4427
+X_bk_0_1 up_o1 un_o1 up_h0 un_h0 wp_bk_0_1 wn_bk_0_1 vdd dsyn
+Vwp_bh_0 wp_bh_0 0 0.4019
+Vwn_bh_0 wn_bh_0 0 0.4381
+X_bh_0 bp_hi bp_lo up_h0 un_h0 wp_bh_0 wn_bh_0 vdd dsyn
+Mlp_h1 up_h1 up_h1 vdd vdd PNR W=1500u L=100u
+Mln_h1 un_h1 un_h1 vdd vdd PNR W=1500u L=100u
+Xn_h1 up_h1 un_h1 ap_h1 an_h1 vdd vbn dneuron
+Vwp_ih_0_1 wp_ih_0_1 0 0.4114
+Vwn_ih_0_1 wn_ih_0_1 0 0.4286
+X_ih_0_1 a_xp0 a_xn0 up_h1 un_h1 wp_ih_0_1 wn_ih_0_1 vdd dsyn
+Vwp_ih_1_1 wp_ih_1_1 0 0.3392
+Vwn_ih_1_1 wn_ih_1_1 0 0.5008
+X_ih_1_1 a_xp1 a_xn1 up_h1 un_h1 wp_ih_1_1 wn_ih_1_1 vdd dsyn
+Vwp_bk_1_0 wp_bk_1_0 0 0.4107
+Vwn_bk_1_0 wn_bk_1_0 0 0.4293
+X_bk_1_0 up_o0 un_o0 up_h1 un_h1 wp_bk_1_0 wn_bk_1_0 vdd dsyn
+Vwp_bk_1_1 wp_bk_1_1 0 0.3854
+Vwn_bk_1_1 wn_bk_1_1 0 0.4546
+X_bk_1_1 up_o1 un_o1 up_h1 un_h1 wp_bk_1_1 wn_bk_1_1 vdd dsyn
+Vwp_bh_1 wp_bh_1 0 0.5529
+Vwn_bh_1 wn_bh_1 0 0.3000
+X_bh_1 bp_hi bp_lo up_h1 un_h1 wp_bh_1 wn_bh_1 vdd dsyn
+Mlp_h2 up_h2 up_h2 vdd vdd PNR W=1500u L=100u
+Mln_h2 un_h2 un_h2 vdd vdd PNR W=1500u L=100u
+Xn_h2 up_h2 un_h2 ap_h2 an_h2 vdd vbn dneuron
+Vwp_ih_0_2 wp_ih_0_2 0 0.4290
+Vwn_ih_0_2 wn_ih_0_2 0 0.4110
+X_ih_0_2 a_xp0 a_xn0 up_h2 un_h2 wp_ih_0_2 wn_ih_0_2 vdd dsyn
+Vwp_ih_1_2 wp_ih_1_2 0 0.4059
+Vwn_ih_1_2 wn_ih_1_2 0 0.4341
+X_ih_1_2 a_xp1 a_xn1 up_h2 un_h2 wp_ih_1_2 wn_ih_1_2 vdd dsyn
+Vwp_bk_2_0 wp_bk_2_0 0 0.4087
+Vwn_bk_2_0 wn_bk_2_0 0 0.4313
+X_bk_2_0 up_o0 un_o0 up_h2 un_h2 wp_bk_2_0 wn_bk_2_0 vdd dsyn
+Vwp_bk_2_1 wp_bk_2_1 0 0.3933
+Vwn_bk_2_1 wn_bk_2_1 0 0.4467
+X_bk_2_1 up_o1 un_o1 up_h2 un_h2 wp_bk_2_1 wn_bk_2_1 vdd dsyn
+Vwp_bh_2 wp_bh_2 0 0.3778
+Vwn_bh_2 wn_bh_2 0 0.4622
+X_bh_2 bp_hi bp_lo up_h2 un_h2 wp_bh_2 wn_bh_2 vdd dsyn
+Mlp_h3 up_h3 up_h3 vdd vdd PNR W=1500u L=100u
+Mln_h3 un_h3 un_h3 vdd vdd PNR W=1500u L=100u
+Xn_h3 up_h3 un_h3 ap_h3 an_h3 vdd vbn dneuron
+Vwp_ih_0_3 wp_ih_0_3 0 0.4044
+Vwn_ih_0_3 wn_ih_0_3 0 0.4356
+X_ih_0_3 a_xp0 a_xn0 up_h3 un_h3 wp_ih_0_3 wn_ih_0_3 vdd dsyn
+Vwp_ih_1_3 wp_ih_1_3 0 0.4393
+Vwn_ih_1_3 wn_ih_1_3 0 0.4007
+X_ih_1_3 a_xp1 a_xn1 up_h3 un_h3 wp_ih_1_3 wn_ih_1_3 vdd dsyn
+Vwp_bk_3_0 wp_bk_3_0 0 0.4105
+Vwn_bk_3_0 wn_bk_3_0 0 0.4295
+X_bk_3_0 up_o0 un_o0 up_h3 un_h3 wp_bk_3_0 wn_bk_3_0 vdd dsyn
+Vwp_bk_3_1 wp_bk_3_1 0 0.4583
+Vwn_bk_3_1 wn_bk_3_1 0 0.3817
+X_bk_3_1 up_o1 un_o1 up_h3 un_h3 wp_bk_3_1 wn_bk_3_1 vdd dsyn
+Vwp_bh_3 wp_bh_3 0 0.4120
+Vwn_bh_3 wn_bh_3 0 0.4280
+X_bh_3 bp_hi bp_lo up_h3 un_h3 wp_bh_3 wn_bh_3 vdd dsyn
+Mlp_h4 up_h4 up_h4 vdd vdd PNR W=1500u L=100u
+Mln_h4 un_h4 un_h4 vdd vdd PNR W=1500u L=100u
+Xn_h4 up_h4 un_h4 ap_h4 an_h4 vdd vbn dneuron
+Vwp_ih_0_4 wp_ih_0_4 0 0.4210
+Vwn_ih_0_4 wn_ih_0_4 0 0.4190
+X_ih_0_4 a_xp0 a_xn0 up_h4 un_h4 wp_ih_0_4 wn_ih_0_4 vdd dsyn
+Vwp_ih_1_4 wp_ih_1_4 0 0.4818
+Vwn_ih_1_4 wn_ih_1_4 0 0.3582
+X_ih_1_4 a_xp1 a_xn1 up_h4 un_h4 wp_ih_1_4 wn_ih_1_4 vdd dsyn
+Vwp_bk_4_0 wp_bk_4_0 0 0.4418
+Vwn_bk_4_0 wn_bk_4_0 0 0.3982
+X_bk_4_0 up_o0 un_o0 up_h4 un_h4 wp_bk_4_0 wn_bk_4_0 vdd dsyn
+Vwp_bk_4_1 wp_bk_4_1 0 0.3998
+Vwn_bk_4_1 wn_bk_4_1 0 0.4402
+X_bk_4_1 up_o1 un_o1 up_h4 un_h4 wp_bk_4_1 wn_bk_4_1 vdd dsyn
+Vwp_bh_4 wp_bh_4 0 0.4127
+Vwn_bh_4 wn_bh_4 0 0.4273
+X_bh_4 bp_hi bp_lo up_h4 un_h4 wp_bh_4 wn_bh_4 vdd dsyn
+Mlp_h5 up_h5 up_h5 vdd vdd PNR W=1500u L=100u
+Mln_h5 un_h5 un_h5 vdd vdd PNR W=1500u L=100u
+Xn_h5 up_h5 un_h5 ap_h5 an_h5 vdd vbn dneuron
+Vwp_ih_0_5 wp_ih_0_5 0 0.4416
+Vwn_ih_0_5 wn_ih_0_5 0 0.3984
+X_ih_0_5 a_xp0 a_xn0 up_h5 un_h5 wp_ih_0_5 wn_ih_0_5 vdd dsyn
+Vwp_ih_1_5 wp_ih_1_5 0 0.4974
+Vwn_ih_1_5 wn_ih_1_5 0 0.3426
+X_ih_1_5 a_xp1 a_xn1 up_h5 un_h5 wp_ih_1_5 wn_ih_1_5 vdd dsyn
+Vwp_bk_5_0 wp_bk_5_0 0 0.4092
+Vwn_bk_5_0 wn_bk_5_0 0 0.4308
+X_bk_5_0 up_o0 un_o0 up_h5 un_h5 wp_bk_5_0 wn_bk_5_0 vdd dsyn
+Vwp_bk_5_1 wp_bk_5_1 0 0.4103
+Vwn_bk_5_1 wn_bk_5_1 0 0.4297
+X_bk_5_1 up_o1 un_o1 up_h5 un_h5 wp_bk_5_1 wn_bk_5_1 vdd dsyn
+Vwp_bh_5 wp_bh_5 0 0.4601
+Vwn_bh_5 wn_bh_5 0 0.3799
+X_bh_5 bp_hi bp_lo up_h5 un_h5 wp_bh_5 wn_bh_5 vdd dsyn
+Mlp_h6 up_h6 up_h6 vdd vdd PNR W=1500u L=100u
+Mln_h6 un_h6 un_h6 vdd vdd PNR W=1500u L=100u
+Xn_h6 up_h6 un_h6 ap_h6 an_h6 vdd vbn dneuron
+Vwp_ih_0_6 wp_ih_0_6 0 0.3845
+Vwn_ih_0_6 wn_ih_0_6 0 0.4555
+X_ih_0_6 a_xp0 a_xn0 up_h6 un_h6 wp_ih_0_6 wn_ih_0_6 vdd dsyn
+Vwp_ih_1_6 wp_ih_1_6 0 0.4083
+Vwn_ih_1_6 wn_ih_1_6 0 0.4317
+X_ih_1_6 a_xp1 a_xn1 up_h6 un_h6 wp_ih_1_6 wn_ih_1_6 vdd dsyn
+Vwp_bk_6_0 wp_bk_6_0 0 0.4553
+Vwn_bk_6_0 wn_bk_6_0 0 0.3847
+X_bk_6_0 up_o0 un_o0 up_h6 un_h6 wp_bk_6_0 wn_bk_6_0 vdd dsyn
+Vwp_bk_6_1 wp_bk_6_1 0 0.4432
+Vwn_bk_6_1 wn_bk_6_1 0 0.3968
+X_bk_6_1 up_o1 un_o1 up_h6 un_h6 wp_bk_6_1 wn_bk_6_1 vdd dsyn
+Vwp_bh_6 wp_bh_6 0 0.4237
+Vwn_bh_6 wn_bh_6 0 0.4163
+X_bh_6 bp_hi bp_lo up_h6 un_h6 wp_bh_6 wn_bh_6 vdd dsyn
+Mlp_h7 up_h7 up_h7 vdd vdd PNR W=1500u L=100u
+Mln_h7 un_h7 un_h7 vdd vdd PNR W=1500u L=100u
+Xn_h7 up_h7 un_h7 ap_h7 an_h7 vdd vbn dneuron
+Vwp_ih_0_7 wp_ih_0_7 0 0.4468
+Vwn_ih_0_7 wn_ih_0_7 0 0.3932
+X_ih_0_7 a_xp0 a_xn0 up_h7 un_h7 wp_ih_0_7 wn_ih_0_7 vdd dsyn
+Vwp_ih_1_7 wp_ih_1_7 0 0.3069
+Vwn_ih_1_7 wn_ih_1_7 0 0.5331
+X_ih_1_7 a_xp1 a_xn1 up_h7 un_h7 wp_ih_1_7 wn_ih_1_7 vdd dsyn
+Vwp_bk_7_0 wp_bk_7_0 0 0.4609
+Vwn_bk_7_0 wn_bk_7_0 0 0.3791
+X_bk_7_0 up_o0 un_o0 up_h7 un_h7 wp_bk_7_0 wn_bk_7_0 vdd dsyn
+Vwp_bk_7_1 wp_bk_7_1 0 0.3816
+Vwn_bk_7_1 wn_bk_7_1 0 0.4584
+X_bk_7_1 up_o1 un_o1 up_h7 un_h7 wp_bk_7_1 wn_bk_7_1 vdd dsyn
+Vwp_bh_7 wp_bh_7 0 0.3533
+Vwn_bh_7 wn_bh_7 0 0.4867
+X_bh_7 bp_hi bp_lo up_h7 un_h7 wp_bh_7 wn_bh_7 vdd dsyn
+Mlp_h8 up_h8 up_h8 vdd vdd PNR W=1500u L=100u
+Mln_h8 un_h8 un_h8 vdd vdd PNR W=1500u L=100u
+Xn_h8 up_h8 un_h8 ap_h8 an_h8 vdd vbn dneuron
+Vwp_ih_0_8 wp_ih_0_8 0 0.4311
+Vwn_ih_0_8 wn_ih_0_8 0 0.4089
+X_ih_0_8 a_xp0 a_xn0 up_h8 un_h8 wp_ih_0_8 wn_ih_0_8 vdd dsyn
+Vwp_ih_1_8 wp_ih_1_8 0 0.4480
+Vwn_ih_1_8 wn_ih_1_8 0 0.3920
+X_ih_1_8 a_xp1 a_xn1 up_h8 un_h8 wp_ih_1_8 wn_ih_1_8 vdd dsyn
+Vwp_bk_8_0 wp_bk_8_0 0 0.4022
+Vwn_bk_8_0 wn_bk_8_0 0 0.4378
+X_bk_8_0 up_o0 un_o0 up_h8 un_h8 wp_bk_8_0 wn_bk_8_0 vdd dsyn
+Vwp_bk_8_1 wp_bk_8_1 0 0.3769
+Vwn_bk_8_1 wn_bk_8_1 0 0.4631
+X_bk_8_1 up_o1 un_o1 up_h8 un_h8 wp_bk_8_1 wn_bk_8_1 vdd dsyn
+Vwp_bh_8 wp_bh_8 0 0.4210
+Vwn_bh_8 wn_bh_8 0 0.4190
+X_bh_8 bp_hi bp_lo up_h8 un_h8 wp_bh_8 wn_bh_8 vdd dsyn
+Mlp_h9 up_h9 up_h9 vdd vdd PNR W=1500u L=100u
+Mln_h9 un_h9 un_h9 vdd vdd PNR W=1500u L=100u
+Xn_h9 up_h9 un_h9 ap_h9 an_h9 vdd vbn dneuron
+Vwp_ih_0_9 wp_ih_0_9 0 0.4179
+Vwn_ih_0_9 wn_ih_0_9 0 0.4221
+X_ih_0_9 a_xp0 a_xn0 up_h9 un_h9 wp_ih_0_9 wn_ih_0_9 vdd dsyn
+Vwp_ih_1_9 wp_ih_1_9 0 0.4762
+Vwn_ih_1_9 wn_ih_1_9 0 0.3638
+X_ih_1_9 a_xp1 a_xn1 up_h9 un_h9 wp_ih_1_9 wn_ih_1_9 vdd dsyn
+Vwp_bk_9_0 wp_bk_9_0 0 0.4499
+Vwn_bk_9_0 wn_bk_9_0 0 0.3901
+X_bk_9_0 up_o0 un_o0 up_h9 un_h9 wp_bk_9_0 wn_bk_9_0 vdd dsyn
+Vwp_bk_9_1 wp_bk_9_1 0 0.4278
+Vwn_bk_9_1 wn_bk_9_1 0 0.4122
+X_bk_9_1 up_o1 un_o1 up_h9 un_h9 wp_bk_9_1 wn_bk_9_1 vdd dsyn
+Vwp_bh_9 wp_bh_9 0 0.4645
+Vwn_bh_9 wn_bh_9 0 0.3755
+X_bh_9 bp_hi bp_lo up_h9 un_h9 wp_bh_9 wn_bh_9 vdd dsyn
+Mlp_h10 up_h10 up_h10 vdd vdd PNR W=1500u L=100u
+Mln_h10 un_h10 un_h10 vdd vdd PNR W=1500u L=100u
+Xn_h10 up_h10 un_h10 ap_h10 an_h10 vdd vbn dneuron
+Vwp_ih_0_10 wp_ih_0_10 0 0.4118
+Vwn_ih_0_10 wn_ih_0_10 0 0.4282
+X_ih_0_10 a_xp0 a_xn0 up_h10 un_h10 wp_ih_0_10 wn_ih_0_10 vdd dsyn
+Vwp_ih_1_10 wp_ih_1_10 0 0.3830
+Vwn_ih_1_10 wn_ih_1_10 0 0.4570
+X_ih_1_10 a_xp1 a_xn1 up_h10 un_h10 wp_ih_1_10 wn_ih_1_10 vdd dsyn
+Vwp_bk_10_0 wp_bk_10_0 0 0.4434
+Vwn_bk_10_0 wn_bk_10_0 0 0.3966
+X_bk_10_0 up_o0 un_o0 up_h10 un_h10 wp_bk_10_0 wn_bk_10_0 vdd dsyn
+Vwp_bk_10_1 wp_bk_10_1 0 0.4433
+Vwn_bk_10_1 wn_bk_10_1 0 0.3967
+X_bk_10_1 up_o1 un_o1 up_h10 un_h10 wp_bk_10_1 wn_bk_10_1 vdd dsyn
+Vwp_bh_10 wp_bh_10 0 0.4114
+Vwn_bh_10 wn_bh_10 0 0.4286
+X_bh_10 bp_hi bp_lo up_h10 un_h10 wp_bh_10 wn_bh_10 vdd dsyn
+Mlp_h11 up_h11 up_h11 vdd vdd PNR W=1500u L=100u
+Mln_h11 un_h11 un_h11 vdd vdd PNR W=1500u L=100u
+Xn_h11 up_h11 un_h11 ap_h11 an_h11 vdd vbn dneuron
+Vwp_ih_0_11 wp_ih_0_11 0 0.3887
+Vwn_ih_0_11 wn_ih_0_11 0 0.4513
+X_ih_0_11 a_xp0 a_xn0 up_h11 un_h11 wp_ih_0_11 wn_ih_0_11 vdd dsyn
+Vwp_ih_1_11 wp_ih_1_11 0 0.4292
+Vwn_ih_1_11 wn_ih_1_11 0 0.4108
+X_ih_1_11 a_xp1 a_xn1 up_h11 un_h11 wp_ih_1_11 wn_ih_1_11 vdd dsyn
+Vwp_bk_11_0 wp_bk_11_0 0 0.3202
+Vwn_bk_11_0 wn_bk_11_0 0 0.5198
+X_bk_11_0 up_o0 un_o0 up_h11 un_h11 wp_bk_11_0 wn_bk_11_0 vdd dsyn
+Vwp_bk_11_1 wp_bk_11_1 0 0.4476
+Vwn_bk_11_1 wn_bk_11_1 0 0.3924
+X_bk_11_1 up_o1 un_o1 up_h11 un_h11 wp_bk_11_1 wn_bk_11_1 vdd dsyn
+Vwp_bh_11 wp_bh_11 0 0.4397
+Vwn_bh_11 wn_bh_11 0 0.4003
+X_bh_11 bp_hi bp_lo up_h11 un_h11 wp_bh_11 wn_bh_11 vdd dsyn
+Mlp_h12 up_h12 up_h12 vdd vdd PNR W=1500u L=100u
+Mln_h12 un_h12 un_h12 vdd vdd PNR W=1500u L=100u
+Xn_h12 up_h12 un_h12 ap_h12 an_h12 vdd vbn dneuron
+Vwp_ih_0_12 wp_ih_0_12 0 0.3544
+Vwn_ih_0_12 wn_ih_0_12 0 0.4856
+X_ih_0_12 a_xp0 a_xn0 up_h12 un_h12 wp_ih_0_12 wn_ih_0_12 vdd dsyn
+Vwp_ih_1_12 wp_ih_1_12 0 0.4225
+Vwn_ih_1_12 wn_ih_1_12 0 0.4175
+X_ih_1_12 a_xp1 a_xn1 up_h12 un_h12 wp_ih_1_12 wn_ih_1_12 vdd dsyn
+Vwp_bk_12_0 wp_bk_12_0 0 0.3814
+Vwn_bk_12_0 wn_bk_12_0 0 0.4586
+X_bk_12_0 up_o0 un_o0 up_h12 un_h12 wp_bk_12_0 wn_bk_12_0 vdd dsyn
+Vwp_bk_12_1 wp_bk_12_1 0 0.4503
+Vwn_bk_12_1 wn_bk_12_1 0 0.3897
+X_bk_12_1 up_o1 un_o1 up_h12 un_h12 wp_bk_12_1 wn_bk_12_1 vdd dsyn
+Vwp_bh_12 wp_bh_12 0 0.3386
+Vwn_bh_12 wn_bh_12 0 0.5014
+X_bh_12 bp_hi bp_lo up_h12 un_h12 wp_bh_12 wn_bh_12 vdd dsyn
+Mlp_h13 up_h13 up_h13 vdd vdd PNR W=1500u L=100u
+Mln_h13 un_h13 un_h13 vdd vdd PNR W=1500u L=100u
+Xn_h13 up_h13 un_h13 ap_h13 an_h13 vdd vbn dneuron
+Vwp_ih_0_13 wp_ih_0_13 0 0.3834
+Vwn_ih_0_13 wn_ih_0_13 0 0.4566
+X_ih_0_13 a_xp0 a_xn0 up_h13 un_h13 wp_ih_0_13 wn_ih_0_13 vdd dsyn
+Vwp_ih_1_13 wp_ih_1_13 0 0.4484
+Vwn_ih_1_13 wn_ih_1_13 0 0.3916
+X_ih_1_13 a_xp1 a_xn1 up_h13 un_h13 wp_ih_1_13 wn_ih_1_13 vdd dsyn
+Vwp_bk_13_0 wp_bk_13_0 0 0.4663
+Vwn_bk_13_0 wn_bk_13_0 0 0.3737
+X_bk_13_0 up_o0 un_o0 up_h13 un_h13 wp_bk_13_0 wn_bk_13_0 vdd dsyn
+Vwp_bk_13_1 wp_bk_13_1 0 0.3337
+Vwn_bk_13_1 wn_bk_13_1 0 0.5063
+X_bk_13_1 up_o1 un_o1 up_h13 un_h13 wp_bk_13_1 wn_bk_13_1 vdd dsyn
+Vwp_bh_13 wp_bh_13 0 0.4001
+Vwn_bh_13 wn_bh_13 0 0.4399
+X_bh_13 bp_hi bp_lo up_h13 un_h13 wp_bh_13 wn_bh_13 vdd dsyn
+Mlp_h14 up_h14 up_h14 vdd vdd PNR W=1500u L=100u
+Mln_h14 un_h14 un_h14 vdd vdd PNR W=1500u L=100u
+Xn_h14 up_h14 un_h14 ap_h14 an_h14 vdd vbn dneuron
+Vwp_ih_0_14 wp_ih_0_14 0 0.4331
+Vwn_ih_0_14 wn_ih_0_14 0 0.4069
+X_ih_0_14 a_xp0 a_xn0 up_h14 un_h14 wp_ih_0_14 wn_ih_0_14 vdd dsyn
+Vwp_ih_1_14 wp_ih_1_14 0 0.3956
+Vwn_ih_1_14 wn_ih_1_14 0 0.4444
+X_ih_1_14 a_xp1 a_xn1 up_h14 un_h14 wp_ih_1_14 wn_ih_1_14 vdd dsyn
+Vwp_bk_14_0 wp_bk_14_0 0 0.4836
+Vwn_bk_14_0 wn_bk_14_0 0 0.3564
+X_bk_14_0 up_o0 un_o0 up_h14 un_h14 wp_bk_14_0 wn_bk_14_0 vdd dsyn
+Vwp_bk_14_1 wp_bk_14_1 0 0.3724
+Vwn_bk_14_1 wn_bk_14_1 0 0.4676
+X_bk_14_1 up_o1 un_o1 up_h14 un_h14 wp_bk_14_1 wn_bk_14_1 vdd dsyn
+Vwp_bh_14 wp_bh_14 0 0.4342
+Vwn_bh_14 wn_bh_14 0 0.4058
+X_bh_14 bp_hi bp_lo up_h14 un_h14 wp_bh_14 wn_bh_14 vdd dsyn
+Mlp_h15 up_h15 up_h15 vdd vdd PNR W=1500u L=100u
+Mln_h15 un_h15 un_h15 vdd vdd PNR W=1500u L=100u
+Xn_h15 up_h15 un_h15 ap_h15 an_h15 vdd vbn dneuron
+Vwp_ih_0_15 wp_ih_0_15 0 0.3781
+Vwn_ih_0_15 wn_ih_0_15 0 0.4619
+X_ih_0_15 a_xp0 a_xn0 up_h15 un_h15 wp_ih_0_15 wn_ih_0_15 vdd dsyn
+Vwp_ih_1_15 wp_ih_1_15 0 0.4762
+Vwn_ih_1_15 wn_ih_1_15 0 0.3638
+X_ih_1_15 a_xp1 a_xn1 up_h15 un_h15 wp_ih_1_15 wn_ih_1_15 vdd dsyn
+Vwp_bk_15_0 wp_bk_15_0 0 0.4191
+Vwn_bk_15_0 wn_bk_15_0 0 0.4209
+X_bk_15_0 up_o0 un_o0 up_h15 un_h15 wp_bk_15_0 wn_bk_15_0 vdd dsyn
+Vwp_bk_15_1 wp_bk_15_1 0 0.4051
+Vwn_bk_15_1 wn_bk_15_1 0 0.4349
+X_bk_15_1 up_o1 un_o1 up_h15 un_h15 wp_bk_15_1 wn_bk_15_1 vdd dsyn
+Vwp_bh_15 wp_bh_15 0 0.3513
+Vwn_bh_15 wn_bh_15 0 0.4887
+X_bh_15 bp_hi bp_lo up_h15 un_h15 wp_bh_15 wn_bh_15 vdd dsyn
+Mlp_h16 up_h16 up_h16 vdd vdd PNR W=1500u L=100u
+Mln_h16 un_h16 un_h16 vdd vdd PNR W=1500u L=100u
+Xn_h16 up_h16 un_h16 ap_h16 an_h16 vdd vbn dneuron
+Vwp_ih_0_16 wp_ih_0_16 0 0.4873
+Vwn_ih_0_16 wn_ih_0_16 0 0.3527
+X_ih_0_16 a_xp0 a_xn0 up_h16 un_h16 wp_ih_0_16 wn_ih_0_16 vdd dsyn
+Vwp_ih_1_16 wp_ih_1_16 0 0.4501
+Vwn_ih_1_16 wn_ih_1_16 0 0.3899
+X_ih_1_16 a_xp1 a_xn1 up_h16 un_h16 wp_ih_1_16 wn_ih_1_16 vdd dsyn
+Vwp_bk_16_0 wp_bk_16_0 0 0.4501
+Vwn_bk_16_0 wn_bk_16_0 0 0.3899
+X_bk_16_0 up_o0 un_o0 up_h16 un_h16 wp_bk_16_0 wn_bk_16_0 vdd dsyn
+Vwp_bk_16_1 wp_bk_16_1 0 0.4655
+Vwn_bk_16_1 wn_bk_16_1 0 0.3745
+X_bk_16_1 up_o1 un_o1 up_h16 un_h16 wp_bk_16_1 wn_bk_16_1 vdd dsyn
+Vwp_bh_16 wp_bh_16 0 0.4340
+Vwn_bh_16 wn_bh_16 0 0.4060
+X_bh_16 bp_hi bp_lo up_h16 un_h16 wp_bh_16 wn_bh_16 vdd dsyn
+Mlp_h17 up_h17 up_h17 vdd vdd PNR W=1500u L=100u
+Mln_h17 un_h17 un_h17 vdd vdd PNR W=1500u L=100u
+Xn_h17 up_h17 un_h17 ap_h17 an_h17 vdd vbn dneuron
+Vwp_ih_0_17 wp_ih_0_17 0 0.3944
+Vwn_ih_0_17 wn_ih_0_17 0 0.4456
+X_ih_0_17 a_xp0 a_xn0 up_h17 un_h17 wp_ih_0_17 wn_ih_0_17 vdd dsyn
+Vwp_ih_1_17 wp_ih_1_17 0 0.3880
+Vwn_ih_1_17 wn_ih_1_17 0 0.4520
+X_ih_1_17 a_xp1 a_xn1 up_h17 un_h17 wp_ih_1_17 wn_ih_1_17 vdd dsyn
+Vwp_bk_17_0 wp_bk_17_0 0 0.3880
+Vwn_bk_17_0 wn_bk_17_0 0 0.4520
+X_bk_17_0 up_o0 un_o0 up_h17 un_h17 wp_bk_17_0 wn_bk_17_0 vdd dsyn
+Vwp_bk_17_1 wp_bk_17_1 0 0.4748
+Vwn_bk_17_1 wn_bk_17_1 0 0.3652
+X_bk_17_1 up_o1 un_o1 up_h17 un_h17 wp_bk_17_1 wn_bk_17_1 vdd dsyn
+Vwp_bh_17 wp_bh_17 0 0.3616
+Vwn_bh_17 wn_bh_17 0 0.4784
+X_bh_17 bp_hi bp_lo up_h17 un_h17 wp_bh_17 wn_bh_17 vdd dsyn
+Mlp_h18 up_h18 up_h18 vdd vdd PNR W=1500u L=100u
+Mln_h18 un_h18 un_h18 vdd vdd PNR W=1500u L=100u
+Xn_h18 up_h18 un_h18 ap_h18 an_h18 vdd vbn dneuron
+Vwp_ih_0_18 wp_ih_0_18 0 0.3961
+Vwn_ih_0_18 wn_ih_0_18 0 0.4439
+X_ih_0_18 a_xp0 a_xn0 up_h18 un_h18 wp_ih_0_18 wn_ih_0_18 vdd dsyn
+Vwp_ih_1_18 wp_ih_1_18 0 0.4072
+Vwn_ih_1_18 wn_ih_1_18 0 0.4328
+X_ih_1_18 a_xp1 a_xn1 up_h18 un_h18 wp_ih_1_18 wn_ih_1_18 vdd dsyn
+Vwp_bk_18_0 wp_bk_18_0 0 0.4290
+Vwn_bk_18_0 wn_bk_18_0 0 0.4110
+X_bk_18_0 up_o0 un_o0 up_h18 un_h18 wp_bk_18_0 wn_bk_18_0 vdd dsyn
+Vwp_bk_18_1 wp_bk_18_1 0 0.4430
+Vwn_bk_18_1 wn_bk_18_1 0 0.3970
+X_bk_18_1 up_o1 un_o1 up_h18 un_h18 wp_bk_18_1 wn_bk_18_1 vdd dsyn
+Vwp_bh_18 wp_bh_18 0 0.3700
+Vwn_bh_18 wn_bh_18 0 0.4700
+X_bh_18 bp_hi bp_lo up_h18 un_h18 wp_bh_18 wn_bh_18 vdd dsyn
+Mlp_h19 up_h19 up_h19 vdd vdd PNR W=1500u L=100u
+Mln_h19 un_h19 un_h19 vdd vdd PNR W=1500u L=100u
+Xn_h19 up_h19 un_h19 ap_h19 an_h19 vdd vbn dneuron
+Vwp_ih_0_19 wp_ih_0_19 0 0.3508
+Vwn_ih_0_19 wn_ih_0_19 0 0.4892
+X_ih_0_19 a_xp0 a_xn0 up_h19 un_h19 wp_ih_0_19 wn_ih_0_19 vdd dsyn
+Vwp_ih_1_19 wp_ih_1_19 0 0.4198
+Vwn_ih_1_19 wn_ih_1_19 0 0.4202
+X_ih_1_19 a_xp1 a_xn1 up_h19 un_h19 wp_ih_1_19 wn_ih_1_19 vdd dsyn
+Vwp_bk_19_0 wp_bk_19_0 0 0.4685
+Vwn_bk_19_0 wn_bk_19_0 0 0.3715
+X_bk_19_0 up_o0 un_o0 up_h19 un_h19 wp_bk_19_0 wn_bk_19_0 vdd dsyn
+Vwp_bk_19_1 wp_bk_19_1 0 0.4503
+Vwn_bk_19_1 wn_bk_19_1 0 0.3897
+X_bk_19_1 up_o1 un_o1 up_h19 un_h19 wp_bk_19_1 wn_bk_19_1 vdd dsyn
+Vwp_bh_19 wp_bh_19 0 0.4286
+Vwn_bh_19 wn_bh_19 0 0.4114
+X_bh_19 bp_hi bp_lo up_h19 un_h19 wp_bh_19 wn_bh_19 vdd dsyn
+Mlp_h20 up_h20 up_h20 vdd vdd PNR W=1500u L=100u
+Mln_h20 un_h20 un_h20 vdd vdd PNR W=1500u L=100u
+Xn_h20 up_h20 un_h20 ap_h20 an_h20 vdd vbn dneuron
+Vwp_ih_0_20 wp_ih_0_20 0 0.4073
+Vwn_ih_0_20 wn_ih_0_20 0 0.4327
+X_ih_0_20 a_xp0 a_xn0 up_h20 un_h20 wp_ih_0_20 wn_ih_0_20 vdd dsyn
+Vwp_ih_1_20 wp_ih_1_20 0 0.4317
+Vwn_ih_1_20 wn_ih_1_20 0 0.4083
+X_ih_1_20 a_xp1 a_xn1 up_h20 un_h20 wp_ih_1_20 wn_ih_1_20 vdd dsyn
+Vwp_bk_20_0 wp_bk_20_0 0 0.4103
+Vwn_bk_20_0 wn_bk_20_0 0 0.4297
+X_bk_20_0 up_o0 un_o0 up_h20 un_h20 wp_bk_20_0 wn_bk_20_0 vdd dsyn
+Vwp_bk_20_1 wp_bk_20_1 0 0.4527
+Vwn_bk_20_1 wn_bk_20_1 0 0.3873
+X_bk_20_1 up_o1 un_o1 up_h20 un_h20 wp_bk_20_1 wn_bk_20_1 vdd dsyn
+Vwp_bh_20 wp_bh_20 0 0.3882
+Vwn_bh_20 wn_bh_20 0 0.4518
+X_bh_20 bp_hi bp_lo up_h20 un_h20 wp_bh_20 wn_bh_20 vdd dsyn
+Mlp_h21 up_h21 up_h21 vdd vdd PNR W=1500u L=100u
+Mln_h21 un_h21 un_h21 vdd vdd PNR W=1500u L=100u
+Xn_h21 up_h21 un_h21 ap_h21 an_h21 vdd vbn dneuron
+Vwp_ih_0_21 wp_ih_0_21 0 0.4254
+Vwn_ih_0_21 wn_ih_0_21 0 0.4146
+X_ih_0_21 a_xp0 a_xn0 up_h21 un_h21 wp_ih_0_21 wn_ih_0_21 vdd dsyn
+Vwp_ih_1_21 wp_ih_1_21 0 0.4156
+Vwn_ih_1_21 wn_ih_1_21 0 0.4244
+X_ih_1_21 a_xp1 a_xn1 up_h21 un_h21 wp_ih_1_21 wn_ih_1_21 vdd dsyn
+Vwp_bk_21_0 wp_bk_21_0 0 0.4417
+Vwn_bk_21_0 wn_bk_21_0 0 0.3983
+X_bk_21_0 up_o0 un_o0 up_h21 un_h21 wp_bk_21_0 wn_bk_21_0 vdd dsyn
+Vwp_bk_21_1 wp_bk_21_1 0 0.4290
+Vwn_bk_21_1 wn_bk_21_1 0 0.4110
+X_bk_21_1 up_o1 un_o1 up_h21 un_h21 wp_bk_21_1 wn_bk_21_1 vdd dsyn
+Vwp_bh_21 wp_bh_21 0 0.5220
+Vwn_bh_21 wn_bh_21 0 0.3180
+X_bh_21 bp_hi bp_lo up_h21 un_h21 wp_bh_21 wn_bh_21 vdd dsyn
+Mlp_h22 up_h22 up_h22 vdd vdd PNR W=1500u L=100u
+Mln_h22 un_h22 un_h22 vdd vdd PNR W=1500u L=100u
+Xn_h22 up_h22 un_h22 ap_h22 an_h22 vdd vbn dneuron
+Vwp_ih_0_22 wp_ih_0_22 0 0.4799
+Vwn_ih_0_22 wn_ih_0_22 0 0.3601
+X_ih_0_22 a_xp0 a_xn0 up_h22 un_h22 wp_ih_0_22 wn_ih_0_22 vdd dsyn
+Vwp_ih_1_22 wp_ih_1_22 0 0.4799
+Vwn_ih_1_22 wn_ih_1_22 0 0.3601
+X_ih_1_22 a_xp1 a_xn1 up_h22 un_h22 wp_ih_1_22 wn_ih_1_22 vdd dsyn
+Vwp_bk_22_0 wp_bk_22_0 0 0.3384
+Vwn_bk_22_0 wn_bk_22_0 0 0.5016
+X_bk_22_0 up_o0 un_o0 up_h22 un_h22 wp_bk_22_0 wn_bk_22_0 vdd dsyn
+Vwp_bk_22_1 wp_bk_22_1 0 0.4064
+Vwn_bk_22_1 wn_bk_22_1 0 0.4336
+X_bk_22_1 up_o1 un_o1 up_h22 un_h22 wp_bk_22_1 wn_bk_22_1 vdd dsyn
+Vwp_bh_22 wp_bh_22 0 0.3957
+Vwn_bh_22 wn_bh_22 0 0.4443
+X_bh_22 bp_hi bp_lo up_h22 un_h22 wp_bh_22 wn_bh_22 vdd dsyn
+Mlp_h23 up_h23 up_h23 vdd vdd PNR W=1500u L=100u
+Mln_h23 un_h23 un_h23 vdd vdd PNR W=1500u L=100u
+Xn_h23 up_h23 un_h23 ap_h23 an_h23 vdd vbn dneuron
+Vwp_ih_0_23 wp_ih_0_23 0 0.4413
+Vwn_ih_0_23 wn_ih_0_23 0 0.3987
+X_ih_0_23 a_xp0 a_xn0 up_h23 un_h23 wp_ih_0_23 wn_ih_0_23 vdd dsyn
+Vwp_ih_1_23 wp_ih_1_23 0 0.3288
+Vwn_ih_1_23 wn_ih_1_23 0 0.5112
+X_ih_1_23 a_xp1 a_xn1 up_h23 un_h23 wp_ih_1_23 wn_ih_1_23 vdd dsyn
+Vwp_bk_23_0 wp_bk_23_0 0 0.4670
+Vwn_bk_23_0 wn_bk_23_0 0 0.3730
+X_bk_23_0 up_o0 un_o0 up_h23 un_h23 wp_bk_23_0 wn_bk_23_0 vdd dsyn
+Vwp_bk_23_1 wp_bk_23_1 0 0.4627
+Vwn_bk_23_1 wn_bk_23_1 0 0.3773
+X_bk_23_1 up_o1 un_o1 up_h23 un_h23 wp_bk_23_1 wn_bk_23_1 vdd dsyn
+Vwp_bh_23 wp_bh_23 0 0.3679
+Vwn_bh_23 wn_bh_23 0 0.4721
+X_bh_23 bp_hi bp_lo up_h23 un_h23 wp_bh_23 wn_bh_23 vdd dsyn
+Mlp_h24 up_h24 up_h24 vdd vdd PNR W=1500u L=100u
+Mln_h24 un_h24 un_h24 vdd vdd PNR W=1500u L=100u
+Xn_h24 up_h24 un_h24 ap_h24 an_h24 vdd vbn dneuron
+Vwp_ih_0_24 wp_ih_0_24 0 0.3809
+Vwn_ih_0_24 wn_ih_0_24 0 0.4591
+X_ih_0_24 a_xp0 a_xn0 up_h24 un_h24 wp_ih_0_24 wn_ih_0_24 vdd dsyn
+Vwp_ih_1_24 wp_ih_1_24 0 0.3880
+Vwn_ih_1_24 wn_ih_1_24 0 0.4520
+X_ih_1_24 a_xp1 a_xn1 up_h24 un_h24 wp_ih_1_24 wn_ih_1_24 vdd dsyn
+Vwp_bk_24_0 wp_bk_24_0 0 0.4217
+Vwn_bk_24_0 wn_bk_24_0 0 0.4183
+X_bk_24_0 up_o0 un_o0 up_h24 un_h24 wp_bk_24_0 wn_bk_24_0 vdd dsyn
+Vwp_bk_24_1 wp_bk_24_1 0 0.4456
+Vwn_bk_24_1 wn_bk_24_1 0 0.3944
+X_bk_24_1 up_o1 un_o1 up_h24 un_h24 wp_bk_24_1 wn_bk_24_1 vdd dsyn
+Vwp_bh_24 wp_bh_24 0 0.5019
+Vwn_bh_24 wn_bh_24 0 0.3381
+X_bh_24 bp_hi bp_lo up_h24 un_h24 wp_bh_24 wn_bh_24 vdd dsyn
+Mlp_h25 up_h25 up_h25 vdd vdd PNR W=1500u L=100u
+Mln_h25 un_h25 un_h25 vdd vdd PNR W=1500u L=100u
+Xn_h25 up_h25 un_h25 ap_h25 an_h25 vdd vbn dneuron
+Vwp_ih_0_25 wp_ih_0_25 0 0.4121
+Vwn_ih_0_25 wn_ih_0_25 0 0.4279
+X_ih_0_25 a_xp0 a_xn0 up_h25 un_h25 wp_ih_0_25 wn_ih_0_25 vdd dsyn
+Vwp_ih_1_25 wp_ih_1_25 0 0.4507
+Vwn_ih_1_25 wn_ih_1_25 0 0.3893
+X_ih_1_25 a_xp1 a_xn1 up_h25 un_h25 wp_ih_1_25 wn_ih_1_25 vdd dsyn
+Vwp_bk_25_0 wp_bk_25_0 0 0.4262
+Vwn_bk_25_0 wn_bk_25_0 0 0.4138
+X_bk_25_0 up_o0 un_o0 up_h25 un_h25 wp_bk_25_0 wn_bk_25_0 vdd dsyn
+Vwp_bk_25_1 wp_bk_25_1 0 0.4904
+Vwn_bk_25_1 wn_bk_25_1 0 0.3496
+X_bk_25_1 up_o1 un_o1 up_h25 un_h25 wp_bk_25_1 wn_bk_25_1 vdd dsyn
+Vwp_bh_25 wp_bh_25 0 0.4497
+Vwn_bh_25 wn_bh_25 0 0.3903
+X_bh_25 bp_hi bp_lo up_h25 un_h25 wp_bh_25 wn_bh_25 vdd dsyn
+Mlp_h26 up_h26 up_h26 vdd vdd PNR W=1500u L=100u
+Mln_h26 un_h26 un_h26 vdd vdd PNR W=1500u L=100u
+Xn_h26 up_h26 un_h26 ap_h26 an_h26 vdd vbn dneuron
+Vwp_ih_0_26 wp_ih_0_26 0 0.4747
+Vwn_ih_0_26 wn_ih_0_26 0 0.3653
+X_ih_0_26 a_xp0 a_xn0 up_h26 un_h26 wp_ih_0_26 wn_ih_0_26 vdd dsyn
+Vwp_ih_1_26 wp_ih_1_26 0 0.3769
+Vwn_ih_1_26 wn_ih_1_26 0 0.4631
+X_ih_1_26 a_xp1 a_xn1 up_h26 un_h26 wp_ih_1_26 wn_ih_1_26 vdd dsyn
+Vwp_bk_26_0 wp_bk_26_0 0 0.4123
+Vwn_bk_26_0 wn_bk_26_0 0 0.4277
+X_bk_26_0 up_o0 un_o0 up_h26 un_h26 wp_bk_26_0 wn_bk_26_0 vdd dsyn
+Vwp_bk_26_1 wp_bk_26_1 0 0.3874
+Vwn_bk_26_1 wn_bk_26_1 0 0.4526
+X_bk_26_1 up_o1 un_o1 up_h26 un_h26 wp_bk_26_1 wn_bk_26_1 vdd dsyn
+Vwp_bh_26 wp_bh_26 0 0.4802
+Vwn_bh_26 wn_bh_26 0 0.3598
+X_bh_26 bp_hi bp_lo up_h26 un_h26 wp_bh_26 wn_bh_26 vdd dsyn
+Mlp_h27 up_h27 up_h27 vdd vdd PNR W=1500u L=100u
+Mln_h27 un_h27 un_h27 vdd vdd PNR W=1500u L=100u
+Xn_h27 up_h27 un_h27 ap_h27 an_h27 vdd vbn dneuron
+Vwp_ih_0_27 wp_ih_0_27 0 0.4463
+Vwn_ih_0_27 wn_ih_0_27 0 0.3937
+X_ih_0_27 a_xp0 a_xn0 up_h27 un_h27 wp_ih_0_27 wn_ih_0_27 vdd dsyn
+Vwp_ih_1_27 wp_ih_1_27 0 0.4078
+Vwn_ih_1_27 wn_ih_1_27 0 0.4322
+X_ih_1_27 a_xp1 a_xn1 up_h27 un_h27 wp_ih_1_27 wn_ih_1_27 vdd dsyn
+Vwp_bk_27_0 wp_bk_27_0 0 0.4019
+Vwn_bk_27_0 wn_bk_27_0 0 0.4381
+X_bk_27_0 up_o0 un_o0 up_h27 un_h27 wp_bk_27_0 wn_bk_27_0 vdd dsyn
+Vwp_bk_27_1 wp_bk_27_1 0 0.4394
+Vwn_bk_27_1 wn_bk_27_1 0 0.4006
+X_bk_27_1 up_o1 un_o1 up_h27 un_h27 wp_bk_27_1 wn_bk_27_1 vdd dsyn
+Vwp_bh_27 wp_bh_27 0 0.3919
+Vwn_bh_27 wn_bh_27 0 0.4481
+X_bh_27 bp_hi bp_lo up_h27 un_h27 wp_bh_27 wn_bh_27 vdd dsyn
+Mlp_h28 up_h28 up_h28 vdd vdd PNR W=1500u L=100u
+Mln_h28 un_h28 un_h28 vdd vdd PNR W=1500u L=100u
+Xn_h28 up_h28 un_h28 ap_h28 an_h28 vdd vbn dneuron
+Vwp_ih_0_28 wp_ih_0_28 0 0.3828
+Vwn_ih_0_28 wn_ih_0_28 0 0.4572
+X_ih_0_28 a_xp0 a_xn0 up_h28 un_h28 wp_ih_0_28 wn_ih_0_28 vdd dsyn
+Vwp_ih_1_28 wp_ih_1_28 0 0.4393
+Vwn_ih_1_28 wn_ih_1_28 0 0.4007
+X_ih_1_28 a_xp1 a_xn1 up_h28 un_h28 wp_ih_1_28 wn_ih_1_28 vdd dsyn
+Vwp_bk_28_0 wp_bk_28_0 0 0.5185
+Vwn_bk_28_0 wn_bk_28_0 0 0.3215
+X_bk_28_0 up_o0 un_o0 up_h28 un_h28 wp_bk_28_0 wn_bk_28_0 vdd dsyn
+Vwp_bk_28_1 wp_bk_28_1 0 0.4102
+Vwn_bk_28_1 wn_bk_28_1 0 0.4298
+X_bk_28_1 up_o1 un_o1 up_h28 un_h28 wp_bk_28_1 wn_bk_28_1 vdd dsyn
+Vwp_bh_28 wp_bh_28 0 0.3978
+Vwn_bh_28 wn_bh_28 0 0.4422
+X_bh_28 bp_hi bp_lo up_h28 un_h28 wp_bh_28 wn_bh_28 vdd dsyn
+Mlp_h29 up_h29 up_h29 vdd vdd PNR W=1500u L=100u
+Mln_h29 un_h29 un_h29 vdd vdd PNR W=1500u L=100u
+Xn_h29 up_h29 un_h29 ap_h29 an_h29 vdd vbn dneuron
+Vwp_ih_0_29 wp_ih_0_29 0 0.3732
+Vwn_ih_0_29 wn_ih_0_29 0 0.4668
+X_ih_0_29 a_xp0 a_xn0 up_h29 un_h29 wp_ih_0_29 wn_ih_0_29 vdd dsyn
+Vwp_ih_1_29 wp_ih_1_29 0 0.3666
+Vwn_ih_1_29 wn_ih_1_29 0 0.4734
+X_ih_1_29 a_xp1 a_xn1 up_h29 un_h29 wp_ih_1_29 wn_ih_1_29 vdd dsyn
+Vwp_bk_29_0 wp_bk_29_0 0 0.4410
+Vwn_bk_29_0 wn_bk_29_0 0 0.3990
+X_bk_29_0 up_o0 un_o0 up_h29 un_h29 wp_bk_29_0 wn_bk_29_0 vdd dsyn
+Vwp_bk_29_1 wp_bk_29_1 0 0.4540
+Vwn_bk_29_1 wn_bk_29_1 0 0.3860
+X_bk_29_1 up_o1 un_o1 up_h29 un_h29 wp_bk_29_1 wn_bk_29_1 vdd dsyn
+Vwp_bh_29 wp_bh_29 0 0.4204
+Vwn_bh_29 wn_bh_29 0 0.4196
+X_bh_29 bp_hi bp_lo up_h29 un_h29 wp_bh_29 wn_bh_29 vdd dsyn
+Mlp_h30 up_h30 up_h30 vdd vdd PNR W=1500u L=100u
+Mln_h30 un_h30 un_h30 vdd vdd PNR W=1500u L=100u
+Xn_h30 up_h30 un_h30 ap_h30 an_h30 vdd vbn dneuron
+Vwp_ih_0_30 wp_ih_0_30 0 0.4333
+Vwn_ih_0_30 wn_ih_0_30 0 0.4067
+X_ih_0_30 a_xp0 a_xn0 up_h30 un_h30 wp_ih_0_30 wn_ih_0_30 vdd dsyn
+Vwp_ih_1_30 wp_ih_1_30 0 0.4246
+Vwn_ih_1_30 wn_ih_1_30 0 0.4154
+X_ih_1_30 a_xp1 a_xn1 up_h30 un_h30 wp_ih_1_30 wn_ih_1_30 vdd dsyn
+Vwp_bk_30_0 wp_bk_30_0 0 0.4255
+Vwn_bk_30_0 wn_bk_30_0 0 0.4145
+X_bk_30_0 up_o0 un_o0 up_h30 un_h30 wp_bk_30_0 wn_bk_30_0 vdd dsyn
+Vwp_bk_30_1 wp_bk_30_1 0 0.3590
+Vwn_bk_30_1 wn_bk_30_1 0 0.4810
+X_bk_30_1 up_o1 un_o1 up_h30 un_h30 wp_bk_30_1 wn_bk_30_1 vdd dsyn
+Vwp_bh_30 wp_bh_30 0 0.4017
+Vwn_bh_30 wn_bh_30 0 0.4383
+X_bh_30 bp_hi bp_lo up_h30 un_h30 wp_bh_30 wn_bh_30 vdd dsyn
+Mlp_h31 up_h31 up_h31 vdd vdd PNR W=1500u L=100u
+Mln_h31 un_h31 un_h31 vdd vdd PNR W=1500u L=100u
+Xn_h31 up_h31 un_h31 ap_h31 an_h31 vdd vbn dneuron
+Vwp_ih_0_31 wp_ih_0_31 0 0.4245
+Vwn_ih_0_31 wn_ih_0_31 0 0.4155
+X_ih_0_31 a_xp0 a_xn0 up_h31 un_h31 wp_ih_0_31 wn_ih_0_31 vdd dsyn
+Vwp_ih_1_31 wp_ih_1_31 0 0.3887
+Vwn_ih_1_31 wn_ih_1_31 0 0.4513
+X_ih_1_31 a_xp1 a_xn1 up_h31 un_h31 wp_ih_1_31 wn_ih_1_31 vdd dsyn
+Vwp_bk_31_0 wp_bk_31_0 0 0.4009
+Vwn_bk_31_0 wn_bk_31_0 0 0.4391
+X_bk_31_0 up_o0 un_o0 up_h31 un_h31 wp_bk_31_0 wn_bk_31_0 vdd dsyn
+Vwp_bk_31_1 wp_bk_31_1 0 0.3872
+Vwn_bk_31_1 wn_bk_31_1 0 0.4528
+X_bk_31_1 up_o1 un_o1 up_h31 un_h31 wp_bk_31_1 wn_bk_31_1 vdd dsyn
+Vwp_bh_31 wp_bh_31 0 0.4067
+Vwn_bh_31 wn_bh_31 0 0.4333
+X_bh_31 bp_hi bp_lo up_h31 un_h31 wp_bh_31 wn_bh_31 vdd dsyn
+Mlp_h32 up_h32 up_h32 vdd vdd PNR W=1500u L=100u
+Mln_h32 un_h32 un_h32 vdd vdd PNR W=1500u L=100u
+Xn_h32 up_h32 un_h32 ap_h32 an_h32 vdd vbn dneuron
+Vwp_ih_0_32 wp_ih_0_32 0 0.4541
+Vwn_ih_0_32 wn_ih_0_32 0 0.3859
+X_ih_0_32 a_xp0 a_xn0 up_h32 un_h32 wp_ih_0_32 wn_ih_0_32 vdd dsyn
+Vwp_ih_1_32 wp_ih_1_32 0 0.4037
+Vwn_ih_1_32 wn_ih_1_32 0 0.4363
+X_ih_1_32 a_xp1 a_xn1 up_h32 un_h32 wp_ih_1_32 wn_ih_1_32 vdd dsyn
+Vwp_bk_32_0 wp_bk_32_0 0 0.4138
+Vwn_bk_32_0 wn_bk_32_0 0 0.4262
+X_bk_32_0 up_o0 un_o0 up_h32 un_h32 wp_bk_32_0 wn_bk_32_0 vdd dsyn
+Vwp_bk_32_1 wp_bk_32_1 0 0.4525
+Vwn_bk_32_1 wn_bk_32_1 0 0.3875
+X_bk_32_1 up_o1 un_o1 up_h32 un_h32 wp_bk_32_1 wn_bk_32_1 vdd dsyn
+Vwp_bh_32 wp_bh_32 0 0.4458
+Vwn_bh_32 wn_bh_32 0 0.3942
+X_bh_32 bp_hi bp_lo up_h32 un_h32 wp_bh_32 wn_bh_32 vdd dsyn
+Mlp_h33 up_h33 up_h33 vdd vdd PNR W=1500u L=100u
+Mln_h33 un_h33 un_h33 vdd vdd PNR W=1500u L=100u
+Xn_h33 up_h33 un_h33 ap_h33 an_h33 vdd vbn dneuron
+Vwp_ih_0_33 wp_ih_0_33 0 0.4878
+Vwn_ih_0_33 wn_ih_0_33 0 0.3522
+X_ih_0_33 a_xp0 a_xn0 up_h33 un_h33 wp_ih_0_33 wn_ih_0_33 vdd dsyn
+Vwp_ih_1_33 wp_ih_1_33 0 0.3364
+Vwn_ih_1_33 wn_ih_1_33 0 0.5036
+X_ih_1_33 a_xp1 a_xn1 up_h33 un_h33 wp_ih_1_33 wn_ih_1_33 vdd dsyn
+Vwp_bk_33_0 wp_bk_33_0 0 0.4543
+Vwn_bk_33_0 wn_bk_33_0 0 0.3857
+X_bk_33_0 up_o0 un_o0 up_h33 un_h33 wp_bk_33_0 wn_bk_33_0 vdd dsyn
+Vwp_bk_33_1 wp_bk_33_1 0 0.4007
+Vwn_bk_33_1 wn_bk_33_1 0 0.4393
+X_bk_33_1 up_o1 un_o1 up_h33 un_h33 wp_bk_33_1 wn_bk_33_1 vdd dsyn
+Vwp_bh_33 wp_bh_33 0 0.4254
+Vwn_bh_33 wn_bh_33 0 0.4146
+X_bh_33 bp_hi bp_lo up_h33 un_h33 wp_bh_33 wn_bh_33 vdd dsyn
+Mlp_h34 up_h34 up_h34 vdd vdd PNR W=1500u L=100u
+Mln_h34 un_h34 un_h34 vdd vdd PNR W=1500u L=100u
+Xn_h34 up_h34 un_h34 ap_h34 an_h34 vdd vbn dneuron
+Vwp_ih_0_34 wp_ih_0_34 0 0.4535
+Vwn_ih_0_34 wn_ih_0_34 0 0.3865
+X_ih_0_34 a_xp0 a_xn0 up_h34 un_h34 wp_ih_0_34 wn_ih_0_34 vdd dsyn
+Vwp_ih_1_34 wp_ih_1_34 0 0.4633
+Vwn_ih_1_34 wn_ih_1_34 0 0.3767
+X_ih_1_34 a_xp1 a_xn1 up_h34 un_h34 wp_ih_1_34 wn_ih_1_34 vdd dsyn
+Vwp_bk_34_0 wp_bk_34_0 0 0.4616
+Vwn_bk_34_0 wn_bk_34_0 0 0.3784
+X_bk_34_0 up_o0 un_o0 up_h34 un_h34 wp_bk_34_0 wn_bk_34_0 vdd dsyn
+Vwp_bk_34_1 wp_bk_34_1 0 0.4262
+Vwn_bk_34_1 wn_bk_34_1 0 0.4138
+X_bk_34_1 up_o1 un_o1 up_h34 un_h34 wp_bk_34_1 wn_bk_34_1 vdd dsyn
+Vwp_bh_34 wp_bh_34 0 0.4844
+Vwn_bh_34 wn_bh_34 0 0.3556
+X_bh_34 bp_hi bp_lo up_h34 un_h34 wp_bh_34 wn_bh_34 vdd dsyn
+Mlp_h35 up_h35 up_h35 vdd vdd PNR W=1500u L=100u
+Mln_h35 un_h35 un_h35 vdd vdd PNR W=1500u L=100u
+Xn_h35 up_h35 un_h35 ap_h35 an_h35 vdd vbn dneuron
+Vwp_ih_0_35 wp_ih_0_35 0 0.4087
+Vwn_ih_0_35 wn_ih_0_35 0 0.4313
+X_ih_0_35 a_xp0 a_xn0 up_h35 un_h35 wp_ih_0_35 wn_ih_0_35 vdd dsyn
+Vwp_ih_1_35 wp_ih_1_35 0 0.4144
+Vwn_ih_1_35 wn_ih_1_35 0 0.4256
+X_ih_1_35 a_xp1 a_xn1 up_h35 un_h35 wp_ih_1_35 wn_ih_1_35 vdd dsyn
+Vwp_bk_35_0 wp_bk_35_0 0 0.4520
+Vwn_bk_35_0 wn_bk_35_0 0 0.3880
+X_bk_35_0 up_o0 un_o0 up_h35 un_h35 wp_bk_35_0 wn_bk_35_0 vdd dsyn
+Vwp_bk_35_1 wp_bk_35_1 0 0.3979
+Vwn_bk_35_1 wn_bk_35_1 0 0.4421
+X_bk_35_1 up_o1 un_o1 up_h35 un_h35 wp_bk_35_1 wn_bk_35_1 vdd dsyn
+Vwp_bh_35 wp_bh_35 0 0.5064
+Vwn_bh_35 wn_bh_35 0 0.3336
+X_bh_35 bp_hi bp_lo up_h35 un_h35 wp_bh_35 wn_bh_35 vdd dsyn
+Mlp_h36 up_h36 up_h36 vdd vdd PNR W=1500u L=100u
+Mln_h36 un_h36 un_h36 vdd vdd PNR W=1500u L=100u
+Xn_h36 up_h36 un_h36 ap_h36 an_h36 vdd vbn dneuron
+Vwp_ih_0_36 wp_ih_0_36 0 0.4608
+Vwn_ih_0_36 wn_ih_0_36 0 0.3792
+X_ih_0_36 a_xp0 a_xn0 up_h36 un_h36 wp_ih_0_36 wn_ih_0_36 vdd dsyn
+Vwp_ih_1_36 wp_ih_1_36 0 0.5070
+Vwn_ih_1_36 wn_ih_1_36 0 0.3330
+X_ih_1_36 a_xp1 a_xn1 up_h36 un_h36 wp_ih_1_36 wn_ih_1_36 vdd dsyn
+Vwp_bk_36_0 wp_bk_36_0 0 0.4189
+Vwn_bk_36_0 wn_bk_36_0 0 0.4211
+X_bk_36_0 up_o0 un_o0 up_h36 un_h36 wp_bk_36_0 wn_bk_36_0 vdd dsyn
+Vwp_bk_36_1 wp_bk_36_1 0 0.4047
+Vwn_bk_36_1 wn_bk_36_1 0 0.4353
+X_bk_36_1 up_o1 un_o1 up_h36 un_h36 wp_bk_36_1 wn_bk_36_1 vdd dsyn
+Vwp_bh_36 wp_bh_36 0 0.4267
+Vwn_bh_36 wn_bh_36 0 0.4133
+X_bh_36 bp_hi bp_lo up_h36 un_h36 wp_bh_36 wn_bh_36 vdd dsyn
+Mlp_h37 up_h37 up_h37 vdd vdd PNR W=1500u L=100u
+Mln_h37 un_h37 un_h37 vdd vdd PNR W=1500u L=100u
+Xn_h37 up_h37 un_h37 ap_h37 an_h37 vdd vbn dneuron
+Vwp_ih_0_37 wp_ih_0_37 0 0.4494
+Vwn_ih_0_37 wn_ih_0_37 0 0.3906
+X_ih_0_37 a_xp0 a_xn0 up_h37 un_h37 wp_ih_0_37 wn_ih_0_37 vdd dsyn
+Vwp_ih_1_37 wp_ih_1_37 0 0.3965
+Vwn_ih_1_37 wn_ih_1_37 0 0.4435
+X_ih_1_37 a_xp1 a_xn1 up_h37 un_h37 wp_ih_1_37 wn_ih_1_37 vdd dsyn
+Vwp_bk_37_0 wp_bk_37_0 0 0.4352
+Vwn_bk_37_0 wn_bk_37_0 0 0.4048
+X_bk_37_0 up_o0 un_o0 up_h37 un_h37 wp_bk_37_0 wn_bk_37_0 vdd dsyn
+Vwp_bk_37_1 wp_bk_37_1 0 0.4193
+Vwn_bk_37_1 wn_bk_37_1 0 0.4207
+X_bk_37_1 up_o1 un_o1 up_h37 un_h37 wp_bk_37_1 wn_bk_37_1 vdd dsyn
+Vwp_bh_37 wp_bh_37 0 0.4846
+Vwn_bh_37 wn_bh_37 0 0.3554
+X_bh_37 bp_hi bp_lo up_h37 un_h37 wp_bh_37 wn_bh_37 vdd dsyn
+Mlp_h38 up_h38 up_h38 vdd vdd PNR W=1500u L=100u
+Mln_h38 un_h38 un_h38 vdd vdd PNR W=1500u L=100u
+Xn_h38 up_h38 un_h38 ap_h38 an_h38 vdd vbn dneuron
+Vwp_ih_0_38 wp_ih_0_38 0 0.3935
+Vwn_ih_0_38 wn_ih_0_38 0 0.4465
+X_ih_0_38 a_xp0 a_xn0 up_h38 un_h38 wp_ih_0_38 wn_ih_0_38 vdd dsyn
+Vwp_ih_1_38 wp_ih_1_38 0 0.4618
+Vwn_ih_1_38 wn_ih_1_38 0 0.3782
+X_ih_1_38 a_xp1 a_xn1 up_h38 un_h38 wp_ih_1_38 wn_ih_1_38 vdd dsyn
+Vwp_bk_38_0 wp_bk_38_0 0 0.3942
+Vwn_bk_38_0 wn_bk_38_0 0 0.4458
+X_bk_38_0 up_o0 un_o0 up_h38 un_h38 wp_bk_38_0 wn_bk_38_0 vdd dsyn
+Vwp_bk_38_1 wp_bk_38_1 0 0.3816
+Vwn_bk_38_1 wn_bk_38_1 0 0.4584
+X_bk_38_1 up_o1 un_o1 up_h38 un_h38 wp_bk_38_1 wn_bk_38_1 vdd dsyn
+Vwp_bh_38 wp_bh_38 0 0.3916
+Vwn_bh_38 wn_bh_38 0 0.4484
+X_bh_38 bp_hi bp_lo up_h38 un_h38 wp_bh_38 wn_bh_38 vdd dsyn
+Mlp_h39 up_h39 up_h39 vdd vdd PNR W=1500u L=100u
+Mln_h39 un_h39 un_h39 vdd vdd PNR W=1500u L=100u
+Xn_h39 up_h39 un_h39 ap_h39 an_h39 vdd vbn dneuron
+Vwp_ih_0_39 wp_ih_0_39 0 0.3724
+Vwn_ih_0_39 wn_ih_0_39 0 0.4676
+X_ih_0_39 a_xp0 a_xn0 up_h39 un_h39 wp_ih_0_39 wn_ih_0_39 vdd dsyn
+Vwp_ih_1_39 wp_ih_1_39 0 0.4259
+Vwn_ih_1_39 wn_ih_1_39 0 0.4141
+X_ih_1_39 a_xp1 a_xn1 up_h39 un_h39 wp_ih_1_39 wn_ih_1_39 vdd dsyn
+Vwp_bk_39_0 wp_bk_39_0 0 0.4613
+Vwn_bk_39_0 wn_bk_39_0 0 0.3787
+X_bk_39_0 up_o0 un_o0 up_h39 un_h39 wp_bk_39_0 wn_bk_39_0 vdd dsyn
+Vwp_bk_39_1 wp_bk_39_1 0 0.4266
+Vwn_bk_39_1 wn_bk_39_1 0 0.4134
+X_bk_39_1 up_o1 un_o1 up_h39 un_h39 wp_bk_39_1 wn_bk_39_1 vdd dsyn
+Vwp_bh_39 wp_bh_39 0 0.4450
+Vwn_bh_39 wn_bh_39 0 0.3950
+X_bh_39 bp_hi bp_lo up_h39 un_h39 wp_bh_39 wn_bh_39 vdd dsyn
+Mlp_h40 up_h40 up_h40 vdd vdd PNR W=1500u L=100u
+Mln_h40 un_h40 un_h40 vdd vdd PNR W=1500u L=100u
+Xn_h40 up_h40 un_h40 ap_h40 an_h40 vdd vbn dneuron
+Vwp_ih_0_40 wp_ih_0_40 0 0.4853
+Vwn_ih_0_40 wn_ih_0_40 0 0.3547
+X_ih_0_40 a_xp0 a_xn0 up_h40 un_h40 wp_ih_0_40 wn_ih_0_40 vdd dsyn
+Vwp_ih_1_40 wp_ih_1_40 0 0.4308
+Vwn_ih_1_40 wn_ih_1_40 0 0.4092
+X_ih_1_40 a_xp1 a_xn1 up_h40 un_h40 wp_ih_1_40 wn_ih_1_40 vdd dsyn
+Vwp_bk_40_0 wp_bk_40_0 0 0.4278
+Vwn_bk_40_0 wn_bk_40_0 0 0.4122
+X_bk_40_0 up_o0 un_o0 up_h40 un_h40 wp_bk_40_0 wn_bk_40_0 vdd dsyn
+Vwp_bk_40_1 wp_bk_40_1 0 0.4090
+Vwn_bk_40_1 wn_bk_40_1 0 0.4310
+X_bk_40_1 up_o1 un_o1 up_h40 un_h40 wp_bk_40_1 wn_bk_40_1 vdd dsyn
+Vwp_bh_40 wp_bh_40 0 0.3557
+Vwn_bh_40 wn_bh_40 0 0.4843
+X_bh_40 bp_hi bp_lo up_h40 un_h40 wp_bh_40 wn_bh_40 vdd dsyn
+Mlp_h41 up_h41 up_h41 vdd vdd PNR W=1500u L=100u
+Mln_h41 un_h41 un_h41 vdd vdd PNR W=1500u L=100u
+Xn_h41 up_h41 un_h41 ap_h41 an_h41 vdd vbn dneuron
+Vwp_ih_0_41 wp_ih_0_41 0 0.4504
+Vwn_ih_0_41 wn_ih_0_41 0 0.3896
+X_ih_0_41 a_xp0 a_xn0 up_h41 un_h41 wp_ih_0_41 wn_ih_0_41 vdd dsyn
+Vwp_ih_1_41 wp_ih_1_41 0 0.3497
+Vwn_ih_1_41 wn_ih_1_41 0 0.4903
+X_ih_1_41 a_xp1 a_xn1 up_h41 un_h41 wp_ih_1_41 wn_ih_1_41 vdd dsyn
+Vwp_bk_41_0 wp_bk_41_0 0 0.4461
+Vwn_bk_41_0 wn_bk_41_0 0 0.3939
+X_bk_41_0 up_o0 un_o0 up_h41 un_h41 wp_bk_41_0 wn_bk_41_0 vdd dsyn
+Vwp_bk_41_1 wp_bk_41_1 0 0.4194
+Vwn_bk_41_1 wn_bk_41_1 0 0.4206
+X_bk_41_1 up_o1 un_o1 up_h41 un_h41 wp_bk_41_1 wn_bk_41_1 vdd dsyn
+Vwp_bh_41 wp_bh_41 0 0.4651
+Vwn_bh_41 wn_bh_41 0 0.3749
+X_bh_41 bp_hi bp_lo up_h41 un_h41 wp_bh_41 wn_bh_41 vdd dsyn
+Mlp_h42 up_h42 up_h42 vdd vdd PNR W=1500u L=100u
+Mln_h42 un_h42 un_h42 vdd vdd PNR W=1500u L=100u
+Xn_h42 up_h42 un_h42 ap_h42 an_h42 vdd vbn dneuron
+Vwp_ih_0_42 wp_ih_0_42 0 0.4173
+Vwn_ih_0_42 wn_ih_0_42 0 0.4227
+X_ih_0_42 a_xp0 a_xn0 up_h42 un_h42 wp_ih_0_42 wn_ih_0_42 vdd dsyn
+Vwp_ih_1_42 wp_ih_1_42 0 0.3871
+Vwn_ih_1_42 wn_ih_1_42 0 0.4529
+X_ih_1_42 a_xp1 a_xn1 up_h42 un_h42 wp_ih_1_42 wn_ih_1_42 vdd dsyn
+Vwp_bk_42_0 wp_bk_42_0 0 0.4343
+Vwn_bk_42_0 wn_bk_42_0 0 0.4057
+X_bk_42_0 up_o0 un_o0 up_h42 un_h42 wp_bk_42_0 wn_bk_42_0 vdd dsyn
+Vwp_bk_42_1 wp_bk_42_1 0 0.3976
+Vwn_bk_42_1 wn_bk_42_1 0 0.4424
+X_bk_42_1 up_o1 un_o1 up_h42 un_h42 wp_bk_42_1 wn_bk_42_1 vdd dsyn
+Vwp_bh_42 wp_bh_42 0 0.4128
+Vwn_bh_42 wn_bh_42 0 0.4272
+X_bh_42 bp_hi bp_lo up_h42 un_h42 wp_bh_42 wn_bh_42 vdd dsyn
+Mlp_h43 up_h43 up_h43 vdd vdd PNR W=1500u L=100u
+Mln_h43 un_h43 un_h43 vdd vdd PNR W=1500u L=100u
+Xn_h43 up_h43 un_h43 ap_h43 an_h43 vdd vbn dneuron
+Vwp_ih_0_43 wp_ih_0_43 0 0.4217
+Vwn_ih_0_43 wn_ih_0_43 0 0.4183
+X_ih_0_43 a_xp0 a_xn0 up_h43 un_h43 wp_ih_0_43 wn_ih_0_43 vdd dsyn
+Vwp_ih_1_43 wp_ih_1_43 0 0.4146
+Vwn_ih_1_43 wn_ih_1_43 0 0.4254
+X_ih_1_43 a_xp1 a_xn1 up_h43 un_h43 wp_ih_1_43 wn_ih_1_43 vdd dsyn
+Vwp_bk_43_0 wp_bk_43_0 0 0.4124
+Vwn_bk_43_0 wn_bk_43_0 0 0.4276
+X_bk_43_0 up_o0 un_o0 up_h43 un_h43 wp_bk_43_0 wn_bk_43_0 vdd dsyn
+Vwp_bk_43_1 wp_bk_43_1 0 0.3867
+Vwn_bk_43_1 wn_bk_43_1 0 0.4533
+X_bk_43_1 up_o1 un_o1 up_h43 un_h43 wp_bk_43_1 wn_bk_43_1 vdd dsyn
+Vwp_bh_43 wp_bh_43 0 0.4124
+Vwn_bh_43 wn_bh_43 0 0.4276
+X_bh_43 bp_hi bp_lo up_h43 un_h43 wp_bh_43 wn_bh_43 vdd dsyn
+Mlp_h44 up_h44 up_h44 vdd vdd PNR W=1500u L=100u
+Mln_h44 un_h44 un_h44 vdd vdd PNR W=1500u L=100u
+Xn_h44 up_h44 un_h44 ap_h44 an_h44 vdd vbn dneuron
+Vwp_ih_0_44 wp_ih_0_44 0 0.3345
+Vwn_ih_0_44 wn_ih_0_44 0 0.5055
+X_ih_0_44 a_xp0 a_xn0 up_h44 un_h44 wp_ih_0_44 wn_ih_0_44 vdd dsyn
+Vwp_ih_1_44 wp_ih_1_44 0 0.4137
+Vwn_ih_1_44 wn_ih_1_44 0 0.4263
+X_ih_1_44 a_xp1 a_xn1 up_h44 un_h44 wp_ih_1_44 wn_ih_1_44 vdd dsyn
+Vwp_bk_44_0 wp_bk_44_0 0 0.3721
+Vwn_bk_44_0 wn_bk_44_0 0 0.4679
+X_bk_44_0 up_o0 un_o0 up_h44 un_h44 wp_bk_44_0 wn_bk_44_0 vdd dsyn
+Vwp_bk_44_1 wp_bk_44_1 0 0.4648
+Vwn_bk_44_1 wn_bk_44_1 0 0.3752
+X_bk_44_1 up_o1 un_o1 up_h44 un_h44 wp_bk_44_1 wn_bk_44_1 vdd dsyn
+Vwp_bh_44 wp_bh_44 0 0.4708
+Vwn_bh_44 wn_bh_44 0 0.3692
+X_bh_44 bp_hi bp_lo up_h44 un_h44 wp_bh_44 wn_bh_44 vdd dsyn
+Mlp_h45 up_h45 up_h45 vdd vdd PNR W=1500u L=100u
+Mln_h45 un_h45 un_h45 vdd vdd PNR W=1500u L=100u
+Xn_h45 up_h45 un_h45 ap_h45 an_h45 vdd vbn dneuron
+Vwp_ih_0_45 wp_ih_0_45 0 0.3420
+Vwn_ih_0_45 wn_ih_0_45 0 0.4980
+X_ih_0_45 a_xp0 a_xn0 up_h45 un_h45 wp_ih_0_45 wn_ih_0_45 vdd dsyn
+Vwp_ih_1_45 wp_ih_1_45 0 0.4258
+Vwn_ih_1_45 wn_ih_1_45 0 0.4142
+X_ih_1_45 a_xp1 a_xn1 up_h45 un_h45 wp_ih_1_45 wn_ih_1_45 vdd dsyn
+Vwp_bk_45_0 wp_bk_45_0 0 0.4149
+Vwn_bk_45_0 wn_bk_45_0 0 0.4251
+X_bk_45_0 up_o0 un_o0 up_h45 un_h45 wp_bk_45_0 wn_bk_45_0 vdd dsyn
+Vwp_bk_45_1 wp_bk_45_1 0 0.3781
+Vwn_bk_45_1 wn_bk_45_1 0 0.4619
+X_bk_45_1 up_o1 un_o1 up_h45 un_h45 wp_bk_45_1 wn_bk_45_1 vdd dsyn
+Vwp_bh_45 wp_bh_45 0 0.4413
+Vwn_bh_45 wn_bh_45 0 0.3987
+X_bh_45 bp_hi bp_lo up_h45 un_h45 wp_bh_45 wn_bh_45 vdd dsyn
+Mlp_h46 up_h46 up_h46 vdd vdd PNR W=1500u L=100u
+Mln_h46 un_h46 un_h46 vdd vdd PNR W=1500u L=100u
+Xn_h46 up_h46 un_h46 ap_h46 an_h46 vdd vbn dneuron
+Vwp_ih_0_46 wp_ih_0_46 0 0.4015
+Vwn_ih_0_46 wn_ih_0_46 0 0.4385
+X_ih_0_46 a_xp0 a_xn0 up_h46 un_h46 wp_ih_0_46 wn_ih_0_46 vdd dsyn
+Vwp_ih_1_46 wp_ih_1_46 0 0.3493
+Vwn_ih_1_46 wn_ih_1_46 0 0.4907
+X_ih_1_46 a_xp1 a_xn1 up_h46 un_h46 wp_ih_1_46 wn_ih_1_46 vdd dsyn
+Vwp_bk_46_0 wp_bk_46_0 0 0.4093
+Vwn_bk_46_0 wn_bk_46_0 0 0.4307
+X_bk_46_0 up_o0 un_o0 up_h46 un_h46 wp_bk_46_0 wn_bk_46_0 vdd dsyn
+Vwp_bk_46_1 wp_bk_46_1 0 0.4141
+Vwn_bk_46_1 wn_bk_46_1 0 0.4259
+X_bk_46_1 up_o1 un_o1 up_h46 un_h46 wp_bk_46_1 wn_bk_46_1 vdd dsyn
+Vwp_bh_46 wp_bh_46 0 0.4243
+Vwn_bh_46 wn_bh_46 0 0.4157
+X_bh_46 bp_hi bp_lo up_h46 un_h46 wp_bh_46 wn_bh_46 vdd dsyn
+Mlp_h47 up_h47 up_h47 vdd vdd PNR W=1500u L=100u
+Mln_h47 un_h47 un_h47 vdd vdd PNR W=1500u L=100u
+Xn_h47 up_h47 un_h47 ap_h47 an_h47 vdd vbn dneuron
+Vwp_ih_0_47 wp_ih_0_47 0 0.3708
+Vwn_ih_0_47 wn_ih_0_47 0 0.4692
+X_ih_0_47 a_xp0 a_xn0 up_h47 un_h47 wp_ih_0_47 wn_ih_0_47 vdd dsyn
+Vwp_ih_1_47 wp_ih_1_47 0 0.4446
+Vwn_ih_1_47 wn_ih_1_47 0 0.3954
+X_ih_1_47 a_xp1 a_xn1 up_h47 un_h47 wp_ih_1_47 wn_ih_1_47 vdd dsyn
+Vwp_bk_47_0 wp_bk_47_0 0 0.4494
+Vwn_bk_47_0 wn_bk_47_0 0 0.3906
+X_bk_47_0 up_o0 un_o0 up_h47 un_h47 wp_bk_47_0 wn_bk_47_0 vdd dsyn
+Vwp_bk_47_1 wp_bk_47_1 0 0.3742
+Vwn_bk_47_1 wn_bk_47_1 0 0.4658
+X_bk_47_1 up_o1 un_o1 up_h47 un_h47 wp_bk_47_1 wn_bk_47_1 vdd dsyn
+Vwp_bh_47 wp_bh_47 0 0.3936
+Vwn_bh_47 wn_bh_47 0 0.4464
+X_bh_47 bp_hi bp_lo up_h47 un_h47 wp_bh_47 wn_bh_47 vdd dsyn
+Mlp_h48 up_h48 up_h48 vdd vdd PNR W=1500u L=100u
+Mln_h48 un_h48 un_h48 vdd vdd PNR W=1500u L=100u
+Xn_h48 up_h48 un_h48 ap_h48 an_h48 vdd vbn dneuron
+Vwp_ih_0_48 wp_ih_0_48 0 0.4168
+Vwn_ih_0_48 wn_ih_0_48 0 0.4232
+X_ih_0_48 a_xp0 a_xn0 up_h48 un_h48 wp_ih_0_48 wn_ih_0_48 vdd dsyn
+Vwp_ih_1_48 wp_ih_1_48 0 0.3974
+Vwn_ih_1_48 wn_ih_1_48 0 0.4426
+X_ih_1_48 a_xp1 a_xn1 up_h48 un_h48 wp_ih_1_48 wn_ih_1_48 vdd dsyn
+Vwp_bk_48_0 wp_bk_48_0 0 0.4898
+Vwn_bk_48_0 wn_bk_48_0 0 0.3502
+X_bk_48_0 up_o0 un_o0 up_h48 un_h48 wp_bk_48_0 wn_bk_48_0 vdd dsyn
+Vwp_bk_48_1 wp_bk_48_1 0 0.4283
+Vwn_bk_48_1 wn_bk_48_1 0 0.4117
+X_bk_48_1 up_o1 un_o1 up_h48 un_h48 wp_bk_48_1 wn_bk_48_1 vdd dsyn
+Vwp_bh_48 wp_bh_48 0 0.3796
+Vwn_bh_48 wn_bh_48 0 0.4604
+X_bh_48 bp_hi bp_lo up_h48 un_h48 wp_bh_48 wn_bh_48 vdd dsyn
+Mlp_h49 up_h49 up_h49 vdd vdd PNR W=1500u L=100u
+Mln_h49 un_h49 un_h49 vdd vdd PNR W=1500u L=100u
+Xn_h49 up_h49 un_h49 ap_h49 an_h49 vdd vbn dneuron
+Vwp_ih_0_49 wp_ih_0_49 0 0.3885
+Vwn_ih_0_49 wn_ih_0_49 0 0.4515
+X_ih_0_49 a_xp0 a_xn0 up_h49 un_h49 wp_ih_0_49 wn_ih_0_49 vdd dsyn
+Vwp_ih_1_49 wp_ih_1_49 0 0.4177
+Vwn_ih_1_49 wn_ih_1_49 0 0.4223
+X_ih_1_49 a_xp1 a_xn1 up_h49 un_h49 wp_ih_1_49 wn_ih_1_49 vdd dsyn
+Vwp_bk_49_0 wp_bk_49_0 0 0.5118
+Vwn_bk_49_0 wn_bk_49_0 0 0.3282
+X_bk_49_0 up_o0 un_o0 up_h49 un_h49 wp_bk_49_0 wn_bk_49_0 vdd dsyn
+Vwp_bk_49_1 wp_bk_49_1 0 0.4129
+Vwn_bk_49_1 wn_bk_49_1 0 0.4271
+X_bk_49_1 up_o1 un_o1 up_h49 un_h49 wp_bk_49_1 wn_bk_49_1 vdd dsyn
+Vwp_bh_49 wp_bh_49 0 0.4251
+Vwn_bh_49 wn_bh_49 0 0.4149
+X_bh_49 bp_hi bp_lo up_h49 un_h49 wp_bh_49 wn_bh_49 vdd dsyn
+Mlp_h50 up_h50 up_h50 vdd vdd PNR W=1500u L=100u
+Mln_h50 un_h50 un_h50 vdd vdd PNR W=1500u L=100u
+Xn_h50 up_h50 un_h50 ap_h50 an_h50 vdd vbn dneuron
+Vwp_ih_0_50 wp_ih_0_50 0 0.4406
+Vwn_ih_0_50 wn_ih_0_50 0 0.3994
+X_ih_0_50 a_xp0 a_xn0 up_h50 un_h50 wp_ih_0_50 wn_ih_0_50 vdd dsyn
+Vwp_ih_1_50 wp_ih_1_50 0 0.4184
+Vwn_ih_1_50 wn_ih_1_50 0 0.4216
+X_ih_1_50 a_xp1 a_xn1 up_h50 un_h50 wp_ih_1_50 wn_ih_1_50 vdd dsyn
+Vwp_bk_50_0 wp_bk_50_0 0 0.5112
+Vwn_bk_50_0 wn_bk_50_0 0 0.3288
+X_bk_50_0 up_o0 un_o0 up_h50 un_h50 wp_bk_50_0 wn_bk_50_0 vdd dsyn
+Vwp_bk_50_1 wp_bk_50_1 0 0.3987
+Vwn_bk_50_1 wn_bk_50_1 0 0.4413
+X_bk_50_1 up_o1 un_o1 up_h50 un_h50 wp_bk_50_1 wn_bk_50_1 vdd dsyn
+Vwp_bh_50 wp_bh_50 0 0.4498
+Vwn_bh_50 wn_bh_50 0 0.3902
+X_bh_50 bp_hi bp_lo up_h50 un_h50 wp_bh_50 wn_bh_50 vdd dsyn
+Mlp_h51 up_h51 up_h51 vdd vdd PNR W=1500u L=100u
+Mln_h51 un_h51 un_h51 vdd vdd PNR W=1500u L=100u
+Xn_h51 up_h51 un_h51 ap_h51 an_h51 vdd vbn dneuron
+Vwp_ih_0_51 wp_ih_0_51 0 0.4264
+Vwn_ih_0_51 wn_ih_0_51 0 0.4136
+X_ih_0_51 a_xp0 a_xn0 up_h51 un_h51 wp_ih_0_51 wn_ih_0_51 vdd dsyn
+Vwp_ih_1_51 wp_ih_1_51 0 0.4448
+Vwn_ih_1_51 wn_ih_1_51 0 0.3952
+X_ih_1_51 a_xp1 a_xn1 up_h51 un_h51 wp_ih_1_51 wn_ih_1_51 vdd dsyn
+Vwp_bk_51_0 wp_bk_51_0 0 0.3729
+Vwn_bk_51_0 wn_bk_51_0 0 0.4671
+X_bk_51_0 up_o0 un_o0 up_h51 un_h51 wp_bk_51_0 wn_bk_51_0 vdd dsyn
+Vwp_bk_51_1 wp_bk_51_1 0 0.4907
+Vwn_bk_51_1 wn_bk_51_1 0 0.3493
+X_bk_51_1 up_o1 un_o1 up_h51 un_h51 wp_bk_51_1 wn_bk_51_1 vdd dsyn
+Vwp_bh_51 wp_bh_51 0 0.4151
+Vwn_bh_51 wn_bh_51 0 0.4249
+X_bh_51 bp_hi bp_lo up_h51 un_h51 wp_bh_51 wn_bh_51 vdd dsyn
+Mlp_h52 up_h52 up_h52 vdd vdd PNR W=1500u L=100u
+Mln_h52 un_h52 un_h52 vdd vdd PNR W=1500u L=100u
+Xn_h52 up_h52 un_h52 ap_h52 an_h52 vdd vbn dneuron
+Vwp_ih_0_52 wp_ih_0_52 0 0.4214
+Vwn_ih_0_52 wn_ih_0_52 0 0.4186
+X_ih_0_52 a_xp0 a_xn0 up_h52 un_h52 wp_ih_0_52 wn_ih_0_52 vdd dsyn
+Vwp_ih_1_52 wp_ih_1_52 0 0.3826
+Vwn_ih_1_52 wn_ih_1_52 0 0.4574
+X_ih_1_52 a_xp1 a_xn1 up_h52 un_h52 wp_ih_1_52 wn_ih_1_52 vdd dsyn
+Vwp_bk_52_0 wp_bk_52_0 0 0.3908
+Vwn_bk_52_0 wn_bk_52_0 0 0.4492
+X_bk_52_0 up_o0 un_o0 up_h52 un_h52 wp_bk_52_0 wn_bk_52_0 vdd dsyn
+Vwp_bk_52_1 wp_bk_52_1 0 0.4426
+Vwn_bk_52_1 wn_bk_52_1 0 0.3974
+X_bk_52_1 up_o1 un_o1 up_h52 un_h52 wp_bk_52_1 wn_bk_52_1 vdd dsyn
+Vwp_bh_52 wp_bh_52 0 0.4595
+Vwn_bh_52 wn_bh_52 0 0.3805
+X_bh_52 bp_hi bp_lo up_h52 un_h52 wp_bh_52 wn_bh_52 vdd dsyn
+Mlp_h53 up_h53 up_h53 vdd vdd PNR W=1500u L=100u
+Mln_h53 un_h53 un_h53 vdd vdd PNR W=1500u L=100u
+Xn_h53 up_h53 un_h53 ap_h53 an_h53 vdd vbn dneuron
+Vwp_ih_0_53 wp_ih_0_53 0 0.4501
+Vwn_ih_0_53 wn_ih_0_53 0 0.3899
+X_ih_0_53 a_xp0 a_xn0 up_h53 un_h53 wp_ih_0_53 wn_ih_0_53 vdd dsyn
+Vwp_ih_1_53 wp_ih_1_53 0 0.4684
+Vwn_ih_1_53 wn_ih_1_53 0 0.3716
+X_ih_1_53 a_xp1 a_xn1 up_h53 un_h53 wp_ih_1_53 wn_ih_1_53 vdd dsyn
+Vwp_bk_53_0 wp_bk_53_0 0 0.4486
+Vwn_bk_53_0 wn_bk_53_0 0 0.3914
+X_bk_53_0 up_o0 un_o0 up_h53 un_h53 wp_bk_53_0 wn_bk_53_0 vdd dsyn
+Vwp_bk_53_1 wp_bk_53_1 0 0.4211
+Vwn_bk_53_1 wn_bk_53_1 0 0.4189
+X_bk_53_1 up_o1 un_o1 up_h53 un_h53 wp_bk_53_1 wn_bk_53_1 vdd dsyn
+Vwp_bh_53 wp_bh_53 0 0.4535
+Vwn_bh_53 wn_bh_53 0 0.3865
+X_bh_53 bp_hi bp_lo up_h53 un_h53 wp_bh_53 wn_bh_53 vdd dsyn
+Mlp_h54 up_h54 up_h54 vdd vdd PNR W=1500u L=100u
+Mln_h54 un_h54 un_h54 vdd vdd PNR W=1500u L=100u
+Xn_h54 up_h54 un_h54 ap_h54 an_h54 vdd vbn dneuron
+Vwp_ih_0_54 wp_ih_0_54 0 0.4437
+Vwn_ih_0_54 wn_ih_0_54 0 0.3963
+X_ih_0_54 a_xp0 a_xn0 up_h54 un_h54 wp_ih_0_54 wn_ih_0_54 vdd dsyn
+Vwp_ih_1_54 wp_ih_1_54 0 0.4160
+Vwn_ih_1_54 wn_ih_1_54 0 0.4240
+X_ih_1_54 a_xp1 a_xn1 up_h54 un_h54 wp_ih_1_54 wn_ih_1_54 vdd dsyn
+Vwp_bk_54_0 wp_bk_54_0 0 0.4490
+Vwn_bk_54_0 wn_bk_54_0 0 0.3910
+X_bk_54_0 up_o0 un_o0 up_h54 un_h54 wp_bk_54_0 wn_bk_54_0 vdd dsyn
+Vwp_bk_54_1 wp_bk_54_1 0 0.4714
+Vwn_bk_54_1 wn_bk_54_1 0 0.3686
+X_bk_54_1 up_o1 un_o1 up_h54 un_h54 wp_bk_54_1 wn_bk_54_1 vdd dsyn
+Vwp_bh_54 wp_bh_54 0 0.4294
+Vwn_bh_54 wn_bh_54 0 0.4106
+X_bh_54 bp_hi bp_lo up_h54 un_h54 wp_bh_54 wn_bh_54 vdd dsyn
+Mlp_h55 up_h55 up_h55 vdd vdd PNR W=1500u L=100u
+Mln_h55 un_h55 un_h55 vdd vdd PNR W=1500u L=100u
+Xn_h55 up_h55 un_h55 ap_h55 an_h55 vdd vbn dneuron
+Vwp_ih_0_55 wp_ih_0_55 0 0.4058
+Vwn_ih_0_55 wn_ih_0_55 0 0.4342
+X_ih_0_55 a_xp0 a_xn0 up_h55 un_h55 wp_ih_0_55 wn_ih_0_55 vdd dsyn
+Vwp_ih_1_55 wp_ih_1_55 0 0.4487
+Vwn_ih_1_55 wn_ih_1_55 0 0.3913
+X_ih_1_55 a_xp1 a_xn1 up_h55 un_h55 wp_ih_1_55 wn_ih_1_55 vdd dsyn
+Vwp_bk_55_0 wp_bk_55_0 0 0.4960
+Vwn_bk_55_0 wn_bk_55_0 0 0.3440
+X_bk_55_0 up_o0 un_o0 up_h55 un_h55 wp_bk_55_0 wn_bk_55_0 vdd dsyn
+Vwp_bk_55_1 wp_bk_55_1 0 0.4116
+Vwn_bk_55_1 wn_bk_55_1 0 0.4284
+X_bk_55_1 up_o1 un_o1 up_h55 un_h55 wp_bk_55_1 wn_bk_55_1 vdd dsyn
+Vwp_bh_55 wp_bh_55 0 0.4163
+Vwn_bh_55 wn_bh_55 0 0.4237
+X_bh_55 bp_hi bp_lo up_h55 un_h55 wp_bh_55 wn_bh_55 vdd dsyn
+Mlp_h56 up_h56 up_h56 vdd vdd PNR W=1500u L=100u
+Mln_h56 un_h56 un_h56 vdd vdd PNR W=1500u L=100u
+Xn_h56 up_h56 un_h56 ap_h56 an_h56 vdd vbn dneuron
+Vwp_ih_0_56 wp_ih_0_56 0 0.4145
+Vwn_ih_0_56 wn_ih_0_56 0 0.4255
+X_ih_0_56 a_xp0 a_xn0 up_h56 un_h56 wp_ih_0_56 wn_ih_0_56 vdd dsyn
+Vwp_ih_1_56 wp_ih_1_56 0 0.4689
+Vwn_ih_1_56 wn_ih_1_56 0 0.3711
+X_ih_1_56 a_xp1 a_xn1 up_h56 un_h56 wp_ih_1_56 wn_ih_1_56 vdd dsyn
+Vwp_bk_56_0 wp_bk_56_0 0 0.3465
+Vwn_bk_56_0 wn_bk_56_0 0 0.4935
+X_bk_56_0 up_o0 un_o0 up_h56 un_h56 wp_bk_56_0 wn_bk_56_0 vdd dsyn
+Vwp_bk_56_1 wp_bk_56_1 0 0.4346
+Vwn_bk_56_1 wn_bk_56_1 0 0.4054
+X_bk_56_1 up_o1 un_o1 up_h56 un_h56 wp_bk_56_1 wn_bk_56_1 vdd dsyn
+Vwp_bh_56 wp_bh_56 0 0.4677
+Vwn_bh_56 wn_bh_56 0 0.3723
+X_bh_56 bp_hi bp_lo up_h56 un_h56 wp_bh_56 wn_bh_56 vdd dsyn
+Mlp_h57 up_h57 up_h57 vdd vdd PNR W=1500u L=100u
+Mln_h57 un_h57 un_h57 vdd vdd PNR W=1500u L=100u
+Xn_h57 up_h57 un_h57 ap_h57 an_h57 vdd vbn dneuron
+Vwp_ih_0_57 wp_ih_0_57 0 0.3875
+Vwn_ih_0_57 wn_ih_0_57 0 0.4525
+X_ih_0_57 a_xp0 a_xn0 up_h57 un_h57 wp_ih_0_57 wn_ih_0_57 vdd dsyn
+Vwp_ih_1_57 wp_ih_1_57 0 0.4796
+Vwn_ih_1_57 wn_ih_1_57 0 0.3604
+X_ih_1_57 a_xp1 a_xn1 up_h57 un_h57 wp_ih_1_57 wn_ih_1_57 vdd dsyn
+Vwp_bk_57_0 wp_bk_57_0 0 0.4414
+Vwn_bk_57_0 wn_bk_57_0 0 0.3986
+X_bk_57_0 up_o0 un_o0 up_h57 un_h57 wp_bk_57_0 wn_bk_57_0 vdd dsyn
+Vwp_bk_57_1 wp_bk_57_1 0 0.3980
+Vwn_bk_57_1 wn_bk_57_1 0 0.4420
+X_bk_57_1 up_o1 un_o1 up_h57 un_h57 wp_bk_57_1 wn_bk_57_1 vdd dsyn
+Vwp_bh_57 wp_bh_57 0 0.4282
+Vwn_bh_57 wn_bh_57 0 0.4118
+X_bh_57 bp_hi bp_lo up_h57 un_h57 wp_bh_57 wn_bh_57 vdd dsyn
+Mlp_h58 up_h58 up_h58 vdd vdd PNR W=1500u L=100u
+Mln_h58 un_h58 un_h58 vdd vdd PNR W=1500u L=100u
+Xn_h58 up_h58 un_h58 ap_h58 an_h58 vdd vbn dneuron
+Vwp_ih_0_58 wp_ih_0_58 0 0.3586
+Vwn_ih_0_58 wn_ih_0_58 0 0.4814
+X_ih_0_58 a_xp0 a_xn0 up_h58 un_h58 wp_ih_0_58 wn_ih_0_58 vdd dsyn
+Vwp_ih_1_58 wp_ih_1_58 0 0.3974
+Vwn_ih_1_58 wn_ih_1_58 0 0.4426
+X_ih_1_58 a_xp1 a_xn1 up_h58 un_h58 wp_ih_1_58 wn_ih_1_58 vdd dsyn
+Vwp_bk_58_0 wp_bk_58_0 0 0.4931
+Vwn_bk_58_0 wn_bk_58_0 0 0.3469
+X_bk_58_0 up_o0 un_o0 up_h58 un_h58 wp_bk_58_0 wn_bk_58_0 vdd dsyn
+Vwp_bk_58_1 wp_bk_58_1 0 0.3842
+Vwn_bk_58_1 wn_bk_58_1 0 0.4558
+X_bk_58_1 up_o1 un_o1 up_h58 un_h58 wp_bk_58_1 wn_bk_58_1 vdd dsyn
+Vwp_bh_58 wp_bh_58 0 0.4938
+Vwn_bh_58 wn_bh_58 0 0.3462
+X_bh_58 bp_hi bp_lo up_h58 un_h58 wp_bh_58 wn_bh_58 vdd dsyn
+Mlp_h59 up_h59 up_h59 vdd vdd PNR W=1500u L=100u
+Mln_h59 un_h59 un_h59 vdd vdd PNR W=1500u L=100u
+Xn_h59 up_h59 un_h59 ap_h59 an_h59 vdd vbn dneuron
+Vwp_ih_0_59 wp_ih_0_59 0 0.4167
+Vwn_ih_0_59 wn_ih_0_59 0 0.4233
+X_ih_0_59 a_xp0 a_xn0 up_h59 un_h59 wp_ih_0_59 wn_ih_0_59 vdd dsyn
+Vwp_ih_1_59 wp_ih_1_59 0 0.4598
+Vwn_ih_1_59 wn_ih_1_59 0 0.3802
+X_ih_1_59 a_xp1 a_xn1 up_h59 un_h59 wp_ih_1_59 wn_ih_1_59 vdd dsyn
+Vwp_bk_59_0 wp_bk_59_0 0 0.4218
+Vwn_bk_59_0 wn_bk_59_0 0 0.4182
+X_bk_59_0 up_o0 un_o0 up_h59 un_h59 wp_bk_59_0 wn_bk_59_0 vdd dsyn
+Vwp_bk_59_1 wp_bk_59_1 0 0.3303
+Vwn_bk_59_1 wn_bk_59_1 0 0.5097
+X_bk_59_1 up_o1 un_o1 up_h59 un_h59 wp_bk_59_1 wn_bk_59_1 vdd dsyn
+Vwp_bh_59 wp_bh_59 0 0.3971
+Vwn_bh_59 wn_bh_59 0 0.4429
+X_bh_59 bp_hi bp_lo up_h59 un_h59 wp_bh_59 wn_bh_59 vdd dsyn
+Mlp_h60 up_h60 up_h60 vdd vdd PNR W=1500u L=100u
+Mln_h60 un_h60 un_h60 vdd vdd PNR W=1500u L=100u
+Xn_h60 up_h60 un_h60 ap_h60 an_h60 vdd vbn dneuron
+Vwp_ih_0_60 wp_ih_0_60 0 0.4276
+Vwn_ih_0_60 wn_ih_0_60 0 0.4124
+X_ih_0_60 a_xp0 a_xn0 up_h60 un_h60 wp_ih_0_60 wn_ih_0_60 vdd dsyn
+Vwp_ih_1_60 wp_ih_1_60 0 0.3740
+Vwn_ih_1_60 wn_ih_1_60 0 0.4660
+X_ih_1_60 a_xp1 a_xn1 up_h60 un_h60 wp_ih_1_60 wn_ih_1_60 vdd dsyn
+Vwp_bk_60_0 wp_bk_60_0 0 0.3661
+Vwn_bk_60_0 wn_bk_60_0 0 0.4739
+X_bk_60_0 up_o0 un_o0 up_h60 un_h60 wp_bk_60_0 wn_bk_60_0 vdd dsyn
+Vwp_bk_60_1 wp_bk_60_1 0 0.4346
+Vwn_bk_60_1 wn_bk_60_1 0 0.4054
+X_bk_60_1 up_o1 un_o1 up_h60 un_h60 wp_bk_60_1 wn_bk_60_1 vdd dsyn
+Vwp_bh_60 wp_bh_60 0 0.3940
+Vwn_bh_60 wn_bh_60 0 0.4460
+X_bh_60 bp_hi bp_lo up_h60 un_h60 wp_bh_60 wn_bh_60 vdd dsyn
+Mlp_h61 up_h61 up_h61 vdd vdd PNR W=1500u L=100u
+Mln_h61 un_h61 un_h61 vdd vdd PNR W=1500u L=100u
+Xn_h61 up_h61 un_h61 ap_h61 an_h61 vdd vbn dneuron
+Vwp_ih_0_61 wp_ih_0_61 0 0.3522
+Vwn_ih_0_61 wn_ih_0_61 0 0.4878
+X_ih_0_61 a_xp0 a_xn0 up_h61 un_h61 wp_ih_0_61 wn_ih_0_61 vdd dsyn
+Vwp_ih_1_61 wp_ih_1_61 0 0.3926
+Vwn_ih_1_61 wn_ih_1_61 0 0.4474
+X_ih_1_61 a_xp1 a_xn1 up_h61 un_h61 wp_ih_1_61 wn_ih_1_61 vdd dsyn
+Vwp_bk_61_0 wp_bk_61_0 0 0.4544
+Vwn_bk_61_0 wn_bk_61_0 0 0.3856
+X_bk_61_0 up_o0 un_o0 up_h61 un_h61 wp_bk_61_0 wn_bk_61_0 vdd dsyn
+Vwp_bk_61_1 wp_bk_61_1 0 0.4011
+Vwn_bk_61_1 wn_bk_61_1 0 0.4389
+X_bk_61_1 up_o1 un_o1 up_h61 un_h61 wp_bk_61_1 wn_bk_61_1 vdd dsyn
+Vwp_bh_61 wp_bh_61 0 0.4574
+Vwn_bh_61 wn_bh_61 0 0.3826
+X_bh_61 bp_hi bp_lo up_h61 un_h61 wp_bh_61 wn_bh_61 vdd dsyn
+Mlp_h62 up_h62 up_h62 vdd vdd PNR W=1500u L=100u
+Mln_h62 un_h62 un_h62 vdd vdd PNR W=1500u L=100u
+Xn_h62 up_h62 un_h62 ap_h62 an_h62 vdd vbn dneuron
+Vwp_ih_0_62 wp_ih_0_62 0 0.4811
+Vwn_ih_0_62 wn_ih_0_62 0 0.3589
+X_ih_0_62 a_xp0 a_xn0 up_h62 un_h62 wp_ih_0_62 wn_ih_0_62 vdd dsyn
+Vwp_ih_1_62 wp_ih_1_62 0 0.4213
+Vwn_ih_1_62 wn_ih_1_62 0 0.4187
+X_ih_1_62 a_xp1 a_xn1 up_h62 un_h62 wp_ih_1_62 wn_ih_1_62 vdd dsyn
+Vwp_bk_62_0 wp_bk_62_0 0 0.3748
+Vwn_bk_62_0 wn_bk_62_0 0 0.4652
+X_bk_62_0 up_o0 un_o0 up_h62 un_h62 wp_bk_62_0 wn_bk_62_0 vdd dsyn
+Vwp_bk_62_1 wp_bk_62_1 0 0.3679
+Vwn_bk_62_1 wn_bk_62_1 0 0.4721
+X_bk_62_1 up_o1 un_o1 up_h62 un_h62 wp_bk_62_1 wn_bk_62_1 vdd dsyn
+Vwp_bh_62 wp_bh_62 0 0.4189
+Vwn_bh_62 wn_bh_62 0 0.4211
+X_bh_62 bp_hi bp_lo up_h62 un_h62 wp_bh_62 wn_bh_62 vdd dsyn
+Mlp_h63 up_h63 up_h63 vdd vdd PNR W=1500u L=100u
+Mln_h63 un_h63 un_h63 vdd vdd PNR W=1500u L=100u
+Xn_h63 up_h63 un_h63 ap_h63 an_h63 vdd vbn dneuron
+Vwp_ih_0_63 wp_ih_0_63 0 0.4552
+Vwn_ih_0_63 wn_ih_0_63 0 0.3848
+X_ih_0_63 a_xp0 a_xn0 up_h63 un_h63 wp_ih_0_63 wn_ih_0_63 vdd dsyn
+Vwp_ih_1_63 wp_ih_1_63 0 0.4308
+Vwn_ih_1_63 wn_ih_1_63 0 0.4092
+X_ih_1_63 a_xp1 a_xn1 up_h63 un_h63 wp_ih_1_63 wn_ih_1_63 vdd dsyn
+Vwp_bk_63_0 wp_bk_63_0 0 0.4419
+Vwn_bk_63_0 wn_bk_63_0 0 0.3981
+X_bk_63_0 up_o0 un_o0 up_h63 un_h63 wp_bk_63_0 wn_bk_63_0 vdd dsyn
+Vwp_bk_63_1 wp_bk_63_1 0 0.4023
+Vwn_bk_63_1 wn_bk_63_1 0 0.4377
+X_bk_63_1 up_o1 un_o1 up_h63 un_h63 wp_bk_63_1 wn_bk_63_1 vdd dsyn
+Vwp_bh_63 wp_bh_63 0 0.4320
+Vwn_bh_63 wn_bh_63 0 0.4080
+X_bh_63 bp_hi bp_lo up_h63 un_h63 wp_bh_63 wn_bh_63 vdd dsyn
+Mlp_o0 up_o0 up_o0 vdd vdd PNR W=19500u L=100u
+Mln_o0 un_o0 un_o0 vdd vdd PNR W=19500u L=100u
+Vwp_fo_0_0 wp_fo_0_0 0 0.4367
+Vwn_fo_0_0 wn_fo_0_0 0 0.4033
+X_fo_0_0 ap_h0 an_h0 up_o0 un_o0 wp_fo_0_0 wn_fo_0_0 vdd dsyn
+Vwp_fo_1_0 wp_fo_1_0 0 0.4107
+Vwn_fo_1_0 wn_fo_1_0 0 0.4293
+X_fo_1_0 ap_h1 an_h1 up_o0 un_o0 wp_fo_1_0 wn_fo_1_0 vdd dsyn
+Vwp_fo_2_0 wp_fo_2_0 0 0.4087
+Vwn_fo_2_0 wn_fo_2_0 0 0.4313
+X_fo_2_0 ap_h2 an_h2 up_o0 un_o0 wp_fo_2_0 wn_fo_2_0 vdd dsyn
+Vwp_fo_3_0 wp_fo_3_0 0 0.4105
+Vwn_fo_3_0 wn_fo_3_0 0 0.4295
+X_fo_3_0 ap_h3 an_h3 up_o0 un_o0 wp_fo_3_0 wn_fo_3_0 vdd dsyn
+Vwp_fo_4_0 wp_fo_4_0 0 0.4418
+Vwn_fo_4_0 wn_fo_4_0 0 0.3982
+X_fo_4_0 ap_h4 an_h4 up_o0 un_o0 wp_fo_4_0 wn_fo_4_0 vdd dsyn
+Vwp_fo_5_0 wp_fo_5_0 0 0.4092
+Vwn_fo_5_0 wn_fo_5_0 0 0.4308
+X_fo_5_0 ap_h5 an_h5 up_o0 un_o0 wp_fo_5_0 wn_fo_5_0 vdd dsyn
+Vwp_fo_6_0 wp_fo_6_0 0 0.4553
+Vwn_fo_6_0 wn_fo_6_0 0 0.3847
+X_fo_6_0 ap_h6 an_h6 up_o0 un_o0 wp_fo_6_0 wn_fo_6_0 vdd dsyn
+Vwp_fo_7_0 wp_fo_7_0 0 0.4609
+Vwn_fo_7_0 wn_fo_7_0 0 0.3791
+X_fo_7_0 ap_h7 an_h7 up_o0 un_o0 wp_fo_7_0 wn_fo_7_0 vdd dsyn
+Vwp_fo_8_0 wp_fo_8_0 0 0.4022
+Vwn_fo_8_0 wn_fo_8_0 0 0.4378
+X_fo_8_0 ap_h8 an_h8 up_o0 un_o0 wp_fo_8_0 wn_fo_8_0 vdd dsyn
+Vwp_fo_9_0 wp_fo_9_0 0 0.4499
+Vwn_fo_9_0 wn_fo_9_0 0 0.3901
+X_fo_9_0 ap_h9 an_h9 up_o0 un_o0 wp_fo_9_0 wn_fo_9_0 vdd dsyn
+Vwp_fo_10_0 wp_fo_10_0 0 0.4434
+Vwn_fo_10_0 wn_fo_10_0 0 0.3966
+X_fo_10_0 ap_h10 an_h10 up_o0 un_o0 wp_fo_10_0 wn_fo_10_0 vdd dsyn
+Vwp_fo_11_0 wp_fo_11_0 0 0.3202
+Vwn_fo_11_0 wn_fo_11_0 0 0.5198
+X_fo_11_0 ap_h11 an_h11 up_o0 un_o0 wp_fo_11_0 wn_fo_11_0 vdd dsyn
+Vwp_fo_12_0 wp_fo_12_0 0 0.3814
+Vwn_fo_12_0 wn_fo_12_0 0 0.4586
+X_fo_12_0 ap_h12 an_h12 up_o0 un_o0 wp_fo_12_0 wn_fo_12_0 vdd dsyn
+Vwp_fo_13_0 wp_fo_13_0 0 0.4663
+Vwn_fo_13_0 wn_fo_13_0 0 0.3737
+X_fo_13_0 ap_h13 an_h13 up_o0 un_o0 wp_fo_13_0 wn_fo_13_0 vdd dsyn
+Vwp_fo_14_0 wp_fo_14_0 0 0.4836
+Vwn_fo_14_0 wn_fo_14_0 0 0.3564
+X_fo_14_0 ap_h14 an_h14 up_o0 un_o0 wp_fo_14_0 wn_fo_14_0 vdd dsyn
+Vwp_fo_15_0 wp_fo_15_0 0 0.4191
+Vwn_fo_15_0 wn_fo_15_0 0 0.4209
+X_fo_15_0 ap_h15 an_h15 up_o0 un_o0 wp_fo_15_0 wn_fo_15_0 vdd dsyn
+Vwp_fo_16_0 wp_fo_16_0 0 0.4501
+Vwn_fo_16_0 wn_fo_16_0 0 0.3899
+X_fo_16_0 ap_h16 an_h16 up_o0 un_o0 wp_fo_16_0 wn_fo_16_0 vdd dsyn
+Vwp_fo_17_0 wp_fo_17_0 0 0.3880
+Vwn_fo_17_0 wn_fo_17_0 0 0.4520
+X_fo_17_0 ap_h17 an_h17 up_o0 un_o0 wp_fo_17_0 wn_fo_17_0 vdd dsyn
+Vwp_fo_18_0 wp_fo_18_0 0 0.4290
+Vwn_fo_18_0 wn_fo_18_0 0 0.4110
+X_fo_18_0 ap_h18 an_h18 up_o0 un_o0 wp_fo_18_0 wn_fo_18_0 vdd dsyn
+Vwp_fo_19_0 wp_fo_19_0 0 0.4685
+Vwn_fo_19_0 wn_fo_19_0 0 0.3715
+X_fo_19_0 ap_h19 an_h19 up_o0 un_o0 wp_fo_19_0 wn_fo_19_0 vdd dsyn
+Vwp_fo_20_0 wp_fo_20_0 0 0.4103
+Vwn_fo_20_0 wn_fo_20_0 0 0.4297
+X_fo_20_0 ap_h20 an_h20 up_o0 un_o0 wp_fo_20_0 wn_fo_20_0 vdd dsyn
+Vwp_fo_21_0 wp_fo_21_0 0 0.4417
+Vwn_fo_21_0 wn_fo_21_0 0 0.3983
+X_fo_21_0 ap_h21 an_h21 up_o0 un_o0 wp_fo_21_0 wn_fo_21_0 vdd dsyn
+Vwp_fo_22_0 wp_fo_22_0 0 0.3384
+Vwn_fo_22_0 wn_fo_22_0 0 0.5016
+X_fo_22_0 ap_h22 an_h22 up_o0 un_o0 wp_fo_22_0 wn_fo_22_0 vdd dsyn
+Vwp_fo_23_0 wp_fo_23_0 0 0.4670
+Vwn_fo_23_0 wn_fo_23_0 0 0.3730
+X_fo_23_0 ap_h23 an_h23 up_o0 un_o0 wp_fo_23_0 wn_fo_23_0 vdd dsyn
+Vwp_fo_24_0 wp_fo_24_0 0 0.4217
+Vwn_fo_24_0 wn_fo_24_0 0 0.4183
+X_fo_24_0 ap_h24 an_h24 up_o0 un_o0 wp_fo_24_0 wn_fo_24_0 vdd dsyn
+Vwp_fo_25_0 wp_fo_25_0 0 0.4262
+Vwn_fo_25_0 wn_fo_25_0 0 0.4138
+X_fo_25_0 ap_h25 an_h25 up_o0 un_o0 wp_fo_25_0 wn_fo_25_0 vdd dsyn
+Vwp_fo_26_0 wp_fo_26_0 0 0.4123
+Vwn_fo_26_0 wn_fo_26_0 0 0.4277
+X_fo_26_0 ap_h26 an_h26 up_o0 un_o0 wp_fo_26_0 wn_fo_26_0 vdd dsyn
+Vwp_fo_27_0 wp_fo_27_0 0 0.4019
+Vwn_fo_27_0 wn_fo_27_0 0 0.4381
+X_fo_27_0 ap_h27 an_h27 up_o0 un_o0 wp_fo_27_0 wn_fo_27_0 vdd dsyn
+Vwp_fo_28_0 wp_fo_28_0 0 0.5185
+Vwn_fo_28_0 wn_fo_28_0 0 0.3215
+X_fo_28_0 ap_h28 an_h28 up_o0 un_o0 wp_fo_28_0 wn_fo_28_0 vdd dsyn
+Vwp_fo_29_0 wp_fo_29_0 0 0.4410
+Vwn_fo_29_0 wn_fo_29_0 0 0.3990
+X_fo_29_0 ap_h29 an_h29 up_o0 un_o0 wp_fo_29_0 wn_fo_29_0 vdd dsyn
+Vwp_fo_30_0 wp_fo_30_0 0 0.4255
+Vwn_fo_30_0 wn_fo_30_0 0 0.4145
+X_fo_30_0 ap_h30 an_h30 up_o0 un_o0 wp_fo_30_0 wn_fo_30_0 vdd dsyn
+Vwp_fo_31_0 wp_fo_31_0 0 0.4009
+Vwn_fo_31_0 wn_fo_31_0 0 0.4391
+X_fo_31_0 ap_h31 an_h31 up_o0 un_o0 wp_fo_31_0 wn_fo_31_0 vdd dsyn
+Vwp_fo_32_0 wp_fo_32_0 0 0.4138
+Vwn_fo_32_0 wn_fo_32_0 0 0.4262
+X_fo_32_0 ap_h32 an_h32 up_o0 un_o0 wp_fo_32_0 wn_fo_32_0 vdd dsyn
+Vwp_fo_33_0 wp_fo_33_0 0 0.4543
+Vwn_fo_33_0 wn_fo_33_0 0 0.3857
+X_fo_33_0 ap_h33 an_h33 up_o0 un_o0 wp_fo_33_0 wn_fo_33_0 vdd dsyn
+Vwp_fo_34_0 wp_fo_34_0 0 0.4616
+Vwn_fo_34_0 wn_fo_34_0 0 0.3784
+X_fo_34_0 ap_h34 an_h34 up_o0 un_o0 wp_fo_34_0 wn_fo_34_0 vdd dsyn
+Vwp_fo_35_0 wp_fo_35_0 0 0.4520
+Vwn_fo_35_0 wn_fo_35_0 0 0.3880
+X_fo_35_0 ap_h35 an_h35 up_o0 un_o0 wp_fo_35_0 wn_fo_35_0 vdd dsyn
+Vwp_fo_36_0 wp_fo_36_0 0 0.4189
+Vwn_fo_36_0 wn_fo_36_0 0 0.4211
+X_fo_36_0 ap_h36 an_h36 up_o0 un_o0 wp_fo_36_0 wn_fo_36_0 vdd dsyn
+Vwp_fo_37_0 wp_fo_37_0 0 0.4352
+Vwn_fo_37_0 wn_fo_37_0 0 0.4048
+X_fo_37_0 ap_h37 an_h37 up_o0 un_o0 wp_fo_37_0 wn_fo_37_0 vdd dsyn
+Vwp_fo_38_0 wp_fo_38_0 0 0.3942
+Vwn_fo_38_0 wn_fo_38_0 0 0.4458
+X_fo_38_0 ap_h38 an_h38 up_o0 un_o0 wp_fo_38_0 wn_fo_38_0 vdd dsyn
+Vwp_fo_39_0 wp_fo_39_0 0 0.4613
+Vwn_fo_39_0 wn_fo_39_0 0 0.3787
+X_fo_39_0 ap_h39 an_h39 up_o0 un_o0 wp_fo_39_0 wn_fo_39_0 vdd dsyn
+Vwp_fo_40_0 wp_fo_40_0 0 0.4278
+Vwn_fo_40_0 wn_fo_40_0 0 0.4122
+X_fo_40_0 ap_h40 an_h40 up_o0 un_o0 wp_fo_40_0 wn_fo_40_0 vdd dsyn
+Vwp_fo_41_0 wp_fo_41_0 0 0.4461
+Vwn_fo_41_0 wn_fo_41_0 0 0.3939
+X_fo_41_0 ap_h41 an_h41 up_o0 un_o0 wp_fo_41_0 wn_fo_41_0 vdd dsyn
+Vwp_fo_42_0 wp_fo_42_0 0 0.4343
+Vwn_fo_42_0 wn_fo_42_0 0 0.4057
+X_fo_42_0 ap_h42 an_h42 up_o0 un_o0 wp_fo_42_0 wn_fo_42_0 vdd dsyn
+Vwp_fo_43_0 wp_fo_43_0 0 0.4124
+Vwn_fo_43_0 wn_fo_43_0 0 0.4276
+X_fo_43_0 ap_h43 an_h43 up_o0 un_o0 wp_fo_43_0 wn_fo_43_0 vdd dsyn
+Vwp_fo_44_0 wp_fo_44_0 0 0.3721
+Vwn_fo_44_0 wn_fo_44_0 0 0.4679
+X_fo_44_0 ap_h44 an_h44 up_o0 un_o0 wp_fo_44_0 wn_fo_44_0 vdd dsyn
+Vwp_fo_45_0 wp_fo_45_0 0 0.4149
+Vwn_fo_45_0 wn_fo_45_0 0 0.4251
+X_fo_45_0 ap_h45 an_h45 up_o0 un_o0 wp_fo_45_0 wn_fo_45_0 vdd dsyn
+Vwp_fo_46_0 wp_fo_46_0 0 0.4093
+Vwn_fo_46_0 wn_fo_46_0 0 0.4307
+X_fo_46_0 ap_h46 an_h46 up_o0 un_o0 wp_fo_46_0 wn_fo_46_0 vdd dsyn
+Vwp_fo_47_0 wp_fo_47_0 0 0.4494
+Vwn_fo_47_0 wn_fo_47_0 0 0.3906
+X_fo_47_0 ap_h47 an_h47 up_o0 un_o0 wp_fo_47_0 wn_fo_47_0 vdd dsyn
+Vwp_fo_48_0 wp_fo_48_0 0 0.4898
+Vwn_fo_48_0 wn_fo_48_0 0 0.3502
+X_fo_48_0 ap_h48 an_h48 up_o0 un_o0 wp_fo_48_0 wn_fo_48_0 vdd dsyn
+Vwp_fo_49_0 wp_fo_49_0 0 0.5118
+Vwn_fo_49_0 wn_fo_49_0 0 0.3282
+X_fo_49_0 ap_h49 an_h49 up_o0 un_o0 wp_fo_49_0 wn_fo_49_0 vdd dsyn
+Vwp_fo_50_0 wp_fo_50_0 0 0.5112
+Vwn_fo_50_0 wn_fo_50_0 0 0.3288
+X_fo_50_0 ap_h50 an_h50 up_o0 un_o0 wp_fo_50_0 wn_fo_50_0 vdd dsyn
+Vwp_fo_51_0 wp_fo_51_0 0 0.3729
+Vwn_fo_51_0 wn_fo_51_0 0 0.4671
+X_fo_51_0 ap_h51 an_h51 up_o0 un_o0 wp_fo_51_0 wn_fo_51_0 vdd dsyn
+Vwp_fo_52_0 wp_fo_52_0 0 0.3908
+Vwn_fo_52_0 wn_fo_52_0 0 0.4492
+X_fo_52_0 ap_h52 an_h52 up_o0 un_o0 wp_fo_52_0 wn_fo_52_0 vdd dsyn
+Vwp_fo_53_0 wp_fo_53_0 0 0.4486
+Vwn_fo_53_0 wn_fo_53_0 0 0.3914
+X_fo_53_0 ap_h53 an_h53 up_o0 un_o0 wp_fo_53_0 wn_fo_53_0 vdd dsyn
+Vwp_fo_54_0 wp_fo_54_0 0 0.4490
+Vwn_fo_54_0 wn_fo_54_0 0 0.3910
+X_fo_54_0 ap_h54 an_h54 up_o0 un_o0 wp_fo_54_0 wn_fo_54_0 vdd dsyn
+Vwp_fo_55_0 wp_fo_55_0 0 0.4960
+Vwn_fo_55_0 wn_fo_55_0 0 0.3440
+X_fo_55_0 ap_h55 an_h55 up_o0 un_o0 wp_fo_55_0 wn_fo_55_0 vdd dsyn
+Vwp_fo_56_0 wp_fo_56_0 0 0.3465
+Vwn_fo_56_0 wn_fo_56_0 0 0.4935
+X_fo_56_0 ap_h56 an_h56 up_o0 un_o0 wp_fo_56_0 wn_fo_56_0 vdd dsyn
+Vwp_fo_57_0 wp_fo_57_0 0 0.4414
+Vwn_fo_57_0 wn_fo_57_0 0 0.3986
+X_fo_57_0 ap_h57 an_h57 up_o0 un_o0 wp_fo_57_0 wn_fo_57_0 vdd dsyn
+Vwp_fo_58_0 wp_fo_58_0 0 0.4931
+Vwn_fo_58_0 wn_fo_58_0 0 0.3469
+X_fo_58_0 ap_h58 an_h58 up_o0 un_o0 wp_fo_58_0 wn_fo_58_0 vdd dsyn
+Vwp_fo_59_0 wp_fo_59_0 0 0.4218
+Vwn_fo_59_0 wn_fo_59_0 0 0.4182
+X_fo_59_0 ap_h59 an_h59 up_o0 un_o0 wp_fo_59_0 wn_fo_59_0 vdd dsyn
+Vwp_fo_60_0 wp_fo_60_0 0 0.3661
+Vwn_fo_60_0 wn_fo_60_0 0 0.4739
+X_fo_60_0 ap_h60 an_h60 up_o0 un_o0 wp_fo_60_0 wn_fo_60_0 vdd dsyn
+Vwp_fo_61_0 wp_fo_61_0 0 0.4544
+Vwn_fo_61_0 wn_fo_61_0 0 0.3856
+X_fo_61_0 ap_h61 an_h61 up_o0 un_o0 wp_fo_61_0 wn_fo_61_0 vdd dsyn
+Vwp_fo_62_0 wp_fo_62_0 0 0.3748
+Vwn_fo_62_0 wn_fo_62_0 0 0.4652
+X_fo_62_0 ap_h62 an_h62 up_o0 un_o0 wp_fo_62_0 wn_fo_62_0 vdd dsyn
+Vwp_fo_63_0 wp_fo_63_0 0 0.4419
+Vwn_fo_63_0 wn_fo_63_0 0 0.3981
+X_fo_63_0 ap_h63 an_h63 up_o0 un_o0 wp_fo_63_0 wn_fo_63_0 vdd dsyn
+Vwp_bo_0 wp_bo_0 0 0.4011
+Vwn_bo_0 wn_bo_0 0 0.4389
+X_bo_0 bp_hi bp_lo up_o0 un_o0 wp_bo_0 wn_bo_0 vdd dsyn
+Rbp0 up_o0 vtp0 1e10
+Rbn0 un_o0 vtn0 1e10
+Mlp_o1 up_o1 up_o1 vdd vdd PNR W=19500u L=100u
+Mln_o1 un_o1 un_o1 vdd vdd PNR W=19500u L=100u
+Vwp_fo_0_1 wp_fo_0_1 0 0.3973
+Vwn_fo_0_1 wn_fo_0_1 0 0.4427
+X_fo_0_1 ap_h0 an_h0 up_o1 un_o1 wp_fo_0_1 wn_fo_0_1 vdd dsyn
+Vwp_fo_1_1 wp_fo_1_1 0 0.3854
+Vwn_fo_1_1 wn_fo_1_1 0 0.4546
+X_fo_1_1 ap_h1 an_h1 up_o1 un_o1 wp_fo_1_1 wn_fo_1_1 vdd dsyn
+Vwp_fo_2_1 wp_fo_2_1 0 0.3933
+Vwn_fo_2_1 wn_fo_2_1 0 0.4467
+X_fo_2_1 ap_h2 an_h2 up_o1 un_o1 wp_fo_2_1 wn_fo_2_1 vdd dsyn
+Vwp_fo_3_1 wp_fo_3_1 0 0.4583
+Vwn_fo_3_1 wn_fo_3_1 0 0.3817
+X_fo_3_1 ap_h3 an_h3 up_o1 un_o1 wp_fo_3_1 wn_fo_3_1 vdd dsyn
+Vwp_fo_4_1 wp_fo_4_1 0 0.3998
+Vwn_fo_4_1 wn_fo_4_1 0 0.4402
+X_fo_4_1 ap_h4 an_h4 up_o1 un_o1 wp_fo_4_1 wn_fo_4_1 vdd dsyn
+Vwp_fo_5_1 wp_fo_5_1 0 0.4103
+Vwn_fo_5_1 wn_fo_5_1 0 0.4297
+X_fo_5_1 ap_h5 an_h5 up_o1 un_o1 wp_fo_5_1 wn_fo_5_1 vdd dsyn
+Vwp_fo_6_1 wp_fo_6_1 0 0.4432
+Vwn_fo_6_1 wn_fo_6_1 0 0.3968
+X_fo_6_1 ap_h6 an_h6 up_o1 un_o1 wp_fo_6_1 wn_fo_6_1 vdd dsyn
+Vwp_fo_7_1 wp_fo_7_1 0 0.3816
+Vwn_fo_7_1 wn_fo_7_1 0 0.4584
+X_fo_7_1 ap_h7 an_h7 up_o1 un_o1 wp_fo_7_1 wn_fo_7_1 vdd dsyn
+Vwp_fo_8_1 wp_fo_8_1 0 0.3769
+Vwn_fo_8_1 wn_fo_8_1 0 0.4631
+X_fo_8_1 ap_h8 an_h8 up_o1 un_o1 wp_fo_8_1 wn_fo_8_1 vdd dsyn
+Vwp_fo_9_1 wp_fo_9_1 0 0.4278
+Vwn_fo_9_1 wn_fo_9_1 0 0.4122
+X_fo_9_1 ap_h9 an_h9 up_o1 un_o1 wp_fo_9_1 wn_fo_9_1 vdd dsyn
+Vwp_fo_10_1 wp_fo_10_1 0 0.4433
+Vwn_fo_10_1 wn_fo_10_1 0 0.3967
+X_fo_10_1 ap_h10 an_h10 up_o1 un_o1 wp_fo_10_1 wn_fo_10_1 vdd dsyn
+Vwp_fo_11_1 wp_fo_11_1 0 0.4476
+Vwn_fo_11_1 wn_fo_11_1 0 0.3924
+X_fo_11_1 ap_h11 an_h11 up_o1 un_o1 wp_fo_11_1 wn_fo_11_1 vdd dsyn
+Vwp_fo_12_1 wp_fo_12_1 0 0.4503
+Vwn_fo_12_1 wn_fo_12_1 0 0.3897
+X_fo_12_1 ap_h12 an_h12 up_o1 un_o1 wp_fo_12_1 wn_fo_12_1 vdd dsyn
+Vwp_fo_13_1 wp_fo_13_1 0 0.3337
+Vwn_fo_13_1 wn_fo_13_1 0 0.5063
+X_fo_13_1 ap_h13 an_h13 up_o1 un_o1 wp_fo_13_1 wn_fo_13_1 vdd dsyn
+Vwp_fo_14_1 wp_fo_14_1 0 0.3724
+Vwn_fo_14_1 wn_fo_14_1 0 0.4676
+X_fo_14_1 ap_h14 an_h14 up_o1 un_o1 wp_fo_14_1 wn_fo_14_1 vdd dsyn
+Vwp_fo_15_1 wp_fo_15_1 0 0.4051
+Vwn_fo_15_1 wn_fo_15_1 0 0.4349
+X_fo_15_1 ap_h15 an_h15 up_o1 un_o1 wp_fo_15_1 wn_fo_15_1 vdd dsyn
+Vwp_fo_16_1 wp_fo_16_1 0 0.4655
+Vwn_fo_16_1 wn_fo_16_1 0 0.3745
+X_fo_16_1 ap_h16 an_h16 up_o1 un_o1 wp_fo_16_1 wn_fo_16_1 vdd dsyn
+Vwp_fo_17_1 wp_fo_17_1 0 0.4748
+Vwn_fo_17_1 wn_fo_17_1 0 0.3652
+X_fo_17_1 ap_h17 an_h17 up_o1 un_o1 wp_fo_17_1 wn_fo_17_1 vdd dsyn
+Vwp_fo_18_1 wp_fo_18_1 0 0.4430
+Vwn_fo_18_1 wn_fo_18_1 0 0.3970
+X_fo_18_1 ap_h18 an_h18 up_o1 un_o1 wp_fo_18_1 wn_fo_18_1 vdd dsyn
+Vwp_fo_19_1 wp_fo_19_1 0 0.4503
+Vwn_fo_19_1 wn_fo_19_1 0 0.3897
+X_fo_19_1 ap_h19 an_h19 up_o1 un_o1 wp_fo_19_1 wn_fo_19_1 vdd dsyn
+Vwp_fo_20_1 wp_fo_20_1 0 0.4527
+Vwn_fo_20_1 wn_fo_20_1 0 0.3873
+X_fo_20_1 ap_h20 an_h20 up_o1 un_o1 wp_fo_20_1 wn_fo_20_1 vdd dsyn
+Vwp_fo_21_1 wp_fo_21_1 0 0.4290
+Vwn_fo_21_1 wn_fo_21_1 0 0.4110
+X_fo_21_1 ap_h21 an_h21 up_o1 un_o1 wp_fo_21_1 wn_fo_21_1 vdd dsyn
+Vwp_fo_22_1 wp_fo_22_1 0 0.4064
+Vwn_fo_22_1 wn_fo_22_1 0 0.4336
+X_fo_22_1 ap_h22 an_h22 up_o1 un_o1 wp_fo_22_1 wn_fo_22_1 vdd dsyn
+Vwp_fo_23_1 wp_fo_23_1 0 0.4627
+Vwn_fo_23_1 wn_fo_23_1 0 0.3773
+X_fo_23_1 ap_h23 an_h23 up_o1 un_o1 wp_fo_23_1 wn_fo_23_1 vdd dsyn
+Vwp_fo_24_1 wp_fo_24_1 0 0.4456
+Vwn_fo_24_1 wn_fo_24_1 0 0.3944
+X_fo_24_1 ap_h24 an_h24 up_o1 un_o1 wp_fo_24_1 wn_fo_24_1 vdd dsyn
+Vwp_fo_25_1 wp_fo_25_1 0 0.4904
+Vwn_fo_25_1 wn_fo_25_1 0 0.3496
+X_fo_25_1 ap_h25 an_h25 up_o1 un_o1 wp_fo_25_1 wn_fo_25_1 vdd dsyn
+Vwp_fo_26_1 wp_fo_26_1 0 0.3874
+Vwn_fo_26_1 wn_fo_26_1 0 0.4526
+X_fo_26_1 ap_h26 an_h26 up_o1 un_o1 wp_fo_26_1 wn_fo_26_1 vdd dsyn
+Vwp_fo_27_1 wp_fo_27_1 0 0.4394
+Vwn_fo_27_1 wn_fo_27_1 0 0.4006
+X_fo_27_1 ap_h27 an_h27 up_o1 un_o1 wp_fo_27_1 wn_fo_27_1 vdd dsyn
+Vwp_fo_28_1 wp_fo_28_1 0 0.4102
+Vwn_fo_28_1 wn_fo_28_1 0 0.4298
+X_fo_28_1 ap_h28 an_h28 up_o1 un_o1 wp_fo_28_1 wn_fo_28_1 vdd dsyn
+Vwp_fo_29_1 wp_fo_29_1 0 0.4540
+Vwn_fo_29_1 wn_fo_29_1 0 0.3860
+X_fo_29_1 ap_h29 an_h29 up_o1 un_o1 wp_fo_29_1 wn_fo_29_1 vdd dsyn
+Vwp_fo_30_1 wp_fo_30_1 0 0.3590
+Vwn_fo_30_1 wn_fo_30_1 0 0.4810
+X_fo_30_1 ap_h30 an_h30 up_o1 un_o1 wp_fo_30_1 wn_fo_30_1 vdd dsyn
+Vwp_fo_31_1 wp_fo_31_1 0 0.3872
+Vwn_fo_31_1 wn_fo_31_1 0 0.4528
+X_fo_31_1 ap_h31 an_h31 up_o1 un_o1 wp_fo_31_1 wn_fo_31_1 vdd dsyn
+Vwp_fo_32_1 wp_fo_32_1 0 0.4525
+Vwn_fo_32_1 wn_fo_32_1 0 0.3875
+X_fo_32_1 ap_h32 an_h32 up_o1 un_o1 wp_fo_32_1 wn_fo_32_1 vdd dsyn
+Vwp_fo_33_1 wp_fo_33_1 0 0.4007
+Vwn_fo_33_1 wn_fo_33_1 0 0.4393
+X_fo_33_1 ap_h33 an_h33 up_o1 un_o1 wp_fo_33_1 wn_fo_33_1 vdd dsyn
+Vwp_fo_34_1 wp_fo_34_1 0 0.4262
+Vwn_fo_34_1 wn_fo_34_1 0 0.4138
+X_fo_34_1 ap_h34 an_h34 up_o1 un_o1 wp_fo_34_1 wn_fo_34_1 vdd dsyn
+Vwp_fo_35_1 wp_fo_35_1 0 0.3979
+Vwn_fo_35_1 wn_fo_35_1 0 0.4421
+X_fo_35_1 ap_h35 an_h35 up_o1 un_o1 wp_fo_35_1 wn_fo_35_1 vdd dsyn
+Vwp_fo_36_1 wp_fo_36_1 0 0.4047
+Vwn_fo_36_1 wn_fo_36_1 0 0.4353
+X_fo_36_1 ap_h36 an_h36 up_o1 un_o1 wp_fo_36_1 wn_fo_36_1 vdd dsyn
+Vwp_fo_37_1 wp_fo_37_1 0 0.4193
+Vwn_fo_37_1 wn_fo_37_1 0 0.4207
+X_fo_37_1 ap_h37 an_h37 up_o1 un_o1 wp_fo_37_1 wn_fo_37_1 vdd dsyn
+Vwp_fo_38_1 wp_fo_38_1 0 0.3816
+Vwn_fo_38_1 wn_fo_38_1 0 0.4584
+X_fo_38_1 ap_h38 an_h38 up_o1 un_o1 wp_fo_38_1 wn_fo_38_1 vdd dsyn
+Vwp_fo_39_1 wp_fo_39_1 0 0.4266
+Vwn_fo_39_1 wn_fo_39_1 0 0.4134
+X_fo_39_1 ap_h39 an_h39 up_o1 un_o1 wp_fo_39_1 wn_fo_39_1 vdd dsyn
+Vwp_fo_40_1 wp_fo_40_1 0 0.4090
+Vwn_fo_40_1 wn_fo_40_1 0 0.4310
+X_fo_40_1 ap_h40 an_h40 up_o1 un_o1 wp_fo_40_1 wn_fo_40_1 vdd dsyn
+Vwp_fo_41_1 wp_fo_41_1 0 0.4194
+Vwn_fo_41_1 wn_fo_41_1 0 0.4206
+X_fo_41_1 ap_h41 an_h41 up_o1 un_o1 wp_fo_41_1 wn_fo_41_1 vdd dsyn
+Vwp_fo_42_1 wp_fo_42_1 0 0.3976
+Vwn_fo_42_1 wn_fo_42_1 0 0.4424
+X_fo_42_1 ap_h42 an_h42 up_o1 un_o1 wp_fo_42_1 wn_fo_42_1 vdd dsyn
+Vwp_fo_43_1 wp_fo_43_1 0 0.3867
+Vwn_fo_43_1 wn_fo_43_1 0 0.4533
+X_fo_43_1 ap_h43 an_h43 up_o1 un_o1 wp_fo_43_1 wn_fo_43_1 vdd dsyn
+Vwp_fo_44_1 wp_fo_44_1 0 0.4648
+Vwn_fo_44_1 wn_fo_44_1 0 0.3752
+X_fo_44_1 ap_h44 an_h44 up_o1 un_o1 wp_fo_44_1 wn_fo_44_1 vdd dsyn
+Vwp_fo_45_1 wp_fo_45_1 0 0.3781
+Vwn_fo_45_1 wn_fo_45_1 0 0.4619
+X_fo_45_1 ap_h45 an_h45 up_o1 un_o1 wp_fo_45_1 wn_fo_45_1 vdd dsyn
+Vwp_fo_46_1 wp_fo_46_1 0 0.4141
+Vwn_fo_46_1 wn_fo_46_1 0 0.4259
+X_fo_46_1 ap_h46 an_h46 up_o1 un_o1 wp_fo_46_1 wn_fo_46_1 vdd dsyn
+Vwp_fo_47_1 wp_fo_47_1 0 0.3742
+Vwn_fo_47_1 wn_fo_47_1 0 0.4658
+X_fo_47_1 ap_h47 an_h47 up_o1 un_o1 wp_fo_47_1 wn_fo_47_1 vdd dsyn
+Vwp_fo_48_1 wp_fo_48_1 0 0.4283
+Vwn_fo_48_1 wn_fo_48_1 0 0.4117
+X_fo_48_1 ap_h48 an_h48 up_o1 un_o1 wp_fo_48_1 wn_fo_48_1 vdd dsyn
+Vwp_fo_49_1 wp_fo_49_1 0 0.4129
+Vwn_fo_49_1 wn_fo_49_1 0 0.4271
+X_fo_49_1 ap_h49 an_h49 up_o1 un_o1 wp_fo_49_1 wn_fo_49_1 vdd dsyn
+Vwp_fo_50_1 wp_fo_50_1 0 0.3987
+Vwn_fo_50_1 wn_fo_50_1 0 0.4413
+X_fo_50_1 ap_h50 an_h50 up_o1 un_o1 wp_fo_50_1 wn_fo_50_1 vdd dsyn
+Vwp_fo_51_1 wp_fo_51_1 0 0.4907
+Vwn_fo_51_1 wn_fo_51_1 0 0.3493
+X_fo_51_1 ap_h51 an_h51 up_o1 un_o1 wp_fo_51_1 wn_fo_51_1 vdd dsyn
+Vwp_fo_52_1 wp_fo_52_1 0 0.4426
+Vwn_fo_52_1 wn_fo_52_1 0 0.3974
+X_fo_52_1 ap_h52 an_h52 up_o1 un_o1 wp_fo_52_1 wn_fo_52_1 vdd dsyn
+Vwp_fo_53_1 wp_fo_53_1 0 0.4211
+Vwn_fo_53_1 wn_fo_53_1 0 0.4189
+X_fo_53_1 ap_h53 an_h53 up_o1 un_o1 wp_fo_53_1 wn_fo_53_1 vdd dsyn
+Vwp_fo_54_1 wp_fo_54_1 0 0.4714
+Vwn_fo_54_1 wn_fo_54_1 0 0.3686
+X_fo_54_1 ap_h54 an_h54 up_o1 un_o1 wp_fo_54_1 wn_fo_54_1 vdd dsyn
+Vwp_fo_55_1 wp_fo_55_1 0 0.4116
+Vwn_fo_55_1 wn_fo_55_1 0 0.4284
+X_fo_55_1 ap_h55 an_h55 up_o1 un_o1 wp_fo_55_1 wn_fo_55_1 vdd dsyn
+Vwp_fo_56_1 wp_fo_56_1 0 0.4346
+Vwn_fo_56_1 wn_fo_56_1 0 0.4054
+X_fo_56_1 ap_h56 an_h56 up_o1 un_o1 wp_fo_56_1 wn_fo_56_1 vdd dsyn
+Vwp_fo_57_1 wp_fo_57_1 0 0.3980
+Vwn_fo_57_1 wn_fo_57_1 0 0.4420
+X_fo_57_1 ap_h57 an_h57 up_o1 un_o1 wp_fo_57_1 wn_fo_57_1 vdd dsyn
+Vwp_fo_58_1 wp_fo_58_1 0 0.3842
+Vwn_fo_58_1 wn_fo_58_1 0 0.4558
+X_fo_58_1 ap_h58 an_h58 up_o1 un_o1 wp_fo_58_1 wn_fo_58_1 vdd dsyn
+Vwp_fo_59_1 wp_fo_59_1 0 0.3303
+Vwn_fo_59_1 wn_fo_59_1 0 0.5097
+X_fo_59_1 ap_h59 an_h59 up_o1 un_o1 wp_fo_59_1 wn_fo_59_1 vdd dsyn
+Vwp_fo_60_1 wp_fo_60_1 0 0.4346
+Vwn_fo_60_1 wn_fo_60_1 0 0.4054
+X_fo_60_1 ap_h60 an_h60 up_o1 un_o1 wp_fo_60_1 wn_fo_60_1 vdd dsyn
+Vwp_fo_61_1 wp_fo_61_1 0 0.4011
+Vwn_fo_61_1 wn_fo_61_1 0 0.4389
+X_fo_61_1 ap_h61 an_h61 up_o1 un_o1 wp_fo_61_1 wn_fo_61_1 vdd dsyn
+Vwp_fo_62_1 wp_fo_62_1 0 0.3679
+Vwn_fo_62_1 wn_fo_62_1 0 0.4721
+X_fo_62_1 ap_h62 an_h62 up_o1 un_o1 wp_fo_62_1 wn_fo_62_1 vdd dsyn
+Vwp_fo_63_1 wp_fo_63_1 0 0.4023
+Vwn_fo_63_1 wn_fo_63_1 0 0.4377
+X_fo_63_1 ap_h63 an_h63 up_o1 un_o1 wp_fo_63_1 wn_fo_63_1 vdd dsyn
+Vwp_bo_1 wp_bo_1 0 0.4070
+Vwn_bo_1 wn_bo_1 0 0.4330
+X_bo_1 bp_hi bp_lo up_o1 un_o1 wp_bo_1 wn_bo_1 vdd dsyn
+Rbp1 up_o1 vtp1 1e10
+Rbn1 un_o1 vtn1 1e10
+.nodeset v(up_h0)=0.5 v(un_h0)=0.5 v(ap_h0)=0.5 v(an_h0)=0.5 v(up_h1)=0.5 v(un_h1)=0.5 v(ap_h1)=0.5 v(an_h1)=0.5 v(up_h2)=0.5 v(un_h2)=0.5 v(ap_h2)=0.5 v(an_h2)=0.5 v(up_h3)=0.5 v(un_h3)=0.5 v(ap_h3)=0.5 v(an_h3)=0.5 v(up_h4)=0.5 v(un_h4)=0.5 v(ap_h4)=0.5 v(an_h4)=0.5 v(up_h5)=0.5 v(un_h5)=0.5 v(ap_h5)=0.5 v(an_h5)=0.5 v(up_h6)=0.5 v(un_h6)=0.5 v(ap_h6)=0.5 v(an_h6)=0.5 v(up_h7)=0.5 v(un_h7)=0.5 v(ap_h7)=0.5 v(an_h7)=0.5 v(up_h8)=0.5 v(un_h8)=0.5 v(ap_h8)=0.5 v(an_h8)=0.5 v(up_h9)=0.5 v(un_h9)=0.5 v(ap_h9)=0.5 v(an_h9)=0.5 v(up_h10)=0.5 v(un_h10)=0.5 v(ap_h10)=0.5 v(an_h10)=0.5 v(up_h11)=0.5 v(un_h11)=0.5 v(ap_h11)=0.5 v(an_h11)=0.5 v(up_h12)=0.5 v(un_h12)=0.5 v(ap_h12)=0.5 v(an_h12)=0.5 v(up_h13)=0.5 v(un_h13)=0.5 v(ap_h13)=0.5 v(an_h13)=0.5 v(up_h14)=0.5 v(un_h14)=0.5 v(ap_h14)=0.5 v(an_h14)=0.5 v(up_h15)=0.5 v(un_h15)=0.5 v(ap_h15)=0.5 v(an_h15)=0.5 v(up_h16)=0.5 v(un_h16)=0.5 v(ap_h16)=0.5 v(an_h16)=0.5 v(up_h17)=0.5 v(un_h17)=0.5 v(ap_h17)=0.5 v(an_h17)=0.5 v(up_h18)=0.5 v(un_h18)=0.5 v(ap_h18)=0.5 v(an_h18)=0.5 v(up_h19)=0.5 v(un_h19)=0.5 v(ap_h19)=0.5 v(an_h19)=0.5 v(up_h20)=0.5 v(un_h20)=0.5 v(ap_h20)=0.5 v(an_h20)=0.5 v(up_h21)=0.5 v(un_h21)=0.5 v(ap_h21)=0.5 v(an_h21)=0.5 v(up_h22)=0.5 v(un_h22)=0.5 v(ap_h22)=0.5 v(an_h22)=0.5 v(up_h23)=0.5 v(un_h23)=0.5 v(ap_h23)=0.5 v(an_h23)=0.5 v(up_h24)=0.5 v(un_h24)=0.5 v(ap_h24)=0.5 v(an_h24)=0.5 v(up_h25)=0.5 v(un_h25)=0.5 v(ap_h25)=0.5 v(an_h25)=0.5 v(up_h26)=0.5 v(un_h26)=0.5 v(ap_h26)=0.5 v(an_h26)=0.5 v(up_h27)=0.5 v(un_h27)=0.5 v(ap_h27)=0.5 v(an_h27)=0.5 v(up_h28)=0.5 v(un_h28)=0.5 v(ap_h28)=0.5 v(an_h28)=0.5 v(up_h29)=0.5 v(un_h29)=0.5 v(ap_h29)=0.5 v(an_h29)=0.5 v(up_h30)=0.5 v(un_h30)=0.5 v(ap_h30)=0.5 v(an_h30)=0.5 v(up_h31)=0.5 v(un_h31)=0.5 v(ap_h31)=0.5 v(an_h31)=0.5 v(up_h32)=0.5 v(un_h32)=0.5 v(ap_h32)=0.5 v(an_h32)=0.5 v(up_h33)=0.5 v(un_h33)=0.5 v(ap_h33)=0.5 v(an_h33)=0.5 v(up_h34)=0.5 v(un_h34)=0.5 v(ap_h34)=0.5 v(an_h34)=0.5 v(up_h35)=0.5 v(un_h35)=0.5 v(ap_h35)=0.5 v(an_h35)=0.5 v(up_h36)=0.5 v(un_h36)=0.5 v(ap_h36)=0.5 v(an_h36)=0.5 v(up_h37)=0.5 v(un_h37)=0.5 v(ap_h37)=0.5 v(an_h37)=0.5 v(up_h38)=0.5 v(un_h38)=0.5 v(ap_h38)=0.5 v(an_h38)=0.5 v(up_h39)=0.5 v(un_h39)=0.5 v(ap_h39)=0.5 v(an_h39)=0.5 v(up_h40)=0.5 v(un_h40)=0.5 v(ap_h40)=0.5 v(an_h40)=0.5 v(up_h41)=0.5 v(un_h41)=0.5 v(ap_h41)=0.5 v(an_h41)=0.5 v(up_h42)=0.5 v(un_h42)=0.5 v(ap_h42)=0.5 v(an_h42)=0.5 v(up_h43)=0.5 v(un_h43)=0.5 v(ap_h43)=0.5 v(an_h43)=0.5 v(up_h44)=0.5 v(un_h44)=0.5 v(ap_h44)=0.5 v(an_h44)=0.5 v(up_h45)=0.5 v(un_h45)=0.5 v(ap_h45)=0.5 v(an_h45)=0.5 v(up_h46)=0.5 v(un_h46)=0.5 v(ap_h46)=0.5 v(an_h46)=0.5 v(up_h47)=0.5 v(un_h47)=0.5 v(ap_h47)=0.5 v(an_h47)=0.5 v(up_h48)=0.5 v(un_h48)=0.5 v(ap_h48)=0.5 v(an_h48)=0.5 v(up_h49)=0.5 v(un_h49)=0.5 v(ap_h49)=0.5 v(an_h49)=0.5 v(up_h50)=0.5 v(un_h50)=0.5 v(ap_h50)=0.5 v(an_h50)=0.5 v(up_h51)=0.5 v(un_h51)=0.5 v(ap_h51)=0.5 v(an_h51)=0.5 v(up_h52)=0.5 v(un_h52)=0.5 v(ap_h52)=0.5 v(an_h52)=0.5 v(up_h53)=0.5 v(un_h53)=0.5 v(ap_h53)=0.5 v(an_h53)=0.5 v(up_h54)=0.5 v(un_h54)=0.5 v(ap_h54)=0.5 v(an_h54)=0.5 v(up_h55)=0.5 v(un_h55)=0.5 v(ap_h55)=0.5 v(an_h55)=0.5 v(up_h56)=0.5 v(un_h56)=0.5 v(ap_h56)=0.5 v(an_h56)=0.5 v(up_h57)=0.5 v(un_h57)=0.5 v(ap_h57)=0.5 v(an_h57)=0.5 v(up_h58)=0.5 v(un_h58)=0.5 v(ap_h58)=0.5 v(an_h58)=0.5 v(up_h59)=0.5 v(un_h59)=0.5 v(ap_h59)=0.5 v(an_h59)=0.5 v(up_h60)=0.5 v(un_h60)=0.5 v(ap_h60)=0.5 v(an_h60)=0.5 v(up_h61)=0.5 v(un_h61)=0.5 v(ap_h61)=0.5 v(an_h61)=0.5 v(up_h62)=0.5 v(un_h62)=0.5 v(ap_h62)=0.5 v(an_h62)=0.5 v(up_h63)=0.5 v(un_h63)=0.5 v(ap_h63)=0.5 v(an_h63)=0.5 v(up_o0)=0.5 v(un_o0)=0.5 v(up_o1)=0.5 v(un_o1)=0.5
+.options reltol=4e-3 gmin=1e-9 itl1=120
+.end

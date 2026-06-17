@@ -1,0 +1,275 @@
+FULL transistor EP XOR
+.model NSYN NMOS (LEVEL=1 VTO=0.2  KP=50u  LAMBDA=0    GAMMA=0 PHI=0.7)
+.model PSYN PMOS (LEVEL=1 VTO=-0.2 KP=40u  LAMBDA=0    GAMMA=0 PHI=0.7)
+.model NNR  NMOS (LEVEL=1 VTO=0.2  KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR  PMOS (LEVEL=1 VTO=-0.2 KP=40u  LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 1.0
+Vmid nmid 0 0.5
+Vhi vhi 0 1.0
+Vlo vlo 0 0.0
+Vt vt 0 0.5
+Va_x1 a_x1 0 0.5
+Va_x1c a_x1c 0 0.5
+Va_x2 a_x2 0 0.5
+Va_x2c a_x2c 0 0.5
+Rlk_h1 u_h1 nmid 200k
+Ba_h1 a_h1 0 V=0.5+0.5*tanh(16.0*(V(u_h1)-0.5))
+Bac_h1 ac_h1 0 V=0.5-0.5*tanh(16.0*(V(u_h1)-0.5))
+Rlk_h2 u_h2 nmid 200k
+Ba_h2 a_h2 0 V=0.5+0.5*tanh(16.0*(V(u_h2)-0.5))
+Bac_h2 ac_h2 0 V=0.5-0.5*tanh(16.0*(V(u_h2)-0.5))
+Rlk_h3 u_h3 nmid 200k
+Ba_h3 a_h3 0 V=0.5+0.5*tanh(16.0*(V(u_h3)-0.5))
+Bac_h3 ac_h3 0 V=0.5-0.5*tanh(16.0*(V(u_h3)-0.5))
+Rlk_h4 u_h4 nmid 200k
+Ba_h4 a_h4 0 V=0.5+0.5*tanh(16.0*(V(u_h4)-0.5))
+Bac_h4 ac_h4 0 V=0.5-0.5*tanh(16.0*(V(u_h4)-0.5))
+Rlk_h5 u_h5 nmid 200k
+Ba_h5 a_h5 0 V=0.5+0.5*tanh(16.0*(V(u_h5)-0.5))
+Bac_h5 ac_h5 0 V=0.5-0.5*tanh(16.0*(V(u_h5)-0.5))
+Rlk_o u_o nmid 200k
+Baoi_o aoi 0 V=0.5+0.5*tanh(8.0*(V(u_o)-0.5))
+Rout_o aoi a_o 30k
+Bac_o ac_o 0 V=1-V(a_o)
+Vgn_bh1n gn_bh1n 0 0.84193
+Vgp_bh1n gp_bh1n 0 0.15807
+Vgn_bh1p gn_bh1p 0 1.55000
+Vgp_bh1p gp_bh1p 0 -0.55000
+Vgn_bh2n gn_bh2n 0 1.00382
+Vgp_bh2n gp_bh2n 0 -0.00382
+Vgn_bh2p gn_bh2p 0 1.55000
+Vgp_bh2p gp_bh2p 0 -0.55000
+Vgn_bh3n gn_bh3n 0 1.55000
+Vgp_bh3n gp_bh3n 0 -0.55000
+Vgn_bh3p gn_bh3p 0 0.89684
+Vgp_bh3p gp_bh3p 0 0.10316
+Vgn_bh4n gn_bh4n 0 1.55000
+Vgp_bh4n gp_bh4n 0 -0.55000
+Vgn_bh4p gn_bh4p 0 1.38709
+Vgp_bh4p gp_bh4p 0 -0.38709
+Vgn_bh5n gn_bh5n 0 1.02565
+Vgp_bh5n gp_bh5n 0 -0.02565
+Vgn_bh5p gn_bh5p 0 1.55000
+Vgp_bh5p gp_bh5p 0 -0.55000
+Vgn_bon gn_bon 0 0.70000
+Vgp_bon gp_bon 0 0.30000
+Vgn_bop gn_bop 0 1.55000
+Vgp_bop gp_bop 0 -0.55000
+Vgn_i11n gn_i11n 0 1.55000
+Vgp_i11n gp_i11n 0 -0.55000
+Vgn_i11p gn_i11p 0 1.55000
+Vgp_i11p gp_i11p 0 -0.55000
+Vgn_i12n gn_i12n 0 1.55000
+Vgp_i12n gp_i12n 0 -0.55000
+Vgn_i12p gn_i12p 0 1.55000
+Vgp_i12p gp_i12p 0 -0.55000
+Vgn_i13n gn_i13n 0 1.55000
+Vgp_i13n gp_i13n 0 -0.55000
+Vgn_i13p gn_i13p 0 1.55000
+Vgp_i13p gp_i13p 0 -0.55000
+Vgn_i14n gn_i14n 0 1.17059
+Vgp_i14n gp_i14n 0 -0.17059
+Vgn_i14p gn_i14p 0 1.55000
+Vgp_i14p gp_i14p 0 -0.55000
+Vgn_i15n gn_i15n 0 1.55000
+Vgp_i15n gp_i15n 0 -0.55000
+Vgn_i15p gn_i15p 0 1.55000
+Vgp_i15p gp_i15p 0 -0.55000
+Vgn_i21n gn_i21n 0 1.55000
+Vgp_i21n gp_i21n 0 -0.55000
+Vgn_i21p gn_i21p 0 1.55000
+Vgp_i21p gp_i21p 0 -0.55000
+Vgn_i22n gn_i22n 0 1.55000
+Vgp_i22n gp_i22n 0 -0.55000
+Vgn_i22p gn_i22p 0 1.55000
+Vgp_i22p gp_i22p 0 -0.55000
+Vgn_i23n gn_i23n 0 1.55000
+Vgp_i23n gp_i23n 0 -0.55000
+Vgn_i23p gn_i23p 0 1.55000
+Vgp_i23p gp_i23p 0 -0.55000
+Vgn_i24n gn_i24n 0 1.55000
+Vgp_i24n gp_i24n 0 -0.55000
+Vgn_i24p gn_i24p 0 0.98961
+Vgp_i24p gp_i24p 0 0.01039
+Vgn_i25n gn_i25n 0 1.55000
+Vgp_i25n gp_i25n 0 -0.55000
+Vgn_i25p gn_i25p 0 1.55000
+Vgp_i25p gp_i25p 0 -0.55000
+Vgn_o1n gn_o1n 0 1.55000
+Vgp_o1n gp_o1n 0 -0.55000
+Vgn_o1p gn_o1p 0 1.55000
+Vgp_o1p gp_o1p 0 -0.55000
+Vgn_o2n gn_o2n 0 1.55000
+Vgp_o2n gp_o2n 0 -0.55000
+Vgn_o2p gn_o2p 0 1.55000
+Vgp_o2p gp_o2p 0 -0.55000
+Vgn_o3n gn_o3n 0 1.55000
+Vgp_o3n gp_o3n 0 -0.55000
+Vgn_o3p gn_o3p 0 1.55000
+Vgp_o3p gp_o3p 0 -0.55000
+Vgn_o4n gn_o4n 0 1.55000
+Vgp_o4n gp_o4n 0 -0.55000
+Vgn_o4p gn_o4p 0 1.55000
+Vgp_o4p gp_o4p 0 -0.55000
+Vgn_o5n gn_o5n 0 1.55000
+Vgp_o5n gp_o5n 0 -0.55000
+Vgn_o5p gn_o5p 0 1.55000
+Vgp_o5p gp_o5p 0 -0.55000
+Mn0 a_x1 gn_i11p u_h1 0   NSYN W=10u L=100u
+Mp0 a_x1 gp_i11p u_h1 vdd PSYN W=12.5u L=100u
+Mn1 a_x1c gn_i11n u_h1 0   NSYN W=10u L=100u
+Mp1 a_x1c gp_i11n u_h1 vdd PSYN W=12.5u L=100u
+Mn2 a_x2 gn_i21p u_h1 0   NSYN W=10u L=100u
+Mp2 a_x2 gp_i21p u_h1 vdd PSYN W=12.5u L=100u
+Mn3 a_x2c gn_i21n u_h1 0   NSYN W=10u L=100u
+Mp3 a_x2c gp_i21n u_h1 vdd PSYN W=12.5u L=100u
+Mn4 a_h1 gn_o1p u_o 0   NSYN W=10u L=100u
+Mp4 a_h1 gp_o1p u_o vdd PSYN W=12.5u L=100u
+Mn5 ac_h1 gn_o1n u_o 0   NSYN W=10u L=100u
+Mp5 ac_h1 gp_o1n u_o vdd PSYN W=12.5u L=100u
+Mn6 a_o gn_o1p u_h1 0   NSYN W=10u L=100u
+Mp6 a_o gp_o1p u_h1 vdd PSYN W=12.5u L=100u
+Mn7 ac_o gn_o1n u_h1 0   NSYN W=10u L=100u
+Mp7 ac_o gp_o1n u_h1 vdd PSYN W=12.5u L=100u
+Mn8 vhi gn_bh1p u_h1 0   NSYN W=10u L=100u
+Mp8 vhi gp_bh1p u_h1 vdd PSYN W=12.5u L=100u
+Mn9 vlo gn_bh1n u_h1 0   NSYN W=10u L=100u
+Mp9 vlo gp_bh1n u_h1 vdd PSYN W=12.5u L=100u
+Mn10 a_x1 gn_i12p u_h2 0   NSYN W=10u L=100u
+Mp10 a_x1 gp_i12p u_h2 vdd PSYN W=12.5u L=100u
+Mn11 a_x1c gn_i12n u_h2 0   NSYN W=10u L=100u
+Mp11 a_x1c gp_i12n u_h2 vdd PSYN W=12.5u L=100u
+Mn12 a_x2 gn_i22p u_h2 0   NSYN W=10u L=100u
+Mp12 a_x2 gp_i22p u_h2 vdd PSYN W=12.5u L=100u
+Mn13 a_x2c gn_i22n u_h2 0   NSYN W=10u L=100u
+Mp13 a_x2c gp_i22n u_h2 vdd PSYN W=12.5u L=100u
+Mn14 a_h2 gn_o2p u_o 0   NSYN W=10u L=100u
+Mp14 a_h2 gp_o2p u_o vdd PSYN W=12.5u L=100u
+Mn15 ac_h2 gn_o2n u_o 0   NSYN W=10u L=100u
+Mp15 ac_h2 gp_o2n u_o vdd PSYN W=12.5u L=100u
+Mn16 a_o gn_o2p u_h2 0   NSYN W=10u L=100u
+Mp16 a_o gp_o2p u_h2 vdd PSYN W=12.5u L=100u
+Mn17 ac_o gn_o2n u_h2 0   NSYN W=10u L=100u
+Mp17 ac_o gp_o2n u_h2 vdd PSYN W=12.5u L=100u
+Mn18 vhi gn_bh2p u_h2 0   NSYN W=10u L=100u
+Mp18 vhi gp_bh2p u_h2 vdd PSYN W=12.5u L=100u
+Mn19 vlo gn_bh2n u_h2 0   NSYN W=10u L=100u
+Mp19 vlo gp_bh2n u_h2 vdd PSYN W=12.5u L=100u
+Mn20 a_x1 gn_i13p u_h3 0   NSYN W=10u L=100u
+Mp20 a_x1 gp_i13p u_h3 vdd PSYN W=12.5u L=100u
+Mn21 a_x1c gn_i13n u_h3 0   NSYN W=10u L=100u
+Mp21 a_x1c gp_i13n u_h3 vdd PSYN W=12.5u L=100u
+Mn22 a_x2 gn_i23p u_h3 0   NSYN W=10u L=100u
+Mp22 a_x2 gp_i23p u_h3 vdd PSYN W=12.5u L=100u
+Mn23 a_x2c gn_i23n u_h3 0   NSYN W=10u L=100u
+Mp23 a_x2c gp_i23n u_h3 vdd PSYN W=12.5u L=100u
+Mn24 a_h3 gn_o3p u_o 0   NSYN W=10u L=100u
+Mp24 a_h3 gp_o3p u_o vdd PSYN W=12.5u L=100u
+Mn25 ac_h3 gn_o3n u_o 0   NSYN W=10u L=100u
+Mp25 ac_h3 gp_o3n u_o vdd PSYN W=12.5u L=100u
+Mn26 a_o gn_o3p u_h3 0   NSYN W=10u L=100u
+Mp26 a_o gp_o3p u_h3 vdd PSYN W=12.5u L=100u
+Mn27 ac_o gn_o3n u_h3 0   NSYN W=10u L=100u
+Mp27 ac_o gp_o3n u_h3 vdd PSYN W=12.5u L=100u
+Mn28 vhi gn_bh3p u_h3 0   NSYN W=10u L=100u
+Mp28 vhi gp_bh3p u_h3 vdd PSYN W=12.5u L=100u
+Mn29 vlo gn_bh3n u_h3 0   NSYN W=10u L=100u
+Mp29 vlo gp_bh3n u_h3 vdd PSYN W=12.5u L=100u
+Mn30 a_x1 gn_i14p u_h4 0   NSYN W=10u L=100u
+Mp30 a_x1 gp_i14p u_h4 vdd PSYN W=12.5u L=100u
+Mn31 a_x1c gn_i14n u_h4 0   NSYN W=10u L=100u
+Mp31 a_x1c gp_i14n u_h4 vdd PSYN W=12.5u L=100u
+Mn32 a_x2 gn_i24p u_h4 0   NSYN W=10u L=100u
+Mp32 a_x2 gp_i24p u_h4 vdd PSYN W=12.5u L=100u
+Mn33 a_x2c gn_i24n u_h4 0   NSYN W=10u L=100u
+Mp33 a_x2c gp_i24n u_h4 vdd PSYN W=12.5u L=100u
+Mn34 a_h4 gn_o4p u_o 0   NSYN W=10u L=100u
+Mp34 a_h4 gp_o4p u_o vdd PSYN W=12.5u L=100u
+Mn35 ac_h4 gn_o4n u_o 0   NSYN W=10u L=100u
+Mp35 ac_h4 gp_o4n u_o vdd PSYN W=12.5u L=100u
+Mn36 a_o gn_o4p u_h4 0   NSYN W=10u L=100u
+Mp36 a_o gp_o4p u_h4 vdd PSYN W=12.5u L=100u
+Mn37 ac_o gn_o4n u_h4 0   NSYN W=10u L=100u
+Mp37 ac_o gp_o4n u_h4 vdd PSYN W=12.5u L=100u
+Mn38 vhi gn_bh4p u_h4 0   NSYN W=10u L=100u
+Mp38 vhi gp_bh4p u_h4 vdd PSYN W=12.5u L=100u
+Mn39 vlo gn_bh4n u_h4 0   NSYN W=10u L=100u
+Mp39 vlo gp_bh4n u_h4 vdd PSYN W=12.5u L=100u
+Mn40 a_x1 gn_i15p u_h5 0   NSYN W=10u L=100u
+Mp40 a_x1 gp_i15p u_h5 vdd PSYN W=12.5u L=100u
+Mn41 a_x1c gn_i15n u_h5 0   NSYN W=10u L=100u
+Mp41 a_x1c gp_i15n u_h5 vdd PSYN W=12.5u L=100u
+Mn42 a_x2 gn_i25p u_h5 0   NSYN W=10u L=100u
+Mp42 a_x2 gp_i25p u_h5 vdd PSYN W=12.5u L=100u
+Mn43 a_x2c gn_i25n u_h5 0   NSYN W=10u L=100u
+Mp43 a_x2c gp_i25n u_h5 vdd PSYN W=12.5u L=100u
+Mn44 a_h5 gn_o5p u_o 0   NSYN W=10u L=100u
+Mp44 a_h5 gp_o5p u_o vdd PSYN W=12.5u L=100u
+Mn45 ac_h5 gn_o5n u_o 0   NSYN W=10u L=100u
+Mp45 ac_h5 gp_o5n u_o vdd PSYN W=12.5u L=100u
+Mn46 a_o gn_o5p u_h5 0   NSYN W=10u L=100u
+Mp46 a_o gp_o5p u_h5 vdd PSYN W=12.5u L=100u
+Mn47 ac_o gn_o5n u_h5 0   NSYN W=10u L=100u
+Mp47 ac_o gp_o5n u_h5 vdd PSYN W=12.5u L=100u
+Mn48 vhi gn_bh5p u_h5 0   NSYN W=10u L=100u
+Mp48 vhi gp_bh5p u_h5 vdd PSYN W=12.5u L=100u
+Mn49 vlo gn_bh5n u_h5 0   NSYN W=10u L=100u
+Mp49 vlo gp_bh5n u_h5 vdd PSYN W=12.5u L=100u
+Mn50 vhi gn_bop u_o 0   NSYN W=10u L=100u
+Mp50 vhi gp_bop u_o vdd PSYN W=12.5u L=100u
+Mn51 vlo gn_bon u_o 0   NSYN W=10u L=100u
+Mp51 vlo gp_bon u_o vdd PSYN W=12.5u L=100u
+Rb a_o vt 1e12
+Rb2 a_o vt2 1e12
+Vt2 vt2 0 0.5
+.control
+alter Va_x1 0.15
+alter Va_x1c 0.85
+alter Va_x2 0.15
+alter Va_x2c 0.85
+alter Rb 1e12
+alter Rb2 1e12
+op
+wrdata tf0.dat v(u_h1) v(a_h1) v(ac_h1) v(u_h2) v(a_h2) v(ac_h2) v(u_h3) v(a_h3) v(ac_h3) v(u_h4) v(a_h4) v(ac_h4) v(u_h5) v(a_h5) v(ac_h5) v(u_o) v(a_o) v(ac_o)
+alter Vt 0.3
+alter Rb 300000.0
+op
+wrdata tn0.dat v(u_h1) v(a_h1) v(ac_h1) v(u_h2) v(a_h2) v(ac_h2) v(u_h3) v(a_h3) v(ac_h3) v(u_h4) v(a_h4) v(ac_h4) v(u_h5) v(a_h5) v(ac_h5) v(u_o) v(a_o) v(ac_o)
+alter Va_x1 0.15
+alter Va_x1c 0.85
+alter Va_x2 0.85
+alter Va_x2c 0.15
+alter Rb 1e12
+alter Rb2 1e12
+op
+wrdata tf1.dat v(u_h1) v(a_h1) v(ac_h1) v(u_h2) v(a_h2) v(ac_h2) v(u_h3) v(a_h3) v(ac_h3) v(u_h4) v(a_h4) v(ac_h4) v(u_h5) v(a_h5) v(ac_h5) v(u_o) v(a_o) v(ac_o)
+alter Vt 0.7
+alter Rb 300000.0
+op
+wrdata tn1.dat v(u_h1) v(a_h1) v(ac_h1) v(u_h2) v(a_h2) v(ac_h2) v(u_h3) v(a_h3) v(ac_h3) v(u_h4) v(a_h4) v(ac_h4) v(u_h5) v(a_h5) v(ac_h5) v(u_o) v(a_o) v(ac_o)
+alter Va_x1 0.85
+alter Va_x1c 0.15
+alter Va_x2 0.15
+alter Va_x2c 0.85
+alter Rb 1e12
+alter Rb2 1e12
+op
+wrdata tf2.dat v(u_h1) v(a_h1) v(ac_h1) v(u_h2) v(a_h2) v(ac_h2) v(u_h3) v(a_h3) v(ac_h3) v(u_h4) v(a_h4) v(ac_h4) v(u_h5) v(a_h5) v(ac_h5) v(u_o) v(a_o) v(ac_o)
+alter Vt 0.7
+alter Rb 300000.0
+op
+wrdata tn2.dat v(u_h1) v(a_h1) v(ac_h1) v(u_h2) v(a_h2) v(ac_h2) v(u_h3) v(a_h3) v(ac_h3) v(u_h4) v(a_h4) v(ac_h4) v(u_h5) v(a_h5) v(ac_h5) v(u_o) v(a_o) v(ac_o)
+alter Va_x1 0.85
+alter Va_x1c 0.15
+alter Va_x2 0.85
+alter Va_x2c 0.15
+alter Rb 1e12
+alter Rb2 1e12
+op
+wrdata tf3.dat v(u_h1) v(a_h1) v(ac_h1) v(u_h2) v(a_h2) v(ac_h2) v(u_h3) v(a_h3) v(ac_h3) v(u_h4) v(a_h4) v(ac_h4) v(u_h5) v(a_h5) v(ac_h5) v(u_o) v(a_o) v(ac_o)
+alter Vt 0.3
+alter Rb 300000.0
+op
+wrdata tn3.dat v(u_h1) v(a_h1) v(ac_h1) v(u_h2) v(a_h2) v(ac_h2) v(u_h3) v(a_h3) v(ac_h3) v(u_h4) v(a_h4) v(ac_h4) v(u_h5) v(a_h5) v(ac_h5) v(u_o) v(a_o) v(ac_o)
+.endc
+.end

@@ -1,0 +1,18 @@
+* interactive stepping done right: delete fired stop-point, set next, resume; fast RC
+Va a 0 dc 0.2
+R1 a b 10k
+C1 b 0 200p
+.control
+  stop when time > 30u
+  tran 0.05u 100u uic
+  alter Va = 1.0
+  delete 1
+  stop when time > 70u
+  resume
+  alter Va = 0.0
+  delete 2
+  resume
+  wrdata interp_trace.txt v(a) v(b)
+  echo INTERP_OK
+.endc
+.end

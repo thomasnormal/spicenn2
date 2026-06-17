@@ -1,0 +1,3 @@
+ANALOG tanh forward, K=3 (chance 50): shallow vs deep, APPROX vs EXACT backward
+  approx seed0: shallow  49  deep  52  depth-gain  +3  [20s]
+  approx seed1: shallow  51  deep  55  depth-gain  +4  [40s]

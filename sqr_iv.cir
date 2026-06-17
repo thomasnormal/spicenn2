@@ -1,0 +1,10 @@
+square-law check: Id vs Vgs for the squarer NMOS (drain in saturation)
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vd d 0 1.0
+Vg g 0 0.5
+M1 d g 0 0 NNR W=1000u L=100u
+.control
+dc Vg 0 0.8 0.02
+wrdata sqr.dat i(Vd)
+.endc
+.end

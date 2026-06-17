@@ -1,0 +1,19 @@
+* signed synapse: symmetric weight update on the gate caps
+.model NMOS1 NMOS (LEVEL=1 VTO=0.5 KP=50u LAMBDA=0 GAMMA=0 PHI=0.7)
+Mp vin gp cp 0 NMOS1 W=10u L=1u
+Mn vin gn cn 0 NMOS1 W=10u L=1u
+Vmp cp 0 dc 0
+Vmn cn 0 dc 0
+Cgp gp 0 1p
+Cgn gn 0 1p
+Vin vin 0 dc 0.2
+Iupd gn gp PWL(0 0  1u 0  1.02u 0.1u  3u 0.1u  3.02u 0  4u 0  4.02u -0.1u  6u -0.1u  6.02u 0  7u 0)
+.ic v(gp)=1.25 v(gn)=1.25
+.control
+  tran 0.005u 7u uic
+  let w = v(gp)-v(gn)
+  let inet = (i(Vmp)-i(Vmn))*1e6
+  wrdata syn_upd.txt w inet
+  echo upddone
+.endc
+.end

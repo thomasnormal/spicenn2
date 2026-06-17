@@ -1,0 +1,172 @@
+* =====================================================================
+*  analog_backprop_poc.cir
+*  In-situ analog backprop proof-of-concept for ngspice.
+*
+*  Network : 2 inputs -> 1 linear output,  y = w1*a1 + w2*a2
+*  Weights : each w_i = (gp_i - gn_i), a DIFFERENTIAL pair of unipolar
+*            conductances, so weights can be signed.
+*  Forward : SPICE solves KCL on the column wire -> the matrix-vector
+*            product is computed by the physics, not by the script.
+*  Device  : every conductance update is ASYMMETRIC about a symmetry
+*            point gstar (the defect that creates the SGD error floor):
+*               dg = s - |s|*((g-gstar)/B)     (branchless form of
+*               up-step*(1-u), down-step*(1+u))
+*  Compare : mode 0 = Analog SGD  (updates the weight array C directly)
+*            mode 1 = Tiki-Taka  (gradients accumulate in aux array A;
+*                                  A's offset is periodically transferred
+*                                  into C, repurposing the spring as a
+*                                  gradient gauge).
+*  The .control block is the "digital controller / test harness": it
+*  sequences samples, reads the analog output, and drives the writes.
+* =====================================================================
+
+* --- analog core (values are overwritten from C each step via alter) ---
+Va1 in1 0 dc 0
+Va2 in2 0 dc 0
+Rp1 in1 colp 1
+Rn1 in1 coln 1
+Rp2 in2 colp 1
+Rn2 in2 coln 1
+Vmp colp 0 dc 0           ; + column ammeter (column held at virtual gnd)
+Vmn coln 0 dc 0           ; - column ammeter
+
+.control
+  * ---- device / training hyperparameters ----
+  let gstar = 0.5         ; conductance symmetry point
+  let B     = 0.5         ; asymmetry scale  -> u = (g-gstar)/B
+  let gmin  = 0.02
+  let gmax  = 0.98
+  let eta   = 0.10        ; learning rate
+  let Tt    = 4           ; Tiki-Taka transfer period (steps)
+  let gam   = 0.60        ; Tiki-Taka transfer rate
+  let nstep = 3000        ; training steps (batch=1)
+  * Targets below are NOT exactly fittable by 2 weights, so per-sample
+  * gradients never fully vanish -> update pulses keep firing at the
+  * operating point -> the device asymmetry produces a real error floor.
+  * Least-squares optimum (ideal digital): w = [0.8667, -0.8],
+  * irreducible MSE = 0.006667.
+
+  * asymmetric device update + clamp, as macros
+  define upd(g,s) (g + (s - abs(s)*((g - 0.5)/0.5)))
+  define clmp(x)  (min(0.98, max(0.02, x)))
+
+  * run both modes; store the loss trace of each
+  let trace_sgd = unitvec(nstep)
+  let trace_tt  = unitvec(nstep)
+
+  let mode = 0
+  dowhile mode < 2
+    * ---- (re)initialise both arrays to the symmetry point (w = 0) ----
+    let cp1 = gstar
+    let cn1 = gstar
+    let cp2 = gstar
+    let cn2 = gstar
+    let ap1 = gstar
+    let an1 = gstar
+    let ap2 = gstar
+    let an2 = gstar
+
+    let i = 0
+    dowhile i < nstep
+      * ---- pick one of 4 fixed samples (deterministic, reproducible) ----
+      let k = i - 4*floor(i/4)
+      if k = 0
+        let a1 = 1
+        let a2 = 0
+        let t  = 1.0
+      end
+      if k = 1
+        let a1 = 0
+        let a2 = 1
+        let t  = -0.8
+      end
+      if k = 2
+        let a1 = 1
+        let a2 = 1
+        let t  = 0.0
+      end
+      if k = 3
+        let a1 = 1
+        let a2 = -1
+        let t  = 1.6
+      end
+
+      * ---- load weights C into the resistor array, drive inputs ----
+      alter va1 = a1
+      alter va2 = a2
+      alter rp1 = 1/cp1
+      alter rn1 = 1/cn1
+      alter rp2 = 1/cp2
+      alter rn2 = 1/cn2
+
+      * ---- FORWARD PASS: physics computes y = (gp-gn).a on the wire ----
+      op
+      let y = i(vmp) - i(vmn)
+      let d = y - t                 ; error delta
+
+      * record squared error of THIS step
+      if mode = 0
+        let trace_sgd[i] = d*d
+      else
+        let trace_tt[i] = d*d
+      end
+
+      * ---- gradient -> intended weight change -> differential split ----
+      let dw1 = -eta * d * a1
+      let dw2 = -eta * d * a2
+      let sp1 =  0.5*dw1
+      let sn1 = -0.5*dw1
+      let sp2 =  0.5*dw2
+      let sn2 = -0.5*dw2
+
+      if mode = 0
+        * ---------- ANALOG SGD: write straight into the weights C -------
+        let cp1 = clmp(upd(cp1, sp1))
+        let cn1 = clmp(upd(cn1, sn1))
+        let cp2 = clmp(upd(cp2, sp2))
+        let cn2 = clmp(upd(cn2, sn2))
+      else
+        * ---------- TIKI-TAKA: gradients go into the aux array A --------
+        let ap1 = clmp(upd(ap1, sp1))
+        let an1 = clmp(upd(an1, sn1))
+        let ap2 = clmp(upd(ap2, sp2))
+        let an2 = clmp(upd(an2, sn2))
+        * ---- periodic transfer of A's offset into the real weights C ---
+        let kk = i - Tt*floor(i/Tt)
+        if kk = (Tt-1)
+          let wA1 = ap1 - an1
+          let wA2 = ap2 - an2
+          let cp1 = clmp(upd(cp1,  0.5*gam*wA1))
+          let cn1 = clmp(upd(cn1, -0.5*gam*wA1))
+          let cp2 = clmp(upd(cp2,  0.5*gam*wA2))
+          let cn2 = clmp(upd(cn2, -0.5*gam*wA2))
+        end
+      end
+      let i = i + 1
+    end
+
+    * ---- report learned weights for this mode ----
+    let lw1 = cp1 - cn1
+    let lw2 = cp2 - cn2
+    if mode = 0
+      echo "ANALOG SGD  : learned w1,w2 ="
+      print lw1 lw2
+    else
+      echo "TIKI-TAKA   : learned w1,w2 ="
+      print lw1 lw2
+    end
+    let mode = mode + 1
+  end
+
+  echo "LS OPTIMUM  : w1 = 0.8667  w2 = -0.8   (ideal; irreducible MSE = 0.006667)"
+  echo ""
+  echo "final-100-step mean squared error:"
+  let mse_sgd = mean(trace_sgd[2900,2999])
+  let mse_tt  = mean(trace_tt[2900,2999])
+  print mse_sgd
+  print mse_tt
+
+  * dump the two loss traces (decimated) for plotting outside ngspice
+  wrdata loss_trace.txt trace_sgd trace_tt
+.endc
+.end

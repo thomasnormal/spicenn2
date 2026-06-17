@@ -1,0 +1,29 @@
+single-NMOS squarer EP update cell (Xyce)
+.model NNR NMOS (LEVEL=1 VTO=0.2  KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u  LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 2.0
+Vg vg 0 PWL(0n 0.675 100n 0.675 100.01n 0.675 200n 0.675 200.01n 0.675 300n 0.675 300.01n 0.675 400n 0.675 400.01n 0.675 500n 0.675 500.01n 0.675 600n 0.675 600.01n 0.675 700n 0.675 700.01n 0.675 800n 0.675 800.01n 0.675 900n 0.675 900.01n 0.675 1000n 0.675 1000.01n 0.675 1100n 0.675 1100.01n 0.675 1200n 0.675 1200.01n 0.675 1300n 0.675 1300.01n 0.675 1400n 0.675 1400.01n 0.675 1500n 0.675 1500.01n 0.675 1600n 0.675)
+Vs vs 0 PWL(0n 0.325 100n 0.325 100.01n 0.325 200n 0.325 200.01n 0.325 300n 0.325 300.01n 0.325 400n 0.325 400.01n 0.325 500n 0.325 500.01n 0.325 600n 0.325 600.01n 0.325 700n 0.325 700.01n 0.325 800n 0.325 800.01n 0.325 900n 0.325 900.01n 0.325 1000n 0.325 1000.01n 0.325 1100n 0.325 1100.01n 0.325 1200n 0.325 1200.01n 0.325 1300n 0.325 1300.01n 0.325 1400n 0.325 1400.01n 0.325 1500n 0.325 1500.01n 0.325 1600n 0.325)
+Vpsig  psig  0 PWL(0n 0 100n 0 100.01n 2 200n 2 200.01n 0 300n 0 300.01n 2 400n 2 400.01n 0 500n 0 500.01n 2 600n 2 600.01n 0 700n 0 700.01n 2 800n 2 800.01n 0 900n 0 900.01n 2 1000n 2 1000.01n 0 1100n 0 1100.01n 2 1200n 2 1200.01n 0 1300n 0 1300.01n 2 1400n 2 1400.01n 0 1500n 0 1500.01n 2 1600n 2)
+Vpsigb psigb 0 PWL(0n 2 100n 2 100.01n 0 200n 0 200.01n 2 300n 2 300.01n 0 400n 0 400.01n 2 500n 2 500.01n 0 600n 0 600.01n 2 700n 2 700.01n 0 800n 0 800.01n 2 900n 2 900.01n 0 1000n 0 1000.01n 2 1100n 2 1100.01n 0 1200n 0 1200.01n 2 1300n 2 1300.01n 0 1400n 0 1400.01n 2 1500n 2 1500.01n 0 1600n 0)
+* --- single NMOS squarer: Vgs = vg-vs = dv ; I ~ (dv-Vt)^2 ---
+Msq dsq vg vs 0 NNR W=1000u L=100u
+* PMOS diode + mirror copy of the square current to cs
+Mlsq dsq dsq vdd vdd PNR W=200u L=100u
+MopS cs  dsq vdd vdd PNR W=200u L=100u
+* chopper: route the (single) square current to vwp (nudge) or vwn (free)
+Msw1 cs psig  vwp 0 NNR W=300u L=100u
+Msw2 cs psigb vwn 0 NNR W=300u L=100u
+* differential weight cap + CMFB sinks (gate=sensed CM)
+Rc1 vwp cmn 500k
+Rc2 vwn cmn 500k
+Msp vwp cmn 0 0 NNR W=700u L=100u
+Msn vwn cmn 0 0 NNR W=700u L=100u
+Cwp vwp 0 20p
+Cwn vwn 0 20p
+.options DEVICE gmin=1e-8 voltagelimiterflag=1
+.options TIMEINT reltol=1e-3 abstol=1e-6
+.ic V(vwp)=0.5 V(vwn)=0.5
+.tran 0.05n 1600n UIC
+.print tran V(vwp) V(vwn)
+.end

@@ -1,0 +1,26 @@
+* diff-pair multiplier
+.model NMOS1 NMOS (LEVEL=1 VTO=0.5 KP=120u LAMBDA=0.02 GAMMA=0.4 PHI=0.7)
+Vdd dd 0 3
+M2 op ip t 0 NMOS1 W=20u L=1u
+M3 on in_ t 0 NMOS1 W=20u L=1u
+Rp dd op 10k
+Rn dd on 10k
+Itail t 0 dc 100u
+Vip ip 0 dc 1.0
+Vin in_ 0 dc 1.0
+.control
+  alter Itail = 40u
+  dc Vip 0.8 1.2 0.004
+  let vd = v(op)-v(on)
+  wrdata mult_lo.txt vd
+  alter Itail = 100u
+  dc Vip 0.8 1.2 0.004
+  let vd = v(op)-v(on)
+  wrdata mult_mid.txt vd
+  alter Itail = 160u
+  dc Vip 0.8 1.2 0.004
+  let vd = v(op)-v(on)
+  wrdata mult_hi.txt vd
+  echo multdone
+.endc
+.end

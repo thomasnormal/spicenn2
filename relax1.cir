@@ -1,0 +1,47 @@
+EP RISK1 reciprocal resistive relaxation network
+* 3 inputs (clamped) -> 2 hidden -> 1 output, symmetric two-terminal conductances.
+* Goal: confirm the network settles to a unique stable fixed point (no osc/runaway),
+* and that different initial conditions converge to the same equilibrium.
+
+* ---- input clamps (free phase: inputs are hard voltage sources) ----
+Vx1 x1 0 0.8
+Vx2 x2 0 0.2
+Vx3 x3 0 0.6
+
+* ---- symmetric conductances, layer1 (3x2) and layer2 (2x1) ----
+R11 x1 h1 10k
+R21 x2 h1 20k
+R31 x3 h1 15k
+R12 x1 h2 25k
+R22 x2 h2 12k
+R32 x3 h2 30k
+Ro1 h1 o1 8k
+Ro2 h2 o1 18k
+
+* ---- node capacitances (set the relaxation dynamics) ----
+Ch1 h1 0 1p
+Ch2 h2 0 1p
+Co1 o1 0 1p
+
+* ---- neuron: leak to ground + diode clamps bounding each free node to ~[0,1] ----
+Rlk1 h1 0 100k
+Rlk2 h2 0 100k
+Rlko o1 0 100k
+.model DCL D (IS=1e-12 N=1)
+Vhi vhi 0 1
+* clamp >0 : diode conducts when node goes below 0
+D0h1 0 h1 DCL
+D0h2 0 h2 DCL
+D0o1 0 o1 DCL
+* clamp <1 : diode conducts when node exceeds 1
+D1h1 h1 vhi DCL
+D1h2 h2 vhi DCL
+D1o1 o1 vhi DCL
+
+.tran 0.05n 300n uic
+.control
+run
+wrdata relax1_out.dat v(h1) v(h2) v(o1)
+print v(h1) v(h2) v(o1)
+.endc
+.end

@@ -1,0 +1,54 @@
+EP idea2 reciprocal cell programmability and mismatch sensitivity
+* (1) Can the T-gate weight be SET while staying reciprocal? Slopes dGn/dCM, dGp/dCM are
+*     gate-INDEPENDENT (pure device transconductance), so cancellation should hold for any
+*     gate pair. Program with one control Vc: Vgn=1.0+Vc, Vgp=-Vc  (G rises with Vc).
+* (2) Mismatch: detune PMOS width +/-10% (a KP/size mismatch proxy) -> residual dI/dCM.
+
+.model NSYN NMOS (LEVEL=1 VTO=0.2  KP=50u LAMBDA=0 GAMMA=0 PHI=0.7)
+.model PSYN PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0 GAMMA=0 PHI=0.7)
+
+Vdd vdd 0 1.5
+Vcm cm 0 0.5
+Vdv dv 0 0.3
+Bap nap 0 V=V(cm)+V(dv)/2
+Bbp nbp 0 V=V(cm)-V(dv)/2
+
+* matched T-gate, controlled by Vc (programmable weight)
+Vsa nap a 0
+Vsb nbp b 0
+Mn a ngn b 0   NSYN W=200u L=100u
+Mp a ngp b vdd PSYN W=250u L=100u
+Vc  vc  0 0.2
+Bgn ngn 0 V=1.0+V(vc)
+Bgp ngp 0 V=-V(vc)
+
+* mismatched T-gates (PMOS width off by +/-10%) on separate node pairs, same stimulus
+Vsam nap am 0
+Vsbm nbpm b 0
+* note: reuse nbp via separate ammeter
+Vsbm2 nbp bm 0
+Mnm am ngn bm 0   NSYN W=200u L=100u
+Mpm am ngp bm vdd PSYN W=225u L=100u
+Vsap nap ap 0
+Vsbp nbp bp 0
+Mnp ap ngn bp 0   NSYN W=200u L=100u
+Mpp ap ngp bp vdd PSYN W=275u L=100u
+
+.control
+* (1) programmability: 3 weight settings, sweep CM, record matched-cell current
+alter Vc 0.0
+dc Vcm 0.2 0.8 0.01
+wrdata rec3b_vc00.dat i(Vsa)
+alter Vc 0.2
+dc Vcm 0.2 0.8 0.01
+wrdata rec3b_vc02.dat i(Vsa)
+alter Vc 0.4
+dc Vcm 0.2 0.8 0.01
+wrdata rec3b_vc04.dat i(Vsa)
+* (2) mismatch at Vc=0.2: residual CM dependence of -10%/+10% PMOS cells
+alter Vc 0.2
+dc Vcm 0.2 0.8 0.01
+wrdata rec3b_mlo.dat i(Vsam)
+wrdata rec3b_mhi.dat i(Vsap)
+.endc
+.end

@@ -1,0 +1,17 @@
+diff-pair neuron increasing a + complement ac
+* input u vs vref(0.5); a increases with u, ac decreases. moderate gain, saturating, ~[0,1].
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 1.0
+Vr  vr  0 0.5
+Vbn vbn 0 0.55
+Vu  u   0 0.5
+M1 ac u  tn 0 NNR W=200u L=100u
+M2 a  vr tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+RL1 vdd ac 120k
+RL2 vdd a  120k
+.control
+dc Vu 0 1 0.005
+wrdata neuron2.dat v(a) v(ac)
+.endc
+.end

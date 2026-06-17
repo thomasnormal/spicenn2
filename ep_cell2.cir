@@ -1,0 +1,50 @@
+EP update cell stage2 transistor Gilbert + PMOS-OTA + chopper + differential weight cap
+* phi_i,phi_j (diff activations) -> Gilbert product -> OTA V-to-I -> chopper(psign) -> dW=vwp-vwn
+* two-phase: free [0,100n] psign=0 ; nudge [100n,200n] psign=1. dW should ~ (prod_nudge-prod_free).
+.model NNR NMOS (LEVEL=1 VTO=0.2  KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u  LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model SWN SW (vt=0.5 vh=0.1 ron=200 roff=1e9)
+Vdd vdd 0 2.0
+Vbn vbn 0 0.75
+Vbp vbp 0 1.25
+* two-phase stimulus (testbench voltages): free (pi*=0.2,pj*=0.3) -> nudge (pi=0.25,pj=0.35)
+* 5 free/nudge cycles (period 200n): free=(0.2,0.3), nudge=(0.25,0.35). dW should accumulate.
+Vpi pi 0 PWL(0n 0.2 100n 0.2 100.01n 0.25 200n 0.25 200.01n 0.2 300n 0.2 300.01n 0.25 400n 0.25 400.01n 0.2 500n 0.2 500.01n 0.25 600n 0.25 600.01n 0.2 700n 0.2 700.01n 0.25 800n 0.25 800.01n 0.2 900n 0.2 900.01n 0.25 1000n 0.25)
+Vpj pj 0 PWL(0n 0.3 100n 0.3 100.01n 0.35 200n 0.35 200.01n 0.3 300n 0.3 300.01n 0.35 400n 0.35 400.01n 0.3 500n 0.3 500.01n 0.35 600n 0.35 600.01n 0.3 700n 0.3 700.01n 0.35 800n 0.35 800.01n 0.3 900n 0.3 900.01n 0.35 1000n 0.35)
+Vpsig psig 0 PWL(0n 0 100n 0 100.01n 1 200n 1 200.01n 0 300n 0 300.01n 1 400n 1 400.01n 0 500n 0 500.01n 1 600n 1 600.01n 0 700n 0 700.01n 1 800n 1 800.01n 0 900n 0 900.01n 1 1000n 1)
+Vpsigb psigb 0 PWL(0n 1 100n 1 100.01n 0 200n 0 200.01n 1 300n 1 300.01n 0 400n 0 400.01n 1 500n 1 500.01n 0 600n 0 600.01n 1 700n 1 700.01n 0 800n 0 800.01n 1 900n 1 900.01n 0 1000n 0)
+Vbsink vbsink 0 0.72
+Bxp vxp 0 V=0.5+V(pi)
+Bxn vxn 0 V=0.5-V(pi)
+Byp vyp 0 V=0.5+V(pj)
+Byn vyn 0 V=0.5-V(pj)
+* --- Gilbert core -> diff voltage at iop,ion (CM near vdd) ---
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na vyp nt 0 NNR W=200u L=100u
+M6 nb vyn nt 0 NNR W=200u L=100u
+M1 iop vxp na 0 NNR W=200u L=100u
+M2 ion vxn na 0 NNR W=200u L=100u
+M3 ion vxp nb 0 NNR W=200u L=100u
+M4 iop vxn nb 0 NNR W=200u L=100u
+* --- PMOS diode loads on the Gilbert + mirror copies of Iop,Ion down to low-V cap nodes ---
+Mlp iop iop vdd vdd PNR W=200u L=100u
+Mln ion ion vdd vdd PNR W=200u L=100u
+MopA ca iop vdd vdd PNR W=200u L=100u
+MopB cb ion vdd vdd PNR W=200u L=100u
+* --- chopper: route mirrored currents to weight caps, swapped by psign ---
+S1 ca vwp psig 0 SWN
+S2 cb vwn psig 0 SWN
+S3 ca vwn psigb 0 SWN
+S4 cb vwp psigb 0 SWN
+* --- differential weight caps + NMOS bias sinks (set CM ~0.5, bidirectional integration) ---
+Msp vwp vbsink 0 0 NNR W=200u L=100u
+Msn vwn vbsink 0 0 NNR W=200u L=100u
+Cwp vwp 0 2p
+Cwn vwn 0 2p
+.ic v(vwp)=0.5 v(vwn)=0.5
+.tran 0.1n 1000n uic
+.control
+run
+wrdata cell2.dat v(vwp) v(vwn) v(o1) v(o2) v(psig)
+.endc
+.end

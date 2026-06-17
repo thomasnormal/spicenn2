@@ -1,0 +1,32 @@
+EP RISK2 programmable triode conductance reciprocity test v2
+* Fair test: hold common-mode fixed, drive the two terminals symmetrically
+*   a = cm + dv/2 , b = cm - dv/2  (so |Vds| same for +dv and -dv).
+* Read device current with a 0V ammeter in series with terminal a.
+* Reciprocity => i(+dv) = -i(-dv); programmability => slope set by gate.
+
+.model NSYN NMOS (LEVEL=1 VTO=0.2 KP=50u LAMBDA=0 GAMMA=0 PHI=0.7)
+
+.param CM=0.5
+Bva nva 0 V={CM} + V(dv)/2
+Vsa nva a 0
+Bvb nvb 0 V={CM} - V(dv)/2
+Vsb nvb b 0
+M1 a ng b 0 NSYN W=200u L=100u
+Vg ng 0 1.0
+Vdv dv 0 0
+
+.control
+alter Vg 0.6
+dc Vdv -0.4 0.4 0.01
+wrdata rec2_g06.dat i(Vsa)
+alter Vg 0.9
+dc Vdv -0.4 0.4 0.01
+wrdata rec2_g09.dat i(Vsa)
+alter Vg 1.2
+dc Vdv -0.4 0.4 0.01
+wrdata rec2_g12.dat i(Vsa)
+alter Vg 1.5
+dc Vdv -0.4 0.4 0.01
+wrdata rec2_g15.dat i(Vsa)
+.endc
+.end

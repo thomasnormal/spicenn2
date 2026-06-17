@@ -1,0 +1,37 @@
+
+* time = 0.000000e+00 
+
+*** BEGIN: Saved Operating Point ***
+simulator lang=spice
+.nodeset v(vdd)=1.000000e+00
+.nodeset v(vbn)=8.500000e-01
+.nodeset v(pk)=5.000000e-01
+.nodeset v(ap)=6.000000e-01
+.nodeset v(an)=4.000000e-01
+.nodeset v(bp)=4.500000e-01
+.nodeset v(bn)=5.500000e-01
+.nodeset v(yp)=6.000000e-01
+.nodeset v(yn)=4.000000e-01
+.nodeset v(ckd)=1.000000e+00
+.nodeset v(ckr)=0.000000e+00
+.nodeset v(wp)=5.000000e-01
+.nodeset v(wn)=5.000000e-01
+.nodeset v(Xu.xip)=0.000000e+00
+.nodeset v(Xu.xin)=0.000000e+00
+.nodeset v(Xu.nt)=0.000000e+00
+.nodeset v(Xu.na)=0.000000e+00
+.nodeset v(Xu.sy5)=0.000000e+00
+.nodeset v(Xu.nb)=0.000000e+00
+.nodeset v(Xu.sy6)=0.000000e+00
+.nodeset v(Xu.iop)=0.000000e+00
+.nodeset v(Xu.sx1)=0.000000e+00
+.nodeset v(Xu.ion)=0.000000e+00
+.nodeset v(Xu.sx2)=0.000000e+00
+.nodeset v(Xu.sx3)=0.000000e+00
+.nodeset v(Xu.sx4)=0.000000e+00
+.nodeset v(Xu.op)=0.000000e+00
+.nodeset v(Xu.nrn)=0.000000e+00
+.nodeset v(Xu.on)=0.000000e+00
+.nodeset v(Xu.nrp)=0.000000e+00
+
+*** END: Saved Operating Point ***

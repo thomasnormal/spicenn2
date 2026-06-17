@@ -1,0 +1,23 @@
+neuron characterization low-Vt inverter under load
+* Neuron devices: VTO=+/-0.2 (real bias current at u=0.5) + LAMBDA=0.02 (finite gain).
+* Characterize WITH a 200k load to mid (the synaptic loading the neuron must drive).
+.model NNR NMOS (LEVEL=1 VTO=0.2  KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u  LAMBDA=0.02 GAMMA=0 PHI=0.7)
+
+Vdd vdd 0 1.0
+Vmid nmid 0 0.5
+Vu  u 0 0.5
+
+Mn1 a u 0   0   NNR W=100u L=100u
+Mp1 a u vdd vdd PNR W=300u L=100u
+Mn2 ac a 0   0   NNR W=100u L=100u
+Mp2 ac a vdd vdd PNR W=300u L=100u
+* realistic synaptic load on each neuron output
+RLa  a  nmid 200k
+RLac ac nmid 200k
+
+.control
+dc Vu 0 1 0.005
+wrdata neuron_char.dat v(a) v(ac)
+.endc
+.end

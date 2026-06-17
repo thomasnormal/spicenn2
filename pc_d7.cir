@@ -1,0 +1,147 @@
+PC inference
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.subckt dsyn inp inn outp outn wp wn vdd
+M1 outp inp tp 0 NNR W=200u L=100u
+M2 outn inn tp 0 NNR W=200u L=100u
+Mtp tp wp 0 0 NNR W=200u L=100u
+M3 outn inp tn 0 NNR W=200u L=100u
+M4 outp inn tn 0 NNR W=200u L=100u
+Mtn tn wn 0 0 NNR W=200u L=100u
+.ends
+.subckt dneuron up un ap an vdd vbn
+M1 an up tn 0 NNR W=200u L=100u
+M2 ap un tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+RLa vdd ap 800k
+RLb vdd an 800k
+.ends
+.subckt esub xp xn mp mn ep en vdd vbn
+Mt nt vbn 0 0 NNR W=400u L=100u
+M1x ep xn nt 0 NNR W=200u L=100u
+M2x en xp nt 0 NNR W=200u L=100u
+M1m ep mp nt 0 NNR W=200u L=100u
+M2m en mn nt 0 NNR W=200u L=100u
+RLp vdd ep 50k
+RLn vdd en 50k
+.ends
+Vdd vdd 0 1.0
+Vgm gm 0 0.6
+Vbneu vbneu 0 0.30
+Vx1p a_xp1 0 0.8
+Vx1n a_xn1 0 0.2
+Vx2p a_xp2 0 0.2
+Vx2n a_xn2 0 0.8
+Mlp_mh0 mhp0 mhp0 vdd vdd PNR W=3000u L=100u
+Mln_mh0 mhn0 mhn0 vdd vdd PNR W=3000u L=100u
+Mlp_xh0 xhp0 xhp0 vdd vdd PNR W=3000u L=100u
+Mln_xh0 xhn0 xhn0 vdd vdd PNR W=3000u L=100u
+Cxhp0 xhp0 0 0.4p
+Cxhn0 xhn0 0 0.4p
+Vwp_ihm_1_0 wp_ihm_1_0 0 0.5691
+Vwn_ihm_1_0 wn_ihm_1_0 0 0.4309
+X_ihm_1_0 a_xp1 a_xn1 mhp0 mhn0 wp_ihm_1_0 wn_ihm_1_0 vdd dsyn
+Vwp_ihx_1_0 wp_ihx_1_0 0 0.5691
+Vwn_ihx_1_0 wn_ihx_1_0 0 0.4309
+X_ihx_1_0 a_xp1 a_xn1 xhp0 xhn0 wp_ihx_1_0 wn_ihx_1_0 vdd dsyn
+Vwp_ihm_2_0 wp_ihm_2_0 0 0.6643
+Vwn_ihm_2_0 wn_ihm_2_0 0 0.3357
+X_ihm_2_0 a_xp2 a_xn2 mhp0 mhn0 wp_ihm_2_0 wn_ihm_2_0 vdd dsyn
+Vwp_ihx_2_0 wp_ihx_2_0 0 0.6643
+Vwn_ihx_2_0 wn_ihx_2_0 0 0.3357
+X_ihx_2_0 a_xp2 a_xn2 xhp0 xhn0 wp_ihx_2_0 wn_ihx_2_0 vdd dsyn
+Vwp_bk_0 wp_bk_0 0 0.5661
+Vwn_bk_0 wn_bk_0 0 0.4339
+X_bk_0 eop eon xhp0 xhn0 wp_bk_0 wn_bk_0 vdd dsyn
+Xn0 xhp0 xhn0 ahp0 ahn0 vdd vbneu dneuron
+Xeh0 xhp0 xhn0 mhp0 mhn0 ehp0 ehn0 vdd gm esub
+Mlp_mh1 mhp1 mhp1 vdd vdd PNR W=3000u L=100u
+Mln_mh1 mhn1 mhn1 vdd vdd PNR W=3000u L=100u
+Mlp_xh1 xhp1 xhp1 vdd vdd PNR W=3000u L=100u
+Mln_xh1 xhn1 xhn1 vdd vdd PNR W=3000u L=100u
+Cxhp1 xhp1 0 0.4p
+Cxhn1 xhn1 0 0.4p
+Vwp_ihm_1_1 wp_ihm_1_1 0 0.3000
+Vwn_ihm_1_1 wn_ihm_1_1 0 0.7606
+X_ihm_1_1 a_xp1 a_xn1 mhp1 mhn1 wp_ihm_1_1 wn_ihm_1_1 vdd dsyn
+Vwp_ihx_1_1 wp_ihx_1_1 0 0.3000
+Vwn_ihx_1_1 wn_ihx_1_1 0 0.7606
+X_ihx_1_1 a_xp1 a_xn1 xhp1 xhn1 wp_ihx_1_1 wn_ihx_1_1 vdd dsyn
+Vwp_ihm_2_1 wp_ihm_2_1 0 0.6811
+Vwn_ihm_2_1 wn_ihm_2_1 0 0.3189
+X_ihm_2_1 a_xp2 a_xn2 mhp1 mhn1 wp_ihm_2_1 wn_ihm_2_1 vdd dsyn
+Vwp_ihx_2_1 wp_ihx_2_1 0 0.6811
+Vwn_ihx_2_1 wn_ihx_2_1 0 0.3189
+X_ihx_2_1 a_xp2 a_xn2 xhp1 xhn1 wp_ihx_2_1 wn_ihx_2_1 vdd dsyn
+Vwp_bk_1 wp_bk_1 0 0.5893
+Vwn_bk_1 wn_bk_1 0 0.4107
+X_bk_1 eop eon xhp1 xhn1 wp_bk_1 wn_bk_1 vdd dsyn
+Xn1 xhp1 xhn1 ahp1 ahn1 vdd vbneu dneuron
+Xeh1 xhp1 xhn1 mhp1 mhn1 ehp1 ehn1 vdd gm esub
+Mlp_mh2 mhp2 mhp2 vdd vdd PNR W=3000u L=100u
+Mln_mh2 mhn2 mhn2 vdd vdd PNR W=3000u L=100u
+Mlp_xh2 xhp2 xhp2 vdd vdd PNR W=3000u L=100u
+Mln_xh2 xhn2 xhn2 vdd vdd PNR W=3000u L=100u
+Cxhp2 xhp2 0 0.4p
+Cxhn2 xhn2 0 0.4p
+Vwp_ihm_1_2 wp_ihm_1_2 0 0.3926
+Vwn_ihm_1_2 wn_ihm_1_2 0 0.6074
+X_ihm_1_2 a_xp1 a_xn1 mhp2 mhn2 wp_ihm_1_2 wn_ihm_1_2 vdd dsyn
+Vwp_ihx_1_2 wp_ihx_1_2 0 0.3926
+Vwn_ihx_1_2 wn_ihx_1_2 0 0.6074
+X_ihx_1_2 a_xp1 a_xn1 xhp2 xhn2 wp_ihx_1_2 wn_ihx_1_2 vdd dsyn
+Vwp_ihm_2_2 wp_ihm_2_2 0 0.6162
+Vwn_ihm_2_2 wn_ihm_2_2 0 0.3838
+X_ihm_2_2 a_xp2 a_xn2 mhp2 mhn2 wp_ihm_2_2 wn_ihm_2_2 vdd dsyn
+Vwp_ihx_2_2 wp_ihx_2_2 0 0.6162
+Vwn_ihx_2_2 wn_ihx_2_2 0 0.3838
+X_ihx_2_2 a_xp2 a_xn2 xhp2 xhn2 wp_ihx_2_2 wn_ihx_2_2 vdd dsyn
+Vwp_bk_2 wp_bk_2 0 0.5729
+Vwn_bk_2 wn_bk_2 0 0.4271
+X_bk_2 eop eon xhp2 xhn2 wp_bk_2 wn_bk_2 vdd dsyn
+Xn2 xhp2 xhn2 ahp2 ahn2 vdd vbneu dneuron
+Xeh2 xhp2 xhn2 mhp2 mhn2 ehp2 ehn2 vdd gm esub
+Mlp_mh3 mhp3 mhp3 vdd vdd PNR W=3000u L=100u
+Mln_mh3 mhn3 mhn3 vdd vdd PNR W=3000u L=100u
+Mlp_xh3 xhp3 xhp3 vdd vdd PNR W=3000u L=100u
+Mln_xh3 xhn3 xhn3 vdd vdd PNR W=3000u L=100u
+Cxhp3 xhp3 0 0.4p
+Cxhn3 xhn3 0 0.4p
+Vwp_ihm_1_3 wp_ihm_1_3 0 0.5588
+Vwn_ihm_1_3 wn_ihm_1_3 0 0.4412
+X_ihm_1_3 a_xp1 a_xn1 mhp3 mhn3 wp_ihm_1_3 wn_ihm_1_3 vdd dsyn
+Vwp_ihx_1_3 wp_ihx_1_3 0 0.5588
+Vwn_ihx_1_3 wn_ihx_1_3 0 0.4412
+X_ihx_1_3 a_xp1 a_xn1 xhp3 xhn3 wp_ihx_1_3 wn_ihx_1_3 vdd dsyn
+Vwp_ihm_2_3 wp_ihm_2_3 0 0.5057
+Vwn_ihm_2_3 wn_ihm_2_3 0 0.4943
+X_ihm_2_3 a_xp2 a_xn2 mhp3 mhn3 wp_ihm_2_3 wn_ihm_2_3 vdd dsyn
+Vwp_ihx_2_3 wp_ihx_2_3 0 0.5057
+Vwn_ihx_2_3 wn_ihx_2_3 0 0.4943
+X_ihx_2_3 a_xp2 a_xn2 xhp3 xhn3 wp_ihx_2_3 wn_ihx_2_3 vdd dsyn
+Vwp_bk_3 wp_bk_3 0 0.6093
+Vwn_bk_3 wn_bk_3 0 0.3907
+X_bk_3 eop eon xhp3 xhn3 wp_bk_3 wn_bk_3 vdd dsyn
+Xn3 xhp3 xhn3 ahp3 ahn3 vdd vbneu dneuron
+Xeh3 xhp3 xhn3 mhp3 mhn3 ehp3 ehn3 vdd gm esub
+Mlp_mo mop mop vdd vdd PNR W=3000u L=100u
+Mln_mo mon mon vdd vdd PNR W=3000u L=100u
+Vwp_ho_0 wp_ho_0 0 0.5661
+Vwn_ho_0 wn_ho_0 0 0.4339
+X_ho_0 ahp0 ahn0 mop mon wp_ho_0 wn_ho_0 vdd dsyn
+Vwp_ho_1 wp_ho_1 0 0.5893
+Vwn_ho_1 wn_ho_1 0 0.4107
+X_ho_1 ahp1 ahn1 mop mon wp_ho_1 wn_ho_1 vdd dsyn
+Vwp_ho_2 wp_ho_2 0 0.5729
+Vwn_ho_2 wn_ho_2 0 0.4271
+X_ho_2 ahp2 ahn2 mop mon wp_ho_2 wn_ho_2 vdd dsyn
+Vwp_ho_3 wp_ho_3 0 0.6093
+Vwn_ho_3 wn_ho_3 0 0.3907
+X_ho_3 ahp3 ahn3 mop mon wp_ho_3 wn_ho_3 vdd dsyn
+Veop eop 0 0.5
+Veon eon 0 0.5
+.control
+op
+wrdata pcd7.dat v(xhp0) v(xhn0) v(ehp0) v(ehn0) v(xhp1) v(xhn1) v(ehp1) v(ehn1) v(xhp2) v(xhn2) v(ehp2) v(ehn2) v(xhp3) v(xhn3) v(ehp3) v(ehn3) v(mop) v(mon) v(eop) v(eon)
+.endc
+.end

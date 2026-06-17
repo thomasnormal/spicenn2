@@ -1050,3 +1050,15 @@ MECHANISM (fully diagnosed): one-sided nudge has O(beta) gradient bias (Laborieu
   -> weights then OVER-grow (std 0.018->0.58) -> weight decay/epochs tame it. Two failure modes, two fixes.
 NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2, killed) -> 3-hidden practical.
   Chopper symmetric run ~2-3hr each. INVESTIGATION CONVERGED.
+
+## 2026-06-17 — path-to-0.90 first strike: 8x8 feature-limited; resolution-via-sparse HURTS -> need true conv
+- RFGRID (local RFs) + symmetric + decay, 8x8: 0.452 (vs random-sparse 0.41) -- local RFs help +0.04.
+  Deeper RFGRID 64,16,4,10 = 0.340 (4-neuron bottleneck too tight).
+- 8x8 is FEATURE-CAPACITY-LIMITED: more data (NTR=40)=0.452 and HINGE=0.452 both NEUTRAL (same as base).
+  => the 8x8 single-channel ceiling ~0.45 is features, not data/optimization/normalizer.
+- 16x16 (idea 2) HURTS through current wiring: RFGRID 256,64,16,10 = 0.188, random-sparse = 0.292 (both << 8x8
+  0.45). CAUSE: FANIN=4 sees only 4 of 256 inputs -> too sparse for a 16x16 image (vs 4-of-64 @8x8) -> most
+  pixels discarded + bigger deck undertrains. => resolution needs DENSE local pooling, not sparse fan-in.
+- CONCLUSION: the real lever (idea 1 FULL) = MULTI-CHANNEL WEIGHT-SHARED CONV (dense 2x2 local windows, K filters
+  per position, shared caps). Single-channel RFGRID + sparse fan-in can't exploit more pixels. Next build: conv
+  layer generator in pc_deep (K channels, weight-shared, dense local RF). Ensemble (idea 7) vote pending (4 seeds).

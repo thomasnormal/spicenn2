@@ -1,0 +1,281 @@
+continuous-time end-to-end EP XOR (single .tran)
+.model NNR NMOS (LEVEL=1 VTO=0.2  KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u  LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.subckt dsyn inp inn outp outn wp wn vdd
+M1 outp inp tp 0 NNR W=200u L=100u
+M2 outn inn tp 0 NNR W=200u L=100u
+Mtp tp wp 0 0 NNR W=200u L=100u
+M3 outn inp tn 0 NNR W=200u L=100u
+M4 outp inn tn 0 NNR W=200u L=100u
+Mtn tn wn 0 0 NNR W=200u L=100u
+.ends
+.subckt dsynb inp inn outp outn wp wn vdd
+M1 outp inp tp 0 NNR W=200u L=100u
+M2 outn inn tp 0 NNR W=200u L=100u
+Mtp tp wp 0 0 NNR W=200u L=100u
+M3 outn inp tn 0 NNR W=200u L=100u
+M4 outp inn tn 0 NNR W=200u L=100u
+Mtn tn wn 0 0 NNR W=200u L=100u
+.ends
+.subckt dneuron up un ap an vdd vbn
+M1 an up tn 0 NNR W=200u L=100u
+M2 ap un tn 0 NNR W=200u L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+RLa vdd ap 800k
+RLb vdd an 800k
+.ends
+.subckt gupd xp xn yp yn wp wn psig psigb vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na yp nt 0 NNR W=200u L=100u
+M6 nb yn nt 0 NNR W=200u L=100u
+M1 iop xp na 0 NNR W=200u L=100u
+M2 ion xn na 0 NNR W=200u L=100u
+M3 ion xp nb 0 NNR W=200u L=100u
+M4 iop xn nb 0 NNR W=200u L=100u
+Mlp iop iop vdd vdd PNR W=200u L=100u
+Mln ion ion vdd vdd PNR W=200u L=100u
+MopA ca iop vdd vdd PNR W=200u L=100u
+MopB cb ion vdd vdd PNR W=200u L=100u
+Msw1 ca psig  wp 0 NNR W=300u L=100u
+Msw2 cb psig  wn 0 NNR W=300u L=100u
+Msw3 ca psigb wn 0 NNR W=300u L=100u
+Msw4 cb psigb wp 0 NNR W=300u L=100u
+.ends
+.subckt gupd2 xp xn yp yn wp wn psig psigb vdd vbn
+Msa yA yp psig 0 NNR W=300u L=100u
+Msb yA yn psigb 0 NNR W=300u L=100u
+Msc yB yn psig 0 NNR W=300u L=100u
+Msd yB yp psigb 0 NNR W=300u L=100u
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na yA nt 0 NNR W=200u L=100u
+M6 nb yB nt 0 NNR W=200u L=100u
+M1 iop xp na 0 NNR W=200u L=100u
+M2 ion xn na 0 NNR W=200u L=100u
+M3 ion xp nb 0 NNR W=200u L=100u
+M4 iop xn nb 0 NNR W=200u L=100u
+Mlp iop iop vdd vdd PNR W=200u L=100u
+Mln ion ion vdd vdd PNR W=200u L=100u
+Mpu_p wp iop vdd vdd PNR W=200u L=100u
+Mpu_n wn ion vdd vdd PNR W=200u L=100u
+MpRn nrn ion vdd vdd PNR W=200u L=100u
+MnRn nrn nrn 0 0 NNR W=200u L=100u
+Mpd_p wp nrn 0 0 NNR W=200u L=100u
+MpRp nrp iop vdd vdd PNR W=200u L=100u
+MnRp nrp nrp 0 0 NNR W=200u L=100u
+Mpd_n wn nrp 0 0 NNR W=200u L=100u
+.ends
+Vdd vdd 0 1.0
+Vbn vbn 0 0.30
+Vgbn gbn 0 0.7
+Vgbnh gbnh 0 0.7
+Vgbnb gbnb 0 0.7
+Vbphi bp_hi 0 0.8
+Vbplo bp_lo 0 0.2
+Vax1 a_xp1 0 PWL(0.0n 0.2000 299.9n 0.2000 300.0n 0.2000 599.9n 0.2000 600.0n 0.8000 899.9n 0.8000 900.0n 0.8000 1199.9n 0.8000 1200.0n 0.2000 1499.9n 0.2000 1500.0n 0.2000 1799.9n 0.2000 1800.0n 0.8000 2099.9n 0.8000 2100.0n 0.8000)
+Vax1n a_xn1 0 PWL(0.0n 0.8000 299.9n 0.8000 300.0n 0.8000 599.9n 0.8000 600.0n 0.2000 899.9n 0.2000 900.0n 0.2000 1199.9n 0.2000 1200.0n 0.8000 1499.9n 0.8000 1500.0n 0.8000 1799.9n 0.8000 1800.0n 0.2000 2099.9n 0.2000 2100.0n 0.2000)
+Vax2 a_xp2 0 PWL(0.0n 0.2000 299.9n 0.2000 300.0n 0.8000 599.9n 0.8000 600.0n 0.2000 899.9n 0.2000 900.0n 0.8000 1199.9n 0.8000 1200.0n 0.2000 1499.9n 0.2000 1500.0n 0.8000 1799.9n 0.8000 1800.0n 0.2000 2099.9n 0.2000 2100.0n 0.8000)
+Vax2n a_xn2 0 PWL(0.0n 0.8000 299.9n 0.8000 300.0n 0.2000 599.9n 0.2000 600.0n 0.8000 899.9n 0.8000 900.0n 0.2000 1199.9n 0.2000 1200.0n 0.8000 1499.9n 0.8000 1500.0n 0.2000 1799.9n 0.2000 1800.0n 0.8000 2099.9n 0.8000 2100.0n 0.2000)
+Vtp vtp 0 PWL(0.0n 0.4000 299.9n 0.4000 300.0n 0.6000 599.9n 0.6000 600.0n 0.6000 899.9n 0.6000 900.0n 0.4000 1199.9n 0.4000 1200.0n 0.4000 1499.9n 0.4000 1500.0n 0.6000 1799.9n 0.6000 1800.0n 0.6000 2099.9n 0.6000 2100.0n 0.4000)
+Vtn vtn 0 PWL(0.0n 0.6000 299.9n 0.6000 300.0n 0.4000 599.9n 0.4000 600.0n 0.4000 899.9n 0.4000 900.0n 0.6000 1199.9n 0.6000 1200.0n 0.6000 1499.9n 0.6000 1500.0n 0.4000 1799.9n 0.4000 1800.0n 0.4000 2099.9n 0.4000 2100.0n 0.6000)
+Vpsig psig 0 PWL(0.0n 0.0 149.5n 0.0 150.5n 2.0 299.5n 2.0 300.5n 0.0 449.5n 0.0 450.5n 2.0 599.5n 2.0 600.5n 0.0 749.5n 0.0 750.5n 2.0 899.5n 2.0 900.5n 0.0 1049.5n 0.0 1050.5n 2.0 1199.5n 2.0 1200.5n 0.0 1349.5n 0.0 1350.5n 2.0 1499.5n 2.0 1500.5n 0.0 1649.5n 0.0 1650.5n 2.0 1799.5n 2.0 1800.5n 0.0 1949.5n 0.0 1950.5n 2.0 2099.5n 2.0 2100.5n 0.0 2249.5n 0.0 2250.5n 2.0 2399.5n 2.0 2400.5n 0.0)
+Vpsigb psigb 0 PWL(0.0n 2.0 149.5n 2.0 150.5n 0.0 299.5n 0.0 300.5n 2.0 449.5n 2.0 450.5n 0.0 599.5n 0.0 600.5n 2.0 749.5n 2.0 750.5n 0.0 899.5n 0.0 900.5n 2.0 1049.5n 2.0 1050.5n 0.0 1199.5n 0.0 1200.5n 2.0 1349.5n 2.0 1350.5n 0.0 1499.5n 0.0 1500.5n 2.0 1649.5n 2.0 1650.5n 0.0 1799.5n 0.0 1800.5n 2.0 1949.5n 2.0 1950.5n 0.0 2099.5n 0.0 2100.5n 2.0 2249.5n 2.0 2250.5n 0.0 2399.5n 0.0 2400.5n 2.0)
+Vnen nen 0 PWL(0.0n 0.0 149.5n 0.0 150.5n 2.0 299.5n 2.0 300.5n 0.0 449.5n 0.0 450.5n 2.0 599.5n 2.0 600.5n 0.0 749.5n 0.0 750.5n 2.0 899.5n 2.0 900.5n 0.0 1049.5n 0.0 1050.5n 2.0 1199.5n 2.0 1200.5n 0.0 1349.5n 0.0 1350.5n 2.0 1499.5n 2.0 1500.5n 0.0 1649.5n 0.0 1650.5n 2.0 1799.5n 2.0 1800.5n 0.0 1949.5n 0.0 1950.5n 2.0 2099.5n 2.0 2100.5n 0.0 2249.5n 0.0 2250.5n 2.0 2399.5n 2.0 2400.5n 0.0)
+Cwp_w11 wp_w11 0 8p
+Cwn_w11 wn_w11 0 8p
+Rcp_w11 wp_w11 cm_w11 2g
+Rcn_w11 wn_w11 cm_w11 2g
+Msp_w11 wp_w11 cm_w11 0 0 NNR W=700u L=100u
+Msn_w11 wn_w11 cm_w11 0 0 NNR W=700u L=100u
+Cwp_w21 wp_w21 0 8p
+Cwn_w21 wn_w21 0 8p
+Rcp_w21 wp_w21 cm_w21 2g
+Rcn_w21 wn_w21 cm_w21 2g
+Msp_w21 wp_w21 cm_w21 0 0 NNR W=700u L=100u
+Msn_w21 wn_w21 cm_w21 0 0 NNR W=700u L=100u
+Cwp_o1 wp_o1 0 8p
+Cwn_o1 wn_o1 0 8p
+Rcp_o1 wp_o1 cm_o1 2g
+Rcn_o1 wn_o1 cm_o1 2g
+Msp_o1 wp_o1 cm_o1 0 0 NNR W=700u L=100u
+Msn_o1 wn_o1 cm_o1 0 0 NNR W=700u L=100u
+Cwp_bh1 wp_bh1 0 8p
+Cwn_bh1 wn_bh1 0 8p
+Rcp_bh1 wp_bh1 cm_bh1 2g
+Rcn_bh1 wn_bh1 cm_bh1 2g
+Msp_bh1 wp_bh1 cm_bh1 0 0 NNR W=700u L=100u
+Msn_bh1 wn_bh1 cm_bh1 0 0 NNR W=700u L=100u
+Cwp_w12 wp_w12 0 8p
+Cwn_w12 wn_w12 0 8p
+Rcp_w12 wp_w12 cm_w12 2g
+Rcn_w12 wn_w12 cm_w12 2g
+Msp_w12 wp_w12 cm_w12 0 0 NNR W=700u L=100u
+Msn_w12 wn_w12 cm_w12 0 0 NNR W=700u L=100u
+Cwp_w22 wp_w22 0 8p
+Cwn_w22 wn_w22 0 8p
+Rcp_w22 wp_w22 cm_w22 2g
+Rcn_w22 wn_w22 cm_w22 2g
+Msp_w22 wp_w22 cm_w22 0 0 NNR W=700u L=100u
+Msn_w22 wn_w22 cm_w22 0 0 NNR W=700u L=100u
+Cwp_o2 wp_o2 0 8p
+Cwn_o2 wn_o2 0 8p
+Rcp_o2 wp_o2 cm_o2 2g
+Rcn_o2 wn_o2 cm_o2 2g
+Msp_o2 wp_o2 cm_o2 0 0 NNR W=700u L=100u
+Msn_o2 wn_o2 cm_o2 0 0 NNR W=700u L=100u
+Cwp_bh2 wp_bh2 0 8p
+Cwn_bh2 wn_bh2 0 8p
+Rcp_bh2 wp_bh2 cm_bh2 2g
+Rcn_bh2 wn_bh2 cm_bh2 2g
+Msp_bh2 wp_bh2 cm_bh2 0 0 NNR W=700u L=100u
+Msn_bh2 wn_bh2 cm_bh2 0 0 NNR W=700u L=100u
+Cwp_w13 wp_w13 0 8p
+Cwn_w13 wn_w13 0 8p
+Rcp_w13 wp_w13 cm_w13 2g
+Rcn_w13 wn_w13 cm_w13 2g
+Msp_w13 wp_w13 cm_w13 0 0 NNR W=700u L=100u
+Msn_w13 wn_w13 cm_w13 0 0 NNR W=700u L=100u
+Cwp_w23 wp_w23 0 8p
+Cwn_w23 wn_w23 0 8p
+Rcp_w23 wp_w23 cm_w23 2g
+Rcn_w23 wn_w23 cm_w23 2g
+Msp_w23 wp_w23 cm_w23 0 0 NNR W=700u L=100u
+Msn_w23 wn_w23 cm_w23 0 0 NNR W=700u L=100u
+Cwp_o3 wp_o3 0 8p
+Cwn_o3 wn_o3 0 8p
+Rcp_o3 wp_o3 cm_o3 2g
+Rcn_o3 wn_o3 cm_o3 2g
+Msp_o3 wp_o3 cm_o3 0 0 NNR W=700u L=100u
+Msn_o3 wn_o3 cm_o3 0 0 NNR W=700u L=100u
+Cwp_bh3 wp_bh3 0 8p
+Cwn_bh3 wn_bh3 0 8p
+Rcp_bh3 wp_bh3 cm_bh3 2g
+Rcn_bh3 wn_bh3 cm_bh3 2g
+Msp_bh3 wp_bh3 cm_bh3 0 0 NNR W=700u L=100u
+Msn_bh3 wn_bh3 cm_bh3 0 0 NNR W=700u L=100u
+Cwp_w14 wp_w14 0 8p
+Cwn_w14 wn_w14 0 8p
+Rcp_w14 wp_w14 cm_w14 2g
+Rcn_w14 wn_w14 cm_w14 2g
+Msp_w14 wp_w14 cm_w14 0 0 NNR W=700u L=100u
+Msn_w14 wn_w14 cm_w14 0 0 NNR W=700u L=100u
+Cwp_w24 wp_w24 0 8p
+Cwn_w24 wn_w24 0 8p
+Rcp_w24 wp_w24 cm_w24 2g
+Rcn_w24 wn_w24 cm_w24 2g
+Msp_w24 wp_w24 cm_w24 0 0 NNR W=700u L=100u
+Msn_w24 wn_w24 cm_w24 0 0 NNR W=700u L=100u
+Cwp_o4 wp_o4 0 8p
+Cwn_o4 wn_o4 0 8p
+Rcp_o4 wp_o4 cm_o4 2g
+Rcn_o4 wn_o4 cm_o4 2g
+Msp_o4 wp_o4 cm_o4 0 0 NNR W=700u L=100u
+Msn_o4 wn_o4 cm_o4 0 0 NNR W=700u L=100u
+Cwp_bh4 wp_bh4 0 8p
+Cwn_bh4 wn_bh4 0 8p
+Rcp_bh4 wp_bh4 cm_bh4 2g
+Rcn_bh4 wn_bh4 cm_bh4 2g
+Msp_bh4 wp_bh4 cm_bh4 0 0 NNR W=700u L=100u
+Msn_bh4 wn_bh4 cm_bh4 0 0 NNR W=700u L=100u
+Cwp_bo wp_bo 0 8p
+Cwn_bo wn_bo 0 8p
+Rcp_bo wp_bo cm_bo 2g
+Rcn_bo wn_bo cm_bo 2g
+Msp_bo wp_bo cm_bo 0 0 NNR W=700u L=100u
+Msn_bo wn_bo cm_bo 0 0 NNR W=700u L=100u
+Mlp_h1 up_h1 up_h1 vdd vdd PNR W=3000u L=100u
+Mln_h1 un_h1 un_h1 vdd vdd PNR W=3000u L=100u
+Chp_h1 up_h1 0 0.2p
+Chn_h1 un_h1 0 0.2p
+Vbnh1 bnh1 0 0.3000
+Xn_h1 up_h1 un_h1 ap_h1 an_h1 vdd bnh1 dneuron
+X_i11 a_xp1 a_xn1 up_h1 un_h1 wp_w11 wn_w11 vdd dsyn
+Xu_i11 a_xp1 a_xn1 ap_h1 an_h1 wp_w11 wn_w11 psig psigb vdd gbnh gupd2
+X_i21 a_xp2 a_xn2 up_h1 un_h1 wp_w21 wn_w21 vdd dsyn
+Xu_i21 a_xp2 a_xn2 ap_h1 an_h1 wp_w21 wn_w21 psig psigb vdd gbnh gupd2
+X_bk1 up_o un_o up_h1 un_h1 wp_o1 wn_o1 vdd dsynb
+X_bh1 bp_hi bp_lo up_h1 un_h1 wp_bh1 wn_bh1 vdd dsyn
+Xu_bh1 bp_hi bp_lo ap_h1 an_h1 wp_bh1 wn_bh1 psig psigb vdd gbnb gupd2
+Mlp_h2 up_h2 up_h2 vdd vdd PNR W=3000u L=100u
+Mln_h2 un_h2 un_h2 vdd vdd PNR W=3000u L=100u
+Chp_h2 up_h2 0 0.2p
+Chn_h2 un_h2 0 0.2p
+Vbnh2 bnh2 0 0.3000
+Xn_h2 up_h2 un_h2 ap_h2 an_h2 vdd bnh2 dneuron
+X_i12 a_xp1 a_xn1 up_h2 un_h2 wp_w12 wn_w12 vdd dsyn
+Xu_i12 a_xp1 a_xn1 ap_h2 an_h2 wp_w12 wn_w12 psig psigb vdd gbnh gupd2
+X_i22 a_xp2 a_xn2 up_h2 un_h2 wp_w22 wn_w22 vdd dsyn
+Xu_i22 a_xp2 a_xn2 ap_h2 an_h2 wp_w22 wn_w22 psig psigb vdd gbnh gupd2
+X_bk2 up_o un_o up_h2 un_h2 wp_o2 wn_o2 vdd dsynb
+X_bh2 bp_hi bp_lo up_h2 un_h2 wp_bh2 wn_bh2 vdd dsyn
+Xu_bh2 bp_hi bp_lo ap_h2 an_h2 wp_bh2 wn_bh2 psig psigb vdd gbnb gupd2
+Mlp_h3 up_h3 up_h3 vdd vdd PNR W=3000u L=100u
+Mln_h3 un_h3 un_h3 vdd vdd PNR W=3000u L=100u
+Chp_h3 up_h3 0 0.2p
+Chn_h3 un_h3 0 0.2p
+Vbnh3 bnh3 0 0.3000
+Xn_h3 up_h3 un_h3 ap_h3 an_h3 vdd bnh3 dneuron
+X_i13 a_xp1 a_xn1 up_h3 un_h3 wp_w13 wn_w13 vdd dsyn
+Xu_i13 a_xp1 a_xn1 ap_h3 an_h3 wp_w13 wn_w13 psig psigb vdd gbnh gupd2
+X_i23 a_xp2 a_xn2 up_h3 un_h3 wp_w23 wn_w23 vdd dsyn
+Xu_i23 a_xp2 a_xn2 ap_h3 an_h3 wp_w23 wn_w23 psig psigb vdd gbnh gupd2
+X_bk3 up_o un_o up_h3 un_h3 wp_o3 wn_o3 vdd dsynb
+X_bh3 bp_hi bp_lo up_h3 un_h3 wp_bh3 wn_bh3 vdd dsyn
+Xu_bh3 bp_hi bp_lo ap_h3 an_h3 wp_bh3 wn_bh3 psig psigb vdd gbnb gupd2
+Mlp_h4 up_h4 up_h4 vdd vdd PNR W=3000u L=100u
+Mln_h4 un_h4 un_h4 vdd vdd PNR W=3000u L=100u
+Chp_h4 up_h4 0 0.2p
+Chn_h4 un_h4 0 0.2p
+Vbnh4 bnh4 0 0.3000
+Xn_h4 up_h4 un_h4 ap_h4 an_h4 vdd bnh4 dneuron
+X_i14 a_xp1 a_xn1 up_h4 un_h4 wp_w14 wn_w14 vdd dsyn
+Xu_i14 a_xp1 a_xn1 ap_h4 an_h4 wp_w14 wn_w14 psig psigb vdd gbnh gupd2
+X_i24 a_xp2 a_xn2 up_h4 un_h4 wp_w24 wn_w24 vdd dsyn
+Xu_i24 a_xp2 a_xn2 ap_h4 an_h4 wp_w24 wn_w24 psig psigb vdd gbnh gupd2
+X_bk4 up_o un_o up_h4 un_h4 wp_o4 wn_o4 vdd dsynb
+X_bh4 bp_hi bp_lo up_h4 un_h4 wp_bh4 wn_bh4 vdd dsyn
+Xu_bh4 bp_hi bp_lo ap_h4 an_h4 wp_bh4 wn_bh4 psig psigb vdd gbnb gupd2
+Mlp_o up_o up_o vdd vdd PNR W=3000u L=100u
+Mln_o un_o un_o vdd vdd PNR W=3000u L=100u
+Cop up_o 0 0.2p
+Con un_o 0 0.2p
+X_fo1 ap_h1 an_h1 up_o un_o wp_o1 wn_o1 vdd dsyn
+Xu_o1 ap_h1 an_h1 up_o un_o wp_o1 wn_o1 psigb psig vdd gbn gupd2
+X_fo2 ap_h2 an_h2 up_o un_o wp_o2 wn_o2 vdd dsyn
+Xu_o2 ap_h2 an_h2 up_o un_o wp_o2 wn_o2 psigb psig vdd gbn gupd2
+X_fo3 ap_h3 an_h3 up_o un_o wp_o3 wn_o3 vdd dsyn
+Xu_o3 ap_h3 an_h3 up_o un_o wp_o3 wn_o3 psigb psig vdd gbn gupd2
+X_fo4 ap_h4 an_h4 up_o un_o wp_o4 wn_o4 vdd dsyn
+Xu_o4 ap_h4 an_h4 up_o un_o wp_o4 wn_o4 psigb psig vdd gbn gupd2
+X_bo bp_hi bp_lo up_o un_o wp_bo wn_bo vdd dsyn
+Xu_bo bp_hi bp_lo up_o un_o wp_bo wn_bo psigb psig vdd gbnb gupd2
+Mnp up_o nen vtp 0 NNR W=60u L=100u
+Mnn un_o nen vtn 0 NNR W=60u L=100u
+.ic v(wp_w11)=0.5050 v(wn_w11)=0.4950 v(cm_w11)=0.5
+.ic v(wp_w21)=0.4947 v(wn_w21)=0.5053 v(cm_w21)=0.5
+.ic v(wp_o1)=0.5256 v(wn_o1)=0.4744 v(cm_o1)=0.5
+.ic v(wp_bh1)=0.5042 v(wn_bh1)=0.4958 v(cm_bh1)=0.5
+.ic v(wp_w12)=0.4786 v(wn_w12)=0.5214 v(cm_w12)=0.5
+.ic v(wp_w22)=0.5145 v(wn_w22)=0.4855 v(cm_w22)=0.5
+.ic v(wp_o2)=0.5522 v(wn_o2)=0.4478 v(cm_o2)=0.5
+.ic v(wp_bh2)=0.5379 v(wn_bh2)=0.4621 v(cm_bh2)=0.5
+.ic v(wp_w13)=0.4719 v(wn_w13)=0.5281 v(cm_w13)=0.5
+.ic v(wp_w23)=0.4494 v(wn_w23)=0.5506 v(cm_w23)=0.5
+.ic v(wp_o3)=0.4751 v(wn_o3)=0.5249 v(cm_o3)=0.5
+.ic v(wp_bh3)=0.5017 v(wn_bh3)=0.4983 v(cm_bh3)=0.5
+.ic v(wp_w14)=0.4070 v(wn_w14)=0.5930 v(cm_w14)=0.5
+.ic v(wp_w24)=0.4912 v(wn_w24)=0.5088 v(cm_w24)=0.5
+.ic v(wp_o4)=0.4502 v(wn_o4)=0.5498 v(cm_o4)=0.5
+.ic v(wp_bh4)=0.4707 v(wn_bh4)=0.5293 v(cm_bh4)=0.5
+.ic v(wp_bo)=0.4782 v(wn_bo)=0.5218 v(cm_bo)=0.5
+.ic v(up_h1)=0.5 v(un_h1)=0.5 v(ap_h1)=0.5 v(an_h1)=0.5
+.ic v(up_h2)=0.5 v(un_h2)=0.5 v(ap_h2)=0.5 v(an_h2)=0.5
+.ic v(up_h3)=0.5 v(un_h3)=0.5 v(ap_h3)=0.5 v(an_h3)=0.5
+.ic v(up_h4)=0.5 v(un_h4)=0.5 v(ap_h4)=0.5 v(an_h4)=0.5
+.ic v(up_o)=0.5 v(un_o)=0.5
+.tran 1n 2400n uic
+.control
+run
+wrdata e2e_w.dat v(wp_w11) v(wn_w11) v(wp_w21) v(wn_w21) v(wp_o1) v(wn_o1) v(wp_bh1) v(wn_bh1) v(wp_w12) v(wn_w12) v(wp_w22) v(wn_w22) v(wp_o2) v(wn_o2) v(wp_bh2) v(wn_bh2) v(wp_w13) v(wn_w13) v(wp_w23) v(wn_w23) v(wp_o3) v(wn_o3) v(wp_bh3) v(wn_bh3) v(wp_w14) v(wn_w14) v(wp_w24) v(wn_w24) v(wp_o4) v(wn_o4) v(wp_bh4) v(wn_bh4) v(wp_bo) v(wn_bo)
+wrdata e2e_o.dat v(up_o) v(un_o) v(a_xp1) v(a_xp2) v(vtp)
+.endc
+.end

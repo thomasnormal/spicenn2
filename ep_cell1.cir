@@ -1,0 +1,17 @@
+EP update cell stage1 phase-gated sign-flipped integrator (principle test)
+* Weight cap Cw integrates  sign(phase)*(GM*phi_i*phi_j + I_offset).
+* Free [0,100n] psign=-1, Nudge [100n,200n] psign=+1 (equal duration).
+* Net dQ = GM*T*(prod_nudge - prod_free); I_offset cancels (equal +/- phases).
+.param GM=1e-5 IOFF=0
+Vpsign psign 0 PWL(0n -1  100n -1  100.001n 1  200n 1)
+Vpi pi 0 PWL(0n 0.2  100n 0.2  100.001n 0.25  200n 0.25)
+Vpj pj 0 PWL(0n 0.3  100n 0.3  100.001n 0.35  200n 0.35)
+Cw vw 0 1p
+Bupd 0 vw I=V(psign)*(GM*V(pi)*V(pj)+IOFF)
+.ic v(vw)=0.5
+.tran 0.1n 200n uic
+.control
+run
+wrdata cell1.dat v(vw) v(psign) v(pi) v(pj)
+.endc
+.end

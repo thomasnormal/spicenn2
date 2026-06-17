@@ -1,0 +1,32 @@
+Gilbert 4-quadrant multiplier test (phi_i * phi_j)
+* differential inputs vx,vy about CM=0.5; differential output current Iop-Ion ~ vx*vy
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+Vdd vdd 0 2.0
+Vb vb 0 0.75
+Vx vx 0 0
+Vy vy 0 0
+Bxp vxp 0 V=0.5+V(vx)/2
+Bxn vxn 0 V=0.5-V(vx)/2
+Byp vyp 0 V=0.5+V(vy)/2
+Byn vyn 0 V=0.5-V(vy)/2
+Mtail nt vb 0 0 NNR W=400u L=100u
+M5 na vyp nt 0 NNR W=200u L=100u
+M6 nb vyn nt 0 NNR W=200u L=100u
+M1 iop vxp na 0 NNR W=200u L=100u
+M2 ion vxn na 0 NNR W=200u L=100u
+M3 ion vxp nb 0 NNR W=200u L=100u
+M4 iop vxn nb 0 NNR W=200u L=100u
+RLp vdd iop 15k
+RLn vdd ion 15k
+.control
+alter Vy -0.2
+dc Vx -0.3 0.3 0.02
+wrdata gilb_neg.dat v(iop) v(ion)
+alter Vy 0
+dc Vx -0.3 0.3 0.02
+wrdata gilb_zero.dat v(iop) v(ion)
+alter Vy 0.2
+dc Vx -0.3 0.3 0.02
+wrdata gilb_pos.dat v(iop) v(ion)
+.endc
+.end
