@@ -1,29 +1,12 @@
-# simulation artifacts (GBs)
-raw_*/
-*.srf
-*.psf
-pd_*.scs
+*.raw
+*.npz
+*.tar.gz
+*.scs
 pd_*.cir
-pd_*.log
-*.dat
-*.npy
+raw_*/
 *.log
-*.ic
-# misc
-__pycache__/
-*.pyc
-nohup.out
-# stray run/debug artifacts in root (historical eras)
-.claude/
-*.ns@0
-*.lock
-diag_*.cir
-diaglay_*.cir
-digits_live_*.cir
-*.out
-*.txt
-!requirements.txt
-*.json
-*.png
-deep*.cir
-*.cir.bak
+*.dat
+*.prn
+*.time
+weights_*.json
+mc*.cir

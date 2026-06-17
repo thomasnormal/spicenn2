@@ -1,0 +1,27 @@
+* nrelu CM diagnosis: measure V(ap),V(an) common mode vs input
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.subckt cmld p n vdd
+Rcs1 p cmx 200k
+Rcs2 n cmx 200k
+MLp p cmx vdd vdd PNR W=100u L=100u
+MLn n cmx vdd vdd PNR W=100u L=100u
+.ends
+Vdd vdd 0 1.0
+Vs vrl 0 0.33
+Vup up 0 0.6
+Vrf relref 0 0.66
+Mr d1 up s1 0 NNR W=200u L=100u
+Rs s1 vrl 12k
+Mlp d1 d1 vdd vdd PNR W=200u L=100u
+Mlo an d1 vdd vdd PNR W=200u L=100u
+Mrr d2 relref s2 0 NNR W=200u L=100u
+Rs2 s2 vrl 12k
+Mlp2 d2 d2 vdd vdd PNR W=200u L=100u
+Mlo2 ap d2 vdd vdd PNR W=200u L=100u
+Xcm ap an vdd cmld
+.control
+dc Vup 0.40 0.85 0.05
+print v(ap) v(an) > /tmp/relucm.txt
+.endc
+.end

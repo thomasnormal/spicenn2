@@ -328,7 +328,7 @@ def gen_deck():
                 v = (cl*tdv if c==lab else -cl*tdv*_zsneg) if kind=="tr" else 0.0
             clp_p[c].append((t,0.5+v))
         if kind=="tr" and g>0:
-            ckd.append((t,1.0 if pol==1 else 0.0)); ckr.append((t,1.0 if pol==0 else 0.0))
+            ckd.append((t,1.0 if pol==1 else 0.0)); ckr.append((t,1.0 if pol==(-1 if SYM else 0) else 0.0))   # SYM: negative chopper clock fires on the -beta phase (pol=-1), giving symmetric (+beta)-(-beta) difference
         else:
             ckd.append((t,0.0)); ckr.append((t,0.0))
         if kind!="tr" and int(os.environ.get("LWISE","0")):
@@ -343,7 +343,7 @@ def gen_deck():
             if CHL==3:
                 clamped=(pol==1)
                 gh.append((t, ghv if (clamped or int(os.environ.get("HCHOP","0"))) else 0.0)); goC.append((t, gov))   # chopper tails ALWAYS on (clocks gate)
-                goF.append((t, 0.0)); vb.append((t, VBBK if clamped else 0.0))
+                goF.append((t, 0.0)); vb.append((t, VBBK if (clamped or (SYM and pol!=0)) else 0.0))   # SYM: backward drive ON in BOTH +/-beta nudged phases (both equilibrate under a nudge)
             elif CHL:
                 clamped=(pol==1)
                 gh.append((t, ghv if clamped else 0.0)); goC.append((t, gov if clamped else 0.0))
@@ -417,8 +417,10 @@ def gen_deck():
                         f"Cwsp_{key} wsp_{key} 0 {_cs}",f"Cwsn_{key} wsn_{key} 0 {_cs}",
                         f"Rcp_{key} wp_{key} wsp_{key} {_rc}",f"Rcn_{key} wn_{key} wsn_{key} {_rc}",
                         f"Rwp_{key} wsp_{key} wcm {RWL}",f"Rwn_{key} wsn_{key} wcm {RWL}"]
-                elif int(os.environ.get("ONECAP","0")):   # ONE cap per synapse: wn = FIXED reference (VW0); weight = wp-VW0 (bipolar via single cap, flips sign as wp crosses VW0). Halves the capacitor count.
+                elif int(os.environ.get("ONECAP","0"))==2:   # ONE cap, FIXED-REF (for DALE/unipolar weights): wp stores the weight, wn pinned at VW0. No push-pull needed because Dale weights are unipolar (sign lives in the wiring) -> the single-ended asymmetry is harmless here.
                     L+=[f"Cwp_{key} wp_{key} 0 {CWW}",f"Rwp_{key} wp_{key} wcm {RWL}",f"Vwn_{key} wn_{key} 0 {VW0}"]
+                elif int(os.environ.get("ONECAP","0")):   # ONE cap per synapse, DIFFERENTIAL: a single cap BETWEEN wp and wn holds the weight wp-wn directly; resistors set the common mode. Keeps the full push-pull update (cap integrates iop-ion) AND drift rejection, with HALF the caps.
+                    L+=[f"Cw_{key} wp_{key} wn_{key} {CWW}",f"Rwp_{key} wp_{key} wcm {RWL}",f"Rwn_{key} wn_{key} wcm {RWL}"]
                 else:
                     L+=[f"Cwp_{key} wp_{key} 0 {CWW}",f"Cwn_{key} wn_{key} 0 {CWW}",
                         f"Rwp_{key} wp_{key} wcm {RWL}",f"Rwn_{key} wn_{key} wcm {RWL}"]

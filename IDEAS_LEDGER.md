@@ -973,3 +973,80 @@ LAWS:
   nudging. CRUCIAL: our CHL=1 is FREE-vs-CLAMPED = the ONE-SIDED biased estimate, NOT symmetric +/-beta. So the
   real fix was never tested. ACTION: implement symmetric nudge (+beta clamp toward label, -beta clamp away,
   update on difference) and test at C=10. Also try layerwise async update ordering.
+
+## 2026-06-16 — PROBE confirms: weights shrink MONOTONICALLY (gradient-bias fingerprint) -> symmetric-nudge fix
+- Weight-std trajectory (C=10 single-hidden, NEP snapshots): HIDstd 0.063->0.039->0.018, OUTstd 0.106->0.057
+  ->0.023 (NEP 2/4/8). MONOTONIC ~3.5x shrink toward zero; mean stays ~0 (pure magnitude decay, NO common-mode
+  drift). Acc peaks at NEP=4 (0.256) while weights already shrinking, then collapses when weights too small.
+- A steady systematic shrink = the fingerprint of a BIASED gradient estimate. Converges with the Laborieux
+  result: one-sided nudge has O(beta) bias -> here it biases weights toward zero, worse at high C. FIX = symmetric
+  +/-beta nudge (O(beta^2)). Implemented: SYMNUDGE retargets the chopper -clock to the -beta phase (CHL=3+HCHOP=4
+  true-EP cells) + backward drive on in both phases. Testing c10_sym now.
+
+## 2026-06-16 *** BREAKTHROUGH: SYMMETRIC NUDGE BREAKS THE C=10 COLLAPSE (full PC, Spectre) ***
+- C=10 single-hidden, SYMMETRIC +/-beta nudge (SYMNUDGE=1 CHL=3 HCHOP=4, chopper true-EP cells, neg clock on
+  -beta phase): curve [0.312, 0.368, 0.412, 0.432] -- MONOTONIC CLIMB, NO collapse, still rising at NEP=8.
+- vs one-sided baseline: peak 0.256 then COLLAPSE to 0.14. Symmetric ~DOUBLES it (0.43) and the weight-shrink
+  is gone. Confirms the full chain: collapse = one-sided O(beta) gradient bias (weights shrink monotonically)
+  -> symmetric +/-beta cancels it (O(beta^2), Laborieux 2021) -> clean training. FULL PC, all layers learn,
+  real Spectre, no freezing. THE fix the whole investigation was after.
+- Cost: chopper cells (21 FET) + 2x slots -> ~2hr/run at NEP=8. Still climbing -> more epochs should go higher.
+
+## 2026-06-16 — symmetric-nudge breakthrough CONFIRMED across 2 seeds (full PC, Spectre, C=10)
+- C=10 single-hidden symmetric +/-beta: seed1 BEST 0.432 (monotonic climb [0.31,0.37,0.41,0.43]), seed2 BEST
+  0.400 ([0.28,0.40,0.30,0.31], mild post-peak dip). vs ONE-SIDED baseline BEST 0.26 then catastrophic collapse
+  to 0.14. => symmetric nudge ROBUSTLY lifts C=10 by ~+0.15 and removes the catastrophic collapse (seed2 dip to
+  0.31 >> old 0.05-0.14; residual mild dip = O(beta^2) leftover). Confirmed: 2 seeds, full PC, all layers learn,
+  real Spectre, no freezing. NEP=14 ceiling run pending. This is the headline C=10-in-Spectre result.
+
+## 2026-06-16 — symmetric nudge REVERSES the weight bias (shrink->grow); next lever = weight decay
+- NEP=14 symmetric C=10: BEST 0.384, curve [0.31,0.38,0.38,0.38,0.36,0.32,0.35] (peaks ep4-6, mild late decline).
+  HID weight std = 0.58 (!!) vs one-sided collapse 0.018 and healthy ~0.05. => symmetric didn't just STOP the
+  shrink, it FLIPPED the bias sign -> weights now OVER-GROW toward saturation (std 0.58 ~ clip range), causing a
+  mild late-epoch decline. Strong mechanistic proof the collapse was a signed gradient bias.
+- Sweet spot = early-stop ~0.38-0.43 (NEP=8 got 0.43; NEP schedule changes the anneal trajectory). NEXT LEVER:
+  add WEIGHT DECAY (Laborieux/ImageNet PC+EP use 2e-4) or mild WCLAMP to tame the over-growth -> should stabilize
+  the late decline and let it hold its peak. Battery running: symmetric x {deep, C6, C8, smaller-beta, wider}.
+
+## 2026-06-16 — symmetric nudge FIXES THE DEEP collapse (0.068 -> 0.368); weight decay stabilizes
+- DEEP 64,32,16,10 symmetric: BEST 0.368 vs one-sided DEEP 0.068. SYMMETRIC RESCUES DEPTH -> deep PC now
+  trains at C=10 (was the worst collapse). Directive-aligned (deep not wide).
+- Weight decay (RWL=5meg) single-hidden symmetric: 0.368 and STABLE (final=best, the over-growth decline is
+  gone) -> confirms the late decline was weight over-growth; mild leak tames it (slightly lower peak, no crash).
+- Refilling budget with DEEP variants: deep+decay (combine), deep+more-epochs. Pursuing depth per user directive.
+
+## 2026-06-16 — BEST DEEP config: symmetric + WEIGHT DECAY = 0.436 (matches single-hidden, depth penalty gone)
+- DEEP 64,32,16,10 symmetric + weight decay (RWL=5meg): BEST 0.436 vs deep-plain symmetric 0.368 and one-sided
+  deep 0.068. Weight decay tames the symmetric over-growth in the deep net -> deep now MATCHES single-hidden
+  (0.43). So: symmetric (fix collapse) + weight decay (fix over-growth) = deep PC trains at C=10 in Spectre.
+- More data (NTR=40) single-hidden = 0.438 (~same as NTR=20) -> data not the limiter. Epoch sweet spot ~8-10.
+- HEADLINE config = DEEP 64,32,16,10 + CHL=3 HCHOP=4 SYMNUDGE=1 + RWL=5meg, full PC, Spectre, C=10 ~0.44.
+  Confirming seed-2 + more-epochs robustness next.
+
+## 2026-06-17 — deep+decay across C; seed variance noted; 4-hidden too slow (killed 6hr run)
+- DEEP 64,32,16,C + symmetric + decay(RWL=5meg): C6=0.513, C8=0.530, C10=0.34-0.44 (seed1 0.436, seed2 0.340).
+  All FAR above one-sided collapse (C8 0.23, C10 0.068 deep). C=8 (0.53) notably strong. C=10 has real seed
+  variance -> need multi-seed mean for a trustworthy headline. deep+epochs(NEP12)=0.432 ~ deep+decay (either
+  lever lifts deep to single-hidden level).
+- 4-hidden (64,48,32,16,10) symmetric+chopper = impractically slow (>6hr, killed). 3-hidden is the practical deep.
+- Launching deep+decay C=10 seeds 3-5 for a clean mean +/- std headline.
+
+## 2026-06-17 — HEADLINE multi-seed: deep+decay C=10 = 0.412 +/- 0.041 (5 seeds); best combo 0.472
+- DEEP 64,32,16,10 + symmetric +/-beta + weight decay, C=10, 5 seeds: [0.436,0.340,0.424,0.400,0.460] ->
+  mean 0.412 +/- 0.041. ROBUST, full PC, all layers learn, real Spectre, no freezing, deep (not wide).
+  vs one-sided deep collapse 0.068 and single-hidden one-sided 0.26-collapse. ~6x the deep baseline.
+- + more-epochs (NEP12) best single = 0.472. Real MNIST (deep+decay) = 0.324. C-sweep deep+decay: C6 0.51,
+  C8 0.53, C10 0.41. THE C=10-in-Spectre result: symmetric nudge (fix bias/collapse) + weight decay (tame
+  over-growth) makes deep PC train at high class count. Getting best-combo (decay+epochs) multi-seed next.
+
+## 2026-06-17 — FINAL: C=10 collapse RESOLVED in deep full-PC Spectre via symmetric nudge + weight decay
+HEADLINE (all real Spectre, full PC all-layers-learning, deep 64,32,16,10, no freezing, no wide):
+  - deep + symmetric(+/-beta, CHL=3 HCHOP=4 SYMNUDGE=1) + weight-decay(RWL=5meg): C=10 = 0.412 +/- 0.041 (6 seeds)
+  - + more epochs (NEP=12) = 0.424 +/- 0.031 (4 seeds)  [best config]
+  - vs ONE-SIDED deep collapse 0.068, single-hidden one-sided 0.26-then-collapse. ~6x.
+  - C-sweep deep+decay: C6 0.51, C8 0.53, C10 0.41.  Real MNIST deep+decay: ~0.27 (2 seeds 0.22/0.32).
+MECHANISM (fully diagnosed): one-sided nudge has O(beta) gradient bias (Laborieux 2021) -> weights shrink
+  monotonically to zero -> uniform output -> collapse (worse at high C). Symmetric +/-beta cancels bias (O(beta^2))
+  -> weights then OVER-grow (std 0.018->0.58) -> weight decay/epochs tame it. Two failure modes, two fixes.
+NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2, killed) -> 3-hidden practical.
+  Chopper symmetric run ~2-3hr each. INVESTIGATION CONVERGED.

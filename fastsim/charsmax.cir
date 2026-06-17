@@ -1,0 +1,38 @@
+* shared-tail softmax normalizer (C=4): C branches steer one tail current -> sum of branch currents pinned.
+* Each branch gated by a class score; drain loaded to vdd. p_c = davg - d_c (zero-sum normalized output).
+* Verify: raising one score raises its p and LOWERS the others; competition is normalized.
+.model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA=0.02 GAMMA=0 PHI=0.7)
+.param SC=0.5
+Vdd vdd 0 1.0
+Vbn vbn 0 0.45
+Vs0 s0 0 {SC}
+Vs1 s1 0 0.5
+Vs2 s2 0 0.5
+Vs3 s3 0 0.5
+* shared tail
+Mtail nt vbn 0 0 NNR W=800u L=100u
+* branches (sources tied to shared tail nt)
+M0 d0 s0 nt 0 NNR W=200u L=100u
+M1 d1 s1 nt 0 NNR W=200u L=100u
+M2 d2 s2 nt 0 NNR W=200u L=100u
+M3 d3 s3 nt 0 NNR W=200u L=100u
+R0 vdd d0 40k
+R1 vdd d1 40k
+R2 vdd d2 40k
+R3 vdd d3 40k
+* average node (resistor star) -> davg = mean(d_c)
+Ra0 d0 davg 200k
+Ra1 d1 davg 200k
+Ra2 d2 davg 200k
+Ra3 d3 davg 200k
+Cavg davg 0 0.1p
+.control
+dc Vs0 0.30 0.70 0.02
+let p0 = v(davg)-v(d0)
+let p1 = v(davg)-v(d1)
+let p2 = v(davg)-v(d2)
+let psum = (v(davg)-v(d0))+(v(davg)-v(d1))+(v(davg)-v(d2))+(v(davg)-v(d3))
+print p0 p1 psum > /tmp/charsmax.txt
+.endc
+.end
