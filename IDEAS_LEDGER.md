@@ -1071,3 +1071,9 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   runs have DIFFERENT test sets -> mout files not aligned -> can't per-example vote. To ensemble properly: add a
   separate DSEED (data split) knob, fix it, vary the net seed -> same test set, diverse nets -> vote. TODO.
 - Best so far on C=10 (deep, full-PC, Spectre): symmetric+decay ~0.41-0.45 (RFGRID local RFs best at 0.452).
+
+## 2026-06-17 — ENSEMBLE (idea 7) WORKS: 2-net vote 0.49/0.46 -> 0.556 (+6-9pt); scaling to 5 nets
+- DSEED decouples data-split from net seed -> nets share a FIXED test set -> votable. deep+decay C=10,
+  DSEED=0, SEED=1/2: indiv 0.492/0.460 -> VOTE(sum margins, argmax) = 0.556 (+6-9pt). Diverse analog nets make
+  different errors -> voting corrects. Hardware-cheap (sum output rails, no new cell). Scaling to 5-10 nets.
+- Conv (idea 1) scaling pending (K=4=0.392 low; K=8/16 running). Ensemble is the cheapest big lever so far.
