@@ -106,9 +106,20 @@ RFGRID=int(os.environ.get("RFGRID","0")); RFK=int(os.environ.get("RFK","2"))
 def _issq(n): r=int(round(n**0.5)); return r if r*r==n else 0
 parents={}   # parents[(l,j)] = list of parent indices p in layer l-1
 children={}  # children[(l-1,p)] = list of (j) in layer l connected to p
+CONVK=int(os.environ.get("CONVK","0"))   # CONV layer 1: K weight-SHARED filters over the square input, RFKxRFK stride-CSTR windows
+CSTR=int(os.environ.get("CSTR","2")); convmeta={}   # convmeta[(l,j)] = (filter, tap_index) per parent -> shared weight key
 for l in range(1,NL):
     nprev=LAYERS[l-1]; nl=LAYERS[l]; kk=min(int(os.environ.get("KOUT",K)) if l==NL-1 else K, nprev)   # KOUT: readout-specific fan-in (sizing law: ~C)
     Wp=_issq(nprev); Wc=_issq(nl)
+    if CONVK and l==1 and Wp:   # CONV: layer1 = CONVK filters x (Wo x Wo) positions; weight SHARED across positions
+        Wo=(Wp-RFK)//CSTR+1; npos=Wo*Wo
+        assert nl==CONVK*npos, f"CONV layer1 size {nl} != CONVK({CONVK})*npos({npos}); set LAYERS[1]={CONVK*npos}"
+        for j in range(nl):
+            f=j//npos; pos=j%npos; rc,cc=divmod(pos,Wo); r0=rc*CSTR; c0=cc*CSTR
+            ps=[(r0+dr)*Wp+(c0+dc) for dr in range(RFK) for dc in range(RFK)]
+            parents[(l,j)]=ps; convmeta[(l,j)]=(f,list(range(len(ps))))   # tap index = order in window
+            for p in ps: children.setdefault((l-1,p),[]).append(j)
+        continue
     for j in range(nl):
         if RFGRID and Wp and Wc:   # spatial local window
             rc,cc=divmod(j,Wc); st=Wp/Wc; r0=int(rc*st); c0=int(cc*st)
@@ -117,6 +128,9 @@ for l in range(1,NL):
             ps=list(rng.choice(nprev,size=kk,replace=False)) if kk<nprev else list(range(nprev))
         parents[(l,j)]=ps
         for p in ps: children.setdefault((l-1,p),[]).append(j)
+def wkey(l,j,p,pi):   # CONV: weight shared across positions -> key by (layer,filter,tap); else unique per (l,j,p)
+    if (l,j) in convmeta: f,_=convmeta[(l,j)]; return f"{l}_f{f}_t{pi}"
+    return f"{l}_{j}_{p}"
 maxfo=max((len(v) for v in children.values()), default=0)
 DALE=int(os.environ.get("DALE","0"))
 dsign={}
@@ -392,10 +406,13 @@ def gen_deck():
         L+=[f"Vxo{c}p xo{c}p 0 {stepped(clp_p[c])}",f"Vxo{c}n xo{c}n 0 {stepped([(t,1-v) for t,v in clp_p[c]])}"]
     # weight caps (shared), init random
     ic=[]; WK=[]; SINIT=int(os.environ.get("SINIT","0")); WINIT=float(os.environ.get("WINIT","0.5"))
+    _seen_wk=set()
     for l in range(1,NL):
         for j in range(LAYERS[l]):
             for pi,p in enumerate(parents[(l,j)]):
-                key=f"{l}_{j}_{p}"; WK.append(key)
+                key=wkey(l,j,p,pi)
+                if key in _seen_wk: continue   # CONV: shared weight cap already created
+                _seen_wk.add(key); WK.append(key)
                 if SINIT and l==1 and len(parents[(l,j)])==2:   # structured spread-angle init for square units (guaranteed-diverse, non-degenerate projections)
                     th=np.pi*j/LAYERS[l]; v=(np.cos(th) if pi==0 else np.sin(th))*WINIT*2.0
                 elif SINIT and l==NL-1:
@@ -467,13 +484,13 @@ def gen_deck():
             # forward synapses from parents into m (and into x if hidden)
             fmcell="gsynL" if (out and int(os.environ.get("LINRO","0"))) else "gsyn"   # linearized readout synapse -> delta fixed point reaches ridge
             CHL2o = out and int(os.environ.get("CHL","0"))==2
-            for p in parents[(l,j)]:
-                pap,pan=ap_(l-1,p); key=f"{l}_{j}_{p}"
+            for pi,p in enumerate(parents[(l,j)]):
+                pap,pan=ap_(l-1,p); key=wkey(l,j,p,pi); uid=f"{l}_{j}_{p}"   # key=shared weight NODE; uid=unique instance name (CONV weight-sharing)
                 wr0,wr1 = (f"wp_{key}",f"wq_{key}") if CHL2o else (f"wp_{key}",f"wn_{key}")   # CDS differential read: clamped-int minus free-int
                 _dmp,_dmn=(mp,mn) if dsign.get((l-1,p),1)>0 else (mn,mp)   # DALE: inhibitory parent -> crossed outputs (free sign flip)
                 _dxp,_dxn=(xp,xn) if dsign.get((l-1,p),1)>0 else (xn,xp)
-                L+=[f"X_fm_{key} {pap} {pan} {wr0} {wr1} {_dmp} {_dmn} vdd vbsyn {fmcell}"]
-                if ((not out) and int(os.environ.get("NOHID","0"))<2) or (out and int(os.environ.get("SOFTC","0"))): L+=syn(f"fx_{key}",pap,pan,_dxp,_dxn,f"wp_{key}",f"wn_{key}")   # x copy (skipped for NOHID>=2 hidden)
+                L+=[f"X_fm_{uid} {pap} {pan} {wr0} {wr1} {_dmp} {_dmn} vdd vbsyn {fmcell}"]
+                if ((not out) and int(os.environ.get("NOHID","0"))<2) or (out and int(os.environ.get("SOFTC","0"))): L+=syn(f"fx_{uid}",pap,pan,_dxp,_dxn,f"wp_{key}",f"wn_{key}")   # x copy (skipped for NOHID>=2 hidden)
             if RES and (not out) and LAYERS[l]==LAYERS[l-1]:   # RESIDUAL: identity skip a_{l-1}_j -> this node (only same-size blocks; pooling layers downsample without skip)
                 sap,san=ap_(l-1,j)
                 L+=[f"X_res_m_{l}_{j} {sap} {san} wresp wresn {mp} {mn} vdd vbsyn gsyn"]
@@ -691,29 +708,29 @@ def gen_deck():
                     mop,mon=(f"m{NL-1}n_{j}",f"m{NL-1}p_{j}") if SGNO>0 else (f"m{NL-1}p_{j}",f"m{NL-1}n_{j}")
             if (not out) and int(os.environ.get("NOHID","0")): continue   # NOHID: no hidden update cells (fixed random hidden)
             if int(os.environ.get("POOLAVG","0")) and (not out) and _issq(LAYERS[l-1]) and _issq(LAYERS[l]) and LAYERS[l]<LAYERS[l-1]: continue   # AVG-POOL layer has fixed weights -> no update cells
-            for p in parents[(l,j)]:
-                pap,pan=ap_(l-1,p); key=f"{l}_{j}_{p}"
+            for pi,p in enumerate(parents[(l,j)]):
+                pap,pan=ap_(l-1,p); key=wkey(l,j,p,pi); uid=f"{l}_{j}_{p}"   # key=shared weight NODE; uid=unique update-cell name (CONV)
                 if CHLon and int(os.environ.get("CHL","0"))==3:   # chopper-EP: one cell, +label.a (ckd) / -pred.a (ckr), offsets cancel
-                    L+=[f"Xlr_{key} {xop} {xon} {mop} {mon} {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblo gprodC"]
+                    L+=[f"Xlr_{uid} {xop} {xon} {mop} {mon} {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblo gprodC"]
                 elif (not out) and int(os.environ.get("CHL","0"))==3 and int(os.environ.get("HCHOP","0"))==4:   # TRUE EP: Hebbian difference (a_post.a_pre)_nudged - (a_post.a_pre)_free; same nodes both phases -> offsets cancel exactly
                     aap2,aan2 = ap_(l,j)
                     p0,p1 = (aap2,aan2) if SGNH>0 else (aan2,aap2)
-                    L+=[f"Xlr_{key} {p0} {p1} {p0} {p1} {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblh gprodC"]
+                    L+=[f"Xlr_{uid} {p0} {p1} {p0} {p1} {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblh gprodC"]
                 elif (not out) and int(os.environ.get("CHL","0"))==3 and int(os.environ.get("HCHOP","0"))==3:   # CM-MATCHED zero ref (replica esub) -> offsets truly cancel
-                    L+=[f"Xlr_{key} {ep} {en} ezp ezn {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblh gprodC"]
+                    L+=[f"Xlr_{uid} {ep} {en} ezp ezn {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblh gprodC"]
                 elif (not out) and int(os.environ.get("CHL","0"))==3 and int(os.environ.get("HCHOP","0"))==2:   # hidden auto-zero vs TRUE ZERO ref: offset cancels, signal NOT subtracted (no erasure)
-                    L+=[f"Xlr_{key} {ep} {en} wcm wcm {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblh gprodC"]
+                    L+=[f"Xlr_{uid} {ep} {en} wcm wcm {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblh gprodC"]
                 elif (not out) and int(os.environ.get("CHL","0"))==3 and int(os.environ.get("HCHOP","0")):   # hidden auto-zero: free phase eps~0 -> offset cancels (ERASES weights - don't use)
-                    L+=[f"Xlr_{key} {ep} {en} {ep} {en} {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblh gprodC"]
+                    L+=[f"Xlr_{uid} {ep} {en} {ep} {en} {pap} {pan} wp_{key} wn_{key} ckd ckr wcm vdd gblh gprodC"]
                 elif CHLon and int(os.environ.get("CHL","0"))==2:
-                    L+=[f"Xlrc_{key} {xop} {xon} {pap} {pan} wp_{key} wn_{key} vdd gblo gprod",
-                        f"Xlrf_{key} {mop} {mon} {pap} {pan} wq_{key} wr_{key} vdd gblof gprod"]
+                    L+=[f"Xlrc_{uid} {xop} {xon} {pap} {pan} wp_{key} wn_{key} vdd gblo gprod",
+                        f"Xlrf_{uid} {mop} {mon} {pap} {pan} wq_{key} wr_{key} vdd gblof gprod"]
                 elif CHLon:
-                    L+=[f"Xlrc_{key} {xop} {xon} {pap} {pan} wp_{key} wn_{key} vdd gblo gprod",
-                        f"Xlrf_{key} {mop} {mon} {pap} {pan} wp_{key} wn_{key} vdd gblof gprod"]
+                    L+=[f"Xlrc_{uid} {xop} {xon} {pap} {pan} wp_{key} wn_{key} vdd gblo gprod",
+                        f"Xlrf_{uid} {mop} {mon} {pap} {pan} wp_{key} wn_{key} vdd gblof gprod"]
                 else:
                     _dap,_dan=(pap,pan) if dsign.get((l-1,p),1)>0 else (pan,pap)   # DALE: chain-rule sign of inhibitory parent folded into the a-input
-                    L+=[f"Xlr_{key} {ep} {en} {_dap} {_dan} wp_{key} wn_{key} vdd {tail} gprod"]
+                    L+=[f"Xlr_{uid} {ep} {en} {_dap} {_dan} wp_{key} wn_{key} vdd {tail} gprod"]
     if HINGE:   # score = sum_c (label_c).(m_out_c) -> high when correct; comparator -> conf high -> pull gbl tails low
         oc=NL-1
         for c in range(C): L+=[f"Xsc_{c} xo{c}p xo{c}n m{oc}p_{c} m{oc}n_{c} sop son vdd vbsyn gsyn"]
