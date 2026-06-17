@@ -1103,3 +1103,8 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   DSEED=0 -> SAME test set -> can MIX architectures in the vote (RFGRID 0.452 + deep-dense 0.41 + ...). Diverse
   archs = more decorrelated errors = higher vote ceiling. Adding RFGRID-base nets to the pool. Path to 0.90 =
   (stronger bases) x (more nets) x (arch diversity).
+
+## 2026-06-17 — CORRECTION: ensemble did NOT plateau; 10-net deep = 0.744 (still climbing)
+- Full deep+decay vote curve (n=250): 2=0.556, 3=0.632, 5=0.652, 7=0.696, 9=0.700, 10=0.744. The "plateau ~0.70"
+  was NOISE (9-net dip). 0.41 individuals -> 0.744 at 10 nets, still rising. Ensemble is a strong, real lever to
+  0.90. Adding RFGRID-arch diversity + more nets. (n=250 noisy +-3%; trend robust.)
