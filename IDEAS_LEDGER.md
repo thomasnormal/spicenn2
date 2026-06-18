@@ -1133,3 +1133,10 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   which conv (idea 1) did NOT break and RFGRID only matched. Untried levers for stronger individuals: degenerated
   Gilbert synapse (idea 3, readout efficiency), deep supervision (idea 4), momentum optimizer (idea 8). These are
   the remaining path to lift individuals -> then ensemble -> 0.85-0.90. Honest: 0.78 achieved, 0.90 still open.
+
+## 2026-06-18 — RDEG=24k = STRONGER INDIVIDUAL (0.532 single, vs 0.44 default); the lever for 0.90
+- Synapse degeneration/linearity sweep (single net, deep+decay+symmetric): RDEG 6k=0.476, 12k(default)~0.44,
+  24k=0.532, 40k=0.360 (too low gain). RDEG=24k SWEET SPOT -> single 0.532 (+0.09)! More linear Gilbert multiply
+  = stronger individual (idea 3 DOES deliver, just via RDEG tuning since the Gilbert cell already exists).
+- => ensemble of RDEG=24k (0.53) nets should beat the 0.78 ceiling (which was from 0.42 nets). Launching RDEG=24k
+  ensemble. Combine with NEP12. This is the concrete path to lift individuals -> ensemble -> 0.90.
