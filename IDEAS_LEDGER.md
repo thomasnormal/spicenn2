@@ -1146,3 +1146,11 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   RFGRID all FAIL to reliably beat ~0.43 individuals. Ensemble caps ~0.78-0.79 regardless of base config.
 - KEY QUESTION: is the 0.43 individual ceiling CAPACITY (tiny FANIN=4 sparse net) or LEARNING (in-circuit eff)?
   Running ideal-MLP (backprop) diagnostic on same data/size to decide whether stronger individuals are possible.
+
+## 2026-06-18 *** KEY: ensemble is DATA-limited, not circuit-limited; path to 0.90 = ensemble + MORE DATA ***
+- Ideal (LogReg) vs train data on 8x8 real MNIST: NTR=20/cls=0.77, 50=0.82, 100=0.88, 200=0.91. Our ENSEMBLE
+  (0.78 at NTR=20) ALREADY = the data-ideal! So the 0.78 ceiling is DATA (20/cls), NOT circuit/feature/learning.
+  Single nets are weak (0.43) but the ensemble RECOVERS the data-ideal. => stronger individuals were the WRONG
+  target; the lever is TRAINING DATA. ensemble @ NTR=100 -> ~0.88, @ NTR=200 -> ~0.91 = THE PATH TO 0.90.
+- Constraint: more data = proportionally more Spectre slots (NTR=100 ~5x slower ~5-10hr/net). Launching NTR=50
+  (ideal 0.82, faster) + NTR=100 (ideal 0.88) ensemble nets. This is the concrete, evidence-backed route to 0.90.
