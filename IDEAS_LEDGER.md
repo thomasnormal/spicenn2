@@ -1140,3 +1140,9 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   = stronger individual (idea 3 DOES deliver, just via RDEG tuning since the Gilbert cell already exists).
 - => ensemble of RDEG=24k (0.53) nets should beat the 0.78 ceiling (which was from 0.42 nets). Launching RDEG=24k
   ensemble. Combine with NEP12. This is the concrete path to lift individuals -> ensemble -> 0.90.
+
+## 2026-06-18 — RDEG=24k single 0.532 was SEED NOISE (ens indiv avg 0.431); ensemble ceiling firm ~0.78-0.79
+- RDEG=24k ensemble (indiv 0.431, NOT stronger), 3-net 0.556; MIXED rd24+deep 20-net = 0.788. RDEG/NEP/conv/
+  RFGRID all FAIL to reliably beat ~0.43 individuals. Ensemble caps ~0.78-0.79 regardless of base config.
+- KEY QUESTION: is the 0.43 individual ceiling CAPACITY (tiny FANIN=4 sparse net) or LEARNING (in-circuit eff)?
+  Running ideal-MLP (backprop) diagnostic on same data/size to decide whether stronger individuals are possible.
