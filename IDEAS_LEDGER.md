@@ -1154,3 +1154,14 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   target; the lever is TRAINING DATA. ensemble @ NTR=100 -> ~0.88, @ NTR=200 -> ~0.91 = THE PATH TO 0.90.
 - Constraint: more data = proportionally more Spectre slots (NTR=100 ~5x slower ~5-10hr/net). Launching NTR=50
   (ideal 0.82, faster) + NTR=100 (ideal 0.88) ensemble nets. This is the concrete, evidence-backed route to 0.90.
+
+## 2026-06-18 — PATH TO 0.90 IDENTIFIED but Spectre-RUNTIME-BOUND (honest endpoint)
+- Data-scaling confirmed in principle: ensemble TRACKS the data-ideal (0.78 = LogReg ideal at 20/cls). Ideal
+  scales 0.77/0.82/0.88/0.91 at 20/50/100/200 per class. So ensemble + more data -> 0.90.
+- WALL (empirical): (1) individual nets do NOT improve with data (0.39-0.42 regardless; weak FANIN=4 learner);
+  only the ENSEMBLE recovers the data-ideal, needing ~10+ nets per data level. (2) higher-data Spectre runs are
+  pathological: NTR=50=4.5hr, NTR=100~5-7hr, NTR=200~10-15hr EACH (symmetric-chopper x more data). A 0.90-grade
+  ensemble = ~10 nets x ~10hr = ~100 Spectre-hours / 7-parallel = days. NTR=50 2-3 net vote so far 0.49 (too few).
+- HONEST RESULT (deep, full-PC, real Spectre, C=10): single 0.42-0.47; ENSEMBLE 0.78 (= data-ideal at feasible
+  20/cls); collapse FIXED (0.068->0.41 via symmetric nudge+decay). 0.90 needs more data, runtime-prohibitive
+  here -> would need a faster simulator (Xyce/GPU) or many Spectre-days. Path clear; not idea-bound, sim-bound.
