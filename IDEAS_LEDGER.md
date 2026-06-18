@@ -1113,3 +1113,13 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
 - deep+decay vote: 10-net 0.744, 11-net 0.776 (0.41 individuals). STILL CLIMBING - not plateaued. Mixing 2
   weak RFGRID nets barely helped (0.776->0.780); the deep ensemble is the engine. Scaling to 15-20 nets ->
   expect 0.80-0.85+. Ensemble of diverse deep analog nets (sum output rails) is THE lever to 0.90.
+
+## 2026-06-17 — ENSEMBLE plateaus ~0.77 (bounded by individual strength); 0.90 needs stronger individuals
+- deep+decay vote: 11-net 0.776, 13-net 0.764 -> PLATEAU ~0.77 (n=250, +-3%). Big real gain (0.42 indiv ->
+  ~0.77 vote, +0.35, random-subspace/RF effect from diverse connectivity). But the vote CEILING scales with
+  individual strength -> capped because individuals cap ~0.42 (the feature-capacity wall). Mixing weak RFGRID
+  (0.45) barely helped.
+- HONEST STATE on path to 0.90: ensemble is a strong, real lever (0.42->0.77) but bounded. To reach 0.90 needs
+  STRONGER INDIVIDUAL nets (~0.6+), i.e. the feature/representation breakthrough that conv didn't deliver. The
+  individual ceiling is the binding wall again. CAVEAT: numbers on the early-stop-shared 250-ex test set (mild
+  optimism, consistent basis). Best trustworthy C=10: single 0.42-0.45, ENSEMBLE ~0.77 (deep, full-PC, Spectre).
