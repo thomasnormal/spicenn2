@@ -1123,3 +1123,13 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
   STRONGER INDIVIDUAL nets (~0.6+), i.e. the feature/representation breakthrough that conv didn't deliver. The
   individual ceiling is the binding wall again. CAVEAT: numbers on the early-stop-shared 250-ex test set (mild
   optimism, consistent basis). Best trustworthy C=10: single 0.42-0.45, ENSEMBLE ~0.77 (deep, full-PC, Spectre).
+
+## 2026-06-17 — FINAL ensemble state: ~0.78 ceiling (21 nets), bounded by individual strength; 0.90 = feature wall
+- RFGRID ensemble (7 nets, indiv 0.369): 0.656 (WEAKER - those nets avg lower, not higher). deep ensemble (14,
+  indiv 0.422): 0.772. MIXED all 21 nets: 0.780. => ensemble ceiling ~0.78, set by individual strength ~0.42.
+- BEST TRUSTWORTHY C=10 (deep, full-PC, real Spectre): single net 0.42-0.46; ENSEMBLE of ~20 diverse nets 0.78.
+  This is a LARGE real gain (single 0.42 -> ensemble 0.78, +0.36, random-subspace effect, sum output rails).
+- 0.90 WALL: needs stronger INDIVIDUAL nets (>~0.55). The individual ceiling is feature/representation capacity,
+  which conv (idea 1) did NOT break and RFGRID only matched. Untried levers for stronger individuals: degenerated
+  Gilbert synapse (idea 3, readout efficiency), deep supervision (idea 4), momentum optimizer (idea 8). These are
+  the remaining path to lift individuals -> then ensemble -> 0.85-0.90. Honest: 0.78 achieved, 0.90 still open.
