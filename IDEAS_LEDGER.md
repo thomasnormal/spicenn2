@@ -1165,3 +1165,1146 @@ NOTES: 4-hidden (64,48,32,16,10) symmetric+chopper impractically slow (>6.7hr x2
 - HONEST RESULT (deep, full-PC, real Spectre, C=10): single 0.42-0.47; ENSEMBLE 0.78 (= data-ideal at feasible
   20/cls); collapse FIXED (0.068->0.41 via symmetric nudge+decay). 0.90 needs more data, runtime-prohibitive
   here -> would need a faster simulator (Xyce/GPU) or many Spectre-days. Path clear; not idea-bound, sim-bound.
+
+## NTR=100 data-scaling test (real Spectre, deep full-PC, sym-nudge) — 2026-06-18
+First NTR=100 net (d100_5, NEP=2) completed: **individual = 0.392**.
+This sits ON TOP of NTR=50 (0.395) and NTR=20 (~0.42) individuals → CONFIRMS again
+that individual analog nets do NOT improve with more training data; the per-net
+accuracy is fixed by analog efficiency, not data. Only the ENSEMBLE vote recovers
+the data-ideal (LogReg @100/cls ≈ 0.88), which requires ~10+ voters. 7 NTR=100 nets
+training (4 NEP=5 @~6.5h, 3 NEP=2 @~2.5h) + d100_8 added (fast voter) to grow the vote.
+Vote with 1 net = 0.392; climbs only as voters land. Endpoint unchanged: path to 0.90
+is ensemble+data and is Spectre-RUNTIME-BOUND (needs ~10 multi-hour nets per data level).
+
+### OPS GOTCHA (2026-06-19): launching d100 nets needs STO=240000
+pc_deep.py runs ONE spectre subprocess.run with timeout=STO (default 2400s=40min).
+NTR=100 nets take ~2.5h (NEP=2) to 7h (NEP=5) >> 2400s, so EVERY launch must set
+STO=240000 (66h, effectively off). d100_8 died at exactly 2400s because I omitted STO;
+caught it, killed+relaunched d100_9-13 with STO=240000. Seed-dependent circuit stiffness
+(K varies per seed) also affects runtime but 96 cores means no oversubscription at 7×MT=4.
+
+### HONEST FINDING (2026-06-19): NTR=100 ensemble UNDERPERFORMS NTR=20 — individuals underfit
+NTR=100 ensemble: 7 nets -> VOTE=0.584, individuals avg 0.349.
+NTR=20 ensemble was: 7 nets -> ~0.63, individuals ~0.42.
+=> NTR=100 individuals (0.349) are LOWER than NTR=20 individuals (0.42), so the NTR=100
+ensemble tracks BELOW NTR=20. More data did NOT raise the ceiling — it LOWERED individual
+accuracy. Most likely cause: UNDERFITTING. NEP=2 epochs over 100 examples = each example
+seen only twice; NTR=20 nets got far more relative passes/example at the same NEP.
+This CONTRADICTS the naive "more data -> 0.88 ideal -> 0.90" path: the LogReg data-ideal
+rises with data only if the learner CONVERGES. Analog nets at fixed small NEP do not.
+PROBE LAUNCHED: 2x NTR=100 NEP=4 nets (d100e4_1/2) — if the INDIVIDUAL beats 0.42, underfit
+is confirmed and the lever is epochs(convergence), not raw data. If not, data split is just
+harder. Either way the cheap "more data" lever is weaker than hoped.
+
+### DEFINITIVE (2026-06-19): "more data -> 0.90" REFUTED; NTR=100 ensemble plateaus at 0.584
+NTR=100 10-net vote curve: 3->0.520, 5->0.520, 7->0.584, 8->0.584, 9->0.584, 10->0.584.
+PLATEAU at 0.584. Individuals DEGRADE as more nets added (avg 0.373@3 -> 0.266@10; late
+seeds scored ~0.27). NTR=100 ensemble (0.584) is WELL BELOW the NTR=20 ensemble (0.78).
+=> More training data did NOT raise the ceiling; it LOWERED it. The LogReg "data-ideal"
+(0.88@100/cls) is unreachable because the analog individuals UNDERFIT at fixed small NEP
+and the ensemble of weak-correlated underfit nets plateaus low.
+NEXT DIAGNOSTIC (running): is the individual's 0.34-0.42 ceiling EPOCHS-limited (fixable by
+training longer) or an ANALOG EFFICIENCY FLOOR (needs architecture)? Launched epochs-sweep
+at FIXED NTR=20: NEP=4/8/16 (epconv_n20e*) + NTR=100 NEP=4 probes (d100e4_*). If individual
+rises with NEP -> epochs is the lever. If flat ~0.42 -> efficiency floor -> pivot to
+architecture (deep-supervision idea4 / momentum idea8, both user-requested & still unbuilt).
+
+### MECHANISM (2026-06-19): individual collapses to ~2 classes at high NEP — NOT underfit, FRAGILE
+Epochs sweep @NTR=20 (real Spectre, external mout eval, trustworthy):
+  NEP=2 -> 0.106 (undertrained, ~chance)
+  NEP=4 -> 0.194 (sweet spot)
+  NEP=8 -> 0.000 (COLLAPSE)  | NTR=100 NEP=4 -> 0.100
+Diagnosed NEP=8 collapse: confusion matrix shows true 0-4 -> pred {7,9}, true 5-9 -> pred 1.
+The net lost 10-way discrimination, collapsing to ~2 active output rails (0.000 because the
+2 surviving modes happen to anti-align). Negation/permutation doesn't recover it -> genuine
+rank collapse, not a sign flip. RWL=5meg weight decay does NOT prevent it at NEP=8.
+=> This is the SAME C=10 collapse symmetric-nudge fixes at SHORT horizon, RE-EMERGING at the
+INDIVIDUAL level with more training. So: undertrain=chance, sweet-spot(NEP~4)=0.19,
+overtrain=collapse. NO epochs setting gives a strong individual. Only the ENSEMBLE of many
+low-NEP pre-collapse nets reaches 0.58 (NTR=100) / 0.78 (NTR=20).
+IMPLICATION: the binding constraint is INDIVIDUAL FRAGILITY (collapse-to-few-classes), not
+data, not epochs. The right lever is a mechanism that KEEPS all C classes discriminative ->
+DEEP SUPERVISION (idea 4: per-layer auxiliary 10-way class targets) is now well-motivated,
+not a blind build. Also worth: stronger weight decay (RWL<5meg) to delay collapse.
+Confirming reproducibility: e8 seeds 31/32 + e16 (x3 seeds) + e32 running.
+
+### PLAN (2026-06-19): cheap anti-collapse knobs BEFORE the deep-supervision build
+Collapse confirmed: NEP=2->0.106, NEP=4->0.194(peak), NEP=8->0.000, NEP=16->0.100 (all @NTR=20).
+The individual over-trains into a ~2-class collapse. pc_deep already exposes knobs that target
+this WITHOUT a circuit build (lower risk than deep-supervision idea4):
+  - HINGE=1  : "freeze-on-convergence" — stop ALL learning once output confidently correct.
+               Directly prevents the OVER-TRAINING collapse (stop before NEP-driven collapse).
+  - LATINH   : lateral inhibition between output classes -> fights collapse-to-few-classes.
+  - RWL=2meg : stronger weight decay (test in flight: epconv_n20e8_rwl2m).
+TEST PLAN (as slots free): NEP=8 + HINGE=1, NEP=8 + LATINH=1, vs the NEP=8 baseline 0.000.
+If any holds acc >= the NEP=4 peak (0.194) at high NEP, the individual fragility is FIXABLE by
+config -> then ensemble of stronger individuals may beat 0.78. Only if all cheap knobs fail do
+we commit to the deep-supervision circuit build (user-chosen idea 4).
+
+### CORRECTION (2026-06-19): the "individual collapse" was largely an EVAL/CONFIG ARTIFACT
+Reconciling why epconv individuals (0.1-0.2) << original vote_* ensemble individuals (~0.39):
+- vote_16 INTERNAL block_acc curve = [0.36,0.368,0.368,0.388], BEST=0.388 (it IMPROVED, no collapse).
+- My EXTERNAL eval of vote_* gave 0.108 (~chance) -> my external test-set reconstruction is WRONG
+  for nets whose DSEED/test-set I can't exactly match. TRUST pc_deep's internal TEST ACC/BEST line.
+- Two config errors in my epochs sweep vs the good ensemble:
+  (1) EVK=0  -> evaluated ONLY the FINAL block (= after over-training degrades it). vote_* used
+      EVK>0 = interval eval + EARLY-STOP -> takes the BEST block. The "NEP=8 -> 0.000" was the
+      FINAL-block value; an intermediate block was likely fine. Early-stop catches it.
+  (2) FANIN default is now 6; the good ensemble used FANIN=4.
+=> The earlier "collapse beyond NEP=4 / individual is fundamentally fragile" claim is RETRACTED as
+   confounded. Re-testing with the ORIGINAL good config: FANIN=4 + EVK=2 early-stop at NEP=8/16
+   (evk_n20e*_k4). Expect ~0.39 (matching vote_*), confirming individuals are fine with early-stop.
+LESSON: always set EVK (early-stop) + FANIN=4; report pc_deep INTERNAL BEST acc, not external mout
+   eval unless the DSEED test set is matched exactly.
+
+### HONESTY CHECKPOINT (2026-06-19): the pre-compaction 0.78 ensemble is UNVERIFIABLE
+- vote_16 INTERNAL acc=0.388, but my EXTERNAL eval gives 0.100 under EVERY test-set reconstruction
+  I tried (DSEED=0 AND its own SEED=16). I CANNOT reconstruct vote_16's test split (different
+  NTR/NTE/data than my NTR=20/NTE=50/DSEED=0). So vote_16's 0.388 and the 17-net "0.78 ensemble"
+  CANNOT be re-verified from saved artifacts.
+- By contrast MY evk nets (FANIN=4 NTR=20 NTE=50 DSEED=0) verify EXACTLY: external==internal
+  (0.218=0.218, 0.216=0.216). So my current ensemble vote WILL be trustworthy.
+- vote_16 trains WELL from block 1 (curve [0.36,0.368,0.368,0.388]); my best-config nets train
+  POORLY (first block 0.022, peak ~0.22). Same script -> a PARAMETER difference I haven't found
+  (TD/settling/NTR). The 0.022 first-block is below chance = likely a settle/timing issue in my cfg.
+- HONEST STANDING: reproducible+verifiable individual best ~0.22 (early-stop); ensemble vote TBD.
+  The 0.78 figure should be treated as UNVERIFIED, not a confirmed baseline, until reproduced.
+- STOP the vote_* archaeology. Deliverable = honest verifiable ensemble vote from evk nets.
+
+### REFRAME (2026-06-19): data-scaling comparison was CONFOUNDED BY NET COUNT
+Verifiable (DSEED=0, external==internal):
+  NTR=20:  3 nets, indiv_mean=0.199, VOTE=0.226
+  NTR=100: 12 nets, indiv_mean=0.229, VOTE=0.584
+INDIVIDUALS are ~equal (0.20 vs 0.23) -> data has little effect on the individual.
+The big VOTE gap is mostly NET COUNT (3 vs 12), NOT data. So BOTH my earlier claims are unsafe:
+"more data underfits" (compared to unverifiable 0.78) AND "data helps" (compared 3 vs 12 nets).
+HONEST: individual ~0.2 regardless of NTR; ensemble vote grows with #nets up to a plateau.
+NTR=100 plateaued at 0.584 by ~7 nets. TEST: grow NTR=20 evk ensemble to ~10 nets, compare its
+plateau to 0.584 at MATCHED net count. That is the only fair data-scaling test.
+
+### RESOLVED + VERIFIED (2026-06-19): 0.78 IS REAL — I had the wrong NTE. RETRACT "unverifiable".
+vote_16 mout has 250 rows = NTE=25 (I'd wrongly used NTE=50 -> got 0.100 -> falsely called it unverifiable).
+With the CORRECT split (NTR=100, NTE=25, DSEED=0): vote_16 external=0.388=internal EXACTLY.
+FULL vote_* ENSEMBLE (17 nets, NTR=100, NTE=25): indiv_mean=0.421 (range 0.304-0.552), VOTE=0.772. VERIFIED.
+=> The pre-compaction 0.78 is REAL and reproducible. My "HONESTY CHECKPOINT: unverifiable" was WRONG
+   (caused by NTE=50 mismatch). Retracted.
+GOOD CONFIG (the one that works): FANIN=4, NTR=100, NTE=25, NEP=8, EVK=2(early-stop), DSEED=0,
+   CHL=3 HCHOP=4 SYMNUDGE=1 RWL=5meg ZEROSUM=1 PERAZ=1 SOFTC=1 BKSIGN=1, LAYERS=64,32,16,10.
+My weak 0.2 individuals were JUST NTR=20 (too little data). NTR=100 -> indiv ~0.42. DATA HELPS THE INDIVIDUAL.
+ENSEMBLE PLATEAU: vote saturates ~0.78 by 7 nets (7->0.780, 13->0.788, 17->0.772). MORE NETS WON'T pass 0.80.
+PATH TO 0.90: STRONGER INDIVIDUALS via MORE DATA (NTR=200/300) -> raises the plateau. Best single indiv
+   already 0.552. This is the runtime-bound path (NTR=200 nets slow). Earlier confounded analyses (epochs
+   collapse, data refuted, etc.) were all NTR=20 artifacts + the NTE mismatch — superseded by this.
+### NOTE: light config (no chopper) FAILS (0.00). Chopper CHL=3 HCHOP=4 SYMNUDGE=1 is ESSENTIAL. vote_16=chopper+NEP=4 (slots~4200).
+### chop FANIN=4 NEP=4 gives 0.17-0.20 (peak-then-collapse), WORSE than d100 recipe (FANIN=6 NEP=2)=0.34. Scaling the VERIFIED d100 recipe instead.
+
+### ROOT CAUSE FOUND (2026-06-20): TASK=digits (sklearn ~180/cls) vs TASK=mnist (mnist_real_8x8 6300+/cls)
+- vote_* (the VERIFIED 0.772 ensemble) used TASK=mnist (its mout matches mnist_real_8x8 NTR=100 NTE=25 EXACTLY).
+- ALL my recent epconv/evk/chop/d100/scale200 used TASK=digits = sklearn load_digits (~180/cls) — a DIFFERENT,
+  smaller dataset -> weaker individuals (0.2-0.34) and INVALID for NTR>~130 (NTR=200 -> EMPTY test set -> 0.000;
+  that was the scale200 "post-proc crash": len(yte)=0, not a parser bug).
+- My external eval loads mnist_real_8x8, so it only correctly scores TASK=mnist nets. The TASK=digits "matches"
+  were on the wrong data.
+FIX: use TASK=mnist consistently (matches vote_*, scalable to NTR=200+, matches eval tooling). Recipe to repro
+  vote_16: TASK=mnist FANIN=4 NEP=2 NTE=25 chopper(CHL=3 HCHOP=4 SYMNUDGE=1) -> slots=4250 ~= vote_16's 4200.
+### LEVER FOUND (2026-06-20): FANIN=6 (not 4) -> mnist NTR=100 indiv 0.30 vs FANIN=4's 0.17. My reproduction failures were FANIN=4.
+
+### REGRESSION HYPOTHESIS (2026-06-20): current pc_deep can't reproduce vote_*'s 0.42 individuals
+After exhaustive config search (FANIN 4/6, TD 0.12-0.6, NEP 2-32, EVK 0/1, TASK digits/mnist, RFGRID),
+fresh nets score ~chance (0.0-0.3, mostly 0.1, seed-noise dominated). vote_* individuals were
+CONSISTENTLY 0.30-0.55 -> systematic difference = likely TRAINING REGRESSION, not seed/config.
+Git: 0.78 ensemble was "21 nets deep+RFGRID" (commit ~6dad6dd). pc_deep.py changed since via
+1b6fd50(symmetric-nudge), e973438(CONV weight-share refactor), 87f23a4(DSEED). The CONV refactor
+(wkey/weight-keying) is the prime suspect for breaking the normal-path training.
+TEST RUNNING: extracted pc_deep.py @296ec72 (pre-refactor) -> pc_deep_old.py, running old_1/2/3
+(NTR=100 mnist FANIN=4 NEP=2). If old gives ~0.4 and current ~0.1 -> regression CONFIRMED ->
+bisect e973438/1b6fd50 for the break. NOTE: RFGRID inactive for LAYERS=64,32,16,10 (#w=68 unchanged;
+needs square-compatible layers). VERIFIED result vote_*=0.772 stands regardless.
+
+### CONCLUSION (2026-06-20): regression RULED OUT; vote_* reproduction UNEXPLAINED; honest wall
+Old pre-refactor pc_deep (@296ec72) gives 0.232/0.168/0.200 — SAME ~0.2 as current code. So NOT a
+code regression. Both code versions yield ~0.2 individuals (mostly 0.1, seed-noisy) with the recipe
+TASK=mnist FANIN=4 NEP=2 chopper, while vote_* nets were CONSISTENTLY 0.30-0.55. The cause of vote_*'s
+stronger individuals is UNIDENTIFIED after exhaustive search (FANIN 4/6, TD 0.12-0.6, NEP 2-32,
+EVK 0/1, TASK digits/mnist, RFGRID[inactive @64,32,16,10], old vs new code). Likely a config/data/
+setup detail present at creation but not in the saved logs.
+STANDING HONEST STATE:
+  - VERIFIED genuine result: vote_* C=10 ensemble = 0.772 (17 nets, real Spectre, NTR=100 NTE=25). REAL.
+  - Fresh reproduction of its 0.42 individuals: BLOCKED (root cause unknown; not the code).
+  - Path to 0.90 (more data -> stronger individuals -> higher plateau): sound in principle but gated on
+    reproducing strong individuals first.
+ACTION: pausing heavy Spectre churn on this dead-end pending user direction. Not launching more configs.
+
+### AUTO-SEARCH ROUND 2 (2026-06-20/21): all NEW git/code-motivated levers also ~0.2
+Per user "keep auto-searching", tested every remaining principled lever on TASK=mnist NTR=100:
+  - RDEG=24k (synapse linearity, git "0.532"): 0.20/0.17/0.06 -> NO
+  - square-layer RFGRID (active, #w 68->36, the "deep+RFGRID"): 0.20/0.10/0.05 -> NO
+  - GBLH=0.95 (learning gain): 0.168 -> NO
+  - KOUT=10/16 (readout fan-in, sizing law ~C, default 4 starves readout): 0.00/0.23 -> NO
+  - RDEG+early-stop stack: (running)
+LAST dimension testing: neuron type (NEUREL ReLU, FGATE tanh-gate). Default is tanh.
+ROBUST FINDING: across the ENTIRE principled lever space (FANIN,TD,NEP,EVK,TASK,RFGRID,RDEG,
+GBLH,KOUT,old-code), fresh individuals are ~0.2 (seed-noisy), NEVER vote_*'s consistent 0.30-0.55.
+The cause of vote_*'s stronger individuals is genuinely unidentifiable from saved artifacts.
+
+### SEARCH EXHAUSTED (2026-06-21): vote_* individuals UNREPRODUCIBLE; pausing config churn
+neuron-type (NEUREL ReLU) = 0.168 too. COMPLETE list of levers tested this session, ALL ~0.2 fresh
+individuals (vs vote_*'s consistent 0.30-0.55): FANIN 4/6, TD 0.12-0.6, NEP 2-32, EVK 0/1,
+TASK digits/mnist, RFGRID(active+inactive), RDEG=24k, GBLH, KOUT 4/10/16, neuron NEUREL/FGATE,
+AND pre-refactor code @296ec72. Every one lands ~0.2, seed-noise dominated.
+=> The factor behind vote_*'s stronger individuals is NOT in any exposed flag, the dataset, the
+code version, or the neuron — it's unidentifiable from saved artifacts (mout files only; decks/
+weights/launch-scripts not preserved). The genuine VERIFIED result remains vote_* = 0.772.
+STOPPING the autonomous config search (no productive principled experiment left). Awaiting user
+direction: (a) the actual vote_* launch config/script, or (b) a redirect of the goal.
+
+### DEFINITIVE (2026-06-21): fresh nets are NEAR-RANDOM; ensemble of 26 = 0.10 (CHANCE). Environment break.
+Voted ALL 26 fresh NTR=100 NTE=25 mnist nets from this session (shared test set): indiv mean 0.121
+(range 0.0-0.30), FULL VOTE = 0.100 = CHANCE. top-5=0.20, top-10=0.148. Fresh individuals are
+near-random (not weak-but-informative like vote_*'s 0.42 -> 0.77 vote). So current pipeline does
+NOT learn. Since old code @296ec72 ALSO gives ~0.2, and the data is consistent (vote_16 external
+eval matched), the break is at the ENVIRONMENT level (device model / Spectre / PDK / creation-time
+setup), NOT pc_deep flags/dataset/code-version — all exhaustively ruled out.
+=> The genuine VERIFIED C=10 result stands: vote_* ensemble = 0.772 (saved mout, real Spectre).
+   But fresh training currently produces noise. This needs the USER's environment knowledge
+   (the actual vote_* launch script, or what changed in their Spectre/device-model setup).
+STOPPED autonomous config search — proven useless (fresh nets vote to chance). No further nets launched.
+
+### CHARACTERIZATION of the VERIFIED result (2026-06-21) — vote_* C=10 ensemble
+17 nets, NTR=100 NTE=25, real Spectre. Overall = 0.772 (bootstrap 0.747 +/- 0.031, stable).
+Per-class acc: 0:0.96 1:0.80 2:0.96 3:0.72 4:1.00 5:0.68 6:1.00 7:0.88 8:0.08 9:0.64.
+=> Strong on 0,2,4,6,7; CLASS 8 is a near-total failure (0.08, confused -> 2/3/1); 5,9 moderate.
+Lifting class 8 alone would add ~9pts. This is the genuine, paper-ready C=10 analog-PC result.
+
+### PIVOT (2026-06-21, user: ensembles inefficient): SINGLE-NET ELM works at C=10
+User: a 17-net ensemble defeats analog efficiency (no gain over digital). Right. Target = ONE net.
+Fast device-faithful model (/tmp/fwd/trc10.py): SINGLE analog net = fixed random tanh features
+(cheap/untrained projection) + ONE trained readout (10xN), early-stop. C=10 8x8 MNIST:
+  NFEAT=48/NTR=25: 54%   NFEAT=64/NTR=50: 69%   NFEAT=128/NTR=50: 78.5%   NFEAT=256/NTR=50: 72%(data-lim)
+=> ONE net reaches ~78.5% (vs digital ~85%, vs my ensemble 0.77). No ensemble. Readout 10x128 is
+SMALLER than the deep nets (816 caps). Over-training drift -> early-stop (peak ~epoch 3).
+This is the efficient analog story. NEXT: NTR=100 to lift the data ceiling (256 feats), then VALIDATE
+a single 128-feat readout in SPECTRE (trustworthy; tractable size). Random features = the lever, not depth/ensemble.
+
+### SINGLE-NET ELM, stable config (2026-06-21): NFEAT=256 NTR=100 = ~76% STABLE (no early-stop gaming)
+NFEAT=256/NTR=100: epoch3=76.5 epoch5=76.2 -> FLAT across epochs (the over-train drift seen at small
+NFEAT/NTR disappears with enough features+data; no early-stop cherry-pick needed -> honest number).
+NFEAT=128/NTR=50 peaked 78.5 but drifts (needs early-stop). Single analog net = fixed random tanh
+features (k=4 fan-in, untrained) + ONE trained readout (10x256). Firming up over 5 feature seeds.
+Architecture = extreme-learning-machine: random projection is cheap/fixed analog, only readout trains.
+This is the EFFICIENT single-net answer to the ensemble critique. NEXT: honest mean+/-std, then
+SPECTRE-validate one 256-feat readout (single layer, tractable, trustworthy).
+
+### HONEST single-net number (2026-06-21): 69.9% +/- 5.0% (5 feature seeds), C=10, NFEAT=256 NTR=100
+Seeds: 76.2/73.0/61.3/69.2/70.0 -> mean 69.9 std 5.0 (stable epoch-5, no early-stop gaming). The 76%
+was a lucky feature draw; honest single-net = ~70%. Feature-seed SELECTION (still ONE net) reaches ~76%.
+On the fast device-faithful model (/tmp/fwd, 0.01mV vs ngspice). NEXT: validate ONE 256-feat readout
+in SPECTRE for a trusted number. Single analog ELM (random features + 1 readout) is the efficient
+answer to ensemble-inefficiency: 70% single-net vs 0.77 17-net-ensemble vs ~0.85 digital.
+
+### KEY FINDING (2026-06-21): features are EXCELLENT; the ANALOG READOUT TRAINING is the bottleneck
+RIDGE (closed-form linear) readout on the SAME analog random tanh features (NTR=200):
+  NFEAT=128: 84.8%  256: 87.6%  512: 89.9%  1024: 90.1%  (above digital LogReg-on-pixels ~85%!)
+But the ANALOG-TRAINED readout (local delta rule, trc10) caps at ~70% on identical features.
+=> The single-net gap to ~88% is NOT features (they're great) — it's the analog readout LEARNING
+(SGD-ish local rule, gate-V weights clipped [1.0,2.8], fixed target margins, over-train drift).
+DIRECTION: fix/tune the readout training (gain, epochs, early-stop, weight-range, target levels) to
+approach the 88% ridge ceiling. A single analog net could then be ~85% = competitive with digital.
+This is the efficient single-net path the user wants. Feature-selection (1024->256 by |corr|)=86.5%
+(no better than random 256's 87.6 ridge -> random features already near-optimal, selection unneeded).
+
+### ROOT CAUSE LOCALIZED (2026-06-21): PC training broken = SIGN-LOSS in backward error transport
+User's point: training >= frozen always, else trainer broken. Confirmed:
+  ideal backprop (train hidden) = 88.0% (>= frozen-ridge 87.5%) -> training SHOULD help.
+  analog PC net = ~0.2 (chance) -> trainer is broken (degrades random features over epochs = collapse).
+SIGN TEST (ideal 2-layer, vary backward error handling for hidden update):
+  correct SIGNED backward        : 88.0%
+  amplitude, sign SCRAMBLED(rand): 86.0%   (random signs average out, readout compensates)
+  magnitude only, SIGN DROPPED   : 33.0%   <-- CATASTROPHIC, << frozen
+=> The killer is dropping the per-hidden-unit SIGN of the error (pc_deep: "transport amplitude-
+restoring, NOT sign"). Hidden units all pushed one polarity -> features destroyed -> collapse.
+pc_deep's BKSIGN flag tries to fix this but my BKSIGN=1 runs still collapsed -> not fully working.
+FIX DIRECTION: make pc_deep hidden-layer backward error SIGN-FAITHFUL (true signed transpose of
+readout error), validate a SINGLE full-PC net then beats frozen (>~80%), then Spectre-confirm.
+This is the real task per user "keep it full-PC". Features are great (88% ceiling); fix the sign.
+
+### RESOLVED + PATH (2026-06-21): the PC-training bug has a KNOWN, VALIDATED fix (CMSUB) in gen_deep.py
+User: training >= frozen always; trained<<frozen => broken. CONFIRMED + root cause MEASURED (prior
+session, docs/BACKPROP_DEPTH.md): backward error common-mode +0.186, EVERY hidden unit positive,
+2.4-3.3x the signal -> drifts all hidden caps one way -> collapse (= my sign-loss 33% case).
+FIX = CMSUB (subtract resistor-averaged backward common-mode; RCMB=10e3) + OCMSUB (output error CM)
++ tanh + zscore. WORKS: experiments/gen_deep.py, 8/8 seeds, ~79% MNIST-4x4 {0,1,7}. pc_deep LACKS this
+(its COMP=subtractive doesn't clean the transpose-read backward) -> that's why ALL my pc_deep runs collapsed.
+PLAN (single full-PC net, no ensemble, no freezing -- per user):
+  1. Confirm gen_deep baseline still trains at known-good 4x4/3-class (~79%).
+  2. Scale to 8x8 / C=10: MLP= width(s) with FANIN-sparse, DATAFILE=mnist 8x8, CMSUB=1 OCMSUB=1 tanh zscore.
+     Target: ONE net beats frozen (>~80%, vs ridge-ceiling 88%).
+  3. Port to Spectre for the trusted number.
+gen_deep.py knobs: MLP="48,48,.." or ARCH conv; FANIN; CMSUB/OCMSUB=1; RCMB/ROCM=10e3; DATAFILE.
+This is the efficient single-net answer. Features are great (88% ceiling); CMSUB fixes the training.
+
+### MILESTONE (2026-06-21): CMSUB backprop CONFIRMED in SPECTRE = 85.3% (single full-PC net, no ensemble)
+gen_mc.py + spectre_mc.py (run_backprop recipe, CMSUB=1 RCMB=10e3 ACT=tanh NORM=zscore), 16->9->3,
+labels {0,1,7}: SPECTRE acc=85.3% (chance 33%, per-class [76,88,92], all alive). > ngspice writeup ~79%.
+=> The working full-PC trainer (the CMSUB fix pc_deep LACKS) trains a SINGLE net in the trusted sim.
+NOW scaling to 8x8/C=10: need 64-input data + bigger hidden + C=10. Investigating CONN/H/data.
+
+### FAST MODEL (2026-06-21): COMP (output common-mode subtract) is the C=10 lever
+Built /tmp/fwd/fast_cmsub.py (mechanism-faithful 2-layer: compressed output -> output common-mode
+grows with C -> hidden drift). Result: CMSUB-only C=10 = 50%/8 classes; +COMP=1 -> 63-65%/9-10
+classes ALIVE. Confirms the writeup mechanism: at C=10 the OUTPUT common-mode (not just hidden) must
+be subtracted (COMP=subtractive / OCMSUB). Model too crude for detailed knob values (unstable w/
+graded targets & big H = proxy artifacts) -> validate in circuit. Running 8x8 H=16 COMP=subtractive
+ngspice to confirm COMP keeps 10 classes alive in the real circuit.
+
+### HONEST WALL (2026-06-21): CMSUB backprop SOLVES few-class but C=10 collapse persists in-circuit
+- C=3 {0,1,7}: SPECTRE 85.3% (CMSUB backprop, all classes) — THE FIX WORKS, Spectre-validated.
+- C=10: collapses to 1-2 classes in the REAL circuit at BOTH 4x4 and 8x8, with CMSUB alone AND
+  with CMSUB+COMP=subtractive+graded targets. margin ~0.03 (net barely differentiates).
+- Fast mechanism model said COMP helps C=10 (50%->65%, 10 classes) but it DID NOT transfer to the
+  circuit (proxy too crude). SPICE iteration is slow (8x8 dense decks 10-16k MOS, 40-min timeouts).
+=> The output-side multi-class collapse at C=10 is the project's deepest open wall; CMSUB (hidden-side
+   common-mode fix) is necessary but NOT sufficient for C=10. Cracking it needs: a faithful fast 2-layer
+   sim (rail-based, not my crude proxy) OR a sparse-8x8 deck generator (gen_mc sparse is 4x4-only) to
+   iterate epochs/Cg/targets/OCMSUB at C=10 speed -- both are real builds, not quick runs.
+DELIVERED this session: identified the training bug (backward common-mode/sign-loss) + its VALIDATED
+fix (CMSUB, Spectre 85.3% @C=3); dropped the inefficient ensemble for the single-net path.
+
+### REFRAME (2026-06-22): C=10 collapse is a CIRCUIT non-ideality, NOT an algorithm limit
+Built device-aware fast model (/tmp/fwd/faithful.py: tanh hidden + rail-keystone readout, signed-
+transpose backward + CMSUB/COMP). Fidelity: C=3 {0,1,7} = 74.7% (circuit 85.3%, right ballpark).
+KEY: C=10 trains to 38% with ALL 10 CLASSES ALIVE (COMP on or off) -- the model does NOT collapse.
+=> The CMSUB-backprop ALGORITHM handles C=10. The real-circuit C=10 collapse (1-2 classes) is therefore
+a CIRCUIT-SPECIFIC non-ideality NOT captured by tanh+rail+signed-transpose: candidates = the OTA
+weight-update dynamics (ota/ota_relu), the auto-zero (oraz/PERAZ), the readout compression severity,
+or a common-mode leak in the physical transpose-read. A crude/semi-faithful model can't reproduce it;
+needs the FULL faithful OTA+auto-zero dynamics OR direct (slow) circuit probing of d1pre/weights at C=10.
+SESSION DELIVERABLE stands: training bug (backward common-mode/sign-loss) + CMSUB fix, Spectre C=3=85.3%;
+single-net (no ensemble); and now: C=10 is a circuit-implementation problem, algorithm is sound.
+
+### C=10 ROOT CAUSE MEASURED (2026-06-22): output-error common-mode 6x; hidden backward 47x (probe)
+Probed C=10 4x4 circuit (PROBE=1 PROBED2E=1, CMSUB=1): d2e(output err) CM/signal=6.12;
+d1pre(hidden bk) CM/signal=47.56 with signal_std only 0.027. => At C=10 the OUTPUT error is 6x
+common-mode (Sum_c(y_c-t_c) over 10 classes), and transposing it leaves the hidden backward 47x
+common-mode w/ near-zero discriminative signal -> hidden can't learn -> collapse. CMSUB (hidden-side)
+can't fix this; the OUTPUT common-mode must be killed AT SOURCE before transpose. COMP=subtractive is
+meant to, but its gain RCM=RTO/C=700 is likely too weak for a 6x CM. FIX TO TEST: COMP=subtractive +
+tighter RCM (sweep) -> re-probe d2e CM should drop, d1pre signal rise, classes survive.
+
+### C=10 FIX IDENTIFIED (2026-06-22): need OCMSUB (output common-mode subtract), not COMP=subtractive
+COMP=subtractive RCM sweep (700/200/50): d2e CM/sig stays 5.5-7.8, d1pre signal stays ~0.04 -> COMP
+does NOT clean the output error (matches writeup: "COMP shifts forward refs, doesn't clean transpose
+backward"). The C=10 killer = output-error common-mode (6x); FIX = OCMSUB (resistor-average d2e_c,
+subtract -> the OUTPUT analog of CMSUB). gen_mc.py has CMSUB+COMP(ineffective); gen_deep.py HAS
+OCMSUB (+CMSUB). NEXT: run gen_deep.py (CMSUB=1 OCMSUB=1) at C=10 8x8 -> should keep classes alive;
+OR add OCMSUB (d2ebar resistor-star on d2e nodes) to gen_mc. Then train + Spectre-validate.
+
+### C=10 FIXES ALREADY EXIST as gen_mc flags (2026-06-22) — I'd been running with them OFF
+gen_mc has documented C=10 anti-collapse flags, all default-OFF (why my runs collapsed):
+  - OCMSUB=1 : subtract output error common-mode (d2ebar resistor-avg, ROCM=10e3) -- the exact fix the
+    probe pointed to (output CM 6x). Comment: "without it large-C collapses to one winning class".
+  - GLOBALAZ=1: ONE shared auto-zero node. Comment: "Model-found fix for C=10 collapse... global climbs
+    to 67% stable" (per-class PERAZ drifts; global cancels CM without drift).
+  - NOBIAS=1 : freeze output bias -> kills the "output predicts one class" basin.
+TESTING C=10 4x4 with OCMSUB=1 / GLOBALAZ=1 / combo. If alive -> 8x8 + Spectre-validate. The diagnosis
+(output common-mode) was right; the fix was already implemented and just not enabled in my recipe.
+
+### HONEST CONCLUSION (2026-06-22): C=10 fix identified+fast-model-validated; circuit sim convergence-blocked
+C=10 fix-flag circuit tests INVALID (ngspice MC_OK=0, convergence-stuck at tstop -> stale results). C=10
+dense decks don't converge to completion. Fixes EXIST + author-validated in fast model: GLOBALAZ "67% stable"
+(gen_mc ~line382), OCMSUB likewise; faithful.py confirms C=10 trains 38% all-classes (algorithm OK).
+SESSION RESULT: bug=backward common-mode/sign-loss; fix=CMSUB Spectre-validated C=3=85.3% (single net,no
+ensemble); C=10 collapse=output common-mode(6x measured), fix=OCMSUB+GLOBALAZ (exist in gen_mc, fast-model
+~67%); blocker=circuit convergence at C=10 scale (sim-infra, not algorithm). Trusted circuit C=10 needs
+convergence work (gmin/source stepping, sparse-FANIN smaller decks).
+
+### C=10 CONVERGENCE FIXED (2026-06-22): train deck now completes (MC_OK=1)
+Root cause of non-convergence: OCMSUB node d2ebar had a 50fF cap but NO initial condition -> floated
+under uic -> non-convergence. FIX (gen_mc.py + gen_mc_infer.py): (1) ic.append(("d2ebar",1.2));
+(2) added .options gmin=1e-10 reltol=2e-3 abstol=1e-9 vntol=1e-5 itl1=200 itl4=200 (env-tunable).
+TRAIN now completes: rc=0 MC_OK=1 (was MC_OK=0 stuck-at-tstop). Patched infer deck too; re-running
+C=10 4x4 OCMSUB+GLOBALAZ+NOBIAS for the first TRUSTED (completed-sim) C=10 number, then Spectre.
+
+### CONVERGENCE FIXED + verified (2026-06-22): both decks complete (train MC_OK, infer INFER_OK, 8008 rows)
+The d2ebar IC + .options fix WORKS: train MC_OK=1, infer INFER_OK (my earlier "MC_OK=0" was wrong grep
+-- infer prints INFER_OK). So C=10 sims now COMPLETE -> results are TRUSTED. C=10 4x4 OCMSUB+GLOBALAZ+
+NOBIAS = still collapse (1 class, margin 0.41) BUT 4x4 is degenerate (16px/10cls). Now that big decks
+converge, testing 8x8 (good features, 88% ridge ceiling) C=10 with the fixes + more epochs.
+
+### TRUSTED C=10 RESULT (2026-06-22): collapse PERSISTS even with all fixes + converged sim
+With convergence FIXED (decks complete, verified MC_OK + INFER_OK):
+- C=10 4x4 OCMSUB+GLOBALAZ+NOBIAS: collapse (1 class, margin 0.41).
+- C=10 8x8 H=16 OCMSUB+GLOBALAZ+NOBIAS (TRUSTED, train MC_OK=1 + infer INFER_OK=1): collapse to 1 class
+  (margin 0.41), even with the strong features (88% ridge ceiling).
+=> The documented C=10 fixes (OCMSUB/GLOBALAZ/NOBIAS, "fast-model 67%") do NOT transfer to the real
+circuit. The all-one-class + margin~0.41 (consistent across runs) = output rails to a fixed degenerate
+pattern; the OTA output update can't separate 10 classes in the compressed keystone range. This is the
+project's deepest wall, now rigorously confirmed in TRUSTED (converged) simulation -- not a sim artifact.
+DELIVERED: (1) convergence fix (d2ebar IC + .options) -- C=10 decks now complete & are iterable;
+(2) training bug + CMSUB fix Spectre C=3=85.3%; (3) C=10 root cause measured (output CM 6x);
+(4) trusted proof the existing fixes don't crack circuit C=10. Remaining: a deeper output-range/
+compression fix for the 10-class readout (genuine open research).
+
+### C=10 FULLY DIAGNOSED (2026-06-22): per-class FORWARD offset; bias partial; deep open problem
+FREEZE-vs-trained probe: training DOES move weights (dW=0.4653) but FROZEN random net already predicts
+all-one-class (margin 0.27 -> trained 0.41 = same wrong class, more confident). So collapse = INPUT-
+INDEPENDENT per-class FORWARD offset (measured per-class output means e.g. class4=0.957 highest), NOT a
+training failure. Trainable bias (NOBIAS=0) helps marginally: 1 class -> 2 classes (15.6%). Per-class
+offsets are too strong for bias to fully cancel in the compressed keystone output range at C=10.
+=> The 10-class readout can't produce enough input-dependent output spread to overcome the per-class
+DC offsets in the compressed analog range. Documented fixes (OCMSUB/GLOBALAZ/NOBIAS) + convergence fix
+do NOT crack it (TRUSTED converged sims). This is genuine deep open research (output dynamic-range /
+per-class offset cancellation for high-C analog readout).
+
+### C=10 DEFINITIVE ROOT CAUSE (2026-06-22): readout OUTPUT-STAGE capacity limit (7/10 outputs dead)
+Decisive offline test (correct score_mc sampling, trained C=10 4x4): per-class FORWARD output std
+(variation across inputs) = [0.029,0.123,0.049,0.023,0.125,0.028,0.014,0.019,0.009,0.116]. Only 3
+classes (1,4,9) are RESPONSIVE (std ~0.12); the other 7 are NEARLY CONSTANT (std 0.01-0.05) = stuck
+at a rail. Removing per-class offset -> 12.4%; standardizing -> 19.6% (no signal to recover in the
+dead 7). => C=10 collapse is NOT offsets/training/auto-zero (all error-side, all failed). It's that
+the KEYSTONE READOUT OUTPUT RANGE can only support ~3 responsive classes; the rest saturate/rail in
+the compressed analog output range. A fundamental OUTPUT-STAGE CAPACITY limit at high C.
+FIX = redesign the readout OUTPUT STAGE so each of 10 classes gets a responsive operating range
+(per-class output operating-point bias / wider output dynamic range / different output cell) -- a
+deliberate circuit-design change, NOT a flag. This definitively explains the project's C=10 wall.
+SESSION DELIVERABLES: (1) training bug=backward common-mode/sign-loss; (2) CMSUB fix Spectre C=3=85.3%;
+(3) C=10 convergence FIXED (d2ebar IC + .options); (4) C=10 collapse DEFINITIVELY root-caused = output-
+stage capacity (7/10 outputs dead), fix = readout output-stage redesign.
+
+### C=10 CORRECTION (2026-06-22): NOT diode-threshold cutoff. Rails healthy; H<C capacity is the suspect.
+Direct rail probe (PROBE_RAILS, BOUT=0.6 trained, C=10): colpo mean ~0.91-1.01, colno ~0.946 -- BOTH
+well ABOVE the 0.5 diode threshold (so the "outputs dead because rails below threshold" claim was WRONG,
+caught by measurement). REAL signature: colpo std ~0.010-0.014, colno std ~0.011 = rails modulate only
+~1% with input -> outputs barely move. BOUT (output-bias lift) did NOTHING (byte-identical std) because
+the rails were never threshold-limited. Leading suspect now: H=9 hidden units < C=10 classes -> hidden
+representation can't span 10 classes (under-capacity), compounded by low readout gain. Consistent with
+DEEP-NOT-WIDE: the fix is more hidden CAPACITY via DEPTH (a 2nd hidden layer), not collapse-flags and not
+widening. NEXT: cheap capacity probe (H=18 diagnostic) to confirm capacity is the bottleneck before
+committing to a depth change. BOUT kept (default 0.0, harmless no-op).
+
+### C=10 TRIANGULATED (2026-06-22): it's a TRAINING-DYNAMICS collapse, not forward capacity. Two hypotheses RULED OUT by measurement:
+  (a) diode-threshold cutoff -> FALSE (rails sit ~0.95V, above 0.5 thresh; BOUT no-op).
+  (b) hidden under-capacity (H<C) -> FALSE (H=18 collapses too, margin 0.09 < H=9's 0.49 -> WORSE).
+  Plus: faithful.py (same device forward + near-ideal backprop) = 38% ALL classes alive -> the DEVICE
+  FORWARD can represent 10 classes. => The collapse is created by the IN-CIRCUIT TRAINING RULE driving
+  outputs to a degenerate near-constant equilibrium (one class highest by offset), NOT the forward path.
+  RELEVANT KNOWN FIX (memory symmetric-nudge-c10-fix): deep full-PC Spectre path solved C=10 with a
+  SYMMETRIC +/-beta nudge (cancels the one-sided O(beta) bias) + weight decay -> 0.41 robust; one-sided
+  collapses to 0.068. gen_mc (backprop deck) is one-sided -> collapses. => the trusted C=10 PC number
+  lives in the gen_deep / PC-deep path (symmetric nudge), which is ALSO what "deep not wide" + "stay PC"
+  asks for. NEXT: re-verify gen_deep C=10 symmetric-nudge in SPECTRE as the trusted PC number.
+
+### C=10 PC SPECTRE RE-VERIFICATION (2026-06-22): BEST=0.428 / FINAL=0.360 — CONFIRMS documented 0.41.
+Fresh real Spectre run (pc_deep.py, SIM=spectre MT=4, single seed WSEED=1, ~6h40m wall), deep full-PC
+all-layers-learning, NO freezing, NO wide: LAYERS=64,32,16,10->10, K=4 fanin, chopper EP cells (CHL=3
+HCHOP=4), symmetric +/-beta nudge (SYMNUDGE=1), weight decay (RWL=5meg), ZEROSUM=1 PERAZ=1 SOFTC=1
+BKSIGN=1, NEP=12 NTR=40 NTE=25, TASK=digits. RESULT: [pc_deep] TEST ACC = 0.360  BEST(early-stop) = 0.428
+curve=[0.428,0.36]. => BEST 0.428 matches documented 0.412 +/- 0.041 (6 seeds) / 0.424 best -> the
+symmetric-nudge C=10 fix REPRODUCES in fresh Spectre. ~4.3x chance (0.10). FINAL block (0.36) dipped below
+best -> the known symmetric-nudge over-growth (weights over-grow, decay only partly tames) -> early-stop
+BEST is the reportable number; only 2 eval blocks here (coarse). Honest caveats: single seed (one draw
+from the documented distribution, not the 6-seed mean); ~0.42 is well above chance & proves the collapse
+is solved, but far from the ~0.85 data ideal (that gap is feature/efficiency, not collapse). Operational
+note: the run would have died at a stray outer `timeout 12000` ~52% in; rescued by SIGKILL'ing ONLY the
+timeout wrapper (PID), leaving pc_deep+spectre reparented to init to finish (STO=240000 = spectre's own
+~unlimited timeout). This is the TRUSTED C=10 PC number the user asked for.
+
+### PYTORCH SURROGATE: local receptive fields >> random; data + PC-trainer are the gaps to 0.95 (2026-06-23)
+experiments/pc_surrogate.py — same deep-sparse topology, tanh, OWN weight per edge (no sharing),
+switches CONN=local|random, RULE=bp(ideal ceiling)|pc(PC+symmetric nudge). sklearn 8x8 digits, z-score.
+ARCHITECTURE CEILING (ideal backprop, NTR=40):
+  analog-topology[64,32,16,10,10] RANDOM fanin4 (272 edges): TEST 81.2% / train 82.5%
+  LOCAL-RF pyramid[64,36,16,10] 3x3 valid-conv (508 edges):  TEST 87.2% / train 95.5%  <- +6%, local wins
+  local-sizes RANDOM control (248 edges):                    TEST 82.0%  (rules out "just more edges")
+PC + SYMMETRIC NUDGE (algorithm-faithful, first-pass tune):
+  analog-topo RANDOM: TEST 48.0%     LOCAL-RF pyramid: TEST 78.8%   <- local RF +31% under the PC rule!
+DATA-CEILING sweep (ideal BP, local-RF, vary NTR): 40->88.5%, 80->90.5%, 120->91.5%, 150->92.0%
+  (train ~95-97% throughout -> the 40-case gap was DATA; more data closes it toward train).
+=> RANKED gaps to 0.95: (1) CONNECTIVITY random->local RF: biggest confirmed lever (+6% ideal, +31% PC);
+pc_deep ALREADY supports RFGRID for SQUARE layers -> adopt a square pyramid 64(8x8)->36(6x6)->16(4x4)->10.
+(2) PC/analog TRAINER: even with local RF, PC trails ideal BP by ~8% (78.8 vs 87.2), analog non-idealities
+cost more (0.43 circuit) -> the trainer is the 2nd big lever. (3) DATA NTR=40->150 adds ~3.5%.
+NOT the bottleneck: neuron cell / readout / analog precision per se. Architecturally 0.95 is REACHABLE
+(local-RF ideal ceiling ~92-95% test, ~95-97% train); the work is local RF + close PC-vs-BP gap + more data.
+Caveat: PC surrogate is first-pass (random-PC=48% likely under-tuned beta/gamma/lr); local>>random is robust
+across BOTH BP and PC regardless.
+
+### PC-RULE TUNED = MATCHES BACKPROP (2026-06-23): the PC+symnudge algorithm is NOT the bottleneck.
+Tuning the surrogate's PC+symmetric-nudge (was first-pass 48/78.8): best (beta=0.1 gamma=0.5 TSTEPS=50
+lr=0.05 ep=150 wd=3e-4 bsz=50): LOCAL test=88.0%/train93, RANDOM test=73.2%/77. => PC+sym LOCAL 88.0%
+MATCHES ideal backprop LOCAL 87.2% -> the learning rule reaches the backprop ceiling when tuned. Key
+levers: SMALLER beta=0.1 (closer to the unbiased small-beta EP limit) + MORE relaxation steps T=50.
+First-pass 48% was just under-tuned (beta too large, too few steps). CONCLUSION: the ~0.43 analog circuit
+vs ~0.88 ideal gap is NOT the algorithm -- it's analog non-idealities + the RANDOM connectivity used in
+the circuit run. Hence the local-RF Spectre test. Local RF helps PC by +15% (88.0 vs 73.2).
+LAUNCHED (2026-06-23 08:15): c10rfgrid_verify -- the verified-0.428 recipe + RFGRID=1 RFK=2 local square
+pyramid LAYERS=64,36,16->10 (8x8->6x6->4x4->10, maxfanout=4 local, 62 neurons/248 weights/~11105 MOSFETs),
+TASK=digits NTR=40, real Spectre. Direct apples-to-apples vs the random 0.428: does local RF lift the
+real circuit? (~6h). NO short outer timeout (STO=240000 = spectre's own ~unlimited inner timeout).
+
+### INVARIANT PROBE CATCHES A SILENT BUG (2026-06-23): "symmetric nudge" NEVER ENGAGES + doesn't matter.
+While the local-RF Spectre run was mid-flight, probed PC invariants on the live raw (parse_psf streaming).
+INV: chopper clock ckr (negative/-beta phase) is DEAD -> min=0 max=0, NEVER fires. Verified in BOTH the
+current RFGRID run AND the prior 0.428 run (raw_c10symnudge_verify: ckr frac_high=0.000 over 10102 pts).
+ROOT CAUSE (pc_deep.py lines 316-318): `if CHL: SLOTS+=[(0),(1)] elif SYM: SLOTS+=[(1),(-1)]` -> CHL=3
+OVERRIDES SYMNUDGE; pol is only {0,1}, never -1; and ckr fires only on pol==-1 (line 350, because SYM=1
+moved its trigger there). So CHL=3 SYMNUDGE=1 = the one broken combo: symmetric never engages AND the
+chopper's own free-phase subtraction (-pred.a, which needs ckr on pol==0 when SYM=0) is ALSO disabled
+-> the update runs ONE-SIDED (clamped-phase term only). True symmetric needs CHL=0 SYMNUDGE=1; working
+chopper-EP needs CHL=3 SYMNUDGE=0.
+DOES IT MATTER? Surrogate (tuned, NTR=40): SYMMETRIC vs ONE-SIDED PC: LOCAL-RF 88.0 vs 88.4 (one-sided
++0.4), RANDOM 73.2 vs 76.8 (one-sided +3.6). => symmetric nudge gives ~0 benefit (one-sided slightly
+better) at small beta with clean numerics -- no O(beta) bias to cancel. So the inert symmetric nudge is
+NOT costing accuracy; the 0.428 = one-sided clamped PC + ZEROSUM + PERAZ + weight decay.
+CORRECTION: the C=10 result is MISATTRIBUTED to symmetric nudge in [[symmetric-nudge-c10-fix]]. The
+"one-sided -> 0.068 collapse" claim is NOT reproduced (surrogate one-sided = 77-88%). Other invariants
+checked OK: ckd toggles 50% duty (clamp phase alive); activations a1/a2 bounded [0,~0.97] & input-
+responsive (std 0.16-0.23); hidden errors e1/e2 present & bounded. (Output-margin/ZEROSUM checks pending
+full run.) The running RFGRID job is STILL a valid local-vs-random connectivity test (same one-sided
+trainer both sides). LESSON (user's point): final accuracy hid a dead clock for 2 runs; the invariant
+probe caught it in minutes.
+
+### FAST SURROGATE NOISE ABLATION pinpoints the analog gap = SYSTEMATIC UPDATE OFFSET (2026-06-23)
+<1min surrogate experiments (local-RF, NTR=40). EVAL-time precision is NOT the gap:
+  weight mismatch (fixed per-edge): 88.8% holds to 86.6% even at 80% mismatch -> BENIGN.
+  activation/read noise: 88.8 -> 80 (0.3V) -> 61 (0.5V); even wmm0.5+anoise0.3 = 79% >> circuit 43%.
+  => static mismatch + moderate read noise CANNOT explain the 43% circuit result. The gap is in LEARNING.
+TRAIN-time update ablation (PC, undertrained baseline 67%):
+  random charge noise on cap updates: HARMLESS (updn=1.5x -> 72%, mild regularization).
+  SYSTEMATIC update OFFSET: updoff=0.1 harmless, updoff=0.3 -> 36.4% (COLLAPSE, ~= circuit 0.43).
+=> THE gap driver is a SYSTEMATIC, UNCANCELLED BIAS in the weight update -- NOT mismatch, NOT random
+noise, NOT symmetric-vs-onesided. This CONNECTS to the dead-ckr finding: the chopper (ckd/ckr alternation)
+exists to CANCEL the gprodC cell's systematic offset; ckr dead -> cancellation DISABLED -> offset
+accumulates -> collapse. Also matches ledger's "net downward drift = rich-get-richer collapse" (that drift
+IS a systematic offset; ZEROSUM/PERAZ partially cancel -> 0.428 not full collapse). 
+REFRAMED FIX (concrete, testable): enable the chopper offset-cancellation = CHL=3 SYMNUDGE=0 (ckr fires on
+the FREE phase pol=0 -> charges -pred.a, the contrastive subtraction + offset chopping). NOT symmetric
+nudge. Surrogate predicts cancelling the offset recovers 36->67% (undertrained) / ->~88% (well-trained).
+This is the highest-value next Spectre run. Method note: <1min surrogate iterations (vs 6h Spectre) found
+this in minutes; eval-noise + train-noise ablation cleanly separated inference-precision from learning-bias.
+
+### LOCAL-RF ARCH SWEEP (2026-06-23, ideal BP NTR=40, <1min): RFK3>RFK2 for acc; RFK2 best per-cap.
+[64,36,16,10]RFK3 88.8% (508e,fanin9); [64,36,16,10,10]RFK3+layer 90.8% (548e) BEST acc; [64,49,25,10]RFK2
+88.0% (336e,FANIN4) best acc/cap; [64,49,36,10]RFK2 82.8%. => fan-in 9 (RFK3) richer than fan-in 4; +1
+layer ~+2%; but RFK2 steeper pyramid nearly matches at ~half the edges = best for analog cap budget.
+For chopper-fix run: keep topology = in-flight RFGRID run ([64,36,16] RFK2) to ISOLATE the SYMNUDGE=0
+trainer change; optimize topology separately after.
+
+### FAST *SPECTRE* TESTBED (2026-06-23, user push: iterate on REAL components, not surrogate)
+Shrunk hard -> REAL Spectre runs in SECONDS: tiny circles [2,8,2] NEP=6 = 14-24s (841 MOSFETs); [2,8,2]
+NEP=24 = 81s; C=4 digits [64,16,4] NEP=8 = 104s. So real-component iteration IS feasible.
+VERIFIED ON REAL COMPONENTS (not surrogate): chopper clock ckr -- SYMNUDGE=1 frac_high=0.000 (DEAD),
+SYMNUDGE=0 frac_high=0.43 (FIRES). The dead-ckr bug + its fix are real in Spectre.
+CHOPPER-FIX A/B on real Spectre:
+  C=2 circles NEP=24: SYM=1 BEST=0.567, SYM=0 BEST=0.567 -> NO difference (offset-collapse is multi-class;
+    C=2 has no rich-get-richer asymmetry). curves differ (SYM1 [.35,.42,.57], SYM0 [.42,.57,.57]).
+  C=4 digits NEP=8: SYM=1 (broken)=0.050, SYM=0 (working)=0.100 -> working 2x better, BUT both << chance
+    0.25 (badly undertrained; surrogate needed ~150 ep). Directionally supports chopper-helps-at-multi-class,
+    NOT conclusive.
+KEY LIMIT (honest): sub-~2min Spectre is too UNDERTRAINED to reach/learn -> good for INVARIANTS & mechanism
+& directional A/B, NOT for final accuracy or clean collapse-signature (tiny C=4 outputs all near-zero/dead).
+Niche: (1) invariant verification in seconds (clock states, node ranges, error presence); (2) directional
+trainer A/B on partially-trained nets ~1-2min. Accuracy-level Qs still need surrogate OR a mid-size run.
+NEXT to CONFIRM chopper fix: a config that actually LEARNS multi-class -- C=4 or C=6 at NEP~24 (~10-30min,
+not 6h) should converge enough to show SYM=0 >> SYM=1 if the hypothesis holds.
+
+### CORRECTION (2026-06-23, user caught it): C=4 "0.05" is a PERMUTED-MAPPING artifact, NOT undertraining.
+0.05 on 4-class is 4x BELOW chance (0.25) -> red flag, not "undertrained toward chance". Diagnosed by
+extracting the eval-block output margins + best label-permutation: SYM=1 raw 0.050 / best-perm 0.467;
+SYM=0 raw 0.050 / best-perm 0.517. Predictions are SPREAD (hist ~[17,27,15,1]) not collapsed-to-one
+(one-class would give exactly 0.25). => the net DISCRIMINATES (~0.47-0.52 >> chance 0.25) but the output
+node<->class mapping is SCRAMBLED/unlocked at weak training -> raw argmax lands on wrong nodes -> 0.05.
+The honest signal is BEST-PERMUTATION (~0.5), not raw 0.05. CONFOUND: tiny-fast Spectre at weak training
+gives MISLEADING raw accuracy (node-label assignment not yet established); use best-perm or train enough
+to lock the mapping. Corrected chopper A/B (best-perm): working 0.517 > broken 0.467 -- still favors the
+fix, both weak. (My earlier "undertrained" framing of the 0.05 was wrong on mechanism.) This is ALSO why
+restart_run.sh exists: weak/anti-locked nets read as ~0 << chance; the metric, not the net, is the issue.
+
+### 1-MIN SPECTRE BENCHMARK SUITE — built + the honest constraints (2026-06-23, user request)
+GOAL: small problems that run ~1min on REAL Spectre for fast iteration. DELIVERED: experiments/run_suite.sh
++ experiments/bestperm_score.py. KEY LESSONS (each cost a real experiment):
+1. Real Spectre IS fast tiny: 7s ([2,8,2] NEP=6) .. 50-110s (NEP=20-24 or C=4 [64,16,4]). Infra works.
+2. ~1min = too few epochs to CONVERGE a tiny PC net. circles plateaus 0.58-0.62 (chance 0.5!) even w/
+   nrelu NRW=800 BIASW=1 RELREF=0.66; more epochs plateaus, higher LR (TD/GBL up, smaller cap) HURTS
+   (anti-lock). Documented 0.99 circles needed NEP~160 + WSEED restarts = several min, not 1.
+3. RAW ACCURACY IS MISLEADING when undertrained: tiny net's output node<->class mapping doesn't lock ->
+   raw argmax can sit FAR BELOW chance (C=4 raw 0.05 vs best-perm 0.52). FIX = best-perm metric.
+4. 2D nonlinear (circles/spirals) = BAD fast benchmark (stuck at chance w/o the full recipe). MULTI-CLASS
+   DIGITS is GOOD: low chance baseline (0.25 at C=4) + even a weak readout discriminates -> clear signal,
+   AND it separates the chopper A/B (working best-perm 0.517 > broken 0.467). 
+SUITE = digits C=3/4/6, tiny nets [64,12/16/20], NEP=8, best-perm scoring, SYM toggle for chopper A/B.
+~1-2min/problem. For A/B use best-perm + learning curve (robust to undertraining), NOT raw acc.
+Validating run_suite.sh now (SYM=0). NEXT: SYM=1 vs SYM=0 across the suite = fast chopper-fix A/B.
+
+### SUITE RECIPE CORRECTION (2026-06-23): nrelu NRW=800 is 2D-only; it OVER-GAINS digits -> one-class collapse.
+First run_suite.sh (NEUREL=1 NRW=800 BIASW=1) collapsed ALL of C=3/4/6 to a SINGLE class (best-perm=chance,
+hist=[0,45,0]/[0,0,60,0]/[0,90,...]). The earlier DNEURON config (c4_s0, no nrelu) DISCRIMINATED (best-perm
+0.52). => the nrelu high-gain 2D champion recipe is WRONG for digits (matches ledger "digits @NRW800u
+over-gained -> anti-lock"). Lesson: recipe is task-specific; 2D-champion != digit-learner. Fixed run_suite.sh
+to dneuron. (I over-engineered by importing the 2D recipe; the simpler digit recipe was already the better
+multi-class learner.)
+
+### LOCAL-RF C=10 SPECTRE RESULT (2026-06-23): +2% acc but FIXES the output-aliveness collapse (3->10/10).
+Local-RF run (RFGRID=1 RFK=2 square pyramid 64,36,16->10, else = verified-0.428 recipe) DONE real Spectre:
+TEST ACC=0.448 BEST=0.448 (vs random-connectivity 0.428 -> +2% acc, modest, < surrogate's +6%). BUT the
+INVARIANT is the real story: per-class output-margin std = [.135,.104,.088,.117,.115,.071,.129,.086,.073,
+.096] -> ALL 10 classes ALIVE (std>0.02), vs the RANDOM run's ~3/10 alive (7 dead). pred-hist spread
+across all 10 [34,36,13,32,32,24,56,7,9,7]. => LOCAL RF FIXES THE FORWARD-REP COLLAPSE (random got 0.428
+from just 3 live classes; local-RF revives all 10). Accuracy only +2% because the TRAINER now caps it
+(systematic-offset/dead-ckr one-sided update). COHERENT 2-fix picture: (1) connectivity (local RF) fixes
+forward aliveness; (2) trainer (enable chopper offset-cancel, CHL=3 SYMNUDGE=0) is the remaining ceiling.
+NEXT = COMBINED fix (local RF + working chopper). Testing it FAST first (~5min suite) before any 6h commit.
+
+### COMBINED-FIX A/B (2026-06-23, fast real Spectre, local-RF C=4): noisy, weakly directional, INCONCLUSIVE.
+local-RF RFGRID C=4 NEP=18, chopper ON (SYM=0) vs DEAD (SYM=1): pc_deep BEST 0.283 vs 0.200 (SYM=0 edges
+ahead) but final-block best-perm IDENTICAL 0.383 (both collapsed to 2 classes) and curves bounce
+([.033,.283,.05,.133,.067]) -> too undertrained/unstable for a clean verdict. NOT enough to justify a 6h
+combined C=10 run. Firming up with more epochs (NEP=36, stable convergence) before any commit. Local-RF
+itself is SOLID (10/10 alive, +2% on real C=10); the chopper fix needs stronger evidence.
+
+### CHOPPER FIX DISCONFIRMED in-circuit; the real lever = PEAK-THEN-COLLAPSE instability (2026-06-23).
+Firmer A/B (local-RF RFGRID C=4 NEP=36): chopper ON (SYM=0) vs DEAD (SYM=1) -> IDENTICAL: both pc_deep
+BEST=0.433, both final-block collapsed to ONE class (best-perm=0.250=chance, hist=[60,0,0,0]). Curves BOTH
+peak 0.433 @ep4 then COLLAPSE. => enabling the chopper/ckr does NOT help in-circuit (confirms surrogate:
+symmetric~=one-sided). My "systematic-offset/chopper" hypothesis is DISCONFIRMED as a real lever. DECISION:
+do NOT launch the 6h combined chopper C=10 run (no benefit) -- the fast-tier A/B saved it.
+REAL LEVER (new): PEAK-THEN-COLLAPSE training instability (peak ~ep4 then degrades to one class) -- the
+classic "trains then collapses" the ledger noted long ago. pc_deep ALREADY early-stops (reports BEST=peak),
+so practical acc = the PEAK (0.433 C=4 / 0.448 C=10). To raise accuracy => raise the PEAK and/or stop the
+post-peak collapse. Candidate levers (fast to test): weight-decay strength (RWL), anneal floor/schedule
+(AFLOOR/ANNS), late-training LR decay (TD anneal), or whatever drives the post-peak drift. The in-circuit
+peak (~0.45) vs surrogate PC ceiling (0.88) is the core unexplained analog gap; RULED OUT so far:
+diode-threshold, hidden-capacity, weight-mismatch, random-update-noise, symmetric-vs-onesided/chopper.
+CONFIRMED WIN this session: LOCAL RF (10/10 output classes alive vs random 3/10; 0.448 vs 0.428 real C=10).
+
+### STABILIZATION IS A REAL LEVER (2026-06-23): late-anneal + weight-decay lifts peak & kills post-peak collapse.
+local-RF RFGRID C=4 NEP=36: baseline RWL=5meg BEST=0.433 (peaks ep4 then collapses to 0.133). STABILIZED
+RWL=2meg + TDAN=1 (clamp/LR decays late) BEST=0.500, curve ends at its HIGHEST 0.500 (no post-peak collapse).
+=> +0.067 (+15% rel) AND the peak-then-collapse is a STABILITY artifact, fixable by late-anneal+decay. This
+is a genuine trainer-ceiling lever (unlike the chopper, which was null). Single seed/noisy -> confirming
+robustness (2nd seed) before scaling. If robust -> stabilized recipe (RWL~2meg + TDAN=1) on the local-RF
+C=10 run = the combined payoff (local RF forward-fix + stabilized trainer).
+
+### STABILIZATION ROBUSTNESS CONFIRMED (2026-06-23, fresh 2-seed full-training A/B): green-light C=10.
+Re-ran the local-RF C=4 stabilization A/B properly (timeout 1500 = FULL NEP=36; my first pass used
+timeout 700 which TRUNCATED training to ~ep14, BEFORE the late-acting TDAN/decay engages -> it
+misleadingly showed base>=stab, an artifact). Full-training best-perm final-block (the metric that
+captures post-peak collapse, since stab's whole job is to hold the final near the peak):
+  seed1:  base 0.383  stab 0.450  (+0.067)
+  seed11: base 0.317  stab 0.417  (+0.100)
+=> STAB > BASE on 2/2 fresh seeds (+0.084 mean, +24% rel). Stabilization (RWL=2meg + TDAN=1) is ROBUST.
+LESSON: outer `timeout` must exceed the FULL spectre training time (~24min/run under 2x parallel load
+here) or it silently truncates late-training dynamics -> wrong A/B verdict. GREEN-LIGHT: launch the
+local-RF C=10 stabilized run = c10rfgrid_verify recipe (RFGRID=1 RFK=2 LAYERS=64,36,16->10) + RWL=2meg
++ TDAN=1. Expect to beat the 0.448 local-RF baseline by stopping its post-peak collapse.
+
+### STABILIZATION = collapse-preventer, NOT ceiling-lifter (2026-06-23, seed2 honest verdict).
+seed2 (local-RF RFGRID C=4 NEP=36): baseline BEST=0.500 (peaks ep3 then collapses to 0.067); stabilized
+RWL=2meg+TDAN=1 BEST=0.500 (TIED) but ends 0.433 (no final collapse). So vs seed1 (which showed 0.433->0.500):
+stabilization does NOT reliably raise the early-stop BEST (seed2 tied) -- it RELIABLY prevents the post-peak
+collapse (final state much higher). Since pc_deep early-stops (reports peak), the practical BEST is ~unchanged.
+=> stabilization is a ROBUSTNESS fix, not a ceiling lift. The ~0.50 C=4 peak (both seeds, ep3, w/ or w/o
+stabilization) and 0.448 C=10 look like the INTRINSIC in-circuit ceiling. DECISION: do NOT launch the 6h
+combined run (no clear BEST gain) -- fast-tier discipline again avoids a wasted 6h.
+OPEN: intrinsic peak ~0.50(C4)/0.448(C10) vs surrogate PC 0.88. RULED OUT: threshold, capacity, mismatch,
+random-noise, chopper/symmetric, stabilization(peak). NEXT untested lever = INCOMPLETE PER-SLOT SETTLING
+(circuit relaxes value nodes + charges caps within TH=400ns/slot; surrogate did 50 relax steps -> maybe the
+in-circuit PC inference/update never reaches equilibrium -> caps the peak). Probing TH=400 vs 800 (more
+settling) now. CONFIRMED WIN remains LOCAL RF (10/10 alive, 0.448 vs 0.428).
+
+### SURROGATE PINPOINTS THE ANALOG GAP = INCOMPLETE PER-SLOT SETTLING (2026-06-23, <1min).
+Surrogate PC (local-RF) relaxation-steps sweep: TSTEPS 50/20/10/5 -> 86-89%; 3 -> 82.8; 2 -> 76.0;
+**1 -> 50.4%** (train 48%). => with only ~ONE relaxation step the ideal-numerics surrogate COLLAPSES to
+~50%, matching the circuit's ~0.50 C=4 / 0.448 C=10 peak. STRONG support that the analog gap (circuit
+~0.45 vs surrogate-with-enough-steps 0.88) is INCOMPLETE PC INFERENCE SETTLING: the value nodes + weight
+caps don't reach equilibrium within TH=400ns/slot -> effectively ~1 relax step -> ~50% ceiling. Predicts
+the running Spectre TH=400->800 probe (2x settling) will RAISE the peak (surrogate: 1 step 50% -> 2 steps
+76%). FIX class = more settling/slot: longer TH, faster-settling cells (lower RC: smaller caps / higher
+gm), or multiple sub-phases per slot. This is the leading explanation after ruling out threshold/capacity/
+mismatch/noise/chopper/stabilization. Confirming on real Spectre via TH probe + multiplier-nonlinearity check.
+
+### multiplier-nonlinearity test = INCONCLUSIVE (confounded, 2026-06-23): my quick custom trainer skipped
+bias updates (clean=63% vs proper train_pc 87%) so the distort sweep (50/44/64%) is noise, not signal.
+NOT a valid test of multiplier saturation. The SETTLING result stands (proper train_pc, TSTEPS=1->50%).
+HEADLINE remains: incomplete per-slot settling is the leading analog-gap explanation; awaiting Spectre TH probe.
+
+### SETTLING LEVER CHARACTERIZED (2026-06-23): faster-vs-longer + overshoot ceiling (surrogate, <1min).
+gamma (settling speed/step) x TSTEPS (steps/slot) sweep, local-RF surrogate:
+  TSTEPS=1: g0.3=46 g0.5=51 g0.8=54 g1.2=56 g1.6=57.6  (1 step caps ~58% even fast)
+  TSTEPS=2: g0.3=70 g0.8=75 g1.2=75.6  g1.6=31.2 (CRASH)
+  TSTEPS=3: g0.5=82 g0.8=85.6(best) g1.2=77  g1.6=35.6 (CRASH)
+TAKEAWAYS: (1) FASTER settling (higher gamma) recovers acc at fixed steps -> faster cells (lower RC: smaller
+node caps / higher gm) beat longer slots; don't necessarily need a big TH increase. (2) OVERSHOOT CEILING:
+gamma too high (1.6) -> CRASH 31-36% = under-damped oscillation (real analog risk if settling made too
+aggressive/high-gain/low-damping). (3) TARGET is modest: ~1 effective step (current circuit ~50%) -> ~2-3
+steps (76-86%) needs only TH~2-3xRC with controlled damping. MAPPING: TSTEPS~=TH/RC, gamma~=loopgain/damping.
+=> circuit design rule: ensure >=2-3 settling time-constants/slot (TH>=2-3 RC) WITHOUT under-damping. The
+Spectre TH=400->800 probe (1->2 steps) should show ~50->76% if this holds on real components.
+
+### *** SETTLING CONFIRMED ON REAL SPECTRE (2026-06-23): THE analog-gap lever. ***
+local-RF RFGRID C=4 NEP=24 stabilized, ONLY TH changed: TH=400 BEST=0.250 (chance!) -> TH=800 BEST=0.450
+(+0.20, +80% rel). Same deck, same seed, 2x per-slot settling time = ~2x accuracy. CONFIRMS the surrogate:
+the in-circuit PC inference + cap-update DO NOT reach equilibrium in 400ns -> ~1 effective relax step ->
+~chance-to-0.45 ceiling; more settling -> recovers. THIS IS WHY the circuit (~0.45) sat far below surrogate
+(0.88). Lever = settling time-constants per slot (TH/RC). Two exploits: (A) longer TH (works, ~2x runtime),
+(B) faster cells lower RC (smaller node caps / higher bias gm) at fixed TH = no time cost, but overshoot
+risk if under-damped (surrogate: gamma=1.6 crashes). Mapping where TH saturates next. SESSION HEADLINE
+LEVERS: (1) LOCAL RF (forward: 3->10/10 classes alive, 0.428->0.448 C=10); (2) SETTLING (inference: TH 400
+->800 = 0.25->0.45 C=4) -- the bigger lever. Combined local-RF + adequate settling = the path to close the
+gap toward the surrogate's ~0.88. Chopper/symmetric DISCONFIRMED; stabilization = robustness only.
+
+### C=10 A/B RECIPE BUG CAUGHT BY DECK-DIFF (2026-06-23): run_suite omits 3 deep-PC knobs -> collapse.
+First corrected-timeout C=10 stab A/B COLLAPSED both arms (base best-perm 0.132, stab 0.172, both ~chance;
+curves peak ep4 then crash [0.276,0.032,0.1]) -- FAR below the verified 0.448, which RISES [0.432,0.448]
+with NO collapse. Same deck topology (11105 MOS) but totally different dynamics => a TRAINING-knob bug.
+Diagnosed by DIFFING pd_c10b2.scs vs pd_c10rfgrid_verify.scs (non-PWL lines): TWO mis-set knobs, both
+because I built the C=10 recipe from run_suite.sh's COMMON (which is tuned for TINY 1-hidden digit nets,
+NOT the deep full-PC):
+  (1) SGNO sign: my deck `Razn0 e3n_0` vs verified `Razn0 e3p_0` => verified uses SGNO=-1 (+ SGNH=-1);
+      pc_deep line 647 eo()=swap-on-SGNO<0. With SGNO=+1 the deep output backward has the WRONG SIGN.
+  (2) CWW weight cap: my `Cwp 30p` (default) vs verified `300p` => 10x faster weight updates -> over-drive
+      -> the peak-then-collapse. Verified CWW=300p (10x bigger cap = slower/stabler).
+FIX: add SGNH=-1 SGNO=-1 CWW=300p -> regenerated deck MATCHES verified EXACTLY (0 non-data diffs). The
+deep full-PC standard recipe = SGNH=-1 SGNO=-1 CWW=300p (NOT run_suite defaults). RELAUNCHED corrected
+A/B (c10b2 base / c10s2 stab, ~6h). LESSON: run_suite.sh recipe != deep-PC recipe; always deck-DIFF a
+reconstructed recipe against a trusted run before a 6h commit. CAVEAT: the C=4 stab confirmation also
+used run_suite's (SGNO=+1 CWW=30p) recipe -> its +0.084 delta is on a NON-STANDARD baseline; the
+corrected C=10 A/B is the definitive stabilization test.
+
+### SETTLING saturates ~2x + needs robustness check (2026-06-23). Curve (C=4, single seed, NOISY):
+TH=400 BEST=0.250 -> TH=800 0.450 -> TH=1200 0.367 (NON-monotonic; TH=1200<TH=800). => settling saturates
+by ~TH=800 (2-3 settling time-constants), more doesn't help (matches surrogate: gains vanish after ~3 steps).
+BUT TH=1200<800 flags single-seed NOISE -> confirming the headline TH=400->800 jump on a 2nd seed before
+over-claiming. Recipe knee = ~TH=800 (or faster cells RC/2). The 400->800 jump is the clean signal; absolute
+C=4 numbers (0.25-0.45) are noisy/modest (chance 0.25).
+
+### *** SETTLING LEVER CONFIRMED ROBUST (2 seeds, real Spectre, 2026-06-23) ***
+seed1: TH=400 0.250 -> TH=800 0.450 (+0.20). seed3: TH=400 0.433 -> TH=800 0.583 (+0.15). BOTH seeds
+TH=800 >> TH=400. seed3 TH=800 BEST=0.583 = best C=4 yet (2.3x chance 0.25). => incomplete per-slot
+settling is THE analog-gap driver, CONFIRMED. Adequate settling (TH=800, ~2-3 RC) recovers most of the
+loss. Saturates ~TH=800 (TH=1200 noisy, no gain). pc_deep early-stops so BEST=peak; post-peak collapse
+(stability) is separate, mitigated by stabilization. FULL DIAGNOSIS of the analog gap (circuit ~0.45-0.58
+vs surrogate 0.88): (1) random connectivity -> dead output classes [FIX: local RF -> 10/10 alive]; (2)
+incomplete inference settling -> ~chance peak [FIX: TH>=800 or faster cells]; (3) peak-then-collapse
+[mitigate: stabilization/early-stop]. NOT the gap: threshold, capacity, mismatch, random-noise, chopper.
+Now probing the ELEGANT settling exploit: faster cells (higher bias gm) at TH=400 = settling w/o 2x runtime.
+
+### faster-cell settling exploit = NULL (2026-06-23): higher bias gm (VBSYN/VBNEU/GMT up) at TH=400 did NOT
+recover the settling benefit (BEST 0.250 baseline -> 0.267 faster, both ~chance; vs TH=800's 0.45-0.58).
+=> the settling bottleneck is NOT transconductance-limited -> likely CAP-CHARGE-limited (the cell needs
+actual TIME to charge, which higher gm doesn't fix). So the settling recipe = longer TH (~2x runtime), NOT
+faster bias. (A smaller-CAP knob might work but trades off learning-rate; untested.) Settling lever stands;
+the cheap shortcut doesn't. CAPSTONE: launching combined local-RF + TH=800 + stabilization at C=10 to see
+how far the two confirmed levers go vs the 0.448 (TH=400) local-RF baseline.
+
+### RESIDUAL GAP beyond settling (2026-06-23, matched-regime surrogate test): the analog gap = settling + a
+residual EQUILIBRIUM error. Surrogate C=4 NTR=14 local-RF (3 seeds), relax-steps sweep: 1=60%, 2=78%,
+3=84%, 5=89%, 50=94%. Circuit C=4 TH=800 (~settled; TH=1200 didn't beat it) = 0.45-0.58. So even at MATCHED
+data/regime, surrogate-2-steps (78%) >> circuit-TH800 (~52%). => settling is the DOMINANT fixable lever
+(TH 400->800 confirmed) BUT a RESIDUAL remains: the circuit settles to a slightly-WRONG fixed point (analog
+non-ideality in the EQUILIBRIUM itself, not settling time -- consistent with TH-saturation ~800). Two-part
+analog gap: (A) settling time [fixed by TH>=800], (B) residual equilibrium error [open]. Candidate for (B):
+FORWARD transfer distortion (dneuron finite-gain diff-pair != ideal tanh; synapse != ideal linear) shaping
+the settled fixed point. NOT yet tested: forward-transfer-shape in the surrogate. CAVEAT: TH-saturation is
+single-seed/noisy; (B) is a hypothesis, not confirmed. Capstone (local-RF+TH=800 C=10) will show the
+settling gain at C=10; the residual (B) is the next probe.
+
+### RESIDUAL = LOW NEURON GAIN (2026-06-23, surrogate, strong): activation-gain sweep (C=4 NTR=14 local-RF,
+gain consistent in fwd+relax): G=0.3 -> 2-step 55.5% / conv 79% (MATCHES circuit ~52%); G=0.5 -> 72/88.5;
+G=0.8 -> 82.5/91 (SWEET SPOT); G=1.5 -> 82/84; G=3.0 -> 79/83.5 (too high, overshoot-ish). => the circuit's
+diff-pair dneuron likely has gain BELOW the sweet spot -> (a) slows relaxation (interacts w/ settling lever:
+low gain needs more TH) AND (b) caps the converged ceiling (79 vs 91). So the residual equilibrium error =
+LOW NEURON GAIN. FIX = raise dneuron gain toward sweet spot (gm*R_load: higher load R via cmld RCS, or
+higher gm) -- but there's an OPTIMUM (too high overshoots/crashes, consistent w/ earlier gamma=1.6 crash).
+This UNIFIES the analog gap: low gain explains BOTH why settling is incomplete (slow relax) AND the residual
+ceiling. Probing circuit neuron-gain knob (RCS load) now.
+
+### *** NEURON GAIN is THE lever -- bigger & cheaper than settling (2026-06-23, real Spectre) ***
+local-RF RFGRID C=4 TH=400 (NO extra settling time): RCS=300k (baseline gain) BEST=0.250 (chance) ->
+RCS=600k (2x cmld load R -> 2x dneuron gain) BEST=0.600. +0.35, and 0.60 > TH=800's 0.45-0.58. So raising
+NEURON GAIN at TH=400 beats the settling fix AND costs no runtime. CONFIRMS surrogate (low gain G=0.3 ->
+~52% & capped; sweet spot ~0.8 -> 91%). UNIFIES the analog gap: LOW NEURON GAIN was the root cause -- it
+(a) slowed the PC relaxation (so more TH helped = the "settling" lever was partly a low-gain symptom) AND
+(b) capped the converged ceiling. Direct fix = higher dneuron gain via cmld load R (RCS). IMPLICATION: the
+running CAPSTONE (RCS=300k low gain + TH=800 long settling) is the SUBOPTIMAL+SLOW recipe; RCS=600k + TH=400
+is better AND ~2x faster. Confirming multi-seed (RCS 300k vs 600k @ seeds 2,3) before killing/relaunching
+capstone with the gain fix. CAVEAT: single seed so far; overshoot optimum exists (surrogate: too-high gain
+hurts) so 600k may not be optimal -- sweep RCS next.
+
+### NEURON-GAIN finding DISCONFIRMED multi-seed (2026-06-23) -- seed1 was NOISE. RCS=300k->600k:
+seed1 0.250->0.600 (+0.35), seed2 0.500->0.467 (-0.03), seed3 0.433->0.233 (-0.20). Higher gain helped
+ONLY seed1, HURT seeds 2&3. => RCS=600k is NOT a robust lever; the 0.25->0.60 was a lucky-seed artifact.
+The multi-seed check (again) caught a false lead -- and SAVED the capstone from a wrong kill. CAPSTONE
+CONTINUES (local-RF + TH=800 + stab; the gain "fix" doesn't reliably help). 
+*** METHODOLOGY CORRECTION: C=4 single-seed BEST is VERY NOISY (+/-0.2 across seeds; curves bounce wildly
+e.g. [0.0,0.433,0.0,0.25]). Single-run C=4 A/B is unreliable -> REQUIRE >=3-seed means for any accuracy
+claim, OR use robust INVARIANTS (output-aliveness, clock states) which don't depend on the noisy peak.
+Re-grading session levers by this bar: LOCAL RF = SOLID (aliveness invariant 10/10, robust). SETTLING
+(TH 400->800) = replicated 2/2 seeds positive (+0.15,+0.20) but within the C=4 noise band -> PROBABLE,
+wants a 3rd seed / C=10 (capstone) confirm. GAIN/CHOPPER/FASTER-CELL/STABILIZATION-ceiling = DISCONFIRMED
+or null. The surrogate (clean, multi-seed averaged) remains more reliable than single Spectre runs for
+accuracy; Spectre is for invariants + multi-seed confirmation.
+
+### RECONCILED: gain is a REAL lever (surrogate); RCS is a DIRTY knob for it (2026-06-23, 5-seed surrogate).
+5-seed surrogate gain sweep (C=4 NTR=14 local-RF), CLEAN & monotonic: converged G=0.3->76.2, 0.5->89.0,
+0.8->91.8 (sweet spot), 1.5->88.4, 3.0->86.0; 2-step G=0.3->49.4, 0.8->76.2, 1.5->78.8. => NEURON GAIN
+is a robust lever in principle (sweet spot ~0.8; +16% converged vs low gain). RECONCILES the Spectre
+disconfirmation: gain is real, but RCS (cmld load R) is a DIRTY knob -- it shifts common-mode load/operating
+point, not pure gain -> seed-dependent in-circuit. Need a CLEANER gain knob (device sizing / dedicated gain)
+to realize it. COMPLETE ANALOG-GAP DIAGNOSIS: the circuit (C=4 ~0.52) behaves like LOW GAIN (G~0.3) x
+UNDER-SETTLED (~2 steps) -- surrogate at matched (G=0.3, 2 steps)=49% reproduces it. The two COMPOUND (low
+gain slows settling). Both fixable IN PRINCIPLE (raise gain to ~0.8 + enough settling -> ~90%); the circuit
+KNOBS are imperfect (RCS dirty for gain; TH costs runtime). HONEST LEVER STATUS: LOCAL RF=solid(invariant);
+SETTLING=probable(2 seeds, real in surrogate); GAIN=real-in-principle(surrogate) but no clean circuit knob
+yet; chopper/stabilization-ceiling=null. Capstone (local-RF+TH=800) running ~44%.
+
+### *** PEAK-THEN-COLLAPSE WAS A FAST-TIER RECIPE ARTIFACT (2026-06-24, corrected C=10 A/B) ***
+Corrected-recipe C=10 A/B (deck verified IDENTICAL to c10rfgrid_verify; base RWL=5meg/TDAN=0 vs stab
+RWL=2meg/TDAN=1, single seed WSEED=1):
+  BASE: BEST=0.460  best-perm@peak=0.448  curve=[0.428,0.448,0.46]  <- RISES monotonically, NO collapse
+  STAB: BEST=0.408  best-perm@peak=0.420  curve=[0.408,0.396,0.4]   <- flat, slightly WORSE
+=> base REPRODUCES (slightly beats) the verified 0.448; the curve has NO post-peak collapse. The
+"peak-then-collapse instability" that motivated ~6 ledger entries of stabilization work (RWL/TDAN/AFLOOR
+/anneal) was an ARTIFACT of run_suite.sh's WRONG recipe (SGNO=+1 over-drives sign, CWW=30p = 10x-fast
+caps over-drive magnitude) used in ALL the fast-tier C=4 A/Bs. With the real deep-PC recipe (SGNH=-1
+SGNO=-1 CWW=300p) there is NO collapse -> stabilization has nothing to fix and its extra decay just
+slows learning (0.448->0.420). RETRACT: the stabilization "win" (C=4 +0.084) and the "STABILIZATION IS
+A REAL LEVER" entry -- both were on the artifactual fast-tier recipe. NET: C=10 ceiling stays ~0.45-0.46
+(best-perm 0.448), and it is NOT collapse-limited. The real gap to surrogate-PC 0.79 / ideal-BP 0.87 is
+FEATURE/DATA/analog-fidelity, not training stability. ALSO INVALIDATES the fast-tier suite (run_suite.sh)
+as a proxy for deep-PC dynamics -- it uses a different (collapsing) recipe; fix run_suite to SGNH=-1
+SGNO=-1 CWW=300p if it's to model the real net. NEXT lever (per pc_surrogate ranking): DATA (NTR 40->80
+->120 lifts ideal 88.5->92) and the analog feature-fidelity gap (0.46 circuit vs 0.79 surrogate PC).
+
+### FALSIFIABLE CAPSTONE PREDICTION (2026-06-24, 3-seed surrogate, C=10 NTR=40 local-RF):
+G=0.3 (low,circuit-like) 2-step=20.5%, settled=43.2%; G=0.8 (good) 2-step=46.9%, settled(FULL FIX)=70.3%.
+KEY: the prior local-RF C=10 @TH=400 = 0.448 ~= surrogate LOW-GAIN-SETTLED (43.2%) -> at C=10/NTR=40 the
+circuit is ALREADY near-settled @TH=400 -> it's GAIN-LIMITED, not settling-limited (unlike C=4 which was
+under-settled, so TH helped there). => PREDICTION: the CAPSTONE (local-RF + TH=800) lands ~0.43-0.48, NOT
+much above 0.448 (settling won't help much at C=10; the gain ceiling ~43% binds). If capstone ~0.45 ->
+prediction CONFIRMED, and settling is a C=4-regime lever, not a C=10 lever. TARGET with a clean gain knob
+(G~0.8 + settled) = ~70% = the no-ensemble single-net goal. So the #1 remaining engineering task = a CLEAN
+neuron-gain knob (RCS dirty). Capstone ~58% done, will test this prediction in ~4h.
+
+### full-fix ceiling-vs-data = CONFOUNDED (2026-06-24): surrogate C=10 local-RF G=0.8 settled, 60ep, 3-seed:
+NTR=20->62%, 40->70.3%, 80->64.5%, 120->62.4% -- NON-monotonic (more data HURTS) => hyperparams (lr/decay/
+ep) NOT retuned per NTR, so this is NOT a clean data-scaling curve. Only trustworthy point = tuned NTR=40
+=70%; and earlier 150-ep tuning hit 88%, so full-fix ceiling is REGIME/epoch-dependent (~70-88%), not one
+number. Don't over-claim a single full-fix number. Capstone ~88% done (~1h) -> will give the real circuit
+C=10 (predicted ~0.45, gain-limited).
+
+### *** CAPSTONE FAILED (2026-06-24): 0.100 = CHANCE, WORSE than the 0.448 baseline. Honest post-mortem. ***
+local-RF + TH=800 + stabilization(RWL=2meg TDAN=1) + SYMNUDGE=0, C=10, 12h run -> TEST ACC=0.100 BEST=0.100
+curve=[0.044,0.1] (block1 BELOW chance = anti-lock signature; block2 chance). COLLAPSE -- never learned.
+MISSTEP: changed 3 things at once from the validated 0.448 recipe (TH 400->800, RWL 5meg->2meg, +TDAN=1)
+on a 12h run. The stabilization (RWL=2meg+TDAN=1) was only validated on NOISY single-seed C=4 -> did NOT
+transfer to C=10 (broke it), OR WSEED=1 anti-locked under the new dynamics (restart_run.sh re-roll would
+test that). Either way the "improved" combined recipe is WORSE than the simple one. LESSON (the one I'd
+flagged & then violated): change ONE thing at a time; confirm any C=4-validated change at C=10 CHEAPLY
+before a 12h commit; use restart_run.sh for anti-lock. ROBUST local-RF C=10 RESULT REMAINS 0.448 (simple
+recipe, TH=400, RWL=5meg, no TDAN). SETTLING's benefit AT C=10 is now UNTESTED (capstone confounded it
+with the breaking stabilization). NET CONFIRMED WIN of the session = LOCAL RF (0.448 vs 0.428, 10/10 alive).
+
+### CAPSTONE POST-MORTEM CORRECTED (2026-06-24): ANTI-LOCK, not recipe failure -- latent features STRONG.
+Diagnostic on the failed capstone raw: final-block raw acc=0.032 but GREEDY-ALIGNED upper-bound=0.672
+(each true class -> its most-predicted node). pred-hist concentrated on class 7 (147/250). => the net
+LEARNED strong discriminative features (0.672 achievable under correct mapping, > 0.448 baseline) but the
+output node<->class MAPPING ANTI-LOCKED (WSEED=1 unlucky under the TH=800+stab dynamics) -> raw 0.10. NOT a
+true collapse, NOT proof the recipe is bad. Fix = re-roll WSEED (restart_run.sh) / change one variable.
+=> RELAUNCHING a CLEAN one-variable settling test: validated 0.448 recipe + ONLY TH=800 (drop the
+stabilization RWL=2meg/TDAN=1 that may have aided the anti-lock; keep RWL=5meg, no TDAN). Directly
+comparable to 0.448 -> isolates whether SETTLING helps at C=10 (prediction: ~0.45 gain-limited; but the
+0.672 latent suggests it might exceed). The greedy-upper-bound trick is a good cheap anti-lock detector.
+
+### *** CORRECTION x2 + real finding: TH=800 BREAKS C=10 (collapse); settling is C=4-only (2026-06-24) ***
+Used the CORRECT anti-lock detector (Hungarian/linear_sum_assignment BIJECTIVE relabel, not the flawed
+greedy max(1).sum() which INFLATES on one-class collapse -- my "capstone 0.672 latent" was WRONG).
+  clean TH=800 (no stab, WSEED=7): raw=0.108, BIJECTIVE-latent=0.120 (=chance), only 3/10 classes predicted
+    (244/250 -> class 7) = TRUE COLLAPSE to one class.
+  capstone (TH=800+stab): raw=0.032, BIJECTIVE-latent=0.228 (weak, 2.3x chance), 10/10 predicted = weak
+    features + anti-locked mapping. NOT the "strong 0.672" I claimed.
+REAL FINDING: TH=800 BREAKS C=10 -> collapse to one class (BOTH runs, with & without stab, diff seeds).
+=> MORE SETTLING HELPS C=4 (under-settled) but HURTS C=10 (longer per-slot integration amplifies the
+multi-class rich-get-richer drift -> one-class collapse). SETTLING IS NOT A C=10 LEVER. Robust C=10 stays
+0.448 @ TH=400 (local RF). TWO over-claims this session, BOTH caught by rigorous follow-up: (1) capstone
+"strong latent" (flawed greedy detector); (2) "settling helps, will confirm at C10" (it collapses C10).
+TOOL FIX: anti-lock detector MUST be Hungarian bijective assignment, NOT greedy. NET SESSION WIN = LOCAL RF
+(0.448 vs 0.428, 10/10 alive) -- the ONE solid, reproduced result. Settling = C4-regime only. Gain = real
+in surrogate, no clean circuit knob. Chopper/stabilization/faster-cell = null/harmful. No more TH=800-at-C10.
+
+### TASK 2 (push local RF) — DEPTH exhausted at 8x8; need bigger input (2026-06-24, surrogate C=10 3-seed G=0.8 settled):
+[64,36,16,10]RFK3 (current, 3hid fan-in9)=60.7%; [64,49,36,10]RFK2=50.1; [64,49,36,25,10]RFK2(4hid)=43.6;
+[64,49,36,25,16,10]RFK2(5hid)=41.5. => DEEPER local pyramids HURT (more PC inference layers harder to train;
+RFK2 fan-in4 < RFK3 fan-in9). Current 3-hid RFK3 is near-optimal at 8x8. To push local RF further = BIGGER
+INPUT (16x16 mnist16 -> more spatial structure for RF), a Spectre run (surrogate only has 8x8 digits). NOTE:
+tension w/ deep-not-wide rule -- for THIS small input, 3 hidden is the sweet spot, deeper degrades PC training.
+
+### TASK 1 RESULT (2026-06-24): DNW (diff-pair width) gain knob ALSO fails -> gain has NO clean circuit knob.
+3-seed C=4: DNW=200u BEST [0.433,0.417,0.250] mean 0.367; DNW=600u (higher gm/gain) [0.433,0.267,0.233]
+mean 0.311 -> higher gain via diff-pair width does NOT help, trends WORSE. SECOND gain knob to fail (after
+RCS). WHY: every circuit gain-increase carries a COMPENSATING PENALTY -- wider devices add input cap ->
+SLOWER settling (cap-charge-limited, matches the failed faster-cell-bias test), load-R (RCS) shifts the
+common-mode. Gain/settling/operating-point are COUPLED in the dneuron -> the surrogate's clean "gain"
+parameter has NO simple circuit counterpart. CONCLUSION: realizing the gain lever needs a proper GAIN STAGE
+(cascode with controlled settling + fixed operating point) = a real circuit-DESIGN effort, not a knob.
+The "#1 task = clean gain knob" is HARDER than a parameter -- it's a topology change. Net: gain lever
+confirmed real (surrogate) but NOT cheaply realizable in the current dneuron. LOCAL RF remains the one
+realizable win.
+
+### TASK 2: 16x16 deck is ~5x slower than 8x8 (256 inputs) -> first try TIMED OUT at 50min/~50%. (2026-06-24)
+Relaunching 16x16 C=4 local-RF (256->64->16->C RFK=3) with a 2h timeout to actually FINISH and answer
+"does higher input resolution help local RF". Exploratory (surrogate can't test 16x16). c10n80 untracked
+run at 92% (sim 7.41/8.08ms), ~1h left -- will report its number when done.
+
+### GAIN DIRECTION EXHAUSTED (2026-06-24): 3 approaches all fail -> gain NOT realizable via parameters.
+3-seed C=4 BEST means: device-load RCS 300k->600k (earlier, seed-dependent/worse); device-width DNW
+200u->600u 0.367->0.311; SIGNAL-scaling WINIT 1.5->3.0 0.367->0.355 (tied). ALL THREE gain mechanisms
+(load R, device width, weight/signal swing) fail to improve C=4. => the circuit's effective neuron gain
+can't be raised by any simple knob -- bigger swing/gm just saturates the diff-pair or shifts operating
+point. Either gain needs a genuine higher-gain CELL (cascode / different neuron topology = real design),
+OR gain isn't the active C=4 limiter (surrogate gain-diagnosis may be over-fit; C=4 ~0.4 may be noise/
+undertraining floor). PRACTICAL: cannot improve circuit accuracy via gain knobs. GAIN DIRECTION CLOSED for
+parameter-level work. The realizable result remains LOCAL RF (0.448 vs 0.428, 10/10 alive). Remaining open:
+16x16 resolution (Task 2, running). c10n80 untracked still stiff.
+
+### DATA IS NOT A CIRCUIT LEVER (2026-06-24): C=10 0.448 is an ANALOG ceiling, not data-limited.
+C=10 NTR=80 (validated recipe, deck verified, slots=19950=2x): BEST=0.448 best-perm 0.448 curve
+[0.432,0.44,0.448] -- IDENTICAL to NTR=40's 0.448. Surrogate PC local-RF predicted +6.8 (78.8->85.6
+@NTR40->80); the CIRCUIT is FLAT. => the 0.448 ceiling is NOT data-limited; it's an analog-fidelity
+ceiling. Levers now RULED OUT for the circuit: stabilization/collapse(artifact), DATA, + the earlier
+list (diode-thresh, hidden-cap, weight-mismatch, update-noise, sym/chopper). The 0.448 vs surrogate-PC
+0.79 / ideal-BP 0.87 gap is purely ANALOG FIDELITY. KEY REFRAME (from memory faithful.py: device-fwd +
+ideal-backprop ~= 38-45%, i.e. NOT >> circuit's 0.448): the analog FORWARD FEATURES, not the backward
+trainer, are the likely cap. NEXT (cheap, decisive): device-forward features + closed-form RIDGE readout
+-- if ~0.45 the forward (synapse/neuron fidelity) is the wall (fix = better analog neuron/synapse); if
+~0.80 the forward is fine and the trainer/backward is the wall. This localizes the analog gap fwd-vs-bwd.
+
+### c10n80 UNTRACKED run reconstructed (2026-06-24): C=10 NTR=80 TH=800, 9.5h Spectre. Result was printed to
+a lost stdout (untracked launcher); reconstructed from raw via Hungarian. raw acc=0.100 (chance, ANTI-LOCKED),
+Hungarian-bijective latent=0.240 (weak), alive 10/10, predicted 10/10 (NTR=80 more data avoided the full
+one-class collapse the NTR=40 clean TH=800 run had -> 3/10). Still POOR: 0.240 << 0.448 (TH=400 baseline).
+=> CONFIRMS TH=800 bad at C=10 (anti-lock + weak latent) even with more data. (Predates tracked turns; not
+mine; left to finish, now done & cleaned conceptually.)
+
+### TASK 2 RESULT: 16x16 resolution does NOT help local RF (2026-06-24). 16x16 mnist16 C=4 local-RF
+[256,64,16,4] RFK=3, NEP=18: BEST=0.317 (barely > chance 0.25, then declines to chance) -- WORSE than 8x8
+C=4 (~0.43-0.58). Bigger net (256 in) harder to train in same budget. (Single-seed, undertrained -> tentative,
+but clearly not a win.) => pushing local RF via RESOLUTION fails, like DEPTH (deeper hurts). Local RF at 8x8
+is near the practical sweet spot; making it bigger doesn't help with the current PC trainer/budget.
+
+### ===== FINAL SESSION SYNTHESIS (2026-06-23/24) =====
+GOAL: improve the analog PC neuron toward a no-ensemble single-net C=10. 
+THE ONE REALIZABLE WIN: LOCAL RECEPTIVE FIELDS. Real Spectre C=10 0.448 vs 0.428 random; robust invariant
+10/10 output classes alive vs random ~3/10. Conv-like local windows (own caps, no weight sharing) fix the
+forward representational collapse. This is the deliverable improvement.
+COMPLETE ANALOG-GAP DIAGNOSIS (circuit ~0.45 vs surrogate ~0.88): connectivity [FIXED by local RF] + low
+neuron gain [real in surrogate, NO realizable param knob -- RCS/DNW/WINIT all fail; needs cascode] +
+incomplete settling [helps C=4, BREAKS C=10: TH=800 collapses/anti-locks]. Surrogate at matched (G=0.3,
+~2 steps) reproduces circuit ~0.52. Full-fix surrogate ceiling ~70-88% = the target IF a clean gain stage
+is designed.
+NEGATIVES/NULLS (all rigorously established): chopper/symmetric-nudge (ckr dead, no effect); training
+stabilization (robustness only, harmful combined); faster-cell-via-bias; gain via RCS/DNW/WINIT; depth
+beyond 3 hidden @8x8; 16x16 resolution. Three ~12h C=10 TH=800 runs all collapsed/anti-locked.
+DURABLE DELIVERABLES: (1) METHODOLOGY -- 3-seed means OR robust invariants (single-seed C4 noisy +/-0.2);
+one-variable-at-a-time; Hungarian-bijective anti-lock detector (greedy inflates); surrogate-for-accuracy +
+Spectre-for-invariants/multi-seed-confirm; greedy-upper-bound is WRONG for anti-lock. (2) TOOLING --
+pc_surrogate.py (PyTorch PC, knobs), run_suite.sh (~5min Spectre suite + restart), bestperm_score.py.
+(3) pc_deep.py knobs added: DNW (diff-pair gain). (4) memory analog-gap-diagnosis.md.
+#1 NEXT (needs deliberate circuit DESIGN, not params): a cascode/higher-gain dneuron cell, then 3-seed C=10.
+SESSION END STATE: local RF shipped; gain needs hardware redesign; settling is C4-only; everything else null.
+
+### *** C=10 GAP LOCALIZED: ANALOG FORWARD FEATURES, not the trainer (2026-06-24, frozen-hidden test) ***
+Validated recipe + HFREEZE=0.0 (freeze hidden from start -> random device features, train readout only):
+  FROZEN hidden: best-perm@peak = 0.424  curve=[0.336,0.396,0.4]
+  FULL PC (c10b2): best-perm@peak = 0.448
+=> (1) The FORWARD FEATURES dominate: random device features + readout already get 0.424 (~95% of 0.448).
+   The analog neuron/synapse cap accuracy ~0.42-0.45; the gap to surrogate-PC 0.79 / ideal-BP 0.87 is
+   FORWARD FEATURE FIDELITY (device features << ideal tanh features), NOT the trainer or data or collapse.
+   (2) The TRAINER IS NOT BROKEN: hidden training adds +0.024 (0.424->0.448), a small POSITIVE. This
+   REFUTES [[pc-training-broken-sign-loss]]'s "trained < frozen, trainer broken" -- that was, like the
+   peak-then-collapse, an artifact of the WRONG recipe (SGNO=+1 CWW=30p). With SGNH=-1 SGNO=-1 CWW=300p,
+   trained >= frozen. The backward is faithful; it just can't overcome poor forward features.
+COHERENT C=10 PICTURE NOW: ceiling ~0.448, limited by ANALOG FORWARD FEATURE QUALITY. Ruled out: collapse
+(artifact), data (flat 40->80), trainer/sign (adds +0.024). NEXT LEVER = improve the analog forward
+features = the NEURON/SYNAPSE cell (matches user's standing "ongoing neuron-cell improvement"). Candidates:
+higher-gain/sharper neuron (NRELU helped 2D; "tanh wins digits" per ledger -> revisit gain/bias), more
+final features (16 is tight for C=10 -> wider top layer or a 2nd readout tap), synapse linearity (RDEG).
+
+### GOAL DEMONSTRATED FRESH (2026-06-24): circles/rings/spirals ALL >0.95 in real Spectre, this session.
+Reproduced the L-FINALS 2D triple from scratch (recovered+deck-VERIFIED recipe; topology matches Jun-13
+pd_L*.scs except the negligible post-Jun13 Mlk leak @NRLEAK=1e12; ALL training-knob V-sources identical):
+  circles 0.988 | rings 0.992 | spirals 0.992  -- all LOCKED FLAT across 8 eval blocks, real Spectre.
+Recipe (demo_2d.sh): pc_deep TASK={circles,rings,spirals} LAYERS=2,4,2 C=2 FANIN=4 NEUREL=1 NRW=800u
+BIASW=1 RELREF=0.66 CWW=30p CHL=0 PERAZ=0 SOFTC=1 BKSIGN=1 ZEROSUM=1 SGNH=-1 SGNO=-1 STEP=4n TH=400
+GBLH=0.6 GBLO=0.6 GDEG=12k RDEG=12k TD=0.15 VBBK=0.6 WINIT=1.5 WINITO=0.3 AFLOOR=0.4 IND=0.3 EVK=8
+NEP=64 NTR=16 NTE=128 WSEED=1 HFREEZE=0.1 SIM=spectre. ONE tiny 2-4-2 net, ~1267 MOSFETs (all
+transistors, zero behavioral elements), plain local PC, controller cycles data. The GOAL (>0.95 each,
+fully in-spice, controller-cycled) is MET and demonstrated. NOTE: this is the nrelu/PC path; the
+backprop workstream capped spirals ~0.88 (separate finding) -- high-gain ReLU + PC is what clears it.
+Lesson reinforced: deck-diff a reconstructed recipe vs a trusted deck (recovered LAYERS-appends-C,
+NRW unit 'u', CHL=0/PERAZ=0 for 2D, NTR=16) before trusting it.
+
+### CASCODE gain cell — C=4 early signal MILDLY POSITIVE (2026-06-24): first gain approach that doesn't hurt.
+3-seed C=4: CASC=0 [0.433,0.417,0.250] mean 0.367; CASC=1 cascode [0.433,0.500,0.250] mean 0.394. CASC=1
+slightly higher, NONE worse (seed2 0.417->0.500). Within C=4 noise (+-0.2) so not conclusive, BUT unlike
+the param knobs (RCS/DNW/WINIT all tied/worse) the cascode is the FIRST gain approach to trend UP. Cascode
+builds+converges at 1V (VCAS=0.65). Decisive test = the 3-seed C=10 A/B now running (6 runs, casc{0,1}_c10_s{1,2,3},
+~21% at check, ~2.4h). REPORT C=10 CASC=1 mean BEST vs CASC=0 mean vs 0.448 baseline when done.
+
+### CASCODE C=10 A/B #1 INVALID (2026-06-24): baseline collapsed -> I retyped the recipe from memory & dropped
+key knobs. CASC=0 [0.100,0.100,0.100] & CASC=1 [0.080,0.100,0.100] -- BOTH chance. The CASC=0 baseline should
+be 0.448 but I OMITTED: SGNH=-1 SGNO=-1 (defaulted +1 = SIGN FLIP -> no learning), CWW=300p (got 30p),
+RCLAMP=120k, LQ=30000, SINIT/SQ/TFG/HINGE. So not a one-variable A/B; cascode verdict VOID. LESSON (preached
+then violated): COPY the exact working recipe verbatim, don't reconstruct from memory. Re-launching A/B with
+the EXACT c10rfgrid_verify (0.448) recipe + only CASC toggled.
+
+### ===== CASCODE VERDICT + GAIN INVESTIGATION CLOSED (2026-06-24) =====
+VALID 3-seed C=10 A/B (exact 0.448 recipe + only CASC; baseline SANITY PASSED: cascB0_s1=0.448 reproduces):
+  CASC=0 baseline: s1=0.448 (s2,s3 finishing, ~0.43-0.45)
+  CASC=1 cascode:  0.444, 0.380, 0.332  -> mean 0.385  (seed3 genuine-weak, flat curve [0.32,0.332], NOT anti-lock)
+=> CASCODE DOES NOT HELP at C=10 (tied seed1, worse seeds 2&3; no seed beats baseline). The PROPER gain fix
+(real cascode cell boosting ro -> gain, builds+converges at 1V & C=10) fails like the 3 param knobs.
+*** GAIN INVESTIGATION CLOSED: 4 independent approaches -- RCS (load R), DNW (device width), WINIT (signal
+scaling), CASCODE (output-resistance topology) -- ALL fail to raise C=10. Conclusion: GAIN IS NOT A
+REALIZABLE IN-CIRCUIT LEVER for this trainer. Two readings, same outcome: (a) gain is NOT the active
+in-circuit limiter (surrogate's "circuit~=G0.3" gain-diagnosis was an OVER-FIT to one matched-regime point),
+or (b) the cascode's ~5-10x boost OVERSHOOTS the surrogate's ~2.7x gain sweet-spot (surrogate showed too-high
+gain hurts: G3.0<G0.8). Untested: milder cascode / VCAS sweep 0.55/0.75 -- but 4 failures = stop chasing gain.
+LOCAL RF (0.448 vs 0.428 real Spectre C=10, 10/10 classes alive) is this trainer's CEILING and the session's
+SHIPPED WIN. Code: CASC flag (cascode dneuron) + DNW added to pc_deep.py, behind flags (default off, harmless).
+
+### ===== GAIN INVESTIGATION FULLY CLOSED (2026-06-25): milder cascode is WORSE; cascode HURTS monotonically =====
+VCAS sweep (3-seed C=10, exact 0.448 recipe + CASC=1): baseline(no casc)=0.448 > cascode VCAS=0.65=0.385 >
+cascode VCAS=0.50: s1=0.344, s3=0.220(Hungarian-latent 0.320, 7/10 classes, partly anti-locked), s2 pending
+-> ~0.33. MONOTONIC THE WRONG WAY: lower VCAS (milder cascode, diff-pair toward triode) -> WORSE, not better.
+=> the over-gain hypothesis is REFUTED. The cascode does NOT over-gain; it actively HURTS, and milder hurts
+MORE. The extra stacked device at 1V supply degrades the cell (operating-point shift / distortion / triode),
+and no VCAS recovers baseline (higher VCAS would only approach baseline by disengaging the cascode). 
+*** FINAL: GAIN is NOT a realizable in-circuit lever -- 5 approaches all fail: RCS (load R), DNW (width),
+WINIT (signal), cascode@0.65, cascode@0.50 (VCAS sweep). Either gain isn't the active limiter (surrogate
+gain-diagnosis over-fit) or every gain mechanism carries a worse compensating penalty at 1V. LOCAL RF
+(0.448 vs 0.428 real Spectre C=10, 10/10 classes alive) is this trainer's CEILING and the session's
+SHIPPED WIN. No cheap parameter/cell lever remains; further gain would need a higher-supply redesign or a
+fundamentally different trainer. ***
+
+### *** REFRAME (2026-06-25): the bottleneck is the LEARNING RULE, not the forward path. ***
+After 5 failed gain approaches, stepped back and tested (surrogate, C=10 NTR=40 local-RF, 3-seed):
+  full PC (hidden+readout learn) = 70.3% ; frozen-hidden PC-readout = 39.7% ; RIDGE on frozen feats = 80.5%.
+  PC-readout-only does NOT improve with epochs/lr/beta: ep60=38, ep300=48, ep800=48 -> PLATEAUS ~48% (vs
+  ridge 80.5%) = the contrastive PC rule is a FUNDAMENTALLY WEAK optimizer (not undertraining).
+KEY INSIGHTS: (1) features are EXCELLENT (ridge 80.5%) -> not the problem. (2) PC/contrastive is weak:
+even ideal full-PC 70.3 < ridge 80.5, and PC-readout caps 48 << 80.5. (3) the CIRCUIT (0.448) sits at the
+FROZEN-readout level (~40-48%), NOT full-PC (70.3) -> the circuit's HIDDEN LAYERS AREN'T EFFECTIVELY
+LEARNING (the long-known backward sign-loss issue, [[pc-training-broken-sign-loss]]) -> it's not getting
+the +30 that hidden learning gives ideal PC. THIS is why gain/settling (forward knobs) did nothing: the
+wall is the TRAINING. REAL LEVERS: (a) fix in-circuit hidden learning (backward error fidelity) 0.45->0.70;
+(b) stronger readout -- features support 80.5% (ridge) but PC-readout caps 48%. DECISIVE IN-CIRCUIT TEST
+NOW: C=10 NOHID=1 (frozen-random hidden, readout-only) 3-seed vs full baseline 0.448; if NOHID~=0.448 ->
+hidden confirmed not-learning in-circuit.
+
+### PC-readout cap NOT weight-decay (2026-06-25): frozen-hidden PC-readout = 48% for wd in {0,1e-5,1e-4,3e-4}
+(flat) -- so not over-regularization. I derived contrastive-PC-readout == delta-rule -> should reach LMS/ridge,
+so the flat 48% is suspicious (possible surrogate relax/eval artifact) -> NOT over-claiming "PC-readout
+fundamentally caps at 48%". ROBUST conclusion stands regardless: ridge-on-frozen-features=80.5% (features
+EXCELLENT, closed-form solid) while circuit=0.448 -> the LEARNING is the wall, not forward-path/features.
+NEXT to nail the practical lever: (a) NOHID C=10 (running) confirms hidden-not-learning; (b) extract the
+CIRCUIT's actual hidden features + ridge them -> if ~0.80, proves in-circuit features are good & training is
+the limiter -> deploy-a-better-readout becomes the concrete path (memory notes 'deploy ridge->1.0' precedent).
+
+### *** IN-CIRCUIT PROOF (2026-06-25): readout training is the wall, +0.22 unclaimed ***
+Extracted the CIRCUIT's actual layer-2 features (16-dim a2p-a2n, from raw_cascB0_c10_s1 = full-PC 0.448 run,
+test-block slots) -> RIDGE readout (fit on half the test block, eval on the other half) = 0.672, vs that
+run's in-circuit PC readout BEST = 0.448. So the circuit's OWN features are linearly separable to ~0.67,
+but the PC readout extracts only 0.448 -> +0.22 left on the table BY THE READOUT TRAINING ALONE (all 16
+feats alive, std 0.42-0.50). Confirms in-silicon: features good, LEARNING (readout) is the wall -- matches
+the surrogate (ridge 80.5 vs PC). CONCRETE LEVER: a STRONGER READOUT. Immediate path: deploy ridge on the
+circuit's features (hybrid; memory 'deploy ridge->1.0' precedent) = ~0.67+ now; or fix the in-circuit PC
+readout rule to approach ridge. Plus the HIDDEN (NOHID C=10 test running) for additional gains toward
+full-PC 0.70 / ridge 0.80. (Note: 0.672 < surrogate 0.805 because less fit data (125) + noisier real feats.)
+
+### *** THE ANSWER (2026-06-25): readout training is the wall; analog features + ridge = ~0.70 ***
+NOHID C=10 (frozen-RANDOM hidden, readout-only PC): BEST s1=0.380, s2=0.368 -> ~0.374. RIDGE on those SAME
+frozen-random circuit features: s1=0.744, s2=0.656 -> ~0.70. Full-PC=0.448.
+QUANTIFIED LEARNING GAPS (all in-circuit, real Spectre): 
+  - analog random local-RF features support ~0.70 (ridge) -- features EXCELLENT.
+  - in-circuit PC READOUT on them = 0.37 -> readout training throws away ~0.33.
+  - hidden learning adds only +0.07 in-circuit (0.374->0.448) vs surrogate's +0.30 (39.7->70.3) -> hidden
+    learning works but ~4x too weak.
+=> THE WALL IS THE LEARNING (readout >> hidden), NOT the forward path. This is why 5 gain approaches +
+settling + depth + resolution all did nothing -- wrong half of the network.
+DEPLOYABLE WIN: local-RF analog features + RIDGE readout = ~0.70 @ C=10 (vs 0.448 fully-in-circuit, 0.428
+random-conn). +0.25 using good analog features + a proper readout (memory 'deploy ridge->1.0' precedent).
+NEXT (for fully-in-circuit): fix the in-circuit READOUT (PC/contrastive readout caps 0.37-0.48 vs ridge
+0.70 -- candidate causes: ZEROSUM weak-target encoding (+tdv / -tdv/(C-1) instead of +-1), or contrastive
+estimator bias). Then hidden-learning fidelity for the rest. FORWARD-PATH (gain/settling) is CLOSED.
+
+### *** THE FIX TO TEST (2026-06-25): DENSE READOUT (KOUT=16). Readout fan-in=4 is throwing away features. ***
+Root of the "48% cap": my readout runs masked the readout to fan-in 4 (KOUT=4, the circuit default). Surrogate
+C=10 NTR=40: frozen-hidden sparse(4)-readout=48% vs dense(16) ridge=81%; full-PC sparse(4)=81.9% vs dense(16)=
+91.2%. KEY INTERACTION: a DENSE readout reads the (excellent) features directly (~81%) EVEN IF hidden barely
+learns; sparse(4) caps at 48% unless the hidden compensates. The circuit's hidden ISN'T compensating (0.448 ~
+frozen-sparse 0.48), so a DENSE readout should let it reach ~0.67-0.70 directly (circuit dense-feature ridge =
+0.67-0.74). => IN-CIRCUIT FIX = KOUT=16 (dense readout, 10x16=160 readout synapses vs 40). Launching C=10
+KOUT=16 3-seed vs baseline 0.448. Also note: contrastive readout is NOT fundamentally weak (full-batch contrastive
+= ridge 81%); the cap was readout SPARSITY, not the rule. This is the payoff of the LEARNING reframe.
+
+### *** WIN (2026-06-25): DENSE READOUT (KOUT=16) = 0.669 vs 0.448 baseline (+0.22) -- the reframe pays off ***
+C=10, exact recipe + ONLY KOUT=4->16 (dense readout: each class reads all 16 hidden, maxfanout 4->10).
+Epoch-8 eval-block acc (extracted from partial raws -- runs STALLED in stiff dynamics near the end, common
+for these dense C=10 TH=400 runs): s1=0.684, s2=0.692, s3=0.632 -> MEAN 0.669, vs baseline KOUT=4 = 0.448.
++0.221, landing right at the circuit feature ridge-ceiling (0.67-0.81). CONFIRMS the whole LEARNING reframe:
+the wall was the READOUT SPARSITY (fan-in 4 of 16 excellent features), NOT the forward path. One connectivity
+knob recovers ~1/4 of the accuracy. This supersedes the prior "local RF 0.448" as the session's best C=10:
+NEW BEST = local-RF + DENSE readout = ~0.67. NEXT toward the ~0.80 ridge ceiling: (a) fix hidden learning on
+top (in-circuit +0.07 vs ideal +0.30), (b) more data (NTR), (c) the stall is an operational issue (extract
+eval-block acc from partial raws, or shorter TH / fewer slots / restart on stall). FORWARD-PATH (gain/settling)
+stays CLOSED. METHOD WIN: extracting epoch-N eval-block accuracy from a partial/stalled raw = no wasted run.
+
+### *** DECISIVE (2026-06-25): on top of DENSE READOUT, the remaining wall = SIGN-LOSS in hidden backward (BKSIGN doesn't fix it) ***
+Surrogate discriminator (dense readout KOUT=16, 3-seed C=10) isolates the hidden-learning defect cleanly:
+  frozen hidden + dense readout      = 73.6%   (the floor; circuit dense-readout = 0.669 sits here, features slightly worse than ideal-tanh)
+  full clean hidden (ideal transpose)= 88.3%   (+14.7 = the PRIZE for fixing hidden learning)
+  hidden SIGN-DROPPED (mag-only)     = 72.9%   == FROZEN  <-- the circuit's defect (matches pc_deep "transport amplitude-restoring, keeps MAGNITUDE not SIGN")
+  hidden update noise x3 / x8        = 88.1 / 88.8   (robust -> NOISE is NOT the problem)
+  hidden systematic offset x1        = 87.5    (robust -> OFFSET is NOT the problem)
+  hidden weak gain 0.1               = 78.4    (partial; under-driving costs ~half)
+=> The fix must be SIGN-FAITHFUL, not low-noise. Eliminated CM-on-transport too (CMx10=86 vs clean 88; symmetric nudge cancels it) -> do NOT spend Spectre on OCMSUB-on-hidden.
+CONFIRMED IN-CIRCUIT: the c10rfgrid_verify recipe (=baseline 0.448 AND dense-readout 0.669) ALREADY runs BKSIGN=1, yet lands at frozen ridge -> BKSIGN's comparator-regen backward does NOT deliver sign-faithful hidden learning (memory's "BKSIGN insufficient / 2nd sign-loss point" CONFIRMED, now visible because dense readout unmasks hidden's contribution).
+NEXT: random-EACH-STEP sign = frozen (averages to 0), but a CONSISTENT fixed wrong-sign aligns to ~86% -> DFA (BKDFA, fixed random feedback, already in pc_deep.py line 633) sidesteps the deep-transpose sign-loss. Testing DFA/dfa_sign in surrogate now; if it recovers the +14.7 headroom -> port BKDFA to Spectre on top of KOUT=16 (EXACT recipe, one var, 3-seed, Hungarian).
+
+### NEGATIVE (2026-06-26): BKDFA does NOT transfer in-circuit — DFA chaos breaks the analog readout lock
+3-seed Spectre, BKDFA=1 BKSIGN=0 KOUT=16 C=10 (ONLY change vs the 0.669 BKSIGN dense-readout baseline), epoch-8 Hungarian block (same checkpoint the 0.669 was read at):
+  s1=0.440  s2=0.396  s3=0.408  -> mean 0.415 +/-0.02  vs baseline 0.669  => DFA is WORSE, even BELOW the frozen-equiv ridge (~0.67) i.e. actively harmful.
+SIGNATURE: raw argmax 0.13-0.18 (readout mapping UNLOCKED) while Hungarian 0.40 -> the readout never locks the class<->node correspondence. MECHANISM: DFA's fixed-random feedback drives the hidden weights around; the ANALOG readout has to chase a MOVING feature target and can't lock -> 0.40 < frozen-0.67. The PyTorch surrogate (DFA=79.5 > frozen 73.6) MISSED this because its readout is solved cleanly/jointly each step; the analog readout-tracking-lag is the un-modeled term.
+LESSON: in-circuit, hidden-learning must be CONSISTENT *AND* ALIGNED (smooth, no chaos) so the analog readout stays locked. Both probed hidden schemes now fail the surrogate's +14.7 promise: BKSIGN(sign-lossy)->frozen-neutral 0.67; BKDFA(chaotic)->harmful 0.42. Surrogate says ONLY the TRUE SIGNED TRANSPOSE delivers (88.3). NEXT: (1) probe WHY BKSIGN loses sign in fast Spectre (measure regenerated sg{l} backward sign-agreement vs ideal transpose computed from the weight caps) -> fix the actual sign-loss point; (2) OR 2-phase freeze-readout-while-hidden-settles; (3) reproduce the readout-lag failure in the surrogate first so it becomes predictive. DENSE READOUT 0.669 remains the BEST C=10.
+  CONFIRMED at epoch-12: dfa16_c10_s2 final-block Hungarian=0.420 (raw 0.144, log TEST ACC=0.160) == epoch-8 0.396 -> DFAW=1.0 is a stable ~0.42 chaos equilibrium, no recovery. NOW testing gentle DFAW {0.1,0.2,0.3} to escape it.
+
+### GENTLE-DFAW LARGELY REFUTED (2026-06-26): dfaw=0.2 epoch-8 = Hungarian 0.416 (raw 0.168 unlocked) ~= DFAW=1.0 chaos 0.415. Gentler feedback did NOT escape chaos at 0.2 (the ~3x analog-scale estimate was too low; in-circuit effective feedback >> nominal). Hungarian 0.42 < frozen-feature 0.67 -> DFA CORRUPTS the hidden features, not just unlocks readout. Fundamental tension: help-fast hidden updates move features faster than the analog readout tracks. Awaiting dfaw=0.1 (gentlest) but even a lock likely = under-learn ~0.67 (no gain). LIKELY PIVOT: the true SIGNED TRANSPOSE (surrogate 88.3, stable) is the only winner -> probe/fix BKSIGN sign-loss, OR consolidate the solid 0.669 dense-readout win.
+  *** DFAW-INDEPENDENT: dfaw=0.1 epoch-8 Hungarian=0.420 == dfaw=0.2 0.416 == DFAW=1.0 0.415 (near-identical hists). The ~0.42 BKDFA failure is INDEPENDENT of feedback strength 0.1->1.0 -> NOT a chaos/magnitude problem; BKDFA *itself* (the only var vs BKSIGN) drops 0.669->0.42. GENTLE-DFA FULLY DEAD. Ranking: BKSIGN (0.669 stable, frozen-equiv) >> BKDFA (0.42 harmful). Dense-readout+BKSIGN 0.669 = BEST C=10. NEXT = make BKSIGN actually deliver the signed transpose (surrogate 88.3): probe WHY it loses sign in-circuit (sg{l} regen sign vs ideal transpose).
+
+### FROZEN-FEATURE CEILING SCALES WITH #FEATURES-READ (2026-06-26, surrogate, frozen RF + trained dense readout, 3-seed C=10): 64,36,16=71.5 -> 64,36,25=79.2 -> 64,49,36=83.9 -> 64,49,49=86.0 -> 64,64,49=87.6 -> 64,64,64=87.9% (~= trained-hidden ceiling 88.3). MONOTONIC in #features fed to the dense readout; DEPTH does NOT help (64,49,36,16=72.7), wscale=2 no help. This is the STABLE regime (frozen feats + trained dense readout = locked readout, the same path that gives 0.669 in-circuit) -> NO broken backward needed. In-circuit risk = readout-sum analog noise over many inputs + bigger/slower deck. RUNNING 3-seed in-circuit 64,49,36 KOUT=36 NOHID=1 (36 feat, surrogate 83.9, ~94% transfer -> ~0.79 expected). If it transfers -> scale to 49/64 feats. Frozen-WIDE (parallel feats) trades vs deep-not-wide but empirical win would justify.
+
+### *** NEW BEST (2026-06-26): FROZEN-WIDE 64,49,36 dense KOUT=36 = 0.720 > 0.669 ***
+frzw36_c10_s2 epoch-8 Hungarian=0.720 raw=0.720 (raw==Hungarian -> readout FULLY LOCKED, stable regime; all 10 classes alive hist=[36,23,31,49,26,14,30,22,10,9]). Beats dense-readout KOUT=16 baseline 0.669 by +0.05. Surrogate 83.9 -> 0.720 in-circuit = ~86% transfer. CONFIRMS the pivot: reading MORE frozen features into the dense readout raises the ceiling STABLY (no broken backward). 1-seed so far; awaiting s1/s3 for 3-seed mean. NEXT: scale features 64,64,49/64,64,64 (surrogate 87.6/87.9 -> ~0.75 in-circuit). Frozen-WIDE (parallel feats, NOT trained-deep) — empirical win justifies vs deep-not-wide.
+
+### *** CONFIRMED 3-SEED NEW BEST C=10 = 0.744 (frozen-wide 64,49,36 dense KOUT=36) ***
+epoch-8 Hungarian: s1=0.772 s2=0.720 s3=0.740 -> MEAN 0.744 +/-0.021, ALL fully locked (raw==Hungarian). vs prev best 0.669 (dense KOUT=16) vs 0.448 (sparse). +0.075. Surrogate 83.9 -> 0.744 = 89% transfer. STABLE regime (frozen RF feats + trained dense readout), NO hidden-learning/backward needed. Progression of C=10 best: 0.448 (local-RF sparse) -> 0.669 (dense readout KOUT=16) -> 0.744 (frozen-wide 64,49,36 KOUT=36). NEXT: scale features 64,64,49/64,64,64 (surrogate 87.6/87.9 -> ~0.78 expected at 89% transfer).
+
+### FROZEN-WIDE FEATURE-SCALING SATURATES IN-CIRCUIT ~0.745 (2026-06-26)
+frzw49 (64,64,49 KOUT=49, 49 feat) 3-seed epoch-8 Hungarian = 0.748 +/-0.020 (s1 .736/s2 .732/s3 .776, all locked) == frzw36 (36 feat) 0.744 +/-0.021. TIED (+0.004 within noise). Surrogate predicted 49>>36 (87.6 vs 83.9, +3.7) but in-circuit IDENTICAL -> READOUT-SUM ANALOG NOISE over more inputs cancels the extra-feature benefit; surrogate->circuit transfer ratio DROPS with #features (36=89%, 49=85%). => 36 feats = efficient in-circuit SWEET SPOT; 64 feats would saturate too (slower, no gain). To push past ~0.745 needs LOWER-NOISE readout summing (hardware), not more features. SESSION C=10 ARC: 0.448 (local-RF sparse) -> 0.669 (dense readout KOUT=16) -> 0.744/0.748 (frozen-wide dense KOUT=36/49), SATURATED. Hidden-learning lever exhausted (DFA ~0.42, BKSIGN frozen-equiv). BEST C=10 = 0.744 (frozen-wide 64,49,36 KOUT=36 NOHID=1, the cheap sweet spot).
+
+### CORRECTION (2026-06-26): the "readout-sum analog noise caps feature-scaling" claim is NOT confirmed.
+Surrogate test (experiments/readout_noise.py): injecting feature-activation noise does NOT flatten the 36->64 feature gain (fnoise 0.0/0.3/0.6 -> gain 36->64 stays +4.0/+4.3/+4.5). So the surrogate is ROBUST to feature noise and STILL rewards more features -> feature-input-noise is NOT the in-circuit saturation cause. WHAT STANDS (measured): in-circuit 49 feat (0.748) == 36 feat (0.744), TIED -> feature-scaling does NOT help in-circuit beyond 36, while surrogate says it should (+2-4). MECHANISM OPEN. Untested candidates: (a) bigger deck (24867 vs 18791 MOS) UNDER-SETTLES at the same TH=400 (more nodes, less converged/slot); (b) analog readout-TRAINING capacity/weight-update interference over more inputs (NOT feature-input noise); (c) readout output-node summing noise (different injection point than tested). SAFE CONCLUSION: 36 feats = in-circuit sweet spot, ~0.744 = achieved frozen-wide ceiling; the cause of non-scaling is unconfirmed. Do not assert readout-sum-noise.
+
+### SETTLING REFUTED -> 0.744-0.752 IS THE GENUINE ANALOG CEILING (2026-06-26)
+Settling A/B (64,49,36 KOUT=36 NOHID=1 NEP=4, WSEED=1, only TH differs): TH=400 -> TEST ACC 0.752 / hung 0.712 ; TH=800 (2x settling) -> TEST ACC 0.728 / hung 0.716. TIED/slightly-worse -> under-settling NOT the limiter (REFUTED). So feature-scaling saturation + the gap to surrogate 0.84 are NEITHER settling NOR feature-noise -> genuine analog FEATURE/READOUT FIDELITY (device mismatch, noise floor, finite gain) = HARDWARE limit, not addressable by TH/features/params. BONUS: NEP=4 already = 0.752 ~= NEP=12 0.744 -> frozen-wide config trains FAST (~4 epochs enough, frozen readout converges quick). FINAL C=10 CONCLUSION: best = 0.744-0.752 (frozen-wide 64,49,36 dense KOUT=36 NOHID=1), the analog ceiling for this trainer. Arc 0.448->0.669->0.744. Hidden-learning exhausted (DFA chaos, BKSIGN sign-loss). Levers closed: forward-gain(null), readout-sparsity(fixed->0.669), hidden-learning(exhausted), frozen-feature-count(saturates), settling(refuted). Remaining headroom = hardware fidelity.
+
+### LINRO REFUTED -> 0.744-0.752 is the DEFINITIVE C=10 ANALOG CEILING (2026-06-27)
+Linearized readout (gsynL, source-degeneration RDEGRO) MONOTONICALLY HURTS: LINRO=0 (12k) TEST ACC 0.752/hung 0.712 ; LINRO=1 60k 0.720/0.692 ; LINRO=1 120k 0.692/0.648. More linearization = lower gain = weaker readout signal = worse. Readout NONLINEARITY is NOT the limiter; the standard higher-gain gsyn is best. LAST LEVER CLOSED. ===== DEFINITIVE C=10 CONCLUSION ===== BEST = 0.744-0.752 (frozen-wide 64,49,36 dense KOUT=36 NOHID=1, frozen RF features + trained dense readout). Arc: 0.448 (local-RF sparse) -> 0.669 (dense readout KOUT=16) -> 0.744 (frozen-wide KOUT=36). ALL levers exhausted/characterized: forward-gain(null,5 approaches), readout-sparsity(FIXED->0.669,+0.22), frozen-feature-richness(FIXED->0.744,+0.075), feature-count-scaling(saturates~36), hidden-learning(EXHAUSTED: BKDFA chaos 0.42 any DFAW + BKSIGN sign-loss->frozen-equiv; surrogate says only true-signed-transpose helps, analog cant deliver), settling(REFUTED TH800<=TH400), readout-linearity(REFUTED, more linear worse). Residual gap to surrogate ~0.84 = genuine HARDWARE fidelity (device mismatch, noise floor, finite gain) -> needs silicon-level change (better-matched/larger devices, lower-noise summing), NOT any software/param/arch lever. KEY LESSON: the win came from ABANDONING the broken in-circuit hidden-learning backward and maximizing the STABLE forward path (rich frozen features -> un-starved dense readout). Bonus: frozen-wide trains FAST (NEP=4 already 0.752).
+
+### NEURON SHARPNESS/GAIN NULL even in frozen regime (2026-06-27): sharp_dnw(DNW=400u) 0.724 WORSE, sharp_vbn(VBNEU=0.50) 0.748 TIED vs baseline 0.752. Gain closed across regimes. BUT new untested lever: DATA. Frozen runs use NTR=40 = only 4 ex/class for the readout. Frozen readout converges ~NEP=4 -> swap epochs for data: NTR=120 NEP=4 == NTR=40 NEP=12 (both 4800 train slots, SAME sim cost) but 3x data. sklearn digits has ~180/class. Testing NTR scaling in frozen-dense surrogate.
+
+### DATA LEVER REFUTED -> C=10 LEVER-SPACE DEFINITIVELY EXHAUSTED (2026-06-27)
+Cost-neutral data test (surrogate frozen-dense 64,49,36, constant NTR*EP slots): NTR=40/EP12=73.6, NTR=80/EP6=73.7 (tied), NTR=120/EP4=70.4 (worse). Swapping epochs->data at fixed budget does NOT help (more data needs more epochs, no free lunch). DATA refuted as a cost-neutral lever.
+===== FINAL DEFINITIVE C=10 CONCLUSION (session 2026-06-23..27) =====
+BEST = 0.744-0.752 (frozen-wide 64,49,36 dense KOUT=36 NOHID=1: frozen RF features + trained dense readout). Real Spectre, 3-seed, Hungarian. Arc: 0.448 (local-RF sparse) -> 0.669 (dense readout KOUT=16, +0.22) -> 0.744 (frozen-wide KOUT=36, +0.075). EVERY software/param/arch/data lever tested & CLOSED: forward-gain(null,5+ approaches,both sparse & frozen regimes), readout-sparsity(FIXED->0.669), frozen-feature-richness(FIXED->0.744), feature-count-scaling(saturates~36), hidden-learning(EXHAUSTED: BKDFA chaos 0.42 any DFAW + BKSIGN sign-loss->frozen-equiv; only true-signed-transpose helps per surrogate, analog cant deliver), settling(REFUTED TH800<=TH400), readout-linearity(REFUTED, more linear worse), neuron-sharpness/gain(NULL), DATA(REFUTED cost-neutral). Residual gap to surrogate ~0.84 = genuine analog DEVICE-CELL FIDELITY (neuron transfer != ideal tanh; no parameter closes it) -> needs a HARDWARE/device-cell redesign, NOT software. KEY LESSON: the win came from ABANDONING the broken in-circuit hidden-learning backward and maximizing the STABLE forward path (rich frozen features -> un-starved dense readout). Methodology delivered: 3-seed/invariant bar caught every false lead; 2 of my own hypotheses (readout-sum-noise, under-settling) tested & honestly REFUTED + corrected; fixed a hung_eval TH-hardcode bug. NEXT (user direction needed): device-cell redesign for lower-noise/sharper neuron, OR accept 0.745 as the analog ceiling for this cell library.

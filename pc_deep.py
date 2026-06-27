@@ -24,6 +24,7 @@ SCALE=float(os.environ.get("SCALE","1.5")); IND=float(os.environ.get("IND","0.30
 KMAP=float(os.environ.get("KMAP","0.30")); VW0=0.5
 TH=float(os.environ.get("TH","250")); STEP=os.environ.get("STEP","2n")
 VBSYN=os.environ.get("VBSYN","0.45"); VBNEU=os.environ.get("VBNEU","0.35"); GMT=os.environ.get("GMT","0.6")
+DNW=os.environ.get("DNW","200u")   # dneuron diff-pair width -> sets gm -> NEURON GAIN (clean knob: higher gm, same cmld load/operating point, unlike RCS which shifts common-mode). gain ~ sqrt(W).
 GBLH=os.environ.get("GBLH","0.85"); GBLO=os.environ.get("GBLO","0.85")
 WL=os.environ.get("WL","1000u"); RCS=os.environ.get("RCS","300k"); RNODE=os.environ.get("RNODE","20k")
 RDEG=os.environ.get("RDEG","12k")   # source degeneration (THE key linearizing fix from pc_spice)
@@ -141,6 +142,28 @@ if DALE:   # Dale's law: per-neuron FIXED sign (hidden layers; inputs & outputs 
         for _j in range(LAYERS[_l]): dsign[(_l,_j)]=1 if _drng.rand()<0.5 else -1
 # ---------- cells (verbatim from gen_pcL) ----------
 _LAM=os.environ.get("LAM","0.02")
+# CASCODE GAIN CELL (CASC=1): insert NMOS cascode devices (gate=VCAS) between the diff-pair drains and the
+# load -> boosts output resistance (gm_cas*ro_cas) -> higher neuron GAIN, the proper way (RCS/DNW/WINIT
+# coupled gain to operating-point/settling and failed). Supply=1.0V so it's a tight telescopic stack:
+# tail(~0.15) < dp-drain(anc,~0.45) < out(an,~0.8) < vdd; VCAS~0.65 keeps dp + cascode in saturation.
+CASC=int(os.environ.get("CASC","0")); VCAS=os.environ.get("VCAS","0.65")
+if CASC:
+    _dneuron=f""".subckt dneuron up un ap an vdd vbn
+M1 anc up tn 0 NNR W={DNW} L=100u
+M2 apc un tn 0 NNR W={DNW} L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+Mc1 an ncas anc 0 NNR W={DNW} L=100u
+Mc2 ap ncas apc 0 NNR W={DNW} L=100u
+Vcas ncas 0 {VCAS}
+Xcm ap an vdd cmld
+.ends"""
+else:
+    _dneuron=f""".subckt dneuron up un ap an vdd vbn
+M1 an up tn 0 NNR W={DNW} L=100u
+M2 ap un tn 0 NNR W={DNW} L=100u
+Mt tn vbn 0 0 NNR W=200u L=100u
+Xcm ap an vdd cmld
+.ends"""
 SUB=f""".model NNR NMOS (LEVEL=1 VTO=0.2 KP=120u LAMBDA={_LAM} GAMMA=0 PHI=0.7)
 .model PNR PMOS (LEVEL=1 VTO=-0.2 KP=40u LAMBDA={_LAM} GAMMA=0 PHI=0.7)
 .subckt gsyn inp inn wp wn outp outn vdd vbn
@@ -179,12 +202,7 @@ Rcs2 n cmx {RCS}
 MLp p cmx vdd vdd PNR W={WL} L=100u
 MLn n cmx vdd vdd PNR W={WL} L=100u
 .ends
-.subckt dneuron up un ap an vdd vbn
-M1 an up tn 0 NNR W=200u L=100u
-M2 ap un tn 0 NNR W=200u L=100u
-Mt tn vbn 0 0 NNR W=200u L=100u
-Xcm ap an vdd cmld
-.ends
+{_dneuron}
 .subckt nrelu up un ap an vdd vbn
 * one-sided neuron: cutoff = free ReLU. Knee at v(vbn)+VT (+I.R); un pin = fixed reference gate (global relref).
 Mr d1 up s1 0 NNR W=200u L=100u
@@ -827,12 +845,18 @@ if __name__=="__main__":
         subprocess.run(["ngspice","-b",f"pd_{TAG}.cir"],capture_output=True,text=True,timeout=1200)
         d=np.loadtxt(f"pd{TAG}.dat"); t=d[:,0]*1e9; col=d[:,1::2]
     # eval EACH block (interval eval) -> accuracy curve; report FINAL and BEST (early-stop)
-    def block_acc(s):
+    def block_margins(s):   # robust: collect C-dim margins for the test block starting at slot s
         MO=[]
         for g in range(s,s+len(yte)):
-            row=col[np.argmin(np.abs(t-(g*TH+TH-3)))]
+            j=int(np.argmin(np.abs(t-(g*TH+TH-3))))
+            row=col[j]
+            if np.ndim(row)==0 or len(row)<2*C: continue   # skip malformed rows instead of crashing
             MO.append([row[2*c]-row[2*c+1] for c in range(C)])
-        M=np.array(MO); M=M-M.mean(0)
+        if not MO: return None
+        M=np.array(MO,dtype=float); return M-M.mean(0)
+    def block_acc(s):
+        M=block_margins(s)
+        if M is None or M.ndim!=2 or M.shape[0]==0: return 0.0
         if int(os.environ.get("MASKSSL","0")):
             return float(np.mean((M>0)==(Tte[:len(M)]>0)))   # masked-pixel SIGN accuracy (chance 0.5)
         return float(np.mean(np.argmax(M,1)==yte[:len(M)]))
@@ -848,8 +872,6 @@ if __name__=="__main__":
     curve=[block_acc(s) for s in eval_blocks]
     acc=curve[-1]; best=max(curve)
     if int(os.environ.get("SAVEM","0")):   # save the per-example eval margins of the BEST block (for offline committee tests)
-        bs=eval_blocks[int(np.argmax(curve))]; MO=[]
-        for g in range(bs,bs+len(yte)):
-            row=col[np.argmin(np.abs(t-(g*TH+TH-3)))]; MO.append([row[2*c]-row[2*c+1] for c in range(C)])
-        M=np.array(MO); np.save(f"mout_{TAG}.npy", M-M.mean(0))
+        bs=eval_blocks[int(np.argmax(curve))]; M=block_margins(bs)
+        if M is not None: np.save(f"mout_{TAG}.npy", M)
     print(f"[pc_deep] TEST ACC = {acc:.3f}  BEST(early-stop) = {best:.3f}  curve = {[round(x,3) for x in curve]}")
