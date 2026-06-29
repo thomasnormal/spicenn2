@@ -181,6 +181,21 @@ Rd3 s3 nb {RDEG}
 M4 outp inn s4 0 NNR W=200u L=100u
 Rd4 s4 nb {RDEG}
 .ends
+.subckt gsynB inp inn wp wn outp outn vdd vbn
+Mtail nt vbn 0 0 NNR W=400u L=100u
+M5 na wp s5 0 NNR W=200u L=100u
+Rd5 s5 nt {os.environ.get("RDEGBK","12k")}
+M6 nb wn s6 0 NNR W=200u L=100u
+Rd6 s6 nt {os.environ.get("RDEGBK","12k")}
+M1 outp inp s1 0 NNR W=200u L=100u
+Rd1 s1 na {os.environ.get("RDEGBK","12k")}
+M2 outn inn s2 0 NNR W=200u L=100u
+Rd2 s2 na {os.environ.get("RDEGBK","12k")}
+M3 outn inp s3 0 NNR W=200u L=100u
+Rd3 s3 nb {os.environ.get("RDEGBK","12k")}
+M4 outp inn s4 0 NNR W=200u L=100u
+Rd4 s4 nb {os.environ.get("RDEGBK","12k")}
+.ends
 .subckt gsynL inp inn wp wn outp outn vdd vbn
 Mtail nt vbn 0 0 NNR W=400u L=100u
 M5 na wp s5 0 NNR W=200u L=100u
@@ -316,6 +331,7 @@ def stepped(vals):
 # node helpers (differential: every signal is _p/_n)
 def ap_(l,i): return (f"a{l}p_{i}",f"a{l}n_{i}")   # activation of layer l, neuron i
 def syn(tag,ip,inn,op,on,wp,wn,vb="vbsyn"): return [f"X_{tag} {ip} {inn} {wp} {wn} {op} {on} vdd {vb} gsyn"]
+def synB(tag,ip,inn,op,on,wp,wn,vb="vbsyn"): return [f"X_{tag} {ip} {inn} {wp} {wn} {op} {on} vdd {vb} gsynB"]  # backward synapse w/ own degeneration RDEGBK (linearize the gradient without touching forward gain)
 def gen_deck():
     EVK=int(os.environ.get("EVK","0"))   # interval eval: insert a test block every EVK epochs (0 = only final) -> per-seed early-stop
     AFL=float(os.environ.get("AFLOOR","0.6")); VBBK=float(os.environ.get("VBBK",VBSYN)); gBLH=float(GBLH); gBLO=float(GBLO)   # VBBK lowered 0.45->0.35: sweep optimum ~0.32 (keeps backward magnitude; below ~0.28 under-drives)
@@ -645,7 +661,8 @@ def gen_deck():
                         L+=[f"X_bk_{key} {ekp} {ekn} wp_{key} wq_{key} {_dbxp} {_dbxn} vdd vbbk gsyn"]
                     else:
                         _bt=f"vbbk{l}" if float(os.environ.get("VBBKS","0"))>0 else "vbbk"
-                        L+=syn(f"bk_{key}",ekp,ekn,_dbxp,_dbxn,f"wp_{key}",f"wn_{key}",_bt)
+                        _bk=synB if os.environ.get("RDEGBK") else syn   # RDEGBK set -> linearized backward synapse (gsynB); else shared gsyn
+                        L+=_bk(f"bk_{key}",ekp,ekn,_dbxp,_dbxn,f"wp_{key}",f"wn_{key}",_bt)
     if int(os.environ.get("TFG","0")):   # f'-gate reference: tref - a^2 > 0 in the linear region, ~0 when saturated
         TREF=float(os.environ.get("TREF","0.10")); L+=[f"Vtref tref 0 {0.5+TREF}",f"Vtrefn trefn 0 {0.5-TREF}"]
     if int(os.environ.get("TFG","0"))==2:   # global REPLICA dneuron (inputs at CM) -> tn0 = balanced tail reference

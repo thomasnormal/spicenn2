@@ -32,7 +32,9 @@ for l in fh:
     s=l.strip()
     if s=="END": break
     if not s or s[0]!='"': continue
-    q=s.index('"',1); nm=s[1:q]
+    q=s.find('"',1)
+    if q<0: continue   # partial/mid-write line (raw still being appended) -> skip
+    nm=s[1:q]
     if nm=="time": t.append(float(s[q+1:]))
     elif nm in want: D[nm].append(float(s[q+1:]))
 fh.close()
