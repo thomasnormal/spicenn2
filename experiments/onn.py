@@ -46,9 +46,19 @@ def build():
             L.append(f"C{i}_{s} {out} 0 40f")
         # kick the ring out of metastable DC
         ics += [f"v(o{i}_0)={'1' if i%2==0 else '0'}", f"v(o{i}_1)=0", f"v(o{i}_2)=1"]
-    # resistive coupling: chain oscillator i node0 to i+1 node0
-    for i in range(N - 1):
-        L.append(f"Rc{i} o{i}_0 o{i+1}_0 {RC}")
+    # coupling: chain oscillator i node0 to i+1 node0. COUPLE=res (fixed R) | tgate (PROGRAMMABLE:
+    # transmission-gate conductance set by weight gate VW -> K_ij = f(VW), a stored/learnable weight).
+    couple = os.environ.get("COUPLE", "res")
+    if couple == "tgate":
+        VW = float(os.environ.get("VW", "1.0"))      # weight: high=strong coupling, ~0=off
+        L += [f"Vw vw 0 {VW:.4f}", f"Vwb vwb 0 {1.0 - VW:.4f}"]
+        for i in range(N - 1):
+            a, b = f"o{i}_0", f"o{i+1}_0"
+            L += [f"Mtn{i} {a} vw {b} 0 NNR W=2u L=2u",      # NMOS pass (on when vw high)
+                  f"Mtp{i} {a} vwb {b} vdd PNR W=4u L=2u"]   # PMOS pass (on when vwb low) -> symmetric across rail
+    else:
+        for i in range(N - 1):
+            L.append(f"Rc{i} o{i}_0 o{i+1}_0 {RC}")
     L.append(".ic " + " ".join(ics))
     L.append(f".tran {TSTOP}/6000 {TSTOP}")
     L.append(".end")
