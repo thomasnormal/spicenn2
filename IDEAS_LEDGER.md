@@ -2406,3 +2406,11 @@ gph_long ep16=0.520 (=ep8 0.524 -> longer training PLATEAUS, neutral). Full tall
   trained:  0.524   0.520   0.520  (ROBUST -- near-identical histograms clean->2mV)
   GAP:      +0.076  +0.068  +0.072 (PRESERVED at all sigma)
 biases NEUTRAL at 1mV (0.504; no real offsets to self-cal). => the trained-vs-frozen advantage (in-circuit hidden learning) FULLY SURVIVES 1-2mV device mismatch at C=10 depth-3. Contrast paper depth-4 C=4 CATASTROPHE at 2mV (0.46/0.25/0.21): fewer stages (3 vs 4) = less per-stage offset amplification, AND the less-fitted C=10 net (0.52) has coarser decision boundaries less sensitive to small offsets. 1-2mV = ~0.5-2% input-referred perturbation vs ~100-500mV signal swing -> barely flips argmax. Pushing to 5mV to find the cliff. CAVEAT: seed-1/1-chip (low variance here since not at cliff; 3-chip MC would solidify).
+### MISMATCH 5mV: frz_mm5 (frozen 5mV) = 0.436 (frozen dose-response: clean 0.448/1mV 0.452/2mV 0.448/5mV 0.436 -> only -0.012 at 5mV, readout very offset-tolerant). KEY pending: gph_mm5 (trained 5mV) -> gap preserved (~0.52) = robust even at 5mV, OR drops toward 0.436 = cliff (training drift).
+
+### ★★ MISMATCH VALIDATION COMPLETE (seed-1 MMSEED=0): in-circuit-learning advantage ROBUST clean->5mV, NO CLIFF.
+  sigma:    clean   1mV     2mV     5mV
+  frozen:   0.448   0.452   0.448   0.436
+  trained:  0.524   0.520   0.520   0.508
+  GAP:      +0.076  +0.068  +0.072  +0.072  (PRESERVED at ALL sigma; both degrade equally ~-0.012 by 5mV)
+NO training-specific drift even at 5mV (paper depth-4 C=4 died at 2mV: 0.46/0.25/0.21). The trained-vs-frozen advantage (in-circuit hidden learning) survives realistic AND large device mismatch at C=10 depth-3. Reasons: fewer stages (3 vs 4) compound less offset amplification; coarse 0.52 decision boundaries insensitive to small offsets; readout absorbs static offsets for frozen. Extended paper/paper.tex mismatch para to 5mV. CAVEAT: 1 chip/1 feature seed (low variance here, near-identical histograms across sigma). USER-REQUESTED VALIDATION COMPLETE.
