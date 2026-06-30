@@ -2417,3 +2417,10 @@ NO training-specific drift even at 5mV (paper depth-4 C=4 died at 2mV: 0.46/0.25
 ### MISMATCH 3-chip MC @2mV: frozen across chips robust+tight: MMSEED=0 0.448, MMSEED=1 0.444 (frz_mm2_c1) -> readout offset-tolerant regardless of chip. KEY pending: trained chips gph_mm2_c1/c2 (MMSEED 1,2) -> does gap hold ~0.52 across chips? (MMSEED=0 was 0.520).
 
 ### ★ MISMATCH 3-CHIP DE-ANECDOTE COMPLETE (2mV): TRAINED across 3 chips = 0.520/0.520/0.520 (IDENTICAL, near-identical histograms, zero cross-chip variance); FROZEN 0.448/0.444. Gap +0.07 robust CHIP-TO-CHIP. The mismatch-robustness result is fully de-anecdoted: in-circuit-learning advantage survives device mismatch clean->5mV (no cliff) AND across chips at 2mV. USER-REQUESTED VALIDATION FULLY COMPLETE.
+
+### COUPLED-OSCILLATOR (ONN) PROTOTYPE — transistor-level, real Spectre (2026-06-30, user-directed)
+Built experiments/onn.py: N current-starved CMOS ring oscillators (LEVEL-1, 1.0V, 3-inverter loops; freq set by starve-bias = natural freq omega_i) + resistive coupling (R_couple = 1/K_ij). Demonstrates Kuramoto/ONN synchronization in REAL transistors (extends the earlier behavioral B-source Kuramoto to actual devices):
+  - 2-osc: detuned 83/79MHz (5.5%) -> LOCK to mean 80.9MHz when coupled (even weak RC=80k).
+  - ARNOLD TONGUE: locked RC<=600k (0.0-0.6% spread), unlocked RC>=1.2M (5.3%) -> critical coupling Kc between 600k-1.2M (locking requires coupling > detuning, the Kuramoto Kc).
+  - N=5 COLLECTIVE SYNC: 5 osc spanning 74.7-86.8MHz (14.9% spread) -> ALL lock to 81.2MHz (0.0%) when coupled. Full collective phase transition in transistors.
+BRIDGE TO THESIS: the coupling resistor = K_ij; replace with a gsyn (degenerated Gilbert multiplier, stored-charge weight) -> PROGRAMMABLE/learnable coupling = the ONN weight (reuses our existing weight cell). The open thesis problem = LEARN K_ij IN-CIRCUIT (UN-0/most ONN work trains off-chip; our angle is on-substrate). Phase/oscillator computing suits Ising/optimization/associative-memory, NOT obviously feedforward classification -> a separate paradigm, not a swap into the PC net. Prototype = experiments/onn.py (parameterized N/RC/DET).
