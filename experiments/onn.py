@@ -59,6 +59,19 @@ def build():
     else:
         for i in range(N - 1):
             L.append(f"Rc{i} o{i}_0 o{i+1}_0 {RC}")
+    # in-circuit PHASE DETECTOR (PD=1): CMOS XOR(o0_0,o1_0) + RC low-pass -> DC = learning signal.
+    # XOR duty cycle ~ phase difference; locked-in-phase -> low DC, anti-phase -> high, unlocked -> beats ~mid.
+    if int(os.environ.get("PD", "0")) and N >= 2:
+        L += ["* BUFFER oscillator outputs (only gate-cap load on o*_0 -> NON-INVASIVE phase readout)",
+              "Mp0a x0n o0_0 vdd vdd PNR W=4u L=2u", "Mn0a x0n o0_0 0 0 NNR W=2u L=2u",
+              "Mp0b x0 x0n vdd vdd PNR W=4u L=2u",   "Mn0b x0 x0n 0 0 NNR W=2u L=2u",
+              "Mp1a x1n o1_0 vdd vdd PNR W=4u L=2u", "Mn1a x1n o1_0 0 0 NNR W=2u L=2u",
+              "Mp1b x1 x1n vdd vdd PNR W=4u L=2u",   "Mn1b x1 x1n 0 0 NNR W=2u L=2u",
+              "* TG-XOR from BUFFERED copies: pdy = x1 when x0=0, = x1n when x0=1",
+              "Mx1n pdy x0n x1 0 NNR W=4u L=2u", "Mx1p pdy x0 x1 vdd PNR W=4u L=2u",
+              "Mx2n pdy x0 x1n 0 NNR W=4u L=2u", "Mx2p pdy x0n x1n vdd PNR W=4u L=2u",
+              "* RC low-pass -> DC learning signal pdf",
+              "Rpd pdy pdf 50k", "Cpd pdf 0 2p"]
     L.append(".ic " + " ".join(ics))
     L.append(f".tran {TSTOP}/6000 {TSTOP}")
     L.append(".end")
@@ -99,11 +112,15 @@ if __name__ == "__main__":
     raws = glob.glob(f"raw_on_{TAG}/*.tran.tran") or glob.glob(f"raw_on_{TAG}/*.tran")
     if not raws:
         print("SIM FAILED:", r.stderr[-500:]); raise SystemExit(1)
-    nodes = [f"o{i}_0" for i in range(N)]
+    pd = int(os.environ.get("PD", "0"))
+    nodes = [f"o{i}_0" for i in range(N)] + (["pdf"] if pd else [])
     t, d = parse(raws[0], nodes)
-    fs = [freq(t, d[n]) / 1e6 for n in nodes]  # MHz
-    print(f"N={N} RC={RC} DET={DET}: per-oscillator freq (MHz) = {[round(f,2) for f in fs]}")
-    fs = [f for f in fs if f > 0]
-    if len(fs) >= 2:
-        spread = (max(fs) - min(fs)) / np.mean(fs) * 100
+    fs = [freq(t, d[n]) / 1e6 for n in [f"o{i}_0" for i in range(N)]]  # MHz
+    print(f"N={N} RC={RC} DET={DET} VW={os.environ.get('VW','-')}: freq (MHz) = {[round(f,2) for f in fs]}")
+    fsv = [f for f in fs if f > 0]
+    if len(fsv) >= 2:
+        spread = (max(fsv) - min(fsv)) / np.mean(fsv) * 100
         print(f"  freq spread = {spread:.1f}%  ({'LOCKED' if spread < 2 else 'unlocked'})  tsim={t[-1]*1e9:.0f}ns pts={len(t)}")
+    if pd and "pdf" in d:
+        s = int(0.4 * len(t)); pdv = d["pdf"][s:]
+        print(f"  PHASE-DETECTOR DC = {pdv.mean():.3f}V (std {pdv.std():.3f}) -- the in-circuit learning signal")
