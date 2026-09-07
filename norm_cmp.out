@@ -1,8 +1,0 @@
-=== StandardScaler vs per-image, batch ===
-3,8    C=2 seed=1 norm=standard                 acc= 50.0%  chance=50.0%  n=80  per-class=[0, 100]  mean-margin=0.30
-3,8    C=2 seed=7 norm=standard                 acc= 81.2%  chance=50.0%  n=80  per-class=[68, 95]  mean-margin=0.49  *** ABOVE CHANCE
-0,6,9  C=3 seed=1 norm=standard                 acc= 35.0%  chance=33.3%  n=120  per-class=[100, 0, 5]  mean-margin=0.15
-0,6,9  C=3 seed=7 norm=standard                 acc= 58.3%  chance=33.3%  n=120  per-class=[92, 82, 0]  mean-margin=0.04  *** ABOVE CHANCE
-=== minmax (per-feature) for reference ===
-3,8    C=2 seed=7 norm=minmax                   acc= 87.5%  chance=50.0%  n=80  per-class=[82, 92]  mean-margin=0.53  *** ABOVE CHANCE
-DONE

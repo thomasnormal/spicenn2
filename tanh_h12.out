@@ -1,9 +1,0 @@
-H=12 seed=1               MSE=0.125 corners=4/4 y=[0.44,0.87,0.69,0.44] actrange=0.48  *** SOLVED
-H=12 seed=2               MSE=0.100 corners=4/4 y=[0.44,0.78,0.75,0.32] actrange=0.91  *** SOLVED
-H=12 seed=3               MSE=0.100 corners=4/4 y=[0.44,0.78,0.75,0.32] actrange=0.91  *** SOLVED
-H=12 seed=4               MSE=0.090 corners=4/4 y=[0.31,0.62,0.81,0.29] actrange=1.13  *** SOLVED
-H=12 seed=5               MSE=0.032 corners=4/4 y=[0.24,0.96,0.91,0.24] actrange=0.53  *** SOLVED
-H=12 seed=6               MSE=0.039 corners=4/4 y=[0.24,0.86,0.98,0.28] actrange=1.65  *** SOLVED
-H=12 seed=7               MSE=0.117 corners=4/4 y=[0.34,0.61,0.88,0.44] actrange=0.53  *** SOLVED
-H=12 seed=8               MSE=0.095 corners=4/4 y=[0.34,0.93,0.73,0.44] actrange=0.48  *** SOLVED
-=== tanh H=12 reliability: 8/8 reach 4/4 ===

@@ -1,4 +1,0 @@
-Spectre (+mt=1)  : 2611.175842341s (exit 0)
-Spectre (+mt=16) : 2607.948483300s (exit 0)
-Xyce             : .192385120s (exit 0)
-BENCH_DONE

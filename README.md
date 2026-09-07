@@ -32,7 +32,7 @@ pc_deep.py        THE main learner: deep sparse PC/EP nets, deck generation + Sp
                   WSAVE/WLOAD, REUSE, ...). See IDEAS_LEDGER.md for working configs.
 mm_queue.sh       Launcher for mismatch Monte-Carlo chips on the depth-4 baseline.
 IDEAS_LEDGER.md   The campaign record (read this first).
-paper/            paper.tex / paper.pdf  — LaTeX draft with circuitikz cell schematics
+paper/            paper.tex — LaTeX draft with circuitikz cell schematics
                   (compile: `tectonic paper.tex`), plus the markdown pre-draft.
 fastsim/          Device-faithful fast surrogate (devnet.py, devmodel.py, fasttrain.py) and
                   characterization decks/tables. Honest caveat: the surrogate under-predicts real
@@ -54,6 +54,10 @@ env TASK=digits C=4 LAYERS=64,32,16,8 BKSIGN=1 SOFTC=1 FANIN=4 NEP=64 NTR=40 NTE
 Each run writes `pd_<RUNTAG>.scs` (the full transistor deck), runs one transient covering the whole
 training schedule, and prints the test-accuracy curve. Simulation artifacts (`raw_*/`, decks, logs) are
 git-ignored — they are GBs per run.
+
+Generated run files and downloaded datasets are not bundled in the current tree.
+Reference circuits, figures and required calibration fixtures remain versioned;
+see [repository hygiene](docs/REPOSITORY_HYGIENE.md) for details and regeneration notes.
 
 ## Provenance discipline
 
