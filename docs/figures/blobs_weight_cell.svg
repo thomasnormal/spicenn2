@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="980" viewBox="0 0 1120 980" role="img" aria-labelledby="title description">
+<title id="title">One actual learning cell</title>
+<desc id="description">Transistor-level schematic of the class 0, input 0 weight cell in blobs.cir.</desc>
+<style>text{font-family:Arial,sans-serif;fill:#1f2937}.net{font-family:monospace;fill:#075985;font-size:14px}.wire{fill:none;stroke:#334155;stroke-width:2;stroke-linejoin:round}.note{fill:#526175;font-size:15px}</style>
+<rect width="1120" height="980" fill="white"/>
+<text x="30" y="38" font-size="27" text-anchor="start">Inside the two-input learner</text>
+<text x="30" y="69" class="note" text-anchor="start">One complete weight cell from competition/examples/blobs.cir. All device names and values come from that file.</text>
+<text x="30" y="95" class="note" text-anchor="start">MOS: D = drain, S = source; gate enters from left. Bubble = PMOS. Bodies: nch/syn → 0, pch → vdd.</text>
+<text x="30" y="119" class="note" text-anchor="start">0 = ground. Named bias, input, target, reset and learn ports are driven by the runner; its sources/loads are not shown.</text>
+<rect x="8" y="153" width="1104" height="814" rx="12" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="30" y="187" font-size="23" text-anchor="start">Class 0 · in0 weight cell</text>
+<text x="30" y="214" class="note" text-anchor="start">9 transistors + 1 capacitor. Matching blue net labels are electrically connected.</text>
+<g data-device="Mu3_0_0"><title>Mu3_0_0 n_up0_0 n_up0_0 vdd vdd pch W=60u L=1u</title>
+<polyline class="wire" points="230,270 230,305 218,305"/>
+<polyline class="wire" points="218,305 218,355"/>
+<polyline class="wire" points="218,355 230,355 230,390"/>
+<polyline class="wire" points="208,302 208,358"/>
+<polyline class="wire" points="165,330 198,330"/>
+<circle cx="203" cy="330" r="5" fill="white" stroke="#334155" stroke-width="2"/>
+<text x="237" y="294" font-size="10" text-anchor="start">S</text>
+<text x="237" y="373" font-size="10" text-anchor="start">D</text>
+<text x="245" y="323" font-size="15" text-anchor="start">Mu3_0_0</text>
+<text x="245" y="342" font-size="13" text-anchor="start">pch</text>
+<text x="245" y="360" font-size="11" text-anchor="start">W=60u L=1u</text>
+</g>
+<g data-device="Mu4_0_0"><title>Mu4_0_0 n_w0_0 n_up0_0 vdd vdd pch W=60u L=1u</title>
+<polyline class="wire" points="500,270 500,305 488,305"/>
+<polyline class="wire" points="488,305 488,355"/>
+<polyline class="wire" points="488,355 500,355 500,390"/>
+<polyline class="wire" points="478,302 478,358"/>
+<polyline class="wire" points="435,330 468,330"/>
+<circle cx="473" cy="330" r="5" fill="white" stroke="#334155" stroke-width="2"/>
+<text x="507" y="294" font-size="10" text-anchor="start">S</text>
+<text x="507" y="373" font-size="10" text-anchor="start">D</text>
+<text x="515" y="323" font-size="15" text-anchor="start">Mu4_0_0</text>
+<text x="515" y="342" font-size="13" text-anchor="start">pch</text>
+<text x="515" y="360" font-size="11" text-anchor="start">W=60u L=1u</text>
+</g>
+<g data-device="Mu1_0_0"><title>Mu1_0_0 n_up0_0 verror n_tail0_0 0 nch W=20u L=1u</title>
+<polyline class="wire" points="230,475 230,510 218,510"/>
+<polyline class="wire" points="218,510 218,560"/>
+<polyline class="wire" points="218,560 230,560 230,595"/>
+<polyline class="wire" points="208,507 208,563"/>
+<polyline class="wire" points="165,535 208,535"/>
+<text x="237" y="499" font-size="10" text-anchor="start">D</text>
+<text x="237" y="578" font-size="10" text-anchor="start">S</text>
+<text x="245" y="528" font-size="15" text-anchor="start">Mu1_0_0</text>
+<text x="245" y="547" font-size="13" text-anchor="start">nch</text>
+<text x="245" y="565" font-size="11" text-anchor="start">W=20u L=1u</text>
+</g>
+<g data-device="Mu2_0_0"><title>Mu2_0_0 n_w0_0 n_error0 n_tail0_0 0 nch W=20u L=1u</title>
+<polyline class="wire" points="500,475 500,510 488,510"/>
+<polyline class="wire" points="488,510 488,560"/>
+<polyline class="wire" points="488,560 500,560 500,595"/>
+<polyline class="wire" points="478,507 478,563"/>
+<polyline class="wire" points="435,535 478,535"/>
+<text x="507" y="499" font-size="10" text-anchor="start">D</text>
+<text x="507" y="578" font-size="10" text-anchor="start">S</text>
+<text x="515" y="528" font-size="15" text-anchor="start">Mu2_0_0</text>
+<text x="515" y="547" font-size="13" text-anchor="start">nch</text>
+<text x="515" y="565" font-size="11" text-anchor="start">W=20u L=1u</text>
+</g>
+<g data-device="Mtail0_0"><title>Mtail0_0 n_tail0_0 in0 n_gate0_0 0 nch W=20u L=1u</title>
+<polyline class="wire" points="365,630 365,665 353,665"/>
+<polyline class="wire" points="353,665 353,715"/>
+<polyline class="wire" points="353,715 365,715 365,750"/>
+<polyline class="wire" points="343,662 343,718"/>
+<polyline class="wire" points="300,690 343,690"/>
+<text x="372" y="654" font-size="10" text-anchor="start">D</text>
+<text x="372" y="733" font-size="10" text-anchor="start">S</text>
+<text x="380" y="683" font-size="15" text-anchor="start">Mtail0_0</text>
+<text x="380" y="702" font-size="13" text-anchor="start">nch</text>
+<text x="380" y="720" font-size="11" text-anchor="start">W=20u L=1u</text>
+</g>
+<g data-device="Menable0_0"><title>Menable0_0 n_gate0_0 learn 0 0 nch W=1000u L=1u</title>
+<polyline class="wire" points="365,800 365,835 353,835"/>
+<polyline class="wire" points="353,835 353,885"/>
+<polyline class="wire" points="353,885 365,885 365,920"/>
+<polyline class="wire" points="343,832 343,888"/>
+<polyline class="wire" points="300,860 343,860"/>
+<text x="372" y="824" font-size="10" text-anchor="start">D</text>
+<text x="372" y="903" font-size="10" text-anchor="start">S</text>
+<text x="380" y="853" font-size="15" text-anchor="start">Menable0_0</text>
+<text x="380" y="872" font-size="13" text-anchor="start">nch</text>
+<text x="380" y="890" font-size="11" text-anchor="start">W=1000u L=1u</text>
+</g>
+<g data-device="Mreset0_0"><title>Mreset0_0 vweight reset n_w0_0 0 syn W=1000u L=1u</title>
+<polyline class="wire" points="740,270 740,305 728,305"/>
+<polyline class="wire" points="728,305 728,355"/>
+<polyline class="wire" points="728,355 740,355 740,390"/>
+<polyline class="wire" points="718,302 718,358"/>
+<polyline class="wire" points="675,330 718,330"/>
+<text x="747" y="294" font-size="10" text-anchor="start">D</text>
+<text x="747" y="373" font-size="10" text-anchor="start">S</text>
+<text x="755" y="323" font-size="15" text-anchor="start">Mreset0_0</text>
+<text x="755" y="342" font-size="13" text-anchor="start">syn</text>
+<text x="755" y="360" font-size="11" text-anchor="start">W=1000u L=1u</text>
+</g>
+<g data-device="Cw0_0"><title>Cw0_0 n_w0_0 0 1.67e-06</title>
+<polyline class="wire" points="740,475 740,528"/>
+<polyline class="wire" points="718,528 762,528"/>
+<polyline class="wire" points="718,542 762,542"/>
+<polyline class="wire" points="740,542 740,595"/>
+<text x="768" y="530" font-size="15" text-anchor="start">Cw0_0</text>
+<text x="768" y="552" font-size="14" text-anchor="start">1.67 µF</text>
+</g>
+<g data-device="Mpos0_0"><title>Mpos0_0 in0 n_w0_0 n_pos0 0 syn W=10u L=1u</title>
+<polyline class="wire" points="830,685 830,720 818,720"/>
+<polyline class="wire" points="818,720 818,770"/>
+<polyline class="wire" points="818,770 830,770 830,805"/>
+<polyline class="wire" points="808,717 808,773"/>
+<polyline class="wire" points="765,745 808,745"/>
+<text x="837" y="709" font-size="10" text-anchor="start">D</text>
+<text x="837" y="788" font-size="10" text-anchor="start">S</text>
+<text x="845" y="738" font-size="15" text-anchor="start">Mpos0_0</text>
+<text x="845" y="757" font-size="13" text-anchor="start">syn</text>
+<text x="845" y="775" font-size="11" text-anchor="start">W=10u L=1u</text>
+</g>
+<g data-device="Mneg0_0"><title>Mneg0_0 in0 vweight n_neg0 0 syn W=10u L=1u</title>
+<polyline class="wire" points="1020,685 1020,720 1008,720"/>
+<polyline class="wire" points="1008,720 1008,770"/>
+<polyline class="wire" points="1008,770 1020,770 1020,805"/>
+<polyline class="wire" points="998,717 998,773"/>
+<polyline class="wire" points="955,745 998,745"/>
+<text x="1027" y="709" font-size="10" text-anchor="start">D</text>
+<text x="1027" y="788" font-size="10" text-anchor="start">S</text>
+<text x="1035" y="738" font-size="15" text-anchor="start">Mneg0_0</text>
+<text x="1035" y="757" font-size="13" text-anchor="start">syn</text>
+<text x="1035" y="775" font-size="11" text-anchor="start">W=10u L=1u</text>
+</g>
+<polyline class="wire" points="230,270 500,270"/>
+<text x="350" y="262" class="net" text-anchor="start">vdd</text>
+<polyline class="wire" points="230,390 230,475"/>
+<text x="235" y="440" class="net" text-anchor="start">n_up0_0</text>
+<polyline class="wire" points="165,330 140,330 140,415 230,415 230,390"/>
+<circle cx="230" cy="415" r="3" fill="#334155"/>
+<polyline class="wire" points="500,390 500,475"/>
+<text x="505" y="440" class="net" text-anchor="start">n_w0_0</text>
+<polyline class="wire" points="230,595 230,615 500,615 500,595 500,615 365,615 365,630"/>
+<text x="240" y="610" class="net" text-anchor="start">n_tail0_0</text>
+<circle cx="365" cy="615" r="3" fill="#334155"/>
+<polyline class="wire" points="365,750 365,800"/>
+<text x="370" y="780" class="net" text-anchor="start">n_gate0_0</text>
+<polyline class="wire" points="740,390 740,475 740,415 500,415 500,390"/>
+<circle cx="500" cy="415" r="3" fill="#334155"/>
+<circle cx="740" cy="415" r="3" fill="#334155"/>
+<text x="45" y="695" class="note" text-anchor="start">Input-gated</text>
+<text x="45" y="718" class="note" text-anchor="start">update current</text>
+<text x="570" y="585" class="note" text-anchor="start">Stored weight</text>
+<text x="745" y="883" class="note" text-anchor="start">Readout: learned − reference current</text>
+<text x="745" y="907" class="note" text-anchor="start">n_pos0 / n_neg0 feed the class score circuit.</text>
+<text x="430" y="335" class="net" text-anchor="end">n_up0_0</text>
+<text x="160" y="540" class="net" text-anchor="end">verror</text>
+<text x="430" y="540" class="net" text-anchor="end">n_error0</text>
+<text x="295" y="695" class="net" text-anchor="end">in0</text>
+<text x="370" y="914" class="net" text-anchor="start">0</text>
+<text x="295" y="865" class="net" text-anchor="end">learn</text>
+<text x="745" y="264" class="net" text-anchor="start">vweight</text>
+<text x="670" y="335" class="net" text-anchor="end">reset</text>
+<text x="745" y="589" class="net" text-anchor="start">0</text>
+<text x="835" y="679" class="net" text-anchor="start">in0</text>
+<text x="835" y="799" class="net" text-anchor="start">n_pos0</text>
+<text x="760" y="750" class="net" text-anchor="end">n_w0_0</text>
+<text x="1025" y="679" class="net" text-anchor="start">in0</text>
+<text x="1025" y="799" class="net" text-anchor="start">n_neg0</text>
+<text x="950" y="750" class="net" text-anchor="end">vweight</text>
+</svg>

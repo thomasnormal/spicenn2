@@ -100,7 +100,23 @@ That voltage changes the next prediction. This baseline has no hidden layer, so 
 does not need backpropagation through several layers or an equilibrium-propagation
 free/nudged phase pair. The [research archive](docs/README.md) explores those alternatives.
 
-Here is the beginning of one actual weight cell:
+Here is the **actual transistor circuit for one weight cell**, not just a block
+diagram. `Cw0_0` stores the weight; `Mreset0_0` initializes it; the `Mu` transistors
+charge or discharge it during learning. `Mpos0_0` and `Mneg0_0` read the input as
+currents that feed the class score circuit. Matching blue wire labels mean an
+electrical connection, even where no wire is drawn between them.
+
+![Transistor-level schematic of one complete weight cell, with its weight capacitor, reset switch, input-gated update circuit, and two readout transistors.](docs/figures/blobs_weight_cell.svg)
+
+The full two-input learner repeats this cell six times: one per input plus a bias
+for each of the two classes. [Open the complete, zoomable circuit schematic](docs/figures/blobs_circuit.svg)
+to see all **74 transistors, 6 capacitors, and 4 resistors**, including both score
+and error circuits. The runner supplies the external signals and bias voltages.
+Both drawings use the device names and values from the
+[raw netlist](competition/examples/blobs.cir); regenerate them with
+`python competition/draw_blobs.py`.
+
+Here is the corresponding netlist excerpt for the capacitor, reset, and readout:
 
 ```spice
 * Store the weight and initialize it during reset.
