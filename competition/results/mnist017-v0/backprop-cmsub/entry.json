@@ -1,0 +1,7 @@
+{
+  "id": "backprop-cmsub",
+  "name": "CMSUB trained-hidden backprop",
+  "task": "mnist017-v0",
+  "circuit": "submissions/backprop-cmsub/circuit.cir",
+  "verification": "organizer reference-image rerun and half-step stability check"
+}

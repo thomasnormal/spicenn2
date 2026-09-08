@@ -159,6 +159,16 @@ the supplied transistor model, and `W`/`L` set its width and length. The rest of
 file contains the score and update circuitry. During initialization, a real switch
 charges the capacitor from a metered bias source; it does not begin with free stored charge.
 
+How do the `Mu` transistors change a weight? `Mu1` and `Mu2` compare the fixed
+`verror` voltage with the class's error voltage. `Mu3`/`Mu4` mirror the first
+branch's current into the weight capacitor, while `Mu2` draws current out.
+Their difference sets **C × dV(weight)/dt = current in − current out**.
+`Mtail` makes the available update current depend on the input, and `Menable`
+turns the update off when `learn` is low. A larger error can therefore steer
+charge in either direction, with an input-dependent strength. This is an
+approximation to input × error, not an exact multiplier: thresholds, saturation
+and offsets matter, which is why we test the complete circuit.
+
 ### Run the circuit on the dataset
 
 Install Python 3.9+ and ngspice, then set up the runner from the repository
@@ -196,6 +206,9 @@ Expect **0/100 correct and 100 tied/invalid predictions**, versus 100/100 with
 training. That is because identical initialized class scores tie, not because
 random guessing in a two-class problem normally scores zero. Compare `correct`,
 `invalid_predictions`, and the energy fields in the two `report.json` files.
+The runner always exposes ten digit outputs, so even this two-class report has
+a 10×11 confusion matrix: rows are true digits, columns 0–9 are predictions,
+and the last column counts invalid/tied predictions. Unused classes have zero rows.
 
 To use Xyce, add `--simulator xyce` and choose a new output directory. Its executable
 should be named `Xyce` on your PATH, or supplied through `--binary /path/to/Xyce`.
@@ -289,6 +302,21 @@ the 0/1/7 tutorial's 89.33% must not be read as ten-digit accuracy.
 The untuned ten-digit circuit scores only **18.6% (93/500)** at **27.09 µJ/image**
 in the reference run. It is a runnable starting point with substantial room for
 improvement, not a competitive handwriting recognizer.
+For context, a [software logistic-regression reference](docs/SOFTWARE_REFERENCE.md)
+trained on the exact same 240 images and 16 features scores **65.6% (328/500)**,
+with fixed parameters and no test-label tuning. That is a Python classifier,
+not an eligible circuit submission; its energy was not measured.
+
+Allow time for numerical verification too: v0 gives **each** reference and
+half-step simulator run a [30-minute budget](competition/RULES.md#verification-and-failures).
+The ten-digit baseline's half-step run took about 29 minutes on the organizer's
+host. Larger circuits may exceed the limit; faster local hardware does not change
+the organizer's budget.
+
+For architectures beyond this linear learner, explore the
+[historical submissions](submissions/HISTORICAL.md): trained-hidden backprop,
+physical random features, and predictive coding with a frozen-hidden control.
+Their old research results and new competition measurements are kept separate.
 
 ## 4. Enter the competition
 

@@ -1,0 +1,1051 @@
+{
+  "accuracy": 0.3333333333333333,
+  "correct": 50,
+  "test_images": 150,
+  "invalid_predictions": 0,
+  "predictions": [
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7
+  ],
+  "confusion_matrix": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      50,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      50,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      50,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "energy": {
+    "startup": {
+      "delivered_j": 0.0980770744203957,
+      "returned_j": 0.0,
+      "net_j": 0.0980770744203957,
+      "by_source": {
+        "vdd": {
+          "delivered_j": 0.0007080702779125617,
+          "returned_j": 0.0,
+          "net_j": 0.0007080702779125617
+        },
+        "vref": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "vweight": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "verror": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "voffset": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "vbias": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "reset": {
+          "delivered_j": 0.09736900414248315,
+          "returned_j": 0.0,
+          "net_j": 0.09736900414248315
+        },
+        "learn": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "clock": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in0": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in1": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in10": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in11": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in12": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in13": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in14": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in15": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target0": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target1": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        }
+      }
+    },
+    "inference": {
+      "delivered_j": 0.005189856495567801,
+      "returned_j": 0.0002259341958355746,
+      "net_j": 0.004963922299732227,
+      "by_source": {
+        "vdd": {
+          "delivered_j": 0.005189850474653779,
+          "returned_j": 0.0,
+          "net_j": 0.005189850474653779
+        },
+        "vref": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "vweight": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "verror": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "voffset": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "vbias": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "reset": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "learn": {
+          "delivered_j": 6.0209140219103324e-09,
+          "returned_j": 0.0,
+          "net_j": 6.0209140219103324e-09
+        },
+        "clock": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in0": {
+          "delivered_j": 0.0,
+          "returned_j": 1.237425228676519e-05,
+          "net_j": -1.237425228676519e-05
+        },
+        "in1": {
+          "delivered_j": 0.0,
+          "returned_j": 1.3244689369995483e-05,
+          "net_j": -1.3244689369995483e-05
+        },
+        "in2": {
+          "delivered_j": 0.0,
+          "returned_j": 1.4488114773395517e-05,
+          "net_j": -1.4488114773395517e-05
+        },
+        "in3": {
+          "delivered_j": 0.0,
+          "returned_j": 1.2493451062076786e-05,
+          "net_j": -1.2493451062076786e-05
+        },
+        "in4": {
+          "delivered_j": 0.0,
+          "returned_j": 1.2877018561673371e-05,
+          "net_j": -1.2877018561673371e-05
+        },
+        "in5": {
+          "delivered_j": 0.0,
+          "returned_j": 1.6122480247914244e-05,
+          "net_j": -1.6122480247914244e-05
+        },
+        "in6": {
+          "delivered_j": 0.0,
+          "returned_j": 1.6560319476734575e-05,
+          "net_j": -1.6560319476734575e-05
+        },
+        "in7": {
+          "delivered_j": 0.0,
+          "returned_j": 1.378711312698225e-05,
+          "net_j": -1.378711312698225e-05
+        },
+        "in8": {
+          "delivered_j": 0.0,
+          "returned_j": 1.3163672100315371e-05,
+          "net_j": -1.3163672100315371e-05
+        },
+        "in9": {
+          "delivered_j": 0.0,
+          "returned_j": 1.582392200563219e-05,
+          "net_j": -1.582392200563219e-05
+        },
+        "in10": {
+          "delivered_j": 0.0,
+          "returned_j": 1.6373823469407284e-05,
+          "net_j": -1.6373823469407284e-05
+        },
+        "in11": {
+          "delivered_j": 0.0,
+          "returned_j": 1.3419446374122e-05,
+          "net_j": -1.3419446374122e-05
+        },
+        "in12": {
+          "delivered_j": 0.0,
+          "returned_j": 1.254084066363233e-05,
+          "net_j": -1.254084066363233e-05
+        },
+        "in13": {
+          "delivered_j": 0.0,
+          "returned_j": 1.5621595474648698e-05,
+          "net_j": -1.5621595474648698e-05
+        },
+        "in14": {
+          "delivered_j": 0.0,
+          "returned_j": 1.4632128067436843e-05,
+          "net_j": -1.4632128067436843e-05
+        },
+        "in15": {
+          "delivered_j": 0.0,
+          "returned_j": 1.2410163289902788e-05,
+          "net_j": -1.2410163289902788e-05
+        },
+        "target0": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target1": {
+          "delivered_j": 0.0,
+          "returned_j": 1.1654849396546567e-09,
+          "net_j": -1.1654849396546567e-09
+        },
+        "target2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        }
+      },
+      "delivered_j_per_image": 3.459904330378534e-05
+    },
+    "total": {
+      "delivered_j": 0.2100368864095316,
+      "returned_j": 0.002683041780517938,
+      "net_j": 0.20735384462901366,
+      "by_source": {
+        "vdd": {
+          "delivered_j": 0.11007588823608827,
+          "returned_j": 0.0,
+          "net_j": 0.11007588823608827
+        },
+        "vref": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "vweight": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "verror": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "voffset": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "vbias": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "reset": {
+          "delivered_j": 0.09736900414248315,
+          "returned_j": 0.0,
+          "net_j": 0.09736900414248315
+        },
+        "learn": {
+          "delivered_j": 0.0025919940309601765,
+          "returned_j": 0.0,
+          "net_j": 0.0025919940309601765
+        },
+        "clock": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in0": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00013122192860391771,
+          "net_j": -0.00013122192860391771
+        },
+        "in1": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00013834895292388465,
+          "net_j": -0.00013834895292388465
+        },
+        "in2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00015497466463389506,
+          "net_j": -0.00015497466463389506
+        },
+        "in3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00013252711522420384,
+          "net_j": -0.00013252711522420384
+        },
+        "in4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0001386284353947648,
+          "net_j": -0.0001386284353947648
+        },
+        "in5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00017051096139641817,
+          "net_j": -0.00017051096139641817
+        },
+        "in6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00017591545380814768,
+          "net_j": -0.00017591545380814768
+        },
+        "in7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00014666660540866674,
+          "net_j": -0.00014666660540866674
+        },
+        "in8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00013977098474395776,
+          "net_j": -0.00013977098474395776
+        },
+        "in9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00016671684584703875,
+          "net_j": -0.00016671684584703875
+        },
+        "in10": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00017385366103495097,
+          "net_j": -0.00017385366103495097
+        },
+        "in11": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0001410970700734094,
+          "net_j": -0.0001410970700734094
+        },
+        "in12": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00013334794512568995,
+          "net_j": -0.00013334794512568995
+        },
+        "in13": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00016403207209582347,
+          "net_j": -0.00016403207209582347
+        },
+        "in14": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00015538746968202566,
+          "net_j": -0.00015538746968202566
+        },
+        "in15": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00013172318390479727,
+          "net_j": -0.00013172318390479727
+        },
+        "target0": {
+          "delivered_j": 0.0,
+          "returned_j": 9.61061402287978e-05,
+          "net_j": -9.61061402287978e-05
+        },
+        "target1": {
+          "delivered_j": 0.0,
+          "returned_j": 9.610349605347028e-05,
+          "net_j": -9.610349605347028e-05
+        },
+        "target2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target7": {
+          "delivered_j": 0.0,
+          "returned_j": 9.610879433407831e-05,
+          "net_j": -9.610879433407831e-05
+        },
+        "target8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        }
+      }
+    },
+    "training": {
+      "delivered_j": 0.1067699554935681,
+      "returned_j": 0.0024571075846823638,
+      "net_j": 0.10431284790888573,
+      "by_source": {
+        "vdd": {
+          "delivered_j": 0.10417796748352195,
+          "returned_j": 0.0,
+          "net_j": 0.10417796748352195
+        },
+        "vref": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "vweight": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "verror": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "voffset": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "vbias": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "reset": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "learn": {
+          "delivered_j": 0.0025919880100461544,
+          "returned_j": 0.0,
+          "net_j": 0.0025919880100461544
+        },
+        "clock": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in0": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00011884767631715246,
+          "net_j": -0.00011884767631715246
+        },
+        "in1": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00012510426355388918,
+          "net_j": -0.00012510426355388918
+        },
+        "in2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0001404865498604995,
+          "net_j": -0.0001404865498604995
+        },
+        "in3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00012003366416212705,
+          "net_j": -0.00012003366416212705
+        },
+        "in4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00012575141683309138,
+          "net_j": -0.00012575141683309138
+        },
+        "in5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00015438848114850395,
+          "net_j": -0.00015438848114850395
+        },
+        "in6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00015935513433141326,
+          "net_j": -0.00015935513433141326
+        },
+        "in7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00013287949228168452,
+          "net_j": -0.00013287949228168452
+        },
+        "in8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0001266073126436424,
+          "net_j": -0.0001266073126436424
+        },
+        "in9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00015089292384140663,
+          "net_j": -0.00015089292384140663
+        },
+        "in10": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00015747983756554375,
+          "net_j": -0.00015747983756554375
+        },
+        "in11": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00012767762369928726,
+          "net_j": -0.00012767762369928726
+        },
+        "in12": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00012080710446205768,
+          "net_j": -0.00012080710446205768
+        },
+        "in13": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00014841047662117476,
+          "net_j": -0.00014841047662117476
+        },
+        "in14": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00014075534161458892,
+          "net_j": -0.00014075534161458892
+        },
+        "in15": {
+          "delivered_j": 0.0,
+          "returned_j": 0.00011931302061489449,
+          "net_j": -0.00011931302061489449
+        },
+        "target0": {
+          "delivered_j": 0.0,
+          "returned_j": 9.61061402287978e-05,
+          "net_j": -9.61061402287978e-05
+        },
+        "target1": {
+          "delivered_j": 0.0,
+          "returned_j": 9.610233056853063e-05,
+          "net_j": -9.610233056853063e-05
+        },
+        "target2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target7": {
+          "delivered_j": 0.0,
+          "returned_j": 9.610879433407831e-05,
+          "net_j": -9.610879433407831e-05
+        },
+        "target8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        }
+      }
+    }
+  },
+  "protocol": "mnist4-circuit-learning-v0",
+  "simulator": "ngspice-46",
+  "task": "mnist017-v0",
+  "task_sha256": "3be1d3ab6ce7aff00afb94fd15dade02e916a9abda7a569e95a5b17cdb66c975",
+  "docker_image_id": "sha256:a2ae90e8bc3a84c14f0ce18ac2151189804d06b8c571ca24455a4d896f21113d",
+  "simulator_version_output": "******\n** ngspice-46 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2025, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Tue Sep  8 14:22:41 UTC 2026\n******",
+  "components": {
+    "r": 788,
+    "c": 92,
+    "m": 925,
+    "d": 0
+  },
+  "warnings": [],
+  "submission_sha256": "9448b6918670c779165334ffa047472ad53d067ef0ba418e72d5a866559466e9",
+  "dataset_sha256": "7e615774a3a79e96bd5f50bf16ae2eda0b4b7521a47cb154d759ba7ac8f04a3e",
+  "dataset_hash_format": "spicenn2-dataset-content-v1",
+  "dataset_archive_sha256": "9b7b5ccf18d07c2916143cb8de40b2651ae257fe4af474f7e32aaf01e1be34e2",
+  "harness_sha256": "879412afa6ef257a13551504fe3c5f8cf3b795a5baed2d6e89576a2fb14ffbcc",
+  "settings": {
+    "simulator": "ngspice",
+    "epochs": 20,
+    "seed": 0,
+    "slot": 0.001,
+    "startup": 0.02,
+    "step": 1e-05
+  },
+  "training_presentations": 1440,
+  "elapsed_s": 190.67670140508562,
+  "inference_latency_s": 0.001,
+  "status": "local_result"
+}

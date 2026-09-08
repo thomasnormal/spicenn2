@@ -6,6 +6,10 @@ The ten-digit main track and the faster 0/1/7 starter track have separate
 CI checks file presence, circuit syntax, runner tests, and recorded-result
 consistency; it does not run your generator or award a score.
 
+Looking for existing designs to study? The [historical solution catalog](HISTORICAL.md)
+connects delta-rule, backprop, random-feature and predictive-coding research to
+submission circuits, with explicit differences between old results and v0 scores.
+
 ## Create an entry
 
 From your fork of the repository:

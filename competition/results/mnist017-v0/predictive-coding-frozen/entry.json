@@ -1,0 +1,7 @@
+{
+  "id": "predictive-coding-frozen",
+  "name": "Fixed-feature PC control",
+  "task": "mnist017-v0",
+  "circuit": "submissions/predictive-coding-frozen/circuit.cir",
+  "verification": "organizer reference-image rerun and half-step stability check"
+}

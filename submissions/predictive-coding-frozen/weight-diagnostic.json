@@ -1,0 +1,37 @@
+{
+  "nodes": [
+    "v(xentry.n_wp_h0_0)",
+    "v(xentry.n_wn_h0_0)",
+    "v(xentry.n_wp_h1_2)",
+    "v(xentry.n_wn_h1_2)",
+    "v(xentry.n_wp_o0_0)",
+    "v(xentry.n_wn_o0_0)"
+  ],
+  "startup_volts": [
+    1.8220460764476094,
+    1.1779538036581103,
+    1.2269566841684838,
+    1.7730432036423913,
+    1.5507549134053316,
+    1.4432163482516929
+  ],
+  "training_change_volts": [
+    1.1184246728745961e-7,
+    8.05189981356591e-9,
+    1.2055491049878242e-8,
+    1.001335681038995e-7,
+    -0.0003477049462270454,
+    -0.00023868141433580625
+  ],
+  "inference_change_volts": [
+    -4.951594689828198e-14,
+    -2.220446049250313e-16,
+    0,
+    5.129230373768223e-14,
+    -9.221859529340293e-7,
+    7.422787002830944e-7
+  ],
+  "status": "unranked internal-node diagnostic",
+  "schedule": "20 ms startup; 2 passes over first training example of each of 0,1,7; same three images for inference; 1 ms slots; 10 us maxstep",
+  "simulator": "ngspice 46, local executable with organizer models"
+}

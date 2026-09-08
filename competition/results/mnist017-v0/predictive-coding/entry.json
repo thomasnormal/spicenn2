@@ -1,0 +1,7 @@
+{
+  "id": "predictive-coding",
+  "name": "Continuous predictive coding (trained hidden)",
+  "task": "mnist017-v0",
+  "circuit": "submissions/predictive-coding/circuit.cir",
+  "verification": "organizer reference-image rerun and half-step stability check"
+}

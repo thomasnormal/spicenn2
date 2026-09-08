@@ -1,0 +1,12 @@
+{
+  "status": "paired numerical consistency check; organizer recording linked from README",
+  "prediction_lists_identical": true,
+  "phase_relative_energy_difference": {
+    "startup": 3.8383602947121954e-8,
+    "training": 1.8563294917579072e-8,
+    "inference": 1.1808823398963298e-8,
+    "total": 2.9601105142678142e-8
+  },
+  "coarse_submission_sha256": "463bd8e6b65023d91684370e6f5ae1c9a517cb0d98526303f5c5d9b1698d4ee0",
+  "fine_submission_sha256": "463bd8e6b65023d91684370e6f5ae1c9a517cb0d98526303f5c5d9b1698d4ee0"
+}

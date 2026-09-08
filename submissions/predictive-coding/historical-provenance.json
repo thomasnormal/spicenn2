@@ -1,0 +1,23 @@
+{
+  "kind": "historical-research-provenance-not-a-v0-score",
+  "dataset": "real MNIST, reduced to 8x8; not sklearn digits",
+  "architecture": "64 -> 36 -> 16 -> 10, dense output connectivity",
+  "simulator": "Spectre",
+  "completed_run": "gph_mn24d",
+  "historical_deck": {
+    "name": "pd_gph_mn24d.scs",
+    "sha256": "1fc395c5e0f9edd79f0ad3db21432fd4648a6a474a76121854ab8f39dfe1eb37"
+  },
+  "historical_log": {
+    "name": "pd_gph_mn24d.log",
+    "sha256": "e261500ee73663a9efd5b78ff54ec0772b1235bae41b3c7bbb4f7a53455ba797"
+  },
+  "source_note": "Completed-run trajectory recorded in the July 8 research notes; the 115-MB generated deck is identified by hash, not bundled here.",
+  "checkpoint_epochs": [4, 8, 12, 16, 20, 24],
+  "reported_accuracy": [0.18, 0.452, 0.444, 0.436, 0.44, 0.444],
+  "reported_frozen_comparison_best": 0.496,
+  "evaluation_caveat": "Historical evaluation-block output centering; these are not raw v0 argmax scores or new reproductions.",
+  "recipe": "TASK=mnist C=10 LAYERS=64,36,16 FANIN=4 KOUT=16 RFGRID=1 RFK=2 NTR=40 NTE=25 NEP=24 WSEED=1 CHL=3 HCHOP=4 SYMNUDGE=1 SOFTC=1 BKSIGN=0 ZEROSUM=1 PERAZ=1 CWW=300p RWL=5meg SGNH=-1 SGNO=-1 TH=400 STEP=4n GBLH=.6 GBLO=.6 AFLOOR=.4 ANNS=2400 VBBK=.6 RDEG=12k",
+  "phase_caveat": "The generated deck's CHL/SYM combination leaves its reverse clock inactive; not evidence of a symmetric equilibrium-propagation estimator.",
+  "public_port": "circuit.cir is a smaller continuous-PC family port using the v0 interface, not this historical architecture or an exact reproduction."
+}

@@ -1,0 +1,1809 @@
+* Continuous predictive coding; 16 inputs, classes 0/1/7 on outputs 0/1/7.
+* MIT License; Copyright (c) 2026 Thomas Dybdahl Ahle and contributors.
+* Data-independent seed=1; hidden=8; frozen_hidden=1.
+* Historical gsyn/dneuron/esub/gprod cells; no external optimizer or readout fit.
+R1 vdd n_bsyn 5500
+R2 n_bsyn 0 4500
+R3 vdd n_bneu 6500
+R4 n_bneu 0 3500
+R5 vdd n_errorbias 4000
+R6 n_errorbias 0 6000
+R7 learn n_updatebias 4000
+R8 n_updatebias 0 6000
+R9 learn n_backbias 5500
+R10 n_backbias 0 4500
+R11 vdd n_midpoint 5000
+R12 n_midpoint 0 5000
+R13 vdd n_inref 3333.33333333
+R14 n_inref 0 6666.66666667
+R15 vdd n_targetref 5333.33333333
+R16 n_targetref 0 4666.66666667
+R17 in0 n_input0 10000
+R18 vdd n_input0 10000
+R19 in1 n_input1 10000
+R20 vdd n_input1 10000
+R21 in2 n_input2 10000
+R22 vdd n_input2 10000
+R23 in3 n_input3 10000
+R24 vdd n_input3 10000
+R25 in4 n_input4 10000
+R26 vdd n_input4 10000
+R27 in5 n_input5 10000
+R28 vdd n_input5 10000
+R29 in6 n_input6 10000
+R30 vdd n_input6 10000
+R31 in7 n_input7 10000
+R32 vdd n_input7 10000
+R33 in8 n_input8 10000
+R34 vdd n_input8 10000
+R35 in9 n_input9 10000
+R36 vdd n_input9 10000
+R37 in10 n_input10 10000
+R38 vdd n_input10 10000
+R39 in11 n_input11 10000
+R40 vdd n_input11 10000
+R41 in12 n_input12 10000
+R42 vdd n_input12 10000
+R43 in13 n_input13 10000
+R44 vdd n_input13 10000
+R45 in14 n_input14 10000
+R46 vdd n_input14 10000
+R47 in15 n_input15 10000
+R48 vdd n_input15 10000
+R49 target0 n_target0 4000
+R50 vdd n_target0 6000
+R51 target1 n_target1 4000
+R52 vdd n_target1 6000
+R53 target7 n_target2 4000
+R54 vdd n_target2 6000
+R55 vdd n_init_h0_0p 39265.127057
+R56 n_init_h0_0p 0 60734.872943
+R57 n_init_h0_0p n_wp_h0_0 100
+R58 vdd n_init_h0_0n 60734.872943
+R59 n_init_h0_0n 0 39265.127057
+R60 n_init_h0_0n n_wn_h0_0 100
+R61 vdd n_init_h0_1p 37921.2865942
+R62 n_init_h0_1p 0 62078.7134058
+R63 n_init_h0_1p n_wp_h0_1 100
+R64 vdd n_init_h0_1n 62078.7134058
+R65 n_init_h0_1n 0 37921.2865942
+R66 n_init_h0_1n n_wn_h0_1 100
+R67 vdd n_init_h0_4p 49447.2015922
+R68 n_init_h0_4p 0 50552.7984078
+R69 n_init_h0_4p n_wp_h0_4 100
+R70 vdd n_init_h0_4n 50552.7984078
+R71 n_init_h0_4n 0 49447.2015922
+R72 n_init_h0_4n n_wn_h0_4 100
+R73 vdd n_init_h0_5p 56371.1970914
+R74 n_init_h0_5p 0 43628.8029086
+R75 n_init_h0_5p n_wp_h0_5 100
+R76 vdd n_init_h0_5n 43628.8029086
+R77 n_init_h0_5n 0 56371.1970914
+R78 n_init_h0_5n n_wn_h0_5 100
+R79 vdd n_init_h1_2p 59101.4434592
+R80 n_init_h1_2p 0 40898.5565408
+R81 n_init_h1_2p n_wp_h1_2 100
+R82 vdd n_init_h1_2n 40898.5565408
+R83 n_init_h1_2n 0 59101.4434592
+R84 n_init_h1_2n n_wn_h1_2 100
+R85 vdd n_init_h1_3p 49738.8790264
+R86 n_init_h1_3p 0 50261.1209736
+R87 n_init_h1_3p n_wp_h1_3 100
+R88 vdd n_init_h1_3n 50261.1209736
+R89 n_init_h1_3n 0 49738.8790264
+R90 n_init_h1_3n n_wn_h1_3 100
+R91 vdd n_init_h1_6p 58517.5264168
+R92 n_init_h1_6p 0 41482.4735832
+R93 n_init_h1_6p n_wp_h1_6 100
+R94 vdd n_init_h1_6n 41482.4735832
+R95 n_init_h1_6n 0 58517.5264168
+R96 n_init_h1_6n n_wn_h1_6 100
+R97 vdd n_init_h1_7p 61973.5787092
+R98 n_init_h1_7p 0 38026.4212908
+R99 n_init_h1_7p n_wp_h1_7 100
+R100 vdd n_init_h1_7n 38026.4212908
+R101 n_init_h1_7n 0 61973.5787092
+R102 n_init_h1_7n n_wn_h1_7 100
+R103 vdd n_init_h2_8p 48339.0668626
+R104 n_init_h2_8p 0 51660.9331374
+R105 n_init_h2_8p n_wp_h2_8 100
+R106 vdd n_init_h2_8n 51660.9331374
+R107 n_init_h2_8n 0 48339.0668626
+R108 n_init_h2_8n n_wn_h2_8 100
+R109 vdd n_init_h2_9p 48888.5449612
+R110 n_init_h2_9p 0 51111.4550388
+R111 n_init_h2_9p n_wp_h2_9 100
+R112 vdd n_init_h2_9n 51111.4550388
+R113 n_init_h2_9n 0 48888.5449612
+R114 n_init_h2_9n n_wn_h2_9 100
+R115 vdd n_init_h2_12p 45446.0974972
+R116 n_init_h2_12p 0 54553.9025028
+R117 n_init_h2_12p n_wp_h2_12 100
+R118 vdd n_init_h2_12n 54553.9025028
+R119 n_init_h2_12n 0 45446.0974972
+R120 n_init_h2_12n n_wn_h2_12 100
+R121 vdd n_init_h2_13p 57616.4245311
+R122 n_init_h2_13p 0 42383.5754689
+R123 n_init_h2_13p n_wp_h2_13 100
+R124 vdd n_init_h2_13n 42383.5754689
+R125 n_init_h2_13n 0 57616.4245311
+R126 n_init_h2_13n n_wn_h2_13 100
+R127 vdd n_init_h3_10p 49958.2893031
+R128 n_init_h3_10p 0 50041.7106969
+R129 n_init_h3_10p n_wp_h3_10 100
+R130 vdd n_init_h3_10n 50041.7106969
+R131 n_init_h3_10n 0 49958.2893031
+R132 n_init_h3_10n n_wn_h3_10 100
+R133 vdd n_init_h3_11p 50539.5146698
+R134 n_init_h3_11p 0 49460.4853302
+R135 n_init_h3_11p n_wp_h3_11 100
+R136 vdd n_init_h3_11n 49460.4853302
+R137 n_init_h3_11n 0 50539.5146698
+R138 n_init_h3_11n n_wn_h3_11 100
+R139 vdd n_init_h3_14p 62548.5750105
+R140 n_init_h3_14p 0 37451.4249895
+R141 n_init_h3_14p n_wp_h3_14 100
+R142 vdd n_init_h3_14n 37451.4249895
+R143 n_init_h3_14n 0 62548.5750105
+R144 n_init_h3_14n n_wn_h3_14 100
+R145 vdd n_init_h3_15p 45516.6901778
+R146 n_init_h3_15p 0 54483.3098222
+R147 n_init_h3_15p n_wp_h3_15 100
+R148 vdd n_init_h3_15n 54483.3098222
+R149 n_init_h3_15n 0 45516.6901778
+R150 n_init_h3_15n n_wn_h3_15 100
+R151 vdd n_init_h4_0p 47327.4074917
+R152 n_init_h4_0p 0 52672.5925083
+R153 n_init_h4_0p n_wp_h4_0 100
+R154 vdd n_init_h4_0n 52672.5925083
+R155 n_init_h4_0n 0 47327.4074917
+R156 n_init_h4_0n n_wn_h4_0 100
+R157 vdd n_init_h4_1p 35000
+R158 n_init_h4_1p 0 65000
+R159 n_init_h4_1p n_wp_h4_1 100
+R160 vdd n_init_h4_1n 65000
+R161 n_init_h4_1n 0 35000
+R162 n_init_h4_1n n_wn_h4_1 100
+R163 vdd n_init_h4_4p 48308.5901891
+R164 n_init_h4_4p 0 51691.4098109
+R165 n_init_h4_4p n_wp_h4_4 100
+R166 vdd n_init_h4_4n 51691.4098109
+R167 n_init_h4_4n 0 48308.5901891
+R168 n_init_h4_4n n_wn_h4_4 100
+R169 vdd n_init_h4_5p 51205.852568
+R170 n_init_h4_5p 0 48794.147432
+R171 n_init_h4_5p n_wp_h4_5 100
+R172 vdd n_init_h4_5n 48794.147432
+R173 n_init_h4_5n 0 51205.852568
+R174 n_init_h4_5n n_wn_h4_5 100
+R175 vdd n_init_h5_2p 39727.0235414
+R176 n_init_h5_2p 0 60272.9764586
+R177 n_init_h5_2p n_wp_h5_2 100
+R178 vdd n_init_h5_2n 60272.9764586
+R179 n_init_h5_2n 0 39727.0235414
+R180 n_init_h5_2n n_wn_h5_2 100
+R181 vdd n_init_h5_3p 48343.4062651
+R182 n_init_h5_3p 0 51656.5937349
+R183 n_init_h5_3p n_wp_h5_3 100
+R184 vdd n_init_h5_3n 51656.5937349
+R185 n_init_h5_3n 0 48343.4062651
+R186 n_init_h5_3n n_wn_h5_3 100
+R187 vdd n_init_h5_6p 42424.7414487
+R188 n_init_h5_6p 0 57575.2585513
+R189 n_init_h5_6p n_wp_h5_6 100
+R190 vdd n_init_h5_6n 57575.2585513
+R191 n_init_h5_6n 0 42424.7414487
+R192 n_init_h5_6n n_wn_h5_6 100
+R193 vdd n_init_h5_7p 53046.2022186
+R194 n_init_h5_7p 0 46953.7977814
+R195 n_init_h5_7p n_wp_h5_7 100
+R196 vdd n_init_h5_7n 46953.7977814
+R197 n_init_h5_7n 0 53046.2022186
+R198 n_init_h5_7n n_wn_h5_7 100
+R199 vdd n_init_h6_8p 48181.9015553
+R200 n_init_h6_8p 0 51818.0984447
+R201 n_init_h6_8p n_wp_h6_8 100
+R202 vdd n_init_h6_8n 51818.0984447
+R203 n_init_h6_8n 0 48181.9015553
+R204 n_init_h6_8n n_wn_h6_8 100
+R205 vdd n_init_h6_9p 41464.2610126
+R206 n_init_h6_9p 0 58535.7389874
+R207 n_init_h6_9p n_wp_h6_9 100
+R208 vdd n_init_h6_9n 58535.7389874
+R209 n_init_h6_9n 0 41464.2610126
+R210 n_init_h6_9n n_wn_h6_9 100
+R211 vdd n_init_h6_12p 44197.9414796
+R212 n_init_h6_12p 0 55802.0585204
+R213 n_init_h6_12p n_wp_h6_12 100
+R214 vdd n_init_h6_12n 55802.0585204
+R215 n_init_h6_12n 0 44197.9414796
+R216 n_init_h6_12n n_wn_h6_12 100
+R217 vdd n_init_h6_13p 48929.3979281
+R218 n_init_h6_13p 0 51070.6020719
+R219 n_init_h6_13p n_wp_h6_13 100
+R220 vdd n_init_h6_13n 51070.6020719
+R221 n_init_h6_13n 0 48929.3979281
+R222 n_init_h6_13n n_wn_h6_13 100
+R223 vdd n_init_h7_10p 59019.2335383
+R224 n_init_h7_10p 0 40980.7664617
+R225 n_init_h7_10p n_wp_h7_10 100
+R226 vdd n_init_h7_10n 40980.7664617
+R227 n_init_h7_10n 0 59019.2335383
+R228 n_init_h7_10n n_wn_h7_10 100
+R229 vdd n_init_h7_11p 46289.8185637
+R230 n_init_h7_11p 0 53710.1814363
+R231 n_init_h7_11p n_wp_h7_11 100
+R232 vdd n_init_h7_11n 53710.1814363
+R233 n_init_h7_11n 0 46289.8185637
+R234 n_init_h7_11n n_wn_h7_11 100
+R235 vdd n_init_h7_14p 49359.4709857
+R236 n_init_h7_14p 0 50640.5290143
+R237 n_init_h7_14p n_wp_h7_14 100
+R238 vdd n_init_h7_14n 50640.5290143
+R239 n_init_h7_14n 0 49359.4709857
+R240 n_init_h7_14n n_wn_h7_14 100
+R241 vdd n_init_h7_15p 43996.1033595
+R242 n_init_h7_15p 0 56003.8966405
+R243 n_init_h7_15p n_wp_h7_15 100
+R244 vdd n_init_h7_15n 56003.8966405
+R245 n_init_h7_15n 0 43996.1033595
+R246 n_init_h7_15n n_wn_h7_15 100
+R247 reset n_init_o0_0p 48.1980588517
+R248 n_init_o0_0p 0 51.8019411483
+C249 n_wp_o0_0 0 0.0001
+R250 n_wp_o0_0 n_midpoint 1e+12
+M251 n_wp_o0_0 reset n_init_o0_0p 0 nch W=0.001 L=1u
+R252 reset n_init_o0_0n 51.8019411483
+R253 n_init_o0_0n 0 48.1980588517
+C254 n_wn_o0_0 0 0.0001
+R255 n_wn_o0_0 n_midpoint 1e+12
+M256 n_wn_o0_0 reset n_init_o0_0n 0 nch W=0.001 L=1u
+R257 reset n_init_o0_1p 40.9317882405
+R258 n_init_o0_1p 0 59.0682117595
+C259 n_wp_o0_1 0 0.0001
+R260 n_wp_o0_1 n_midpoint 1e+12
+M261 n_wp_o0_1 reset n_init_o0_1p 0 nch W=0.001 L=1u
+R262 reset n_init_o0_1n 59.0682117595
+R263 n_init_o0_1n 0 40.9317882405
+C264 n_wn_o0_1 0 0.0001
+R265 n_wn_o0_1 n_midpoint 1e+12
+M266 n_wn_o0_1 reset n_init_o0_1n 0 nch W=0.001 L=1u
+R267 reset n_init_o0_2p 50.4296688785
+R268 n_init_o0_2p 0 49.5703311215
+C269 n_wp_o0_2 0 0.0001
+R270 n_wp_o0_2 n_midpoint 1e+12
+M271 n_wp_o0_2 reset n_init_o0_2p 0 nch W=0.001 L=1u
+R272 reset n_init_o0_2n 49.5703311215
+R273 n_init_o0_2n 0 50.4296688785
+C274 n_wn_o0_2 0 0.0001
+R275 n_wn_o0_2 n_midpoint 1e+12
+M276 n_wn_o0_2 reset n_init_o0_2n 0 nch W=0.001 L=1u
+R277 reset n_init_o0_3p 48.316966166
+R278 n_init_o0_3p 0 51.683033834
+C279 n_wp_o0_3 0 0.0001
+R280 n_wp_o0_3 n_midpoint 1e+12
+M281 n_wp_o0_3 reset n_init_o0_3p 0 nch W=0.001 L=1u
+R282 reset n_init_o0_3n 51.683033834
+R283 n_init_o0_3n 0 48.316966166
+C284 n_wn_o0_3 0 0.0001
+R285 n_wn_o0_3 n_midpoint 1e+12
+M286 n_wn_o0_3 reset n_init_o0_3n 0 nch W=0.001 L=1u
+R287 reset n_init_o0_4p 44.4435296781
+R288 n_init_o0_4p 0 55.5564703219
+C289 n_wp_o0_4 0 0.0001
+R290 n_wp_o0_4 n_midpoint 1e+12
+M291 n_wp_o0_4 reset n_init_o0_4p 0 nch W=0.001 L=1u
+R292 reset n_init_o0_4n 55.5564703219
+R293 n_init_o0_4n 0 44.4435296781
+C294 n_wn_o0_4 0 0.0001
+R295 n_wn_o0_4 n_midpoint 1e+12
+M296 n_wn_o0_4 reset n_init_o0_4n 0 nch W=0.001 L=1u
+R297 reset n_init_o0_5p 59.0573717681
+R298 n_init_o0_5p 0 40.9426282319
+C299 n_wp_o0_5 0 0.0001
+R300 n_wp_o0_5 n_midpoint 1e+12
+M301 n_wp_o0_5 reset n_init_o0_5p 0 nch W=0.001 L=1u
+R302 reset n_init_o0_5n 40.9426282319
+R303 n_init_o0_5n 0 59.0573717681
+C304 n_wn_o0_5 0 0.0001
+R305 n_wn_o0_5 n_midpoint 1e+12
+M306 n_wn_o0_5 reset n_init_o0_5n 0 nch W=0.001 L=1u
+R307 reset n_init_o0_6p 53.347168834
+R308 n_init_o0_6p 0 46.652831166
+C309 n_wp_o0_6 0 0.0001
+R310 n_wp_o0_6 n_midpoint 1e+12
+M311 n_wp_o0_6 reset n_init_o0_6p 0 nch W=0.001 L=1u
+R312 reset n_init_o0_6n 46.652831166
+R313 n_init_o0_6n 0 53.347168834
+C314 n_wn_o0_6 0 0.0001
+R315 n_wn_o0_6 n_midpoint 1e+12
+M316 n_wn_o0_6 reset n_init_o0_6n 0 nch W=0.001 L=1u
+R317 reset n_init_o0_7p 54.1669047413
+R318 n_init_o0_7p 0 45.8330952587
+C319 n_wp_o0_7 0 0.0001
+R320 n_wp_o0_7 n_midpoint 1e+12
+M321 n_wp_o0_7 reset n_init_o0_7p 0 nch W=0.001 L=1u
+R322 reset n_init_o0_7n 45.8330952587
+R323 n_init_o0_7n 0 54.1669047413
+C324 n_wn_o0_7 0 0.0001
+R325 n_wn_o0_7 n_midpoint 1e+12
+M326 n_wn_o0_7 reset n_init_o0_7n 0 nch W=0.001 L=1u
+R327 reset n_init_o1_0p 35
+R328 n_init_o1_0p 0 65
+C329 n_wp_o1_0 0 0.0001
+R330 n_wp_o1_0 n_midpoint 1e+12
+M331 n_wp_o1_0 reset n_init_o1_0p 0 nch W=0.001 L=1u
+R332 reset n_init_o1_0n 65
+R333 n_init_o1_0n 0 35
+C334 n_wn_o1_0 0 0.0001
+R335 n_wn_o1_0 n_midpoint 1e+12
+M336 n_wn_o1_0 reset n_init_o1_0n 0 nch W=0.001 L=1u
+R337 reset n_init_o1_1p 50.7738502138
+R338 n_init_o1_1p 0 49.2261497862
+C339 n_wp_o1_1 0 0.0001
+R340 n_wp_o1_1 n_midpoint 1e+12
+M341 n_wp_o1_1 reset n_init_o1_1p 0 nch W=0.001 L=1u
+R342 reset n_init_o1_1n 49.2261497862
+R343 n_init_o1_1n 0 50.7738502138
+C344 n_wn_o1_1 0 0.0001
+R345 n_wn_o1_1 n_midpoint 1e+12
+M346 n_wn_o1_1 reset n_init_o1_1n 0 nch W=0.001 L=1u
+R347 reset n_init_o1_2p 44.5648314683
+R348 n_init_o1_2p 0 55.4351685317
+C349 n_wp_o1_2 0 0.0001
+R350 n_wp_o1_2 n_midpoint 1e+12
+M351 n_wp_o1_2 reset n_init_o1_2p 0 nch W=0.001 L=1u
+R352 reset n_init_o1_2n 55.4351685317
+R353 n_init_o1_2n 0 44.5648314683
+C354 n_wn_o1_2 0 0.0001
+R355 n_wn_o1_2 n_midpoint 1e+12
+M356 n_wn_o1_2 reset n_init_o1_2n 0 nch W=0.001 L=1u
+R357 reset n_init_o1_3p 44.8385411486
+R358 n_init_o1_3p 0 55.1614588514
+C359 n_wp_o1_3 0 0.0001
+R360 n_wp_o1_3 n_midpoint 1e+12
+M361 n_wp_o1_3 reset n_init_o1_3p 0 nch W=0.001 L=1u
+R362 reset n_init_o1_3n 55.1614588514
+R363 n_init_o1_3n 0 44.8385411486
+C364 n_wn_o1_3 0 0.0001
+R365 n_wn_o1_3 n_midpoint 1e+12
+M366 n_wn_o1_3 reset n_init_o1_3n 0 nch W=0.001 L=1u
+R367 reset n_init_o1_4p 52.3406119182
+R368 n_init_o1_4p 0 47.6593880818
+C369 n_wp_o1_4 0 0.0001
+R370 n_wp_o1_4 n_midpoint 1e+12
+M371 n_wp_o1_4 reset n_init_o1_4p 0 nch W=0.001 L=1u
+R372 reset n_init_o1_4n 47.6593880818
+R373 n_init_o1_4n 0 52.3406119182
+C374 n_wn_o1_4 0 0.0001
+R375 n_wn_o1_4 n_midpoint 1e+12
+M376 n_wn_o1_4 reset n_init_o1_4n 0 nch W=0.001 L=1u
+R377 reset n_init_o1_5p 62.9236402261
+R378 n_init_o1_5p 0 37.0763597739
+C379 n_wp_o1_5 0 0.0001
+R380 n_wp_o1_5 n_midpoint 1e+12
+M381 n_wp_o1_5 reset n_init_o1_5p 0 nch W=0.001 L=1u
+R382 reset n_init_o1_5n 37.0763597739
+R383 n_init_o1_5n 0 62.9236402261
+C384 n_wn_o1_5 0 0.0001
+R385 n_wn_o1_5 n_midpoint 1e+12
+M386 n_wn_o1_5 reset n_init_o1_5n 0 nch W=0.001 L=1u
+R387 reset n_init_o1_6p 41.9596335777
+R388 n_init_o1_6p 0 58.0403664223
+C389 n_wp_o1_6 0 0.0001
+R390 n_wp_o1_6 n_midpoint 1e+12
+M391 n_wp_o1_6 reset n_init_o1_6p 0 nch W=0.001 L=1u
+R392 reset n_init_o1_6n 58.0403664223
+R393 n_init_o1_6n 0 41.9596335777
+C394 n_wn_o1_6 0 0.0001
+R395 n_wn_o1_6 n_midpoint 1e+12
+M396 n_wn_o1_6 reset n_init_o1_6n 0 nch W=0.001 L=1u
+R397 reset n_init_o1_7p 53.3933064139
+R398 n_init_o1_7p 0 46.6066935861
+C399 n_wp_o1_7 0 0.0001
+R400 n_wp_o1_7 n_midpoint 1e+12
+M401 n_wp_o1_7 reset n_init_o1_7p 0 nch W=0.001 L=1u
+R402 reset n_init_o1_7n 46.6066935861
+R403 n_init_o1_7n 0 53.3933064139
+C404 n_wn_o1_7 0 0.0001
+R405 n_wn_o1_7 n_midpoint 1e+12
+M406 n_wn_o1_7 reset n_init_o1_7n 0 nch W=0.001 L=1u
+R407 reset n_init_o2_0p 44.0170278605
+R408 n_init_o2_0p 0 55.9829721395
+C409 n_wp_o2_0 0 0.0001
+R410 n_wp_o2_0 n_midpoint 1e+12
+M411 n_wp_o2_0 reset n_init_o2_0p 0 nch W=0.001 L=1u
+R412 reset n_init_o2_0n 55.9829721395
+R413 n_init_o2_0n 0 44.0170278605
+C414 n_wn_o2_0 0 0.0001
+R415 n_wn_o2_0 n_midpoint 1e+12
+M416 n_wn_o2_0 reset n_init_o2_0n 0 nch W=0.001 L=1u
+R417 reset n_init_o2_1p 60.8772068759
+R418 n_init_o2_1p 0 39.1227931241
+C419 n_wp_o2_1 0 0.0001
+R420 n_wp_o2_1 n_midpoint 1e+12
+M421 n_wp_o2_1 reset n_init_o2_1p 0 nch W=0.001 L=1u
+R422 reset n_init_o2_1n 39.1227931241
+R423 n_init_o2_1n 0 60.8772068759
+C424 n_wn_o2_1 0 0.0001
+R425 n_wn_o2_1 n_midpoint 1e+12
+M426 n_wn_o2_1 reset n_init_o2_1n 0 nch W=0.001 L=1u
+R427 reset n_init_o2_2p 53.6498583497
+R428 n_init_o2_2p 0 46.3501416503
+C429 n_wp_o2_2 0 0.0001
+R430 n_wp_o2_2 n_midpoint 1e+12
+M431 n_wp_o2_2 reset n_init_o2_2p 0 nch W=0.001 L=1u
+R432 reset n_init_o2_2n 46.3501416503
+R433 n_init_o2_2n 0 53.6498583497
+C434 n_wn_o2_2 0 0.0001
+R435 n_wn_o2_2 n_midpoint 1e+12
+M436 n_wn_o2_2 reset n_init_o2_2n 0 nch W=0.001 L=1u
+R437 reset n_init_o2_3p 39.526488795
+R438 n_init_o2_3p 0 60.473511205
+C439 n_wp_o2_3 0 0.0001
+R440 n_wp_o2_3 n_midpoint 1e+12
+M441 n_wp_o2_3 reset n_init_o2_3p 0 nch W=0.001 L=1u
+R442 reset n_init_o2_3n 60.473511205
+R443 n_init_o2_3n 0 39.526488795
+C444 n_wn_o2_3 0 0.0001
+R445 n_wn_o2_3 n_midpoint 1e+12
+M446 n_wn_o2_3 reset n_init_o2_3n 0 nch W=0.001 L=1u
+R447 reset n_init_o2_4p 38.0749667662
+R448 n_init_o2_4p 0 61.9250332338
+C449 n_wp_o2_4 0 0.0001
+R450 n_wp_o2_4 n_midpoint 1e+12
+M451 n_wp_o2_4 reset n_init_o2_4p 0 nch W=0.001 L=1u
+R452 reset n_init_o2_4n 61.9250332338
+R453 n_init_o2_4n 0 38.0749667662
+C454 n_wn_o2_4 0 0.0001
+R455 n_wn_o2_4 n_midpoint 1e+12
+M456 n_wn_o2_4 reset n_init_o2_4n 0 nch W=0.001 L=1u
+R457 reset n_init_o2_5p 60.8538218428
+R458 n_init_o2_5p 0 39.1461781572
+C459 n_wp_o2_5 0 0.0001
+R460 n_wp_o2_5 n_midpoint 1e+12
+M461 n_wp_o2_5 reset n_init_o2_5p 0 nch W=0.001 L=1u
+R462 reset n_init_o2_5n 39.1461781572
+R463 n_init_o2_5n 0 60.8538218428
+C464 n_wn_o2_5 0 0.0001
+R465 n_wn_o2_5 n_midpoint 1e+12
+M466 n_wn_o2_5 reset n_init_o2_5n 0 nch W=0.001 L=1u
+R467 reset n_init_o2_6p 61.1067289924
+R468 n_init_o2_6p 0 38.8932710076
+C469 n_wp_o2_6 0 0.0001
+R470 n_wp_o2_6 n_midpoint 1e+12
+M471 n_wp_o2_6 reset n_init_o2_6p 0 nch W=0.001 L=1u
+R472 reset n_init_o2_6n 38.8932710076
+R473 n_init_o2_6n 0 61.1067289924
+C474 n_wn_o2_6 0 0.0001
+R475 n_wn_o2_6 n_midpoint 1e+12
+M476 n_wn_o2_6 reset n_init_o2_6n 0 nch W=0.001 L=1u
+R477 reset n_init_o2_7p 50.3688703133
+R478 n_init_o2_7p 0 49.6311296867
+C479 n_wp_o2_7 0 0.0001
+R480 n_wp_o2_7 n_midpoint 1e+12
+M481 n_wp_o2_7 reset n_init_o2_7p 0 nch W=0.001 L=1u
+R482 reset n_init_o2_7n 49.6311296867
+R483 n_init_o2_7n 0 50.3688703133
+C484 n_wn_o2_7 0 0.0001
+R485 n_wn_o2_7 n_midpoint 1e+12
+M486 n_wn_o2_7 reset n_init_o2_7n 0 nch W=0.001 L=1u
+R487 n_hm0p n_hml0_cm 100000
+R488 n_hm0n n_hml0_cm 100000
+M489 n_hm0p n_hml0_cm vdd vdd pch W=1e-05 L=1u
+M490 n_hm0n n_hml0_cm vdd vdd pch W=1e-05 L=1u
+R491 n_hm0p n_hm0n 6666.66666667
+C492 n_hm0p 0 1e-11
+C493 n_hm0n 0 1e-11
+M494 n_hfm0_0nt n_bsyn 0 0 nch W=4e-06 L=1u
+M495 n_hfm0_0a n_wp_h0_0 n_hfm0_0s5 0 nch W=2e-06 L=1u
+R496 n_hfm0_0s5 n_hfm0_0nt 4000
+M497 n_hfm0_0b n_wn_h0_0 n_hfm0_0s6 0 nch W=2e-06 L=1u
+R498 n_hfm0_0s6 n_hfm0_0nt 4000
+M499 n_hm0p n_input0 n_hfm0_0s0 0 nch W=2e-06 L=1u
+R500 n_hfm0_0s0 n_hfm0_0a 4000
+M501 n_hm0n n_inref n_hfm0_0s1 0 nch W=2e-06 L=1u
+R502 n_hfm0_0s1 n_hfm0_0a 4000
+M503 n_hm0n n_input0 n_hfm0_0s2 0 nch W=2e-06 L=1u
+R504 n_hfm0_0s2 n_hfm0_0b 4000
+M505 n_hm0p n_inref n_hfm0_0s3 0 nch W=2e-06 L=1u
+R506 n_hfm0_0s3 n_hfm0_0b 4000
+M507 n_hfm0_1nt n_bsyn 0 0 nch W=4e-06 L=1u
+M508 n_hfm0_1a n_wp_h0_1 n_hfm0_1s5 0 nch W=2e-06 L=1u
+R509 n_hfm0_1s5 n_hfm0_1nt 4000
+M510 n_hfm0_1b n_wn_h0_1 n_hfm0_1s6 0 nch W=2e-06 L=1u
+R511 n_hfm0_1s6 n_hfm0_1nt 4000
+M512 n_hm0p n_input1 n_hfm0_1s0 0 nch W=2e-06 L=1u
+R513 n_hfm0_1s0 n_hfm0_1a 4000
+M514 n_hm0n n_inref n_hfm0_1s1 0 nch W=2e-06 L=1u
+R515 n_hfm0_1s1 n_hfm0_1a 4000
+M516 n_hm0n n_input1 n_hfm0_1s2 0 nch W=2e-06 L=1u
+R517 n_hfm0_1s2 n_hfm0_1b 4000
+M518 n_hm0p n_inref n_hfm0_1s3 0 nch W=2e-06 L=1u
+R519 n_hfm0_1s3 n_hfm0_1b 4000
+M520 n_hfm0_4nt n_bsyn 0 0 nch W=4e-06 L=1u
+M521 n_hfm0_4a n_wp_h0_4 n_hfm0_4s5 0 nch W=2e-06 L=1u
+R522 n_hfm0_4s5 n_hfm0_4nt 4000
+M523 n_hfm0_4b n_wn_h0_4 n_hfm0_4s6 0 nch W=2e-06 L=1u
+R524 n_hfm0_4s6 n_hfm0_4nt 4000
+M525 n_hm0p n_input4 n_hfm0_4s0 0 nch W=2e-06 L=1u
+R526 n_hfm0_4s0 n_hfm0_4a 4000
+M527 n_hm0n n_inref n_hfm0_4s1 0 nch W=2e-06 L=1u
+R528 n_hfm0_4s1 n_hfm0_4a 4000
+M529 n_hm0n n_input4 n_hfm0_4s2 0 nch W=2e-06 L=1u
+R530 n_hfm0_4s2 n_hfm0_4b 4000
+M531 n_hm0p n_inref n_hfm0_4s3 0 nch W=2e-06 L=1u
+R532 n_hfm0_4s3 n_hfm0_4b 4000
+M533 n_hfm0_5nt n_bsyn 0 0 nch W=4e-06 L=1u
+M534 n_hfm0_5a n_wp_h0_5 n_hfm0_5s5 0 nch W=2e-06 L=1u
+R535 n_hfm0_5s5 n_hfm0_5nt 4000
+M536 n_hfm0_5b n_wn_h0_5 n_hfm0_5s6 0 nch W=2e-06 L=1u
+R537 n_hfm0_5s6 n_hfm0_5nt 4000
+M538 n_hm0p n_input5 n_hfm0_5s0 0 nch W=2e-06 L=1u
+R539 n_hfm0_5s0 n_hfm0_5a 4000
+M540 n_hm0n n_inref n_hfm0_5s1 0 nch W=2e-06 L=1u
+R541 n_hfm0_5s1 n_hfm0_5a 4000
+M542 n_hm0n n_input5 n_hfm0_5s2 0 nch W=2e-06 L=1u
+R543 n_hfm0_5s2 n_hfm0_5b 4000
+M544 n_hm0p n_inref n_hfm0_5s3 0 nch W=2e-06 L=1u
+R545 n_hfm0_5s3 n_hfm0_5b 4000
+M546 n_ha0n n_hm0p n_hn0tail 0 nch W=2e-06 L=1u
+M547 n_ha0p n_hm0n n_hn0tail 0 nch W=2e-06 L=1u
+M548 n_hn0tail n_bneu 0 0 nch W=2e-06 L=1u
+R549 n_ha0p n_hn0_cm 100000
+R550 n_ha0n n_hn0_cm 100000
+M551 n_ha0p n_hn0_cm vdd vdd pch W=1e-05 L=1u
+M552 n_ha0n n_hn0_cm vdd vdd pch W=1e-05 L=1u
+C553 n_ha0p 0 1e-11
+C554 n_ha0n 0 1e-11
+R555 n_hm1p n_hml1_cm 100000
+R556 n_hm1n n_hml1_cm 100000
+M557 n_hm1p n_hml1_cm vdd vdd pch W=1e-05 L=1u
+M558 n_hm1n n_hml1_cm vdd vdd pch W=1e-05 L=1u
+R559 n_hm1p n_hm1n 6666.66666667
+C560 n_hm1p 0 1e-11
+C561 n_hm1n 0 1e-11
+M562 n_hfm1_2nt n_bsyn 0 0 nch W=4e-06 L=1u
+M563 n_hfm1_2a n_wp_h1_2 n_hfm1_2s5 0 nch W=2e-06 L=1u
+R564 n_hfm1_2s5 n_hfm1_2nt 4000
+M565 n_hfm1_2b n_wn_h1_2 n_hfm1_2s6 0 nch W=2e-06 L=1u
+R566 n_hfm1_2s6 n_hfm1_2nt 4000
+M567 n_hm1p n_input2 n_hfm1_2s0 0 nch W=2e-06 L=1u
+R568 n_hfm1_2s0 n_hfm1_2a 4000
+M569 n_hm1n n_inref n_hfm1_2s1 0 nch W=2e-06 L=1u
+R570 n_hfm1_2s1 n_hfm1_2a 4000
+M571 n_hm1n n_input2 n_hfm1_2s2 0 nch W=2e-06 L=1u
+R572 n_hfm1_2s2 n_hfm1_2b 4000
+M573 n_hm1p n_inref n_hfm1_2s3 0 nch W=2e-06 L=1u
+R574 n_hfm1_2s3 n_hfm1_2b 4000
+M575 n_hfm1_3nt n_bsyn 0 0 nch W=4e-06 L=1u
+M576 n_hfm1_3a n_wp_h1_3 n_hfm1_3s5 0 nch W=2e-06 L=1u
+R577 n_hfm1_3s5 n_hfm1_3nt 4000
+M578 n_hfm1_3b n_wn_h1_3 n_hfm1_3s6 0 nch W=2e-06 L=1u
+R579 n_hfm1_3s6 n_hfm1_3nt 4000
+M580 n_hm1p n_input3 n_hfm1_3s0 0 nch W=2e-06 L=1u
+R581 n_hfm1_3s0 n_hfm1_3a 4000
+M582 n_hm1n n_inref n_hfm1_3s1 0 nch W=2e-06 L=1u
+R583 n_hfm1_3s1 n_hfm1_3a 4000
+M584 n_hm1n n_input3 n_hfm1_3s2 0 nch W=2e-06 L=1u
+R585 n_hfm1_3s2 n_hfm1_3b 4000
+M586 n_hm1p n_inref n_hfm1_3s3 0 nch W=2e-06 L=1u
+R587 n_hfm1_3s3 n_hfm1_3b 4000
+M588 n_hfm1_6nt n_bsyn 0 0 nch W=4e-06 L=1u
+M589 n_hfm1_6a n_wp_h1_6 n_hfm1_6s5 0 nch W=2e-06 L=1u
+R590 n_hfm1_6s5 n_hfm1_6nt 4000
+M591 n_hfm1_6b n_wn_h1_6 n_hfm1_6s6 0 nch W=2e-06 L=1u
+R592 n_hfm1_6s6 n_hfm1_6nt 4000
+M593 n_hm1p n_input6 n_hfm1_6s0 0 nch W=2e-06 L=1u
+R594 n_hfm1_6s0 n_hfm1_6a 4000
+M595 n_hm1n n_inref n_hfm1_6s1 0 nch W=2e-06 L=1u
+R596 n_hfm1_6s1 n_hfm1_6a 4000
+M597 n_hm1n n_input6 n_hfm1_6s2 0 nch W=2e-06 L=1u
+R598 n_hfm1_6s2 n_hfm1_6b 4000
+M599 n_hm1p n_inref n_hfm1_6s3 0 nch W=2e-06 L=1u
+R600 n_hfm1_6s3 n_hfm1_6b 4000
+M601 n_hfm1_7nt n_bsyn 0 0 nch W=4e-06 L=1u
+M602 n_hfm1_7a n_wp_h1_7 n_hfm1_7s5 0 nch W=2e-06 L=1u
+R603 n_hfm1_7s5 n_hfm1_7nt 4000
+M604 n_hfm1_7b n_wn_h1_7 n_hfm1_7s6 0 nch W=2e-06 L=1u
+R605 n_hfm1_7s6 n_hfm1_7nt 4000
+M606 n_hm1p n_input7 n_hfm1_7s0 0 nch W=2e-06 L=1u
+R607 n_hfm1_7s0 n_hfm1_7a 4000
+M608 n_hm1n n_inref n_hfm1_7s1 0 nch W=2e-06 L=1u
+R609 n_hfm1_7s1 n_hfm1_7a 4000
+M610 n_hm1n n_input7 n_hfm1_7s2 0 nch W=2e-06 L=1u
+R611 n_hfm1_7s2 n_hfm1_7b 4000
+M612 n_hm1p n_inref n_hfm1_7s3 0 nch W=2e-06 L=1u
+R613 n_hfm1_7s3 n_hfm1_7b 4000
+M614 n_ha1n n_hm1p n_hn1tail 0 nch W=2e-06 L=1u
+M615 n_ha1p n_hm1n n_hn1tail 0 nch W=2e-06 L=1u
+M616 n_hn1tail n_bneu 0 0 nch W=2e-06 L=1u
+R617 n_ha1p n_hn1_cm 100000
+R618 n_ha1n n_hn1_cm 100000
+M619 n_ha1p n_hn1_cm vdd vdd pch W=1e-05 L=1u
+M620 n_ha1n n_hn1_cm vdd vdd pch W=1e-05 L=1u
+C621 n_ha1p 0 1e-11
+C622 n_ha1n 0 1e-11
+R623 n_hm2p n_hml2_cm 100000
+R624 n_hm2n n_hml2_cm 100000
+M625 n_hm2p n_hml2_cm vdd vdd pch W=1e-05 L=1u
+M626 n_hm2n n_hml2_cm vdd vdd pch W=1e-05 L=1u
+R627 n_hm2p n_hm2n 6666.66666667
+C628 n_hm2p 0 1e-11
+C629 n_hm2n 0 1e-11
+M630 n_hfm2_8nt n_bsyn 0 0 nch W=4e-06 L=1u
+M631 n_hfm2_8a n_wp_h2_8 n_hfm2_8s5 0 nch W=2e-06 L=1u
+R632 n_hfm2_8s5 n_hfm2_8nt 4000
+M633 n_hfm2_8b n_wn_h2_8 n_hfm2_8s6 0 nch W=2e-06 L=1u
+R634 n_hfm2_8s6 n_hfm2_8nt 4000
+M635 n_hm2p n_input8 n_hfm2_8s0 0 nch W=2e-06 L=1u
+R636 n_hfm2_8s0 n_hfm2_8a 4000
+M637 n_hm2n n_inref n_hfm2_8s1 0 nch W=2e-06 L=1u
+R638 n_hfm2_8s1 n_hfm2_8a 4000
+M639 n_hm2n n_input8 n_hfm2_8s2 0 nch W=2e-06 L=1u
+R640 n_hfm2_8s2 n_hfm2_8b 4000
+M641 n_hm2p n_inref n_hfm2_8s3 0 nch W=2e-06 L=1u
+R642 n_hfm2_8s3 n_hfm2_8b 4000
+M643 n_hfm2_9nt n_bsyn 0 0 nch W=4e-06 L=1u
+M644 n_hfm2_9a n_wp_h2_9 n_hfm2_9s5 0 nch W=2e-06 L=1u
+R645 n_hfm2_9s5 n_hfm2_9nt 4000
+M646 n_hfm2_9b n_wn_h2_9 n_hfm2_9s6 0 nch W=2e-06 L=1u
+R647 n_hfm2_9s6 n_hfm2_9nt 4000
+M648 n_hm2p n_input9 n_hfm2_9s0 0 nch W=2e-06 L=1u
+R649 n_hfm2_9s0 n_hfm2_9a 4000
+M650 n_hm2n n_inref n_hfm2_9s1 0 nch W=2e-06 L=1u
+R651 n_hfm2_9s1 n_hfm2_9a 4000
+M652 n_hm2n n_input9 n_hfm2_9s2 0 nch W=2e-06 L=1u
+R653 n_hfm2_9s2 n_hfm2_9b 4000
+M654 n_hm2p n_inref n_hfm2_9s3 0 nch W=2e-06 L=1u
+R655 n_hfm2_9s3 n_hfm2_9b 4000
+M656 n_hfm2_12nt n_bsyn 0 0 nch W=4e-06 L=1u
+M657 n_hfm2_12a n_wp_h2_12 n_hfm2_12s5 0 nch W=2e-06 L=1u
+R658 n_hfm2_12s5 n_hfm2_12nt 4000
+M659 n_hfm2_12b n_wn_h2_12 n_hfm2_12s6 0 nch W=2e-06 L=1u
+R660 n_hfm2_12s6 n_hfm2_12nt 4000
+M661 n_hm2p n_input12 n_hfm2_12s0 0 nch W=2e-06 L=1u
+R662 n_hfm2_12s0 n_hfm2_12a 4000
+M663 n_hm2n n_inref n_hfm2_12s1 0 nch W=2e-06 L=1u
+R664 n_hfm2_12s1 n_hfm2_12a 4000
+M665 n_hm2n n_input12 n_hfm2_12s2 0 nch W=2e-06 L=1u
+R666 n_hfm2_12s2 n_hfm2_12b 4000
+M667 n_hm2p n_inref n_hfm2_12s3 0 nch W=2e-06 L=1u
+R668 n_hfm2_12s3 n_hfm2_12b 4000
+M669 n_hfm2_13nt n_bsyn 0 0 nch W=4e-06 L=1u
+M670 n_hfm2_13a n_wp_h2_13 n_hfm2_13s5 0 nch W=2e-06 L=1u
+R671 n_hfm2_13s5 n_hfm2_13nt 4000
+M672 n_hfm2_13b n_wn_h2_13 n_hfm2_13s6 0 nch W=2e-06 L=1u
+R673 n_hfm2_13s6 n_hfm2_13nt 4000
+M674 n_hm2p n_input13 n_hfm2_13s0 0 nch W=2e-06 L=1u
+R675 n_hfm2_13s0 n_hfm2_13a 4000
+M676 n_hm2n n_inref n_hfm2_13s1 0 nch W=2e-06 L=1u
+R677 n_hfm2_13s1 n_hfm2_13a 4000
+M678 n_hm2n n_input13 n_hfm2_13s2 0 nch W=2e-06 L=1u
+R679 n_hfm2_13s2 n_hfm2_13b 4000
+M680 n_hm2p n_inref n_hfm2_13s3 0 nch W=2e-06 L=1u
+R681 n_hfm2_13s3 n_hfm2_13b 4000
+M682 n_ha2n n_hm2p n_hn2tail 0 nch W=2e-06 L=1u
+M683 n_ha2p n_hm2n n_hn2tail 0 nch W=2e-06 L=1u
+M684 n_hn2tail n_bneu 0 0 nch W=2e-06 L=1u
+R685 n_ha2p n_hn2_cm 100000
+R686 n_ha2n n_hn2_cm 100000
+M687 n_ha2p n_hn2_cm vdd vdd pch W=1e-05 L=1u
+M688 n_ha2n n_hn2_cm vdd vdd pch W=1e-05 L=1u
+C689 n_ha2p 0 1e-11
+C690 n_ha2n 0 1e-11
+R691 n_hm3p n_hml3_cm 100000
+R692 n_hm3n n_hml3_cm 100000
+M693 n_hm3p n_hml3_cm vdd vdd pch W=1e-05 L=1u
+M694 n_hm3n n_hml3_cm vdd vdd pch W=1e-05 L=1u
+R695 n_hm3p n_hm3n 6666.66666667
+C696 n_hm3p 0 1e-11
+C697 n_hm3n 0 1e-11
+M698 n_hfm3_10nt n_bsyn 0 0 nch W=4e-06 L=1u
+M699 n_hfm3_10a n_wp_h3_10 n_hfm3_10s5 0 nch W=2e-06 L=1u
+R700 n_hfm3_10s5 n_hfm3_10nt 4000
+M701 n_hfm3_10b n_wn_h3_10 n_hfm3_10s6 0 nch W=2e-06 L=1u
+R702 n_hfm3_10s6 n_hfm3_10nt 4000
+M703 n_hm3p n_input10 n_hfm3_10s0 0 nch W=2e-06 L=1u
+R704 n_hfm3_10s0 n_hfm3_10a 4000
+M705 n_hm3n n_inref n_hfm3_10s1 0 nch W=2e-06 L=1u
+R706 n_hfm3_10s1 n_hfm3_10a 4000
+M707 n_hm3n n_input10 n_hfm3_10s2 0 nch W=2e-06 L=1u
+R708 n_hfm3_10s2 n_hfm3_10b 4000
+M709 n_hm3p n_inref n_hfm3_10s3 0 nch W=2e-06 L=1u
+R710 n_hfm3_10s3 n_hfm3_10b 4000
+M711 n_hfm3_11nt n_bsyn 0 0 nch W=4e-06 L=1u
+M712 n_hfm3_11a n_wp_h3_11 n_hfm3_11s5 0 nch W=2e-06 L=1u
+R713 n_hfm3_11s5 n_hfm3_11nt 4000
+M714 n_hfm3_11b n_wn_h3_11 n_hfm3_11s6 0 nch W=2e-06 L=1u
+R715 n_hfm3_11s6 n_hfm3_11nt 4000
+M716 n_hm3p n_input11 n_hfm3_11s0 0 nch W=2e-06 L=1u
+R717 n_hfm3_11s0 n_hfm3_11a 4000
+M718 n_hm3n n_inref n_hfm3_11s1 0 nch W=2e-06 L=1u
+R719 n_hfm3_11s1 n_hfm3_11a 4000
+M720 n_hm3n n_input11 n_hfm3_11s2 0 nch W=2e-06 L=1u
+R721 n_hfm3_11s2 n_hfm3_11b 4000
+M722 n_hm3p n_inref n_hfm3_11s3 0 nch W=2e-06 L=1u
+R723 n_hfm3_11s3 n_hfm3_11b 4000
+M724 n_hfm3_14nt n_bsyn 0 0 nch W=4e-06 L=1u
+M725 n_hfm3_14a n_wp_h3_14 n_hfm3_14s5 0 nch W=2e-06 L=1u
+R726 n_hfm3_14s5 n_hfm3_14nt 4000
+M727 n_hfm3_14b n_wn_h3_14 n_hfm3_14s6 0 nch W=2e-06 L=1u
+R728 n_hfm3_14s6 n_hfm3_14nt 4000
+M729 n_hm3p n_input14 n_hfm3_14s0 0 nch W=2e-06 L=1u
+R730 n_hfm3_14s0 n_hfm3_14a 4000
+M731 n_hm3n n_inref n_hfm3_14s1 0 nch W=2e-06 L=1u
+R732 n_hfm3_14s1 n_hfm3_14a 4000
+M733 n_hm3n n_input14 n_hfm3_14s2 0 nch W=2e-06 L=1u
+R734 n_hfm3_14s2 n_hfm3_14b 4000
+M735 n_hm3p n_inref n_hfm3_14s3 0 nch W=2e-06 L=1u
+R736 n_hfm3_14s3 n_hfm3_14b 4000
+M737 n_hfm3_15nt n_bsyn 0 0 nch W=4e-06 L=1u
+M738 n_hfm3_15a n_wp_h3_15 n_hfm3_15s5 0 nch W=2e-06 L=1u
+R739 n_hfm3_15s5 n_hfm3_15nt 4000
+M740 n_hfm3_15b n_wn_h3_15 n_hfm3_15s6 0 nch W=2e-06 L=1u
+R741 n_hfm3_15s6 n_hfm3_15nt 4000
+M742 n_hm3p n_input15 n_hfm3_15s0 0 nch W=2e-06 L=1u
+R743 n_hfm3_15s0 n_hfm3_15a 4000
+M744 n_hm3n n_inref n_hfm3_15s1 0 nch W=2e-06 L=1u
+R745 n_hfm3_15s1 n_hfm3_15a 4000
+M746 n_hm3n n_input15 n_hfm3_15s2 0 nch W=2e-06 L=1u
+R747 n_hfm3_15s2 n_hfm3_15b 4000
+M748 n_hm3p n_inref n_hfm3_15s3 0 nch W=2e-06 L=1u
+R749 n_hfm3_15s3 n_hfm3_15b 4000
+M750 n_ha3n n_hm3p n_hn3tail 0 nch W=2e-06 L=1u
+M751 n_ha3p n_hm3n n_hn3tail 0 nch W=2e-06 L=1u
+M752 n_hn3tail n_bneu 0 0 nch W=2e-06 L=1u
+R753 n_ha3p n_hn3_cm 100000
+R754 n_ha3n n_hn3_cm 100000
+M755 n_ha3p n_hn3_cm vdd vdd pch W=1e-05 L=1u
+M756 n_ha3n n_hn3_cm vdd vdd pch W=1e-05 L=1u
+C757 n_ha3p 0 1e-11
+C758 n_ha3n 0 1e-11
+R759 n_hm4p n_hml4_cm 100000
+R760 n_hm4n n_hml4_cm 100000
+M761 n_hm4p n_hml4_cm vdd vdd pch W=1e-05 L=1u
+M762 n_hm4n n_hml4_cm vdd vdd pch W=1e-05 L=1u
+R763 n_hm4p n_hm4n 6666.66666667
+C764 n_hm4p 0 1e-11
+C765 n_hm4n 0 1e-11
+M766 n_hfm4_0nt n_bsyn 0 0 nch W=4e-06 L=1u
+M767 n_hfm4_0a n_wp_h4_0 n_hfm4_0s5 0 nch W=2e-06 L=1u
+R768 n_hfm4_0s5 n_hfm4_0nt 4000
+M769 n_hfm4_0b n_wn_h4_0 n_hfm4_0s6 0 nch W=2e-06 L=1u
+R770 n_hfm4_0s6 n_hfm4_0nt 4000
+M771 n_hm4p n_input0 n_hfm4_0s0 0 nch W=2e-06 L=1u
+R772 n_hfm4_0s0 n_hfm4_0a 4000
+M773 n_hm4n n_inref n_hfm4_0s1 0 nch W=2e-06 L=1u
+R774 n_hfm4_0s1 n_hfm4_0a 4000
+M775 n_hm4n n_input0 n_hfm4_0s2 0 nch W=2e-06 L=1u
+R776 n_hfm4_0s2 n_hfm4_0b 4000
+M777 n_hm4p n_inref n_hfm4_0s3 0 nch W=2e-06 L=1u
+R778 n_hfm4_0s3 n_hfm4_0b 4000
+M779 n_hfm4_1nt n_bsyn 0 0 nch W=4e-06 L=1u
+M780 n_hfm4_1a n_wp_h4_1 n_hfm4_1s5 0 nch W=2e-06 L=1u
+R781 n_hfm4_1s5 n_hfm4_1nt 4000
+M782 n_hfm4_1b n_wn_h4_1 n_hfm4_1s6 0 nch W=2e-06 L=1u
+R783 n_hfm4_1s6 n_hfm4_1nt 4000
+M784 n_hm4p n_input1 n_hfm4_1s0 0 nch W=2e-06 L=1u
+R785 n_hfm4_1s0 n_hfm4_1a 4000
+M786 n_hm4n n_inref n_hfm4_1s1 0 nch W=2e-06 L=1u
+R787 n_hfm4_1s1 n_hfm4_1a 4000
+M788 n_hm4n n_input1 n_hfm4_1s2 0 nch W=2e-06 L=1u
+R789 n_hfm4_1s2 n_hfm4_1b 4000
+M790 n_hm4p n_inref n_hfm4_1s3 0 nch W=2e-06 L=1u
+R791 n_hfm4_1s3 n_hfm4_1b 4000
+M792 n_hfm4_4nt n_bsyn 0 0 nch W=4e-06 L=1u
+M793 n_hfm4_4a n_wp_h4_4 n_hfm4_4s5 0 nch W=2e-06 L=1u
+R794 n_hfm4_4s5 n_hfm4_4nt 4000
+M795 n_hfm4_4b n_wn_h4_4 n_hfm4_4s6 0 nch W=2e-06 L=1u
+R796 n_hfm4_4s6 n_hfm4_4nt 4000
+M797 n_hm4p n_input4 n_hfm4_4s0 0 nch W=2e-06 L=1u
+R798 n_hfm4_4s0 n_hfm4_4a 4000
+M799 n_hm4n n_inref n_hfm4_4s1 0 nch W=2e-06 L=1u
+R800 n_hfm4_4s1 n_hfm4_4a 4000
+M801 n_hm4n n_input4 n_hfm4_4s2 0 nch W=2e-06 L=1u
+R802 n_hfm4_4s2 n_hfm4_4b 4000
+M803 n_hm4p n_inref n_hfm4_4s3 0 nch W=2e-06 L=1u
+R804 n_hfm4_4s3 n_hfm4_4b 4000
+M805 n_hfm4_5nt n_bsyn 0 0 nch W=4e-06 L=1u
+M806 n_hfm4_5a n_wp_h4_5 n_hfm4_5s5 0 nch W=2e-06 L=1u
+R807 n_hfm4_5s5 n_hfm4_5nt 4000
+M808 n_hfm4_5b n_wn_h4_5 n_hfm4_5s6 0 nch W=2e-06 L=1u
+R809 n_hfm4_5s6 n_hfm4_5nt 4000
+M810 n_hm4p n_input5 n_hfm4_5s0 0 nch W=2e-06 L=1u
+R811 n_hfm4_5s0 n_hfm4_5a 4000
+M812 n_hm4n n_inref n_hfm4_5s1 0 nch W=2e-06 L=1u
+R813 n_hfm4_5s1 n_hfm4_5a 4000
+M814 n_hm4n n_input5 n_hfm4_5s2 0 nch W=2e-06 L=1u
+R815 n_hfm4_5s2 n_hfm4_5b 4000
+M816 n_hm4p n_inref n_hfm4_5s3 0 nch W=2e-06 L=1u
+R817 n_hfm4_5s3 n_hfm4_5b 4000
+M818 n_ha4n n_hm4p n_hn4tail 0 nch W=2e-06 L=1u
+M819 n_ha4p n_hm4n n_hn4tail 0 nch W=2e-06 L=1u
+M820 n_hn4tail n_bneu 0 0 nch W=2e-06 L=1u
+R821 n_ha4p n_hn4_cm 100000
+R822 n_ha4n n_hn4_cm 100000
+M823 n_ha4p n_hn4_cm vdd vdd pch W=1e-05 L=1u
+M824 n_ha4n n_hn4_cm vdd vdd pch W=1e-05 L=1u
+C825 n_ha4p 0 1e-11
+C826 n_ha4n 0 1e-11
+R827 n_hm5p n_hml5_cm 100000
+R828 n_hm5n n_hml5_cm 100000
+M829 n_hm5p n_hml5_cm vdd vdd pch W=1e-05 L=1u
+M830 n_hm5n n_hml5_cm vdd vdd pch W=1e-05 L=1u
+R831 n_hm5p n_hm5n 6666.66666667
+C832 n_hm5p 0 1e-11
+C833 n_hm5n 0 1e-11
+M834 n_hfm5_2nt n_bsyn 0 0 nch W=4e-06 L=1u
+M835 n_hfm5_2a n_wp_h5_2 n_hfm5_2s5 0 nch W=2e-06 L=1u
+R836 n_hfm5_2s5 n_hfm5_2nt 4000
+M837 n_hfm5_2b n_wn_h5_2 n_hfm5_2s6 0 nch W=2e-06 L=1u
+R838 n_hfm5_2s6 n_hfm5_2nt 4000
+M839 n_hm5p n_input2 n_hfm5_2s0 0 nch W=2e-06 L=1u
+R840 n_hfm5_2s0 n_hfm5_2a 4000
+M841 n_hm5n n_inref n_hfm5_2s1 0 nch W=2e-06 L=1u
+R842 n_hfm5_2s1 n_hfm5_2a 4000
+M843 n_hm5n n_input2 n_hfm5_2s2 0 nch W=2e-06 L=1u
+R844 n_hfm5_2s2 n_hfm5_2b 4000
+M845 n_hm5p n_inref n_hfm5_2s3 0 nch W=2e-06 L=1u
+R846 n_hfm5_2s3 n_hfm5_2b 4000
+M847 n_hfm5_3nt n_bsyn 0 0 nch W=4e-06 L=1u
+M848 n_hfm5_3a n_wp_h5_3 n_hfm5_3s5 0 nch W=2e-06 L=1u
+R849 n_hfm5_3s5 n_hfm5_3nt 4000
+M850 n_hfm5_3b n_wn_h5_3 n_hfm5_3s6 0 nch W=2e-06 L=1u
+R851 n_hfm5_3s6 n_hfm5_3nt 4000
+M852 n_hm5p n_input3 n_hfm5_3s0 0 nch W=2e-06 L=1u
+R853 n_hfm5_3s0 n_hfm5_3a 4000
+M854 n_hm5n n_inref n_hfm5_3s1 0 nch W=2e-06 L=1u
+R855 n_hfm5_3s1 n_hfm5_3a 4000
+M856 n_hm5n n_input3 n_hfm5_3s2 0 nch W=2e-06 L=1u
+R857 n_hfm5_3s2 n_hfm5_3b 4000
+M858 n_hm5p n_inref n_hfm5_3s3 0 nch W=2e-06 L=1u
+R859 n_hfm5_3s3 n_hfm5_3b 4000
+M860 n_hfm5_6nt n_bsyn 0 0 nch W=4e-06 L=1u
+M861 n_hfm5_6a n_wp_h5_6 n_hfm5_6s5 0 nch W=2e-06 L=1u
+R862 n_hfm5_6s5 n_hfm5_6nt 4000
+M863 n_hfm5_6b n_wn_h5_6 n_hfm5_6s6 0 nch W=2e-06 L=1u
+R864 n_hfm5_6s6 n_hfm5_6nt 4000
+M865 n_hm5p n_input6 n_hfm5_6s0 0 nch W=2e-06 L=1u
+R866 n_hfm5_6s0 n_hfm5_6a 4000
+M867 n_hm5n n_inref n_hfm5_6s1 0 nch W=2e-06 L=1u
+R868 n_hfm5_6s1 n_hfm5_6a 4000
+M869 n_hm5n n_input6 n_hfm5_6s2 0 nch W=2e-06 L=1u
+R870 n_hfm5_6s2 n_hfm5_6b 4000
+M871 n_hm5p n_inref n_hfm5_6s3 0 nch W=2e-06 L=1u
+R872 n_hfm5_6s3 n_hfm5_6b 4000
+M873 n_hfm5_7nt n_bsyn 0 0 nch W=4e-06 L=1u
+M874 n_hfm5_7a n_wp_h5_7 n_hfm5_7s5 0 nch W=2e-06 L=1u
+R875 n_hfm5_7s5 n_hfm5_7nt 4000
+M876 n_hfm5_7b n_wn_h5_7 n_hfm5_7s6 0 nch W=2e-06 L=1u
+R877 n_hfm5_7s6 n_hfm5_7nt 4000
+M878 n_hm5p n_input7 n_hfm5_7s0 0 nch W=2e-06 L=1u
+R879 n_hfm5_7s0 n_hfm5_7a 4000
+M880 n_hm5n n_inref n_hfm5_7s1 0 nch W=2e-06 L=1u
+R881 n_hfm5_7s1 n_hfm5_7a 4000
+M882 n_hm5n n_input7 n_hfm5_7s2 0 nch W=2e-06 L=1u
+R883 n_hfm5_7s2 n_hfm5_7b 4000
+M884 n_hm5p n_inref n_hfm5_7s3 0 nch W=2e-06 L=1u
+R885 n_hfm5_7s3 n_hfm5_7b 4000
+M886 n_ha5n n_hm5p n_hn5tail 0 nch W=2e-06 L=1u
+M887 n_ha5p n_hm5n n_hn5tail 0 nch W=2e-06 L=1u
+M888 n_hn5tail n_bneu 0 0 nch W=2e-06 L=1u
+R889 n_ha5p n_hn5_cm 100000
+R890 n_ha5n n_hn5_cm 100000
+M891 n_ha5p n_hn5_cm vdd vdd pch W=1e-05 L=1u
+M892 n_ha5n n_hn5_cm vdd vdd pch W=1e-05 L=1u
+C893 n_ha5p 0 1e-11
+C894 n_ha5n 0 1e-11
+R895 n_hm6p n_hml6_cm 100000
+R896 n_hm6n n_hml6_cm 100000
+M897 n_hm6p n_hml6_cm vdd vdd pch W=1e-05 L=1u
+M898 n_hm6n n_hml6_cm vdd vdd pch W=1e-05 L=1u
+R899 n_hm6p n_hm6n 6666.66666667
+C900 n_hm6p 0 1e-11
+C901 n_hm6n 0 1e-11
+M902 n_hfm6_8nt n_bsyn 0 0 nch W=4e-06 L=1u
+M903 n_hfm6_8a n_wp_h6_8 n_hfm6_8s5 0 nch W=2e-06 L=1u
+R904 n_hfm6_8s5 n_hfm6_8nt 4000
+M905 n_hfm6_8b n_wn_h6_8 n_hfm6_8s6 0 nch W=2e-06 L=1u
+R906 n_hfm6_8s6 n_hfm6_8nt 4000
+M907 n_hm6p n_input8 n_hfm6_8s0 0 nch W=2e-06 L=1u
+R908 n_hfm6_8s0 n_hfm6_8a 4000
+M909 n_hm6n n_inref n_hfm6_8s1 0 nch W=2e-06 L=1u
+R910 n_hfm6_8s1 n_hfm6_8a 4000
+M911 n_hm6n n_input8 n_hfm6_8s2 0 nch W=2e-06 L=1u
+R912 n_hfm6_8s2 n_hfm6_8b 4000
+M913 n_hm6p n_inref n_hfm6_8s3 0 nch W=2e-06 L=1u
+R914 n_hfm6_8s3 n_hfm6_8b 4000
+M915 n_hfm6_9nt n_bsyn 0 0 nch W=4e-06 L=1u
+M916 n_hfm6_9a n_wp_h6_9 n_hfm6_9s5 0 nch W=2e-06 L=1u
+R917 n_hfm6_9s5 n_hfm6_9nt 4000
+M918 n_hfm6_9b n_wn_h6_9 n_hfm6_9s6 0 nch W=2e-06 L=1u
+R919 n_hfm6_9s6 n_hfm6_9nt 4000
+M920 n_hm6p n_input9 n_hfm6_9s0 0 nch W=2e-06 L=1u
+R921 n_hfm6_9s0 n_hfm6_9a 4000
+M922 n_hm6n n_inref n_hfm6_9s1 0 nch W=2e-06 L=1u
+R923 n_hfm6_9s1 n_hfm6_9a 4000
+M924 n_hm6n n_input9 n_hfm6_9s2 0 nch W=2e-06 L=1u
+R925 n_hfm6_9s2 n_hfm6_9b 4000
+M926 n_hm6p n_inref n_hfm6_9s3 0 nch W=2e-06 L=1u
+R927 n_hfm6_9s3 n_hfm6_9b 4000
+M928 n_hfm6_12nt n_bsyn 0 0 nch W=4e-06 L=1u
+M929 n_hfm6_12a n_wp_h6_12 n_hfm6_12s5 0 nch W=2e-06 L=1u
+R930 n_hfm6_12s5 n_hfm6_12nt 4000
+M931 n_hfm6_12b n_wn_h6_12 n_hfm6_12s6 0 nch W=2e-06 L=1u
+R932 n_hfm6_12s6 n_hfm6_12nt 4000
+M933 n_hm6p n_input12 n_hfm6_12s0 0 nch W=2e-06 L=1u
+R934 n_hfm6_12s0 n_hfm6_12a 4000
+M935 n_hm6n n_inref n_hfm6_12s1 0 nch W=2e-06 L=1u
+R936 n_hfm6_12s1 n_hfm6_12a 4000
+M937 n_hm6n n_input12 n_hfm6_12s2 0 nch W=2e-06 L=1u
+R938 n_hfm6_12s2 n_hfm6_12b 4000
+M939 n_hm6p n_inref n_hfm6_12s3 0 nch W=2e-06 L=1u
+R940 n_hfm6_12s3 n_hfm6_12b 4000
+M941 n_hfm6_13nt n_bsyn 0 0 nch W=4e-06 L=1u
+M942 n_hfm6_13a n_wp_h6_13 n_hfm6_13s5 0 nch W=2e-06 L=1u
+R943 n_hfm6_13s5 n_hfm6_13nt 4000
+M944 n_hfm6_13b n_wn_h6_13 n_hfm6_13s6 0 nch W=2e-06 L=1u
+R945 n_hfm6_13s6 n_hfm6_13nt 4000
+M946 n_hm6p n_input13 n_hfm6_13s0 0 nch W=2e-06 L=1u
+R947 n_hfm6_13s0 n_hfm6_13a 4000
+M948 n_hm6n n_inref n_hfm6_13s1 0 nch W=2e-06 L=1u
+R949 n_hfm6_13s1 n_hfm6_13a 4000
+M950 n_hm6n n_input13 n_hfm6_13s2 0 nch W=2e-06 L=1u
+R951 n_hfm6_13s2 n_hfm6_13b 4000
+M952 n_hm6p n_inref n_hfm6_13s3 0 nch W=2e-06 L=1u
+R953 n_hfm6_13s3 n_hfm6_13b 4000
+M954 n_ha6n n_hm6p n_hn6tail 0 nch W=2e-06 L=1u
+M955 n_ha6p n_hm6n n_hn6tail 0 nch W=2e-06 L=1u
+M956 n_hn6tail n_bneu 0 0 nch W=2e-06 L=1u
+R957 n_ha6p n_hn6_cm 100000
+R958 n_ha6n n_hn6_cm 100000
+M959 n_ha6p n_hn6_cm vdd vdd pch W=1e-05 L=1u
+M960 n_ha6n n_hn6_cm vdd vdd pch W=1e-05 L=1u
+C961 n_ha6p 0 1e-11
+C962 n_ha6n 0 1e-11
+R963 n_hm7p n_hml7_cm 100000
+R964 n_hm7n n_hml7_cm 100000
+M965 n_hm7p n_hml7_cm vdd vdd pch W=1e-05 L=1u
+M966 n_hm7n n_hml7_cm vdd vdd pch W=1e-05 L=1u
+R967 n_hm7p n_hm7n 6666.66666667
+C968 n_hm7p 0 1e-11
+C969 n_hm7n 0 1e-11
+M970 n_hfm7_10nt n_bsyn 0 0 nch W=4e-06 L=1u
+M971 n_hfm7_10a n_wp_h7_10 n_hfm7_10s5 0 nch W=2e-06 L=1u
+R972 n_hfm7_10s5 n_hfm7_10nt 4000
+M973 n_hfm7_10b n_wn_h7_10 n_hfm7_10s6 0 nch W=2e-06 L=1u
+R974 n_hfm7_10s6 n_hfm7_10nt 4000
+M975 n_hm7p n_input10 n_hfm7_10s0 0 nch W=2e-06 L=1u
+R976 n_hfm7_10s0 n_hfm7_10a 4000
+M977 n_hm7n n_inref n_hfm7_10s1 0 nch W=2e-06 L=1u
+R978 n_hfm7_10s1 n_hfm7_10a 4000
+M979 n_hm7n n_input10 n_hfm7_10s2 0 nch W=2e-06 L=1u
+R980 n_hfm7_10s2 n_hfm7_10b 4000
+M981 n_hm7p n_inref n_hfm7_10s3 0 nch W=2e-06 L=1u
+R982 n_hfm7_10s3 n_hfm7_10b 4000
+M983 n_hfm7_11nt n_bsyn 0 0 nch W=4e-06 L=1u
+M984 n_hfm7_11a n_wp_h7_11 n_hfm7_11s5 0 nch W=2e-06 L=1u
+R985 n_hfm7_11s5 n_hfm7_11nt 4000
+M986 n_hfm7_11b n_wn_h7_11 n_hfm7_11s6 0 nch W=2e-06 L=1u
+R987 n_hfm7_11s6 n_hfm7_11nt 4000
+M988 n_hm7p n_input11 n_hfm7_11s0 0 nch W=2e-06 L=1u
+R989 n_hfm7_11s0 n_hfm7_11a 4000
+M990 n_hm7n n_inref n_hfm7_11s1 0 nch W=2e-06 L=1u
+R991 n_hfm7_11s1 n_hfm7_11a 4000
+M992 n_hm7n n_input11 n_hfm7_11s2 0 nch W=2e-06 L=1u
+R993 n_hfm7_11s2 n_hfm7_11b 4000
+M994 n_hm7p n_inref n_hfm7_11s3 0 nch W=2e-06 L=1u
+R995 n_hfm7_11s3 n_hfm7_11b 4000
+M996 n_hfm7_14nt n_bsyn 0 0 nch W=4e-06 L=1u
+M997 n_hfm7_14a n_wp_h7_14 n_hfm7_14s5 0 nch W=2e-06 L=1u
+R998 n_hfm7_14s5 n_hfm7_14nt 4000
+M999 n_hfm7_14b n_wn_h7_14 n_hfm7_14s6 0 nch W=2e-06 L=1u
+R1000 n_hfm7_14s6 n_hfm7_14nt 4000
+M1001 n_hm7p n_input14 n_hfm7_14s0 0 nch W=2e-06 L=1u
+R1002 n_hfm7_14s0 n_hfm7_14a 4000
+M1003 n_hm7n n_inref n_hfm7_14s1 0 nch W=2e-06 L=1u
+R1004 n_hfm7_14s1 n_hfm7_14a 4000
+M1005 n_hm7n n_input14 n_hfm7_14s2 0 nch W=2e-06 L=1u
+R1006 n_hfm7_14s2 n_hfm7_14b 4000
+M1007 n_hm7p n_inref n_hfm7_14s3 0 nch W=2e-06 L=1u
+R1008 n_hfm7_14s3 n_hfm7_14b 4000
+M1009 n_hfm7_15nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1010 n_hfm7_15a n_wp_h7_15 n_hfm7_15s5 0 nch W=2e-06 L=1u
+R1011 n_hfm7_15s5 n_hfm7_15nt 4000
+M1012 n_hfm7_15b n_wn_h7_15 n_hfm7_15s6 0 nch W=2e-06 L=1u
+R1013 n_hfm7_15s6 n_hfm7_15nt 4000
+M1014 n_hm7p n_input15 n_hfm7_15s0 0 nch W=2e-06 L=1u
+R1015 n_hfm7_15s0 n_hfm7_15a 4000
+M1016 n_hm7n n_inref n_hfm7_15s1 0 nch W=2e-06 L=1u
+R1017 n_hfm7_15s1 n_hfm7_15a 4000
+M1018 n_hm7n n_input15 n_hfm7_15s2 0 nch W=2e-06 L=1u
+R1019 n_hfm7_15s2 n_hfm7_15b 4000
+M1020 n_hm7p n_inref n_hfm7_15s3 0 nch W=2e-06 L=1u
+R1021 n_hfm7_15s3 n_hfm7_15b 4000
+M1022 n_ha7n n_hm7p n_hn7tail 0 nch W=2e-06 L=1u
+M1023 n_ha7p n_hm7n n_hn7tail 0 nch W=2e-06 L=1u
+M1024 n_hn7tail n_bneu 0 0 nch W=2e-06 L=1u
+R1025 n_ha7p n_hn7_cm 100000
+R1026 n_ha7n n_hn7_cm 100000
+M1027 n_ha7p n_hn7_cm vdd vdd pch W=1e-05 L=1u
+M1028 n_ha7n n_hn7_cm vdd vdd pch W=1e-05 L=1u
+C1029 n_ha7p 0 1e-11
+C1030 n_ha7n 0 1e-11
+R1031 out0 n_oml0_cm 100000
+R1032 n_om0n n_oml0_cm 100000
+M1033 out0 n_oml0_cm vdd vdd pch W=1e-05 L=1u
+M1034 n_om0n n_oml0_cm vdd vdd pch W=1e-05 L=1u
+R1035 out0 n_om0n 6666.66666667
+C1036 out0 0 1e-11
+C1037 n_om0n 0 1e-11
+M1038 n_of0_0nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1039 n_of0_0a n_wp_o0_0 n_of0_0s5 0 nch W=2e-06 L=1u
+R1040 n_of0_0s5 n_of0_0nt 4000
+M1041 n_of0_0b n_wn_o0_0 n_of0_0s6 0 nch W=2e-06 L=1u
+R1042 n_of0_0s6 n_of0_0nt 4000
+M1043 out0 n_ha0p n_of0_0s0 0 nch W=2e-06 L=1u
+R1044 n_of0_0s0 n_of0_0a 4000
+M1045 n_om0n n_ha0n n_of0_0s1 0 nch W=2e-06 L=1u
+R1046 n_of0_0s1 n_of0_0a 4000
+M1047 n_om0n n_ha0p n_of0_0s2 0 nch W=2e-06 L=1u
+R1048 n_of0_0s2 n_of0_0b 4000
+M1049 out0 n_ha0n n_of0_0s3 0 nch W=2e-06 L=1u
+R1050 n_of0_0s3 n_of0_0b 4000
+M1051 n_of0_1nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1052 n_of0_1a n_wp_o0_1 n_of0_1s5 0 nch W=2e-06 L=1u
+R1053 n_of0_1s5 n_of0_1nt 4000
+M1054 n_of0_1b n_wn_o0_1 n_of0_1s6 0 nch W=2e-06 L=1u
+R1055 n_of0_1s6 n_of0_1nt 4000
+M1056 out0 n_ha1p n_of0_1s0 0 nch W=2e-06 L=1u
+R1057 n_of0_1s0 n_of0_1a 4000
+M1058 n_om0n n_ha1n n_of0_1s1 0 nch W=2e-06 L=1u
+R1059 n_of0_1s1 n_of0_1a 4000
+M1060 n_om0n n_ha1p n_of0_1s2 0 nch W=2e-06 L=1u
+R1061 n_of0_1s2 n_of0_1b 4000
+M1062 out0 n_ha1n n_of0_1s3 0 nch W=2e-06 L=1u
+R1063 n_of0_1s3 n_of0_1b 4000
+M1064 n_of0_2nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1065 n_of0_2a n_wp_o0_2 n_of0_2s5 0 nch W=2e-06 L=1u
+R1066 n_of0_2s5 n_of0_2nt 4000
+M1067 n_of0_2b n_wn_o0_2 n_of0_2s6 0 nch W=2e-06 L=1u
+R1068 n_of0_2s6 n_of0_2nt 4000
+M1069 out0 n_ha2p n_of0_2s0 0 nch W=2e-06 L=1u
+R1070 n_of0_2s0 n_of0_2a 4000
+M1071 n_om0n n_ha2n n_of0_2s1 0 nch W=2e-06 L=1u
+R1072 n_of0_2s1 n_of0_2a 4000
+M1073 n_om0n n_ha2p n_of0_2s2 0 nch W=2e-06 L=1u
+R1074 n_of0_2s2 n_of0_2b 4000
+M1075 out0 n_ha2n n_of0_2s3 0 nch W=2e-06 L=1u
+R1076 n_of0_2s3 n_of0_2b 4000
+M1077 n_of0_3nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1078 n_of0_3a n_wp_o0_3 n_of0_3s5 0 nch W=2e-06 L=1u
+R1079 n_of0_3s5 n_of0_3nt 4000
+M1080 n_of0_3b n_wn_o0_3 n_of0_3s6 0 nch W=2e-06 L=1u
+R1081 n_of0_3s6 n_of0_3nt 4000
+M1082 out0 n_ha3p n_of0_3s0 0 nch W=2e-06 L=1u
+R1083 n_of0_3s0 n_of0_3a 4000
+M1084 n_om0n n_ha3n n_of0_3s1 0 nch W=2e-06 L=1u
+R1085 n_of0_3s1 n_of0_3a 4000
+M1086 n_om0n n_ha3p n_of0_3s2 0 nch W=2e-06 L=1u
+R1087 n_of0_3s2 n_of0_3b 4000
+M1088 out0 n_ha3n n_of0_3s3 0 nch W=2e-06 L=1u
+R1089 n_of0_3s3 n_of0_3b 4000
+M1090 n_of0_4nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1091 n_of0_4a n_wp_o0_4 n_of0_4s5 0 nch W=2e-06 L=1u
+R1092 n_of0_4s5 n_of0_4nt 4000
+M1093 n_of0_4b n_wn_o0_4 n_of0_4s6 0 nch W=2e-06 L=1u
+R1094 n_of0_4s6 n_of0_4nt 4000
+M1095 out0 n_ha4p n_of0_4s0 0 nch W=2e-06 L=1u
+R1096 n_of0_4s0 n_of0_4a 4000
+M1097 n_om0n n_ha4n n_of0_4s1 0 nch W=2e-06 L=1u
+R1098 n_of0_4s1 n_of0_4a 4000
+M1099 n_om0n n_ha4p n_of0_4s2 0 nch W=2e-06 L=1u
+R1100 n_of0_4s2 n_of0_4b 4000
+M1101 out0 n_ha4n n_of0_4s3 0 nch W=2e-06 L=1u
+R1102 n_of0_4s3 n_of0_4b 4000
+M1103 n_of0_5nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1104 n_of0_5a n_wp_o0_5 n_of0_5s5 0 nch W=2e-06 L=1u
+R1105 n_of0_5s5 n_of0_5nt 4000
+M1106 n_of0_5b n_wn_o0_5 n_of0_5s6 0 nch W=2e-06 L=1u
+R1107 n_of0_5s6 n_of0_5nt 4000
+M1108 out0 n_ha5p n_of0_5s0 0 nch W=2e-06 L=1u
+R1109 n_of0_5s0 n_of0_5a 4000
+M1110 n_om0n n_ha5n n_of0_5s1 0 nch W=2e-06 L=1u
+R1111 n_of0_5s1 n_of0_5a 4000
+M1112 n_om0n n_ha5p n_of0_5s2 0 nch W=2e-06 L=1u
+R1113 n_of0_5s2 n_of0_5b 4000
+M1114 out0 n_ha5n n_of0_5s3 0 nch W=2e-06 L=1u
+R1115 n_of0_5s3 n_of0_5b 4000
+M1116 n_of0_6nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1117 n_of0_6a n_wp_o0_6 n_of0_6s5 0 nch W=2e-06 L=1u
+R1118 n_of0_6s5 n_of0_6nt 4000
+M1119 n_of0_6b n_wn_o0_6 n_of0_6s6 0 nch W=2e-06 L=1u
+R1120 n_of0_6s6 n_of0_6nt 4000
+M1121 out0 n_ha6p n_of0_6s0 0 nch W=2e-06 L=1u
+R1122 n_of0_6s0 n_of0_6a 4000
+M1123 n_om0n n_ha6n n_of0_6s1 0 nch W=2e-06 L=1u
+R1124 n_of0_6s1 n_of0_6a 4000
+M1125 n_om0n n_ha6p n_of0_6s2 0 nch W=2e-06 L=1u
+R1126 n_of0_6s2 n_of0_6b 4000
+M1127 out0 n_ha6n n_of0_6s3 0 nch W=2e-06 L=1u
+R1128 n_of0_6s3 n_of0_6b 4000
+M1129 n_of0_7nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1130 n_of0_7a n_wp_o0_7 n_of0_7s5 0 nch W=2e-06 L=1u
+R1131 n_of0_7s5 n_of0_7nt 4000
+M1132 n_of0_7b n_wn_o0_7 n_of0_7s6 0 nch W=2e-06 L=1u
+R1133 n_of0_7s6 n_of0_7nt 4000
+M1134 out0 n_ha7p n_of0_7s0 0 nch W=2e-06 L=1u
+R1135 n_of0_7s0 n_of0_7a 4000
+M1136 n_om0n n_ha7n n_of0_7s1 0 nch W=2e-06 L=1u
+R1137 n_of0_7s1 n_of0_7a 4000
+M1138 n_om0n n_ha7p n_of0_7s2 0 nch W=2e-06 L=1u
+R1139 n_of0_7s2 n_of0_7b 4000
+M1140 out0 n_ha7n n_of0_7s3 0 nch W=2e-06 L=1u
+R1141 n_of0_7s3 n_of0_7b 4000
+M1142 n_oe0tail n_errorbias 0 0 nch W=4e-06 L=1u
+M1143 n_oe0p n_targetref n_oe0tail 0 nch W=2e-06 L=1u
+M1144 n_oe0n n_target0 n_oe0tail 0 nch W=2e-06 L=1u
+M1145 n_oe0p out0 n_oe0tail 0 nch W=2e-06 L=1u
+M1146 n_oe0n n_om0n n_oe0tail 0 nch W=2e-06 L=1u
+R1147 vdd n_oe0p 16666.6666667
+R1148 vdd n_oe0n 16666.6666667
+C1149 n_oe0p 0 1e-11
+C1150 n_oe0n 0 1e-11
+M1151 n_ol0_0nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1152 n_ol0_0na n_ha0p n_ol0_0nt 0 nch W=2e-06 L=1u
+M1153 n_ol0_0nb n_ha0n n_ol0_0nt 0 nch W=2e-06 L=1u
+M1154 n_ol0_0iop n_oe0n n_ol0_0na 0 nch W=2e-06 L=1u
+M1155 n_ol0_0ion n_oe0p n_ol0_0na 0 nch W=2e-06 L=1u
+M1156 n_ol0_0ion n_oe0n n_ol0_0nb 0 nch W=2e-06 L=1u
+M1157 n_ol0_0iop n_oe0p n_ol0_0nb 0 nch W=2e-06 L=1u
+M1158 n_ol0_0iop n_ol0_0iop vdd vdd pch W=2e-06 L=1u
+M1159 n_ol0_0ion n_ol0_0ion vdd vdd pch W=2e-06 L=1u
+M1160 n_wp_o0_0 n_ol0_0iop vdd vdd pch W=2e-06 L=1u
+M1161 n_ol0_0rn n_ol0_0ion vdd vdd pch W=2e-06 L=1u
+M1162 n_ol0_0rn n_ol0_0rn 0 0 nch W=2e-06 L=1u
+M1163 n_wp_o0_0 n_ol0_0rn 0 0 nch W=2e-06 L=1u
+M1164 n_wn_o0_0 n_ol0_0ion vdd vdd pch W=2e-06 L=1u
+M1165 n_ol0_0rp n_ol0_0iop vdd vdd pch W=2e-06 L=1u
+M1166 n_ol0_0rp n_ol0_0rp 0 0 nch W=2e-06 L=1u
+M1167 n_wn_o0_0 n_ol0_0rp 0 0 nch W=2e-06 L=1u
+M1168 n_ol0_1nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1169 n_ol0_1na n_ha1p n_ol0_1nt 0 nch W=2e-06 L=1u
+M1170 n_ol0_1nb n_ha1n n_ol0_1nt 0 nch W=2e-06 L=1u
+M1171 n_ol0_1iop n_oe0n n_ol0_1na 0 nch W=2e-06 L=1u
+M1172 n_ol0_1ion n_oe0p n_ol0_1na 0 nch W=2e-06 L=1u
+M1173 n_ol0_1ion n_oe0n n_ol0_1nb 0 nch W=2e-06 L=1u
+M1174 n_ol0_1iop n_oe0p n_ol0_1nb 0 nch W=2e-06 L=1u
+M1175 n_ol0_1iop n_ol0_1iop vdd vdd pch W=2e-06 L=1u
+M1176 n_ol0_1ion n_ol0_1ion vdd vdd pch W=2e-06 L=1u
+M1177 n_wp_o0_1 n_ol0_1iop vdd vdd pch W=2e-06 L=1u
+M1178 n_ol0_1rn n_ol0_1ion vdd vdd pch W=2e-06 L=1u
+M1179 n_ol0_1rn n_ol0_1rn 0 0 nch W=2e-06 L=1u
+M1180 n_wp_o0_1 n_ol0_1rn 0 0 nch W=2e-06 L=1u
+M1181 n_wn_o0_1 n_ol0_1ion vdd vdd pch W=2e-06 L=1u
+M1182 n_ol0_1rp n_ol0_1iop vdd vdd pch W=2e-06 L=1u
+M1183 n_ol0_1rp n_ol0_1rp 0 0 nch W=2e-06 L=1u
+M1184 n_wn_o0_1 n_ol0_1rp 0 0 nch W=2e-06 L=1u
+M1185 n_ol0_2nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1186 n_ol0_2na n_ha2p n_ol0_2nt 0 nch W=2e-06 L=1u
+M1187 n_ol0_2nb n_ha2n n_ol0_2nt 0 nch W=2e-06 L=1u
+M1188 n_ol0_2iop n_oe0n n_ol0_2na 0 nch W=2e-06 L=1u
+M1189 n_ol0_2ion n_oe0p n_ol0_2na 0 nch W=2e-06 L=1u
+M1190 n_ol0_2ion n_oe0n n_ol0_2nb 0 nch W=2e-06 L=1u
+M1191 n_ol0_2iop n_oe0p n_ol0_2nb 0 nch W=2e-06 L=1u
+M1192 n_ol0_2iop n_ol0_2iop vdd vdd pch W=2e-06 L=1u
+M1193 n_ol0_2ion n_ol0_2ion vdd vdd pch W=2e-06 L=1u
+M1194 n_wp_o0_2 n_ol0_2iop vdd vdd pch W=2e-06 L=1u
+M1195 n_ol0_2rn n_ol0_2ion vdd vdd pch W=2e-06 L=1u
+M1196 n_ol0_2rn n_ol0_2rn 0 0 nch W=2e-06 L=1u
+M1197 n_wp_o0_2 n_ol0_2rn 0 0 nch W=2e-06 L=1u
+M1198 n_wn_o0_2 n_ol0_2ion vdd vdd pch W=2e-06 L=1u
+M1199 n_ol0_2rp n_ol0_2iop vdd vdd pch W=2e-06 L=1u
+M1200 n_ol0_2rp n_ol0_2rp 0 0 nch W=2e-06 L=1u
+M1201 n_wn_o0_2 n_ol0_2rp 0 0 nch W=2e-06 L=1u
+M1202 n_ol0_3nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1203 n_ol0_3na n_ha3p n_ol0_3nt 0 nch W=2e-06 L=1u
+M1204 n_ol0_3nb n_ha3n n_ol0_3nt 0 nch W=2e-06 L=1u
+M1205 n_ol0_3iop n_oe0n n_ol0_3na 0 nch W=2e-06 L=1u
+M1206 n_ol0_3ion n_oe0p n_ol0_3na 0 nch W=2e-06 L=1u
+M1207 n_ol0_3ion n_oe0n n_ol0_3nb 0 nch W=2e-06 L=1u
+M1208 n_ol0_3iop n_oe0p n_ol0_3nb 0 nch W=2e-06 L=1u
+M1209 n_ol0_3iop n_ol0_3iop vdd vdd pch W=2e-06 L=1u
+M1210 n_ol0_3ion n_ol0_3ion vdd vdd pch W=2e-06 L=1u
+M1211 n_wp_o0_3 n_ol0_3iop vdd vdd pch W=2e-06 L=1u
+M1212 n_ol0_3rn n_ol0_3ion vdd vdd pch W=2e-06 L=1u
+M1213 n_ol0_3rn n_ol0_3rn 0 0 nch W=2e-06 L=1u
+M1214 n_wp_o0_3 n_ol0_3rn 0 0 nch W=2e-06 L=1u
+M1215 n_wn_o0_3 n_ol0_3ion vdd vdd pch W=2e-06 L=1u
+M1216 n_ol0_3rp n_ol0_3iop vdd vdd pch W=2e-06 L=1u
+M1217 n_ol0_3rp n_ol0_3rp 0 0 nch W=2e-06 L=1u
+M1218 n_wn_o0_3 n_ol0_3rp 0 0 nch W=2e-06 L=1u
+M1219 n_ol0_4nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1220 n_ol0_4na n_ha4p n_ol0_4nt 0 nch W=2e-06 L=1u
+M1221 n_ol0_4nb n_ha4n n_ol0_4nt 0 nch W=2e-06 L=1u
+M1222 n_ol0_4iop n_oe0n n_ol0_4na 0 nch W=2e-06 L=1u
+M1223 n_ol0_4ion n_oe0p n_ol0_4na 0 nch W=2e-06 L=1u
+M1224 n_ol0_4ion n_oe0n n_ol0_4nb 0 nch W=2e-06 L=1u
+M1225 n_ol0_4iop n_oe0p n_ol0_4nb 0 nch W=2e-06 L=1u
+M1226 n_ol0_4iop n_ol0_4iop vdd vdd pch W=2e-06 L=1u
+M1227 n_ol0_4ion n_ol0_4ion vdd vdd pch W=2e-06 L=1u
+M1228 n_wp_o0_4 n_ol0_4iop vdd vdd pch W=2e-06 L=1u
+M1229 n_ol0_4rn n_ol0_4ion vdd vdd pch W=2e-06 L=1u
+M1230 n_ol0_4rn n_ol0_4rn 0 0 nch W=2e-06 L=1u
+M1231 n_wp_o0_4 n_ol0_4rn 0 0 nch W=2e-06 L=1u
+M1232 n_wn_o0_4 n_ol0_4ion vdd vdd pch W=2e-06 L=1u
+M1233 n_ol0_4rp n_ol0_4iop vdd vdd pch W=2e-06 L=1u
+M1234 n_ol0_4rp n_ol0_4rp 0 0 nch W=2e-06 L=1u
+M1235 n_wn_o0_4 n_ol0_4rp 0 0 nch W=2e-06 L=1u
+M1236 n_ol0_5nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1237 n_ol0_5na n_ha5p n_ol0_5nt 0 nch W=2e-06 L=1u
+M1238 n_ol0_5nb n_ha5n n_ol0_5nt 0 nch W=2e-06 L=1u
+M1239 n_ol0_5iop n_oe0n n_ol0_5na 0 nch W=2e-06 L=1u
+M1240 n_ol0_5ion n_oe0p n_ol0_5na 0 nch W=2e-06 L=1u
+M1241 n_ol0_5ion n_oe0n n_ol0_5nb 0 nch W=2e-06 L=1u
+M1242 n_ol0_5iop n_oe0p n_ol0_5nb 0 nch W=2e-06 L=1u
+M1243 n_ol0_5iop n_ol0_5iop vdd vdd pch W=2e-06 L=1u
+M1244 n_ol0_5ion n_ol0_5ion vdd vdd pch W=2e-06 L=1u
+M1245 n_wp_o0_5 n_ol0_5iop vdd vdd pch W=2e-06 L=1u
+M1246 n_ol0_5rn n_ol0_5ion vdd vdd pch W=2e-06 L=1u
+M1247 n_ol0_5rn n_ol0_5rn 0 0 nch W=2e-06 L=1u
+M1248 n_wp_o0_5 n_ol0_5rn 0 0 nch W=2e-06 L=1u
+M1249 n_wn_o0_5 n_ol0_5ion vdd vdd pch W=2e-06 L=1u
+M1250 n_ol0_5rp n_ol0_5iop vdd vdd pch W=2e-06 L=1u
+M1251 n_ol0_5rp n_ol0_5rp 0 0 nch W=2e-06 L=1u
+M1252 n_wn_o0_5 n_ol0_5rp 0 0 nch W=2e-06 L=1u
+M1253 n_ol0_6nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1254 n_ol0_6na n_ha6p n_ol0_6nt 0 nch W=2e-06 L=1u
+M1255 n_ol0_6nb n_ha6n n_ol0_6nt 0 nch W=2e-06 L=1u
+M1256 n_ol0_6iop n_oe0n n_ol0_6na 0 nch W=2e-06 L=1u
+M1257 n_ol0_6ion n_oe0p n_ol0_6na 0 nch W=2e-06 L=1u
+M1258 n_ol0_6ion n_oe0n n_ol0_6nb 0 nch W=2e-06 L=1u
+M1259 n_ol0_6iop n_oe0p n_ol0_6nb 0 nch W=2e-06 L=1u
+M1260 n_ol0_6iop n_ol0_6iop vdd vdd pch W=2e-06 L=1u
+M1261 n_ol0_6ion n_ol0_6ion vdd vdd pch W=2e-06 L=1u
+M1262 n_wp_o0_6 n_ol0_6iop vdd vdd pch W=2e-06 L=1u
+M1263 n_ol0_6rn n_ol0_6ion vdd vdd pch W=2e-06 L=1u
+M1264 n_ol0_6rn n_ol0_6rn 0 0 nch W=2e-06 L=1u
+M1265 n_wp_o0_6 n_ol0_6rn 0 0 nch W=2e-06 L=1u
+M1266 n_wn_o0_6 n_ol0_6ion vdd vdd pch W=2e-06 L=1u
+M1267 n_ol0_6rp n_ol0_6iop vdd vdd pch W=2e-06 L=1u
+M1268 n_ol0_6rp n_ol0_6rp 0 0 nch W=2e-06 L=1u
+M1269 n_wn_o0_6 n_ol0_6rp 0 0 nch W=2e-06 L=1u
+M1270 n_ol0_7nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1271 n_ol0_7na n_ha7p n_ol0_7nt 0 nch W=2e-06 L=1u
+M1272 n_ol0_7nb n_ha7n n_ol0_7nt 0 nch W=2e-06 L=1u
+M1273 n_ol0_7iop n_oe0n n_ol0_7na 0 nch W=2e-06 L=1u
+M1274 n_ol0_7ion n_oe0p n_ol0_7na 0 nch W=2e-06 L=1u
+M1275 n_ol0_7ion n_oe0n n_ol0_7nb 0 nch W=2e-06 L=1u
+M1276 n_ol0_7iop n_oe0p n_ol0_7nb 0 nch W=2e-06 L=1u
+M1277 n_ol0_7iop n_ol0_7iop vdd vdd pch W=2e-06 L=1u
+M1278 n_ol0_7ion n_ol0_7ion vdd vdd pch W=2e-06 L=1u
+M1279 n_wp_o0_7 n_ol0_7iop vdd vdd pch W=2e-06 L=1u
+M1280 n_ol0_7rn n_ol0_7ion vdd vdd pch W=2e-06 L=1u
+M1281 n_ol0_7rn n_ol0_7rn 0 0 nch W=2e-06 L=1u
+M1282 n_wp_o0_7 n_ol0_7rn 0 0 nch W=2e-06 L=1u
+M1283 n_wn_o0_7 n_ol0_7ion vdd vdd pch W=2e-06 L=1u
+M1284 n_ol0_7rp n_ol0_7iop vdd vdd pch W=2e-06 L=1u
+M1285 n_ol0_7rp n_ol0_7rp 0 0 nch W=2e-06 L=1u
+M1286 n_wn_o0_7 n_ol0_7rp 0 0 nch W=2e-06 L=1u
+R1287 out1 n_oml1_cm 100000
+R1288 n_om1n n_oml1_cm 100000
+M1289 out1 n_oml1_cm vdd vdd pch W=1e-05 L=1u
+M1290 n_om1n n_oml1_cm vdd vdd pch W=1e-05 L=1u
+R1291 out1 n_om1n 6666.66666667
+C1292 out1 0 1e-11
+C1293 n_om1n 0 1e-11
+M1294 n_of1_0nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1295 n_of1_0a n_wp_o1_0 n_of1_0s5 0 nch W=2e-06 L=1u
+R1296 n_of1_0s5 n_of1_0nt 4000
+M1297 n_of1_0b n_wn_o1_0 n_of1_0s6 0 nch W=2e-06 L=1u
+R1298 n_of1_0s6 n_of1_0nt 4000
+M1299 out1 n_ha0p n_of1_0s0 0 nch W=2e-06 L=1u
+R1300 n_of1_0s0 n_of1_0a 4000
+M1301 n_om1n n_ha0n n_of1_0s1 0 nch W=2e-06 L=1u
+R1302 n_of1_0s1 n_of1_0a 4000
+M1303 n_om1n n_ha0p n_of1_0s2 0 nch W=2e-06 L=1u
+R1304 n_of1_0s2 n_of1_0b 4000
+M1305 out1 n_ha0n n_of1_0s3 0 nch W=2e-06 L=1u
+R1306 n_of1_0s3 n_of1_0b 4000
+M1307 n_of1_1nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1308 n_of1_1a n_wp_o1_1 n_of1_1s5 0 nch W=2e-06 L=1u
+R1309 n_of1_1s5 n_of1_1nt 4000
+M1310 n_of1_1b n_wn_o1_1 n_of1_1s6 0 nch W=2e-06 L=1u
+R1311 n_of1_1s6 n_of1_1nt 4000
+M1312 out1 n_ha1p n_of1_1s0 0 nch W=2e-06 L=1u
+R1313 n_of1_1s0 n_of1_1a 4000
+M1314 n_om1n n_ha1n n_of1_1s1 0 nch W=2e-06 L=1u
+R1315 n_of1_1s1 n_of1_1a 4000
+M1316 n_om1n n_ha1p n_of1_1s2 0 nch W=2e-06 L=1u
+R1317 n_of1_1s2 n_of1_1b 4000
+M1318 out1 n_ha1n n_of1_1s3 0 nch W=2e-06 L=1u
+R1319 n_of1_1s3 n_of1_1b 4000
+M1320 n_of1_2nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1321 n_of1_2a n_wp_o1_2 n_of1_2s5 0 nch W=2e-06 L=1u
+R1322 n_of1_2s5 n_of1_2nt 4000
+M1323 n_of1_2b n_wn_o1_2 n_of1_2s6 0 nch W=2e-06 L=1u
+R1324 n_of1_2s6 n_of1_2nt 4000
+M1325 out1 n_ha2p n_of1_2s0 0 nch W=2e-06 L=1u
+R1326 n_of1_2s0 n_of1_2a 4000
+M1327 n_om1n n_ha2n n_of1_2s1 0 nch W=2e-06 L=1u
+R1328 n_of1_2s1 n_of1_2a 4000
+M1329 n_om1n n_ha2p n_of1_2s2 0 nch W=2e-06 L=1u
+R1330 n_of1_2s2 n_of1_2b 4000
+M1331 out1 n_ha2n n_of1_2s3 0 nch W=2e-06 L=1u
+R1332 n_of1_2s3 n_of1_2b 4000
+M1333 n_of1_3nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1334 n_of1_3a n_wp_o1_3 n_of1_3s5 0 nch W=2e-06 L=1u
+R1335 n_of1_3s5 n_of1_3nt 4000
+M1336 n_of1_3b n_wn_o1_3 n_of1_3s6 0 nch W=2e-06 L=1u
+R1337 n_of1_3s6 n_of1_3nt 4000
+M1338 out1 n_ha3p n_of1_3s0 0 nch W=2e-06 L=1u
+R1339 n_of1_3s0 n_of1_3a 4000
+M1340 n_om1n n_ha3n n_of1_3s1 0 nch W=2e-06 L=1u
+R1341 n_of1_3s1 n_of1_3a 4000
+M1342 n_om1n n_ha3p n_of1_3s2 0 nch W=2e-06 L=1u
+R1343 n_of1_3s2 n_of1_3b 4000
+M1344 out1 n_ha3n n_of1_3s3 0 nch W=2e-06 L=1u
+R1345 n_of1_3s3 n_of1_3b 4000
+M1346 n_of1_4nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1347 n_of1_4a n_wp_o1_4 n_of1_4s5 0 nch W=2e-06 L=1u
+R1348 n_of1_4s5 n_of1_4nt 4000
+M1349 n_of1_4b n_wn_o1_4 n_of1_4s6 0 nch W=2e-06 L=1u
+R1350 n_of1_4s6 n_of1_4nt 4000
+M1351 out1 n_ha4p n_of1_4s0 0 nch W=2e-06 L=1u
+R1352 n_of1_4s0 n_of1_4a 4000
+M1353 n_om1n n_ha4n n_of1_4s1 0 nch W=2e-06 L=1u
+R1354 n_of1_4s1 n_of1_4a 4000
+M1355 n_om1n n_ha4p n_of1_4s2 0 nch W=2e-06 L=1u
+R1356 n_of1_4s2 n_of1_4b 4000
+M1357 out1 n_ha4n n_of1_4s3 0 nch W=2e-06 L=1u
+R1358 n_of1_4s3 n_of1_4b 4000
+M1359 n_of1_5nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1360 n_of1_5a n_wp_o1_5 n_of1_5s5 0 nch W=2e-06 L=1u
+R1361 n_of1_5s5 n_of1_5nt 4000
+M1362 n_of1_5b n_wn_o1_5 n_of1_5s6 0 nch W=2e-06 L=1u
+R1363 n_of1_5s6 n_of1_5nt 4000
+M1364 out1 n_ha5p n_of1_5s0 0 nch W=2e-06 L=1u
+R1365 n_of1_5s0 n_of1_5a 4000
+M1366 n_om1n n_ha5n n_of1_5s1 0 nch W=2e-06 L=1u
+R1367 n_of1_5s1 n_of1_5a 4000
+M1368 n_om1n n_ha5p n_of1_5s2 0 nch W=2e-06 L=1u
+R1369 n_of1_5s2 n_of1_5b 4000
+M1370 out1 n_ha5n n_of1_5s3 0 nch W=2e-06 L=1u
+R1371 n_of1_5s3 n_of1_5b 4000
+M1372 n_of1_6nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1373 n_of1_6a n_wp_o1_6 n_of1_6s5 0 nch W=2e-06 L=1u
+R1374 n_of1_6s5 n_of1_6nt 4000
+M1375 n_of1_6b n_wn_o1_6 n_of1_6s6 0 nch W=2e-06 L=1u
+R1376 n_of1_6s6 n_of1_6nt 4000
+M1377 out1 n_ha6p n_of1_6s0 0 nch W=2e-06 L=1u
+R1378 n_of1_6s0 n_of1_6a 4000
+M1379 n_om1n n_ha6n n_of1_6s1 0 nch W=2e-06 L=1u
+R1380 n_of1_6s1 n_of1_6a 4000
+M1381 n_om1n n_ha6p n_of1_6s2 0 nch W=2e-06 L=1u
+R1382 n_of1_6s2 n_of1_6b 4000
+M1383 out1 n_ha6n n_of1_6s3 0 nch W=2e-06 L=1u
+R1384 n_of1_6s3 n_of1_6b 4000
+M1385 n_of1_7nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1386 n_of1_7a n_wp_o1_7 n_of1_7s5 0 nch W=2e-06 L=1u
+R1387 n_of1_7s5 n_of1_7nt 4000
+M1388 n_of1_7b n_wn_o1_7 n_of1_7s6 0 nch W=2e-06 L=1u
+R1389 n_of1_7s6 n_of1_7nt 4000
+M1390 out1 n_ha7p n_of1_7s0 0 nch W=2e-06 L=1u
+R1391 n_of1_7s0 n_of1_7a 4000
+M1392 n_om1n n_ha7n n_of1_7s1 0 nch W=2e-06 L=1u
+R1393 n_of1_7s1 n_of1_7a 4000
+M1394 n_om1n n_ha7p n_of1_7s2 0 nch W=2e-06 L=1u
+R1395 n_of1_7s2 n_of1_7b 4000
+M1396 out1 n_ha7n n_of1_7s3 0 nch W=2e-06 L=1u
+R1397 n_of1_7s3 n_of1_7b 4000
+M1398 n_oe1tail n_errorbias 0 0 nch W=4e-06 L=1u
+M1399 n_oe1p n_targetref n_oe1tail 0 nch W=2e-06 L=1u
+M1400 n_oe1n n_target1 n_oe1tail 0 nch W=2e-06 L=1u
+M1401 n_oe1p out1 n_oe1tail 0 nch W=2e-06 L=1u
+M1402 n_oe1n n_om1n n_oe1tail 0 nch W=2e-06 L=1u
+R1403 vdd n_oe1p 16666.6666667
+R1404 vdd n_oe1n 16666.6666667
+C1405 n_oe1p 0 1e-11
+C1406 n_oe1n 0 1e-11
+M1407 n_ol1_0nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1408 n_ol1_0na n_ha0p n_ol1_0nt 0 nch W=2e-06 L=1u
+M1409 n_ol1_0nb n_ha0n n_ol1_0nt 0 nch W=2e-06 L=1u
+M1410 n_ol1_0iop n_oe1n n_ol1_0na 0 nch W=2e-06 L=1u
+M1411 n_ol1_0ion n_oe1p n_ol1_0na 0 nch W=2e-06 L=1u
+M1412 n_ol1_0ion n_oe1n n_ol1_0nb 0 nch W=2e-06 L=1u
+M1413 n_ol1_0iop n_oe1p n_ol1_0nb 0 nch W=2e-06 L=1u
+M1414 n_ol1_0iop n_ol1_0iop vdd vdd pch W=2e-06 L=1u
+M1415 n_ol1_0ion n_ol1_0ion vdd vdd pch W=2e-06 L=1u
+M1416 n_wp_o1_0 n_ol1_0iop vdd vdd pch W=2e-06 L=1u
+M1417 n_ol1_0rn n_ol1_0ion vdd vdd pch W=2e-06 L=1u
+M1418 n_ol1_0rn n_ol1_0rn 0 0 nch W=2e-06 L=1u
+M1419 n_wp_o1_0 n_ol1_0rn 0 0 nch W=2e-06 L=1u
+M1420 n_wn_o1_0 n_ol1_0ion vdd vdd pch W=2e-06 L=1u
+M1421 n_ol1_0rp n_ol1_0iop vdd vdd pch W=2e-06 L=1u
+M1422 n_ol1_0rp n_ol1_0rp 0 0 nch W=2e-06 L=1u
+M1423 n_wn_o1_0 n_ol1_0rp 0 0 nch W=2e-06 L=1u
+M1424 n_ol1_1nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1425 n_ol1_1na n_ha1p n_ol1_1nt 0 nch W=2e-06 L=1u
+M1426 n_ol1_1nb n_ha1n n_ol1_1nt 0 nch W=2e-06 L=1u
+M1427 n_ol1_1iop n_oe1n n_ol1_1na 0 nch W=2e-06 L=1u
+M1428 n_ol1_1ion n_oe1p n_ol1_1na 0 nch W=2e-06 L=1u
+M1429 n_ol1_1ion n_oe1n n_ol1_1nb 0 nch W=2e-06 L=1u
+M1430 n_ol1_1iop n_oe1p n_ol1_1nb 0 nch W=2e-06 L=1u
+M1431 n_ol1_1iop n_ol1_1iop vdd vdd pch W=2e-06 L=1u
+M1432 n_ol1_1ion n_ol1_1ion vdd vdd pch W=2e-06 L=1u
+M1433 n_wp_o1_1 n_ol1_1iop vdd vdd pch W=2e-06 L=1u
+M1434 n_ol1_1rn n_ol1_1ion vdd vdd pch W=2e-06 L=1u
+M1435 n_ol1_1rn n_ol1_1rn 0 0 nch W=2e-06 L=1u
+M1436 n_wp_o1_1 n_ol1_1rn 0 0 nch W=2e-06 L=1u
+M1437 n_wn_o1_1 n_ol1_1ion vdd vdd pch W=2e-06 L=1u
+M1438 n_ol1_1rp n_ol1_1iop vdd vdd pch W=2e-06 L=1u
+M1439 n_ol1_1rp n_ol1_1rp 0 0 nch W=2e-06 L=1u
+M1440 n_wn_o1_1 n_ol1_1rp 0 0 nch W=2e-06 L=1u
+M1441 n_ol1_2nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1442 n_ol1_2na n_ha2p n_ol1_2nt 0 nch W=2e-06 L=1u
+M1443 n_ol1_2nb n_ha2n n_ol1_2nt 0 nch W=2e-06 L=1u
+M1444 n_ol1_2iop n_oe1n n_ol1_2na 0 nch W=2e-06 L=1u
+M1445 n_ol1_2ion n_oe1p n_ol1_2na 0 nch W=2e-06 L=1u
+M1446 n_ol1_2ion n_oe1n n_ol1_2nb 0 nch W=2e-06 L=1u
+M1447 n_ol1_2iop n_oe1p n_ol1_2nb 0 nch W=2e-06 L=1u
+M1448 n_ol1_2iop n_ol1_2iop vdd vdd pch W=2e-06 L=1u
+M1449 n_ol1_2ion n_ol1_2ion vdd vdd pch W=2e-06 L=1u
+M1450 n_wp_o1_2 n_ol1_2iop vdd vdd pch W=2e-06 L=1u
+M1451 n_ol1_2rn n_ol1_2ion vdd vdd pch W=2e-06 L=1u
+M1452 n_ol1_2rn n_ol1_2rn 0 0 nch W=2e-06 L=1u
+M1453 n_wp_o1_2 n_ol1_2rn 0 0 nch W=2e-06 L=1u
+M1454 n_wn_o1_2 n_ol1_2ion vdd vdd pch W=2e-06 L=1u
+M1455 n_ol1_2rp n_ol1_2iop vdd vdd pch W=2e-06 L=1u
+M1456 n_ol1_2rp n_ol1_2rp 0 0 nch W=2e-06 L=1u
+M1457 n_wn_o1_2 n_ol1_2rp 0 0 nch W=2e-06 L=1u
+M1458 n_ol1_3nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1459 n_ol1_3na n_ha3p n_ol1_3nt 0 nch W=2e-06 L=1u
+M1460 n_ol1_3nb n_ha3n n_ol1_3nt 0 nch W=2e-06 L=1u
+M1461 n_ol1_3iop n_oe1n n_ol1_3na 0 nch W=2e-06 L=1u
+M1462 n_ol1_3ion n_oe1p n_ol1_3na 0 nch W=2e-06 L=1u
+M1463 n_ol1_3ion n_oe1n n_ol1_3nb 0 nch W=2e-06 L=1u
+M1464 n_ol1_3iop n_oe1p n_ol1_3nb 0 nch W=2e-06 L=1u
+M1465 n_ol1_3iop n_ol1_3iop vdd vdd pch W=2e-06 L=1u
+M1466 n_ol1_3ion n_ol1_3ion vdd vdd pch W=2e-06 L=1u
+M1467 n_wp_o1_3 n_ol1_3iop vdd vdd pch W=2e-06 L=1u
+M1468 n_ol1_3rn n_ol1_3ion vdd vdd pch W=2e-06 L=1u
+M1469 n_ol1_3rn n_ol1_3rn 0 0 nch W=2e-06 L=1u
+M1470 n_wp_o1_3 n_ol1_3rn 0 0 nch W=2e-06 L=1u
+M1471 n_wn_o1_3 n_ol1_3ion vdd vdd pch W=2e-06 L=1u
+M1472 n_ol1_3rp n_ol1_3iop vdd vdd pch W=2e-06 L=1u
+M1473 n_ol1_3rp n_ol1_3rp 0 0 nch W=2e-06 L=1u
+M1474 n_wn_o1_3 n_ol1_3rp 0 0 nch W=2e-06 L=1u
+M1475 n_ol1_4nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1476 n_ol1_4na n_ha4p n_ol1_4nt 0 nch W=2e-06 L=1u
+M1477 n_ol1_4nb n_ha4n n_ol1_4nt 0 nch W=2e-06 L=1u
+M1478 n_ol1_4iop n_oe1n n_ol1_4na 0 nch W=2e-06 L=1u
+M1479 n_ol1_4ion n_oe1p n_ol1_4na 0 nch W=2e-06 L=1u
+M1480 n_ol1_4ion n_oe1n n_ol1_4nb 0 nch W=2e-06 L=1u
+M1481 n_ol1_4iop n_oe1p n_ol1_4nb 0 nch W=2e-06 L=1u
+M1482 n_ol1_4iop n_ol1_4iop vdd vdd pch W=2e-06 L=1u
+M1483 n_ol1_4ion n_ol1_4ion vdd vdd pch W=2e-06 L=1u
+M1484 n_wp_o1_4 n_ol1_4iop vdd vdd pch W=2e-06 L=1u
+M1485 n_ol1_4rn n_ol1_4ion vdd vdd pch W=2e-06 L=1u
+M1486 n_ol1_4rn n_ol1_4rn 0 0 nch W=2e-06 L=1u
+M1487 n_wp_o1_4 n_ol1_4rn 0 0 nch W=2e-06 L=1u
+M1488 n_wn_o1_4 n_ol1_4ion vdd vdd pch W=2e-06 L=1u
+M1489 n_ol1_4rp n_ol1_4iop vdd vdd pch W=2e-06 L=1u
+M1490 n_ol1_4rp n_ol1_4rp 0 0 nch W=2e-06 L=1u
+M1491 n_wn_o1_4 n_ol1_4rp 0 0 nch W=2e-06 L=1u
+M1492 n_ol1_5nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1493 n_ol1_5na n_ha5p n_ol1_5nt 0 nch W=2e-06 L=1u
+M1494 n_ol1_5nb n_ha5n n_ol1_5nt 0 nch W=2e-06 L=1u
+M1495 n_ol1_5iop n_oe1n n_ol1_5na 0 nch W=2e-06 L=1u
+M1496 n_ol1_5ion n_oe1p n_ol1_5na 0 nch W=2e-06 L=1u
+M1497 n_ol1_5ion n_oe1n n_ol1_5nb 0 nch W=2e-06 L=1u
+M1498 n_ol1_5iop n_oe1p n_ol1_5nb 0 nch W=2e-06 L=1u
+M1499 n_ol1_5iop n_ol1_5iop vdd vdd pch W=2e-06 L=1u
+M1500 n_ol1_5ion n_ol1_5ion vdd vdd pch W=2e-06 L=1u
+M1501 n_wp_o1_5 n_ol1_5iop vdd vdd pch W=2e-06 L=1u
+M1502 n_ol1_5rn n_ol1_5ion vdd vdd pch W=2e-06 L=1u
+M1503 n_ol1_5rn n_ol1_5rn 0 0 nch W=2e-06 L=1u
+M1504 n_wp_o1_5 n_ol1_5rn 0 0 nch W=2e-06 L=1u
+M1505 n_wn_o1_5 n_ol1_5ion vdd vdd pch W=2e-06 L=1u
+M1506 n_ol1_5rp n_ol1_5iop vdd vdd pch W=2e-06 L=1u
+M1507 n_ol1_5rp n_ol1_5rp 0 0 nch W=2e-06 L=1u
+M1508 n_wn_o1_5 n_ol1_5rp 0 0 nch W=2e-06 L=1u
+M1509 n_ol1_6nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1510 n_ol1_6na n_ha6p n_ol1_6nt 0 nch W=2e-06 L=1u
+M1511 n_ol1_6nb n_ha6n n_ol1_6nt 0 nch W=2e-06 L=1u
+M1512 n_ol1_6iop n_oe1n n_ol1_6na 0 nch W=2e-06 L=1u
+M1513 n_ol1_6ion n_oe1p n_ol1_6na 0 nch W=2e-06 L=1u
+M1514 n_ol1_6ion n_oe1n n_ol1_6nb 0 nch W=2e-06 L=1u
+M1515 n_ol1_6iop n_oe1p n_ol1_6nb 0 nch W=2e-06 L=1u
+M1516 n_ol1_6iop n_ol1_6iop vdd vdd pch W=2e-06 L=1u
+M1517 n_ol1_6ion n_ol1_6ion vdd vdd pch W=2e-06 L=1u
+M1518 n_wp_o1_6 n_ol1_6iop vdd vdd pch W=2e-06 L=1u
+M1519 n_ol1_6rn n_ol1_6ion vdd vdd pch W=2e-06 L=1u
+M1520 n_ol1_6rn n_ol1_6rn 0 0 nch W=2e-06 L=1u
+M1521 n_wp_o1_6 n_ol1_6rn 0 0 nch W=2e-06 L=1u
+M1522 n_wn_o1_6 n_ol1_6ion vdd vdd pch W=2e-06 L=1u
+M1523 n_ol1_6rp n_ol1_6iop vdd vdd pch W=2e-06 L=1u
+M1524 n_ol1_6rp n_ol1_6rp 0 0 nch W=2e-06 L=1u
+M1525 n_wn_o1_6 n_ol1_6rp 0 0 nch W=2e-06 L=1u
+M1526 n_ol1_7nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1527 n_ol1_7na n_ha7p n_ol1_7nt 0 nch W=2e-06 L=1u
+M1528 n_ol1_7nb n_ha7n n_ol1_7nt 0 nch W=2e-06 L=1u
+M1529 n_ol1_7iop n_oe1n n_ol1_7na 0 nch W=2e-06 L=1u
+M1530 n_ol1_7ion n_oe1p n_ol1_7na 0 nch W=2e-06 L=1u
+M1531 n_ol1_7ion n_oe1n n_ol1_7nb 0 nch W=2e-06 L=1u
+M1532 n_ol1_7iop n_oe1p n_ol1_7nb 0 nch W=2e-06 L=1u
+M1533 n_ol1_7iop n_ol1_7iop vdd vdd pch W=2e-06 L=1u
+M1534 n_ol1_7ion n_ol1_7ion vdd vdd pch W=2e-06 L=1u
+M1535 n_wp_o1_7 n_ol1_7iop vdd vdd pch W=2e-06 L=1u
+M1536 n_ol1_7rn n_ol1_7ion vdd vdd pch W=2e-06 L=1u
+M1537 n_ol1_7rn n_ol1_7rn 0 0 nch W=2e-06 L=1u
+M1538 n_wp_o1_7 n_ol1_7rn 0 0 nch W=2e-06 L=1u
+M1539 n_wn_o1_7 n_ol1_7ion vdd vdd pch W=2e-06 L=1u
+M1540 n_ol1_7rp n_ol1_7iop vdd vdd pch W=2e-06 L=1u
+M1541 n_ol1_7rp n_ol1_7rp 0 0 nch W=2e-06 L=1u
+M1542 n_wn_o1_7 n_ol1_7rp 0 0 nch W=2e-06 L=1u
+R1543 out7 n_oml2_cm 100000
+R1544 n_om2n n_oml2_cm 100000
+M1545 out7 n_oml2_cm vdd vdd pch W=1e-05 L=1u
+M1546 n_om2n n_oml2_cm vdd vdd pch W=1e-05 L=1u
+R1547 out7 n_om2n 6666.66666667
+C1548 out7 0 1e-11
+C1549 n_om2n 0 1e-11
+M1550 n_of2_0nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1551 n_of2_0a n_wp_o2_0 n_of2_0s5 0 nch W=2e-06 L=1u
+R1552 n_of2_0s5 n_of2_0nt 4000
+M1553 n_of2_0b n_wn_o2_0 n_of2_0s6 0 nch W=2e-06 L=1u
+R1554 n_of2_0s6 n_of2_0nt 4000
+M1555 out7 n_ha0p n_of2_0s0 0 nch W=2e-06 L=1u
+R1556 n_of2_0s0 n_of2_0a 4000
+M1557 n_om2n n_ha0n n_of2_0s1 0 nch W=2e-06 L=1u
+R1558 n_of2_0s1 n_of2_0a 4000
+M1559 n_om2n n_ha0p n_of2_0s2 0 nch W=2e-06 L=1u
+R1560 n_of2_0s2 n_of2_0b 4000
+M1561 out7 n_ha0n n_of2_0s3 0 nch W=2e-06 L=1u
+R1562 n_of2_0s3 n_of2_0b 4000
+M1563 n_of2_1nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1564 n_of2_1a n_wp_o2_1 n_of2_1s5 0 nch W=2e-06 L=1u
+R1565 n_of2_1s5 n_of2_1nt 4000
+M1566 n_of2_1b n_wn_o2_1 n_of2_1s6 0 nch W=2e-06 L=1u
+R1567 n_of2_1s6 n_of2_1nt 4000
+M1568 out7 n_ha1p n_of2_1s0 0 nch W=2e-06 L=1u
+R1569 n_of2_1s0 n_of2_1a 4000
+M1570 n_om2n n_ha1n n_of2_1s1 0 nch W=2e-06 L=1u
+R1571 n_of2_1s1 n_of2_1a 4000
+M1572 n_om2n n_ha1p n_of2_1s2 0 nch W=2e-06 L=1u
+R1573 n_of2_1s2 n_of2_1b 4000
+M1574 out7 n_ha1n n_of2_1s3 0 nch W=2e-06 L=1u
+R1575 n_of2_1s3 n_of2_1b 4000
+M1576 n_of2_2nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1577 n_of2_2a n_wp_o2_2 n_of2_2s5 0 nch W=2e-06 L=1u
+R1578 n_of2_2s5 n_of2_2nt 4000
+M1579 n_of2_2b n_wn_o2_2 n_of2_2s6 0 nch W=2e-06 L=1u
+R1580 n_of2_2s6 n_of2_2nt 4000
+M1581 out7 n_ha2p n_of2_2s0 0 nch W=2e-06 L=1u
+R1582 n_of2_2s0 n_of2_2a 4000
+M1583 n_om2n n_ha2n n_of2_2s1 0 nch W=2e-06 L=1u
+R1584 n_of2_2s1 n_of2_2a 4000
+M1585 n_om2n n_ha2p n_of2_2s2 0 nch W=2e-06 L=1u
+R1586 n_of2_2s2 n_of2_2b 4000
+M1587 out7 n_ha2n n_of2_2s3 0 nch W=2e-06 L=1u
+R1588 n_of2_2s3 n_of2_2b 4000
+M1589 n_of2_3nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1590 n_of2_3a n_wp_o2_3 n_of2_3s5 0 nch W=2e-06 L=1u
+R1591 n_of2_3s5 n_of2_3nt 4000
+M1592 n_of2_3b n_wn_o2_3 n_of2_3s6 0 nch W=2e-06 L=1u
+R1593 n_of2_3s6 n_of2_3nt 4000
+M1594 out7 n_ha3p n_of2_3s0 0 nch W=2e-06 L=1u
+R1595 n_of2_3s0 n_of2_3a 4000
+M1596 n_om2n n_ha3n n_of2_3s1 0 nch W=2e-06 L=1u
+R1597 n_of2_3s1 n_of2_3a 4000
+M1598 n_om2n n_ha3p n_of2_3s2 0 nch W=2e-06 L=1u
+R1599 n_of2_3s2 n_of2_3b 4000
+M1600 out7 n_ha3n n_of2_3s3 0 nch W=2e-06 L=1u
+R1601 n_of2_3s3 n_of2_3b 4000
+M1602 n_of2_4nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1603 n_of2_4a n_wp_o2_4 n_of2_4s5 0 nch W=2e-06 L=1u
+R1604 n_of2_4s5 n_of2_4nt 4000
+M1605 n_of2_4b n_wn_o2_4 n_of2_4s6 0 nch W=2e-06 L=1u
+R1606 n_of2_4s6 n_of2_4nt 4000
+M1607 out7 n_ha4p n_of2_4s0 0 nch W=2e-06 L=1u
+R1608 n_of2_4s0 n_of2_4a 4000
+M1609 n_om2n n_ha4n n_of2_4s1 0 nch W=2e-06 L=1u
+R1610 n_of2_4s1 n_of2_4a 4000
+M1611 n_om2n n_ha4p n_of2_4s2 0 nch W=2e-06 L=1u
+R1612 n_of2_4s2 n_of2_4b 4000
+M1613 out7 n_ha4n n_of2_4s3 0 nch W=2e-06 L=1u
+R1614 n_of2_4s3 n_of2_4b 4000
+M1615 n_of2_5nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1616 n_of2_5a n_wp_o2_5 n_of2_5s5 0 nch W=2e-06 L=1u
+R1617 n_of2_5s5 n_of2_5nt 4000
+M1618 n_of2_5b n_wn_o2_5 n_of2_5s6 0 nch W=2e-06 L=1u
+R1619 n_of2_5s6 n_of2_5nt 4000
+M1620 out7 n_ha5p n_of2_5s0 0 nch W=2e-06 L=1u
+R1621 n_of2_5s0 n_of2_5a 4000
+M1622 n_om2n n_ha5n n_of2_5s1 0 nch W=2e-06 L=1u
+R1623 n_of2_5s1 n_of2_5a 4000
+M1624 n_om2n n_ha5p n_of2_5s2 0 nch W=2e-06 L=1u
+R1625 n_of2_5s2 n_of2_5b 4000
+M1626 out7 n_ha5n n_of2_5s3 0 nch W=2e-06 L=1u
+R1627 n_of2_5s3 n_of2_5b 4000
+M1628 n_of2_6nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1629 n_of2_6a n_wp_o2_6 n_of2_6s5 0 nch W=2e-06 L=1u
+R1630 n_of2_6s5 n_of2_6nt 4000
+M1631 n_of2_6b n_wn_o2_6 n_of2_6s6 0 nch W=2e-06 L=1u
+R1632 n_of2_6s6 n_of2_6nt 4000
+M1633 out7 n_ha6p n_of2_6s0 0 nch W=2e-06 L=1u
+R1634 n_of2_6s0 n_of2_6a 4000
+M1635 n_om2n n_ha6n n_of2_6s1 0 nch W=2e-06 L=1u
+R1636 n_of2_6s1 n_of2_6a 4000
+M1637 n_om2n n_ha6p n_of2_6s2 0 nch W=2e-06 L=1u
+R1638 n_of2_6s2 n_of2_6b 4000
+M1639 out7 n_ha6n n_of2_6s3 0 nch W=2e-06 L=1u
+R1640 n_of2_6s3 n_of2_6b 4000
+M1641 n_of2_7nt n_bsyn 0 0 nch W=4e-06 L=1u
+M1642 n_of2_7a n_wp_o2_7 n_of2_7s5 0 nch W=2e-06 L=1u
+R1643 n_of2_7s5 n_of2_7nt 4000
+M1644 n_of2_7b n_wn_o2_7 n_of2_7s6 0 nch W=2e-06 L=1u
+R1645 n_of2_7s6 n_of2_7nt 4000
+M1646 out7 n_ha7p n_of2_7s0 0 nch W=2e-06 L=1u
+R1647 n_of2_7s0 n_of2_7a 4000
+M1648 n_om2n n_ha7n n_of2_7s1 0 nch W=2e-06 L=1u
+R1649 n_of2_7s1 n_of2_7a 4000
+M1650 n_om2n n_ha7p n_of2_7s2 0 nch W=2e-06 L=1u
+R1651 n_of2_7s2 n_of2_7b 4000
+M1652 out7 n_ha7n n_of2_7s3 0 nch W=2e-06 L=1u
+R1653 n_of2_7s3 n_of2_7b 4000
+M1654 n_oe2tail n_errorbias 0 0 nch W=4e-06 L=1u
+M1655 n_oe2p n_targetref n_oe2tail 0 nch W=2e-06 L=1u
+M1656 n_oe2n n_target2 n_oe2tail 0 nch W=2e-06 L=1u
+M1657 n_oe2p out7 n_oe2tail 0 nch W=2e-06 L=1u
+M1658 n_oe2n n_om2n n_oe2tail 0 nch W=2e-06 L=1u
+R1659 vdd n_oe2p 16666.6666667
+R1660 vdd n_oe2n 16666.6666667
+C1661 n_oe2p 0 1e-11
+C1662 n_oe2n 0 1e-11
+M1663 n_ol2_0nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1664 n_ol2_0na n_ha0p n_ol2_0nt 0 nch W=2e-06 L=1u
+M1665 n_ol2_0nb n_ha0n n_ol2_0nt 0 nch W=2e-06 L=1u
+M1666 n_ol2_0iop n_oe2n n_ol2_0na 0 nch W=2e-06 L=1u
+M1667 n_ol2_0ion n_oe2p n_ol2_0na 0 nch W=2e-06 L=1u
+M1668 n_ol2_0ion n_oe2n n_ol2_0nb 0 nch W=2e-06 L=1u
+M1669 n_ol2_0iop n_oe2p n_ol2_0nb 0 nch W=2e-06 L=1u
+M1670 n_ol2_0iop n_ol2_0iop vdd vdd pch W=2e-06 L=1u
+M1671 n_ol2_0ion n_ol2_0ion vdd vdd pch W=2e-06 L=1u
+M1672 n_wp_o2_0 n_ol2_0iop vdd vdd pch W=2e-06 L=1u
+M1673 n_ol2_0rn n_ol2_0ion vdd vdd pch W=2e-06 L=1u
+M1674 n_ol2_0rn n_ol2_0rn 0 0 nch W=2e-06 L=1u
+M1675 n_wp_o2_0 n_ol2_0rn 0 0 nch W=2e-06 L=1u
+M1676 n_wn_o2_0 n_ol2_0ion vdd vdd pch W=2e-06 L=1u
+M1677 n_ol2_0rp n_ol2_0iop vdd vdd pch W=2e-06 L=1u
+M1678 n_ol2_0rp n_ol2_0rp 0 0 nch W=2e-06 L=1u
+M1679 n_wn_o2_0 n_ol2_0rp 0 0 nch W=2e-06 L=1u
+M1680 n_ol2_1nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1681 n_ol2_1na n_ha1p n_ol2_1nt 0 nch W=2e-06 L=1u
+M1682 n_ol2_1nb n_ha1n n_ol2_1nt 0 nch W=2e-06 L=1u
+M1683 n_ol2_1iop n_oe2n n_ol2_1na 0 nch W=2e-06 L=1u
+M1684 n_ol2_1ion n_oe2p n_ol2_1na 0 nch W=2e-06 L=1u
+M1685 n_ol2_1ion n_oe2n n_ol2_1nb 0 nch W=2e-06 L=1u
+M1686 n_ol2_1iop n_oe2p n_ol2_1nb 0 nch W=2e-06 L=1u
+M1687 n_ol2_1iop n_ol2_1iop vdd vdd pch W=2e-06 L=1u
+M1688 n_ol2_1ion n_ol2_1ion vdd vdd pch W=2e-06 L=1u
+M1689 n_wp_o2_1 n_ol2_1iop vdd vdd pch W=2e-06 L=1u
+M1690 n_ol2_1rn n_ol2_1ion vdd vdd pch W=2e-06 L=1u
+M1691 n_ol2_1rn n_ol2_1rn 0 0 nch W=2e-06 L=1u
+M1692 n_wp_o2_1 n_ol2_1rn 0 0 nch W=2e-06 L=1u
+M1693 n_wn_o2_1 n_ol2_1ion vdd vdd pch W=2e-06 L=1u
+M1694 n_ol2_1rp n_ol2_1iop vdd vdd pch W=2e-06 L=1u
+M1695 n_ol2_1rp n_ol2_1rp 0 0 nch W=2e-06 L=1u
+M1696 n_wn_o2_1 n_ol2_1rp 0 0 nch W=2e-06 L=1u
+M1697 n_ol2_2nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1698 n_ol2_2na n_ha2p n_ol2_2nt 0 nch W=2e-06 L=1u
+M1699 n_ol2_2nb n_ha2n n_ol2_2nt 0 nch W=2e-06 L=1u
+M1700 n_ol2_2iop n_oe2n n_ol2_2na 0 nch W=2e-06 L=1u
+M1701 n_ol2_2ion n_oe2p n_ol2_2na 0 nch W=2e-06 L=1u
+M1702 n_ol2_2ion n_oe2n n_ol2_2nb 0 nch W=2e-06 L=1u
+M1703 n_ol2_2iop n_oe2p n_ol2_2nb 0 nch W=2e-06 L=1u
+M1704 n_ol2_2iop n_ol2_2iop vdd vdd pch W=2e-06 L=1u
+M1705 n_ol2_2ion n_ol2_2ion vdd vdd pch W=2e-06 L=1u
+M1706 n_wp_o2_2 n_ol2_2iop vdd vdd pch W=2e-06 L=1u
+M1707 n_ol2_2rn n_ol2_2ion vdd vdd pch W=2e-06 L=1u
+M1708 n_ol2_2rn n_ol2_2rn 0 0 nch W=2e-06 L=1u
+M1709 n_wp_o2_2 n_ol2_2rn 0 0 nch W=2e-06 L=1u
+M1710 n_wn_o2_2 n_ol2_2ion vdd vdd pch W=2e-06 L=1u
+M1711 n_ol2_2rp n_ol2_2iop vdd vdd pch W=2e-06 L=1u
+M1712 n_ol2_2rp n_ol2_2rp 0 0 nch W=2e-06 L=1u
+M1713 n_wn_o2_2 n_ol2_2rp 0 0 nch W=2e-06 L=1u
+M1714 n_ol2_3nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1715 n_ol2_3na n_ha3p n_ol2_3nt 0 nch W=2e-06 L=1u
+M1716 n_ol2_3nb n_ha3n n_ol2_3nt 0 nch W=2e-06 L=1u
+M1717 n_ol2_3iop n_oe2n n_ol2_3na 0 nch W=2e-06 L=1u
+M1718 n_ol2_3ion n_oe2p n_ol2_3na 0 nch W=2e-06 L=1u
+M1719 n_ol2_3ion n_oe2n n_ol2_3nb 0 nch W=2e-06 L=1u
+M1720 n_ol2_3iop n_oe2p n_ol2_3nb 0 nch W=2e-06 L=1u
+M1721 n_ol2_3iop n_ol2_3iop vdd vdd pch W=2e-06 L=1u
+M1722 n_ol2_3ion n_ol2_3ion vdd vdd pch W=2e-06 L=1u
+M1723 n_wp_o2_3 n_ol2_3iop vdd vdd pch W=2e-06 L=1u
+M1724 n_ol2_3rn n_ol2_3ion vdd vdd pch W=2e-06 L=1u
+M1725 n_ol2_3rn n_ol2_3rn 0 0 nch W=2e-06 L=1u
+M1726 n_wp_o2_3 n_ol2_3rn 0 0 nch W=2e-06 L=1u
+M1727 n_wn_o2_3 n_ol2_3ion vdd vdd pch W=2e-06 L=1u
+M1728 n_ol2_3rp n_ol2_3iop vdd vdd pch W=2e-06 L=1u
+M1729 n_ol2_3rp n_ol2_3rp 0 0 nch W=2e-06 L=1u
+M1730 n_wn_o2_3 n_ol2_3rp 0 0 nch W=2e-06 L=1u
+M1731 n_ol2_4nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1732 n_ol2_4na n_ha4p n_ol2_4nt 0 nch W=2e-06 L=1u
+M1733 n_ol2_4nb n_ha4n n_ol2_4nt 0 nch W=2e-06 L=1u
+M1734 n_ol2_4iop n_oe2n n_ol2_4na 0 nch W=2e-06 L=1u
+M1735 n_ol2_4ion n_oe2p n_ol2_4na 0 nch W=2e-06 L=1u
+M1736 n_ol2_4ion n_oe2n n_ol2_4nb 0 nch W=2e-06 L=1u
+M1737 n_ol2_4iop n_oe2p n_ol2_4nb 0 nch W=2e-06 L=1u
+M1738 n_ol2_4iop n_ol2_4iop vdd vdd pch W=2e-06 L=1u
+M1739 n_ol2_4ion n_ol2_4ion vdd vdd pch W=2e-06 L=1u
+M1740 n_wp_o2_4 n_ol2_4iop vdd vdd pch W=2e-06 L=1u
+M1741 n_ol2_4rn n_ol2_4ion vdd vdd pch W=2e-06 L=1u
+M1742 n_ol2_4rn n_ol2_4rn 0 0 nch W=2e-06 L=1u
+M1743 n_wp_o2_4 n_ol2_4rn 0 0 nch W=2e-06 L=1u
+M1744 n_wn_o2_4 n_ol2_4ion vdd vdd pch W=2e-06 L=1u
+M1745 n_ol2_4rp n_ol2_4iop vdd vdd pch W=2e-06 L=1u
+M1746 n_ol2_4rp n_ol2_4rp 0 0 nch W=2e-06 L=1u
+M1747 n_wn_o2_4 n_ol2_4rp 0 0 nch W=2e-06 L=1u
+M1748 n_ol2_5nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1749 n_ol2_5na n_ha5p n_ol2_5nt 0 nch W=2e-06 L=1u
+M1750 n_ol2_5nb n_ha5n n_ol2_5nt 0 nch W=2e-06 L=1u
+M1751 n_ol2_5iop n_oe2n n_ol2_5na 0 nch W=2e-06 L=1u
+M1752 n_ol2_5ion n_oe2p n_ol2_5na 0 nch W=2e-06 L=1u
+M1753 n_ol2_5ion n_oe2n n_ol2_5nb 0 nch W=2e-06 L=1u
+M1754 n_ol2_5iop n_oe2p n_ol2_5nb 0 nch W=2e-06 L=1u
+M1755 n_ol2_5iop n_ol2_5iop vdd vdd pch W=2e-06 L=1u
+M1756 n_ol2_5ion n_ol2_5ion vdd vdd pch W=2e-06 L=1u
+M1757 n_wp_o2_5 n_ol2_5iop vdd vdd pch W=2e-06 L=1u
+M1758 n_ol2_5rn n_ol2_5ion vdd vdd pch W=2e-06 L=1u
+M1759 n_ol2_5rn n_ol2_5rn 0 0 nch W=2e-06 L=1u
+M1760 n_wp_o2_5 n_ol2_5rn 0 0 nch W=2e-06 L=1u
+M1761 n_wn_o2_5 n_ol2_5ion vdd vdd pch W=2e-06 L=1u
+M1762 n_ol2_5rp n_ol2_5iop vdd vdd pch W=2e-06 L=1u
+M1763 n_ol2_5rp n_ol2_5rp 0 0 nch W=2e-06 L=1u
+M1764 n_wn_o2_5 n_ol2_5rp 0 0 nch W=2e-06 L=1u
+M1765 n_ol2_6nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1766 n_ol2_6na n_ha6p n_ol2_6nt 0 nch W=2e-06 L=1u
+M1767 n_ol2_6nb n_ha6n n_ol2_6nt 0 nch W=2e-06 L=1u
+M1768 n_ol2_6iop n_oe2n n_ol2_6na 0 nch W=2e-06 L=1u
+M1769 n_ol2_6ion n_oe2p n_ol2_6na 0 nch W=2e-06 L=1u
+M1770 n_ol2_6ion n_oe2n n_ol2_6nb 0 nch W=2e-06 L=1u
+M1771 n_ol2_6iop n_oe2p n_ol2_6nb 0 nch W=2e-06 L=1u
+M1772 n_ol2_6iop n_ol2_6iop vdd vdd pch W=2e-06 L=1u
+M1773 n_ol2_6ion n_ol2_6ion vdd vdd pch W=2e-06 L=1u
+M1774 n_wp_o2_6 n_ol2_6iop vdd vdd pch W=2e-06 L=1u
+M1775 n_ol2_6rn n_ol2_6ion vdd vdd pch W=2e-06 L=1u
+M1776 n_ol2_6rn n_ol2_6rn 0 0 nch W=2e-06 L=1u
+M1777 n_wp_o2_6 n_ol2_6rn 0 0 nch W=2e-06 L=1u
+M1778 n_wn_o2_6 n_ol2_6ion vdd vdd pch W=2e-06 L=1u
+M1779 n_ol2_6rp n_ol2_6iop vdd vdd pch W=2e-06 L=1u
+M1780 n_ol2_6rp n_ol2_6rp 0 0 nch W=2e-06 L=1u
+M1781 n_wn_o2_6 n_ol2_6rp 0 0 nch W=2e-06 L=1u
+M1782 n_ol2_7nt n_updatebias 0 0 nch W=4e-06 L=1u
+M1783 n_ol2_7na n_ha7p n_ol2_7nt 0 nch W=2e-06 L=1u
+M1784 n_ol2_7nb n_ha7n n_ol2_7nt 0 nch W=2e-06 L=1u
+M1785 n_ol2_7iop n_oe2n n_ol2_7na 0 nch W=2e-06 L=1u
+M1786 n_ol2_7ion n_oe2p n_ol2_7na 0 nch W=2e-06 L=1u
+M1787 n_ol2_7ion n_oe2n n_ol2_7nb 0 nch W=2e-06 L=1u
+M1788 n_ol2_7iop n_oe2p n_ol2_7nb 0 nch W=2e-06 L=1u
+M1789 n_ol2_7iop n_ol2_7iop vdd vdd pch W=2e-06 L=1u
+M1790 n_ol2_7ion n_ol2_7ion vdd vdd pch W=2e-06 L=1u
+M1791 n_wp_o2_7 n_ol2_7iop vdd vdd pch W=2e-06 L=1u
+M1792 n_ol2_7rn n_ol2_7ion vdd vdd pch W=2e-06 L=1u
+M1793 n_ol2_7rn n_ol2_7rn 0 0 nch W=2e-06 L=1u
+M1794 n_wp_o2_7 n_ol2_7rn 0 0 nch W=2e-06 L=1u
+M1795 n_wn_o2_7 n_ol2_7ion vdd vdd pch W=2e-06 L=1u
+M1796 n_ol2_7rp n_ol2_7iop vdd vdd pch W=2e-06 L=1u
+M1797 n_ol2_7rp n_ol2_7rp 0 0 nch W=2e-06 L=1u
+M1798 n_wn_o2_7 n_ol2_7rp 0 0 nch W=2e-06 L=1u
+R1799 out2 0 1000
+R1800 out3 0 1000
+R1801 out4 0 1000
+R1802 out5 0 1000
+R1803 out6 0 1000
+R1804 out8 0 1000
+R1805 out9 0 1000

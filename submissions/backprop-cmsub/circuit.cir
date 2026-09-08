@@ -1,0 +1,1447 @@
+* CMSUB analog backprop, 16 inputs / 9 trained hidden / labels 0,1,7
+* Thomas Dybdahl Ahle and contributors; MIT; see generate.py and README.md
+* Adapted from experiments/gen_mc.py; deterministic random reset, no pretrained weights.
+Rvtbhi vbias n_vtb 2500
+Rvtblo n_vtb vref 7500
+Rvcbiashi verror n_vcbias 2857.14285714
+Rvcbiaslo n_vcbias vref 7142.85714286
+Rvulkhi verror n_vulk 928.571428571
+Rvulklo n_vulk vref 71.4285714286
+Rauin0 in0 n_au0 10000
+Rauref0 vref n_au0 16666.6666667
+Raugnd0 n_au0 0 25000
+Rauin1 in1 n_au1 10000
+Rauref1 vref n_au1 16666.6666667
+Raugnd1 n_au1 0 25000
+Rauin2 in2 n_au2 10000
+Rauref2 vref n_au2 16666.6666667
+Raugnd2 n_au2 0 25000
+Rauin3 in3 n_au3 10000
+Rauref3 vref n_au3 16666.6666667
+Raugnd3 n_au3 0 25000
+Rauin4 in4 n_au4 10000
+Rauref4 vref n_au4 16666.6666667
+Raugnd4 n_au4 0 25000
+Rauin5 in5 n_au5 10000
+Rauref5 vref n_au5 16666.6666667
+Raugnd5 n_au5 0 25000
+Rauin6 in6 n_au6 10000
+Rauref6 vref n_au6 16666.6666667
+Raugnd6 n_au6 0 25000
+Rauin7 in7 n_au7 10000
+Rauref7 vref n_au7 16666.6666667
+Raugnd7 n_au7 0 25000
+Rauin8 in8 n_au8 10000
+Rauref8 vref n_au8 16666.6666667
+Raugnd8 n_au8 0 25000
+Rauin9 in9 n_au9 10000
+Rauref9 vref n_au9 16666.6666667
+Raugnd9 n_au9 0 25000
+Rauin10 in10 n_au10 10000
+Rauref10 vref n_au10 16666.6666667
+Raugnd10 n_au10 0 25000
+Rauin11 in11 n_au11 10000
+Rauref11 vref n_au11 16666.6666667
+Raugnd11 n_au11 0 25000
+Rauin12 in12 n_au12 10000
+Rauref12 vref n_au12 16666.6666667
+Raugnd12 n_au12 0 25000
+Rauin13 in13 n_au13 10000
+Rauref13 vref n_au13 16666.6666667
+Raugnd13 n_au13 0 25000
+Rauin14 in14 n_au14 10000
+Rauref14 vref n_au14 16666.6666667
+Raugnd14 n_au14 0 25000
+Rauin15 in15 n_au15 10000
+Rauref15 vref n_au15 16666.6666667
+Raugnd15 n_au15 0 25000
+Cwh0_0 n_wh0_0 0 1.67e-06
+Rinith0_0hi reset n_inith0_0 321.2
+Rinith0_0lo n_inith0_0 0 678.8
+Mreseth0_0 n_inith0_0 reset n_wh0_0 0 syn W=1000u L=1u
+Mposh0_0 in0 n_wh0_0 n_hp0 0 syn W=10u L=1u
+Mnegh0_0 in0 vweight n_hn0 0 syn W=10u L=1u
+Cwh0_1 n_wh0_1 0 1.67e-06
+Rinith0_1hi reset n_inith0_1 245.2
+Rinith0_1lo n_inith0_1 0 754.8
+Mreseth0_1 n_inith0_1 reset n_wh0_1 0 syn W=1000u L=1u
+Mposh0_1 in1 n_wh0_1 n_hp0 0 syn W=10u L=1u
+Mnegh0_1 in1 vweight n_hn0 0 syn W=10u L=1u
+Cwh0_4 n_wh0_4 0 1.67e-06
+Rinith0_4hi reset n_inith0_4 211.2
+Rinith0_4lo n_inith0_4 0 788.8
+Mreseth0_4 n_inith0_4 reset n_wh0_4 0 syn W=1000u L=1u
+Mposh0_4 in4 n_wh0_4 n_hp0 0 syn W=10u L=1u
+Mnegh0_4 in4 vweight n_hn0 0 syn W=10u L=1u
+Cwh0_5 n_wh0_5 0 1.67e-06
+Rinith0_5hi reset n_inith0_5 116.8
+Rinith0_5lo n_inith0_5 0 883.2
+Mreseth0_5 n_inith0_5 reset n_wh0_5 0 syn W=1000u L=1u
+Mposh0_5 in5 n_wh0_5 n_hp0 0 syn W=10u L=1u
+Mnegh0_5 in5 vweight n_hn0 0 syn W=10u L=1u
+Cwh0_b n_wh0_b 0 1.67e-06
+Rinith0_bhi reset n_inith0_b 280
+Rinith0_blo n_inith0_b 0 720
+Mreseth0_b n_inith0_b reset n_wh0_b 0 syn W=1000u L=1u
+Mposh0_b vbias n_wh0_b n_hp0 0 syn W=10u L=1u
+Mnegh0_b vbias vweight n_hn0 0 syn W=10u L=1u
+Msah0 n_hn0 n_hn0 0 0 nch W=20u L=1u
+Msbh0 n_z0 n_hn0 0 0 nch W=20u L=1u
+Msch0 n_hp0 n_hp0 0 0 nch W=20u L=1u
+Msdh0 n_dpfh0 n_hp0 0 0 nch W=20u L=1u
+Mseh0 n_dpfh0 n_dpfh0 vdd vdd pch W=60u L=1u
+Msfh0 n_z0 n_dpfh0 vdd vdd pch W=60u L=1u
+Rsumh0 n_z0 vref 8000
+Mr0 n_hdd0 n_z0 n_ntail0 0 nch W=12u L=1u
+Mr2_0 n_dmp0 vref n_ntail0 0 nch W=12u L=1u
+Mtl0 n_ntail0 n_vtb 0 0 nch W=32u L=1u
+Mdm0 n_dmp0 n_dmp0 vdd vdd pch W=40u L=1u
+Mrp1_0 n_hdd0 n_hdd0 vdd vdd pch W=40u L=1u
+Mrp2_0 n_hv0 n_hdd0 vdd vdd pch W=40u L=1u
+Rhvlo0 n_hv0 vref 9600
+Rhvhi0 n_hv0 vbias 48000
+Mct0 n_ctail0 n_vcbias 0 0 nch W=10u L=1u
+Mca0 n_cna0 n_z0 n_ctail0 0 syn W=20u L=1u
+Mcb0 n_on0 vref n_ctail0 0 syn W=20u L=1u
+Mcp1_0 n_cna0 n_cna0 vdd vdd pch W=40u L=1u
+Mcp2_0 n_on0 n_cna0 vdd vdd pch W=40u L=1u
+Rulk0 n_on0 n_vulk 60000
+Cwh1_1 n_wh1_1 0 1.67e-06
+Rinith1_1hi reset n_inith1_1 246.4
+Rinith1_1lo n_inith1_1 0 753.6
+Mreseth1_1 n_inith1_1 reset n_wh1_1 0 syn W=1000u L=1u
+Mposh1_1 in1 n_wh1_1 n_hp1 0 syn W=10u L=1u
+Mnegh1_1 in1 vweight n_hn1 0 syn W=10u L=1u
+Cwh1_2 n_wh1_2 0 1.67e-06
+Rinith1_2hi reset n_inith1_2 129.6
+Rinith1_2lo n_inith1_2 0 870.4
+Mreseth1_2 n_inith1_2 reset n_wh1_2 0 syn W=1000u L=1u
+Mposh1_2 in2 n_wh1_2 n_hp1 0 syn W=10u L=1u
+Mnegh1_2 in2 vweight n_hn1 0 syn W=10u L=1u
+Cwh1_5 n_wh1_5 0 1.67e-06
+Rinith1_5hi reset n_inith1_5 701.6
+Rinith1_5lo n_inith1_5 0 298.4
+Mreseth1_5 n_inith1_5 reset n_wh1_5 0 syn W=1000u L=1u
+Mposh1_5 in5 n_wh1_5 n_hp1 0 syn W=10u L=1u
+Mnegh1_5 in5 vweight n_hn1 0 syn W=10u L=1u
+Cwh1_6 n_wh1_6 0 1.67e-06
+Rinith1_6hi reset n_inith1_6 422
+Rinith1_6lo n_inith1_6 0 578
+Mreseth1_6 n_inith1_6 reset n_wh1_6 0 syn W=1000u L=1u
+Mposh1_6 in6 n_wh1_6 n_hp1 0 syn W=10u L=1u
+Mnegh1_6 in6 vweight n_hn1 0 syn W=10u L=1u
+Cwh1_b n_wh1_b 0 1.67e-06
+Rinith1_bhi reset n_inith1_b 280
+Rinith1_blo n_inith1_b 0 720
+Mreseth1_b n_inith1_b reset n_wh1_b 0 syn W=1000u L=1u
+Mposh1_b vbias n_wh1_b n_hp1 0 syn W=10u L=1u
+Mnegh1_b vbias vweight n_hn1 0 syn W=10u L=1u
+Msah1 n_hn1 n_hn1 0 0 nch W=20u L=1u
+Msbh1 n_z1 n_hn1 0 0 nch W=20u L=1u
+Msch1 n_hp1 n_hp1 0 0 nch W=20u L=1u
+Msdh1 n_dpfh1 n_hp1 0 0 nch W=20u L=1u
+Mseh1 n_dpfh1 n_dpfh1 vdd vdd pch W=60u L=1u
+Msfh1 n_z1 n_dpfh1 vdd vdd pch W=60u L=1u
+Rsumh1 n_z1 vref 8000
+Mr1 n_hdd1 n_z1 n_ntail1 0 nch W=12u L=1u
+Mr2_1 n_dmp1 vref n_ntail1 0 nch W=12u L=1u
+Mtl1 n_ntail1 n_vtb 0 0 nch W=32u L=1u
+Mdm1 n_dmp1 n_dmp1 vdd vdd pch W=40u L=1u
+Mrp1_1 n_hdd1 n_hdd1 vdd vdd pch W=40u L=1u
+Mrp2_1 n_hv1 n_hdd1 vdd vdd pch W=40u L=1u
+Rhvlo1 n_hv1 vref 9600
+Rhvhi1 n_hv1 vbias 48000
+Mct1 n_ctail1 n_vcbias 0 0 nch W=10u L=1u
+Mca1 n_cna1 n_z1 n_ctail1 0 syn W=20u L=1u
+Mcb1 n_on1 vref n_ctail1 0 syn W=20u L=1u
+Mcp1_1 n_cna1 n_cna1 vdd vdd pch W=40u L=1u
+Mcp2_1 n_on1 n_cna1 vdd vdd pch W=40u L=1u
+Rulk1 n_on1 n_vulk 60000
+Cwh2_2 n_wh2_2 0 1.67e-06
+Rinith2_2hi reset n_inith2_2 116.4
+Rinith2_2lo n_inith2_2 0 883.6
+Mreseth2_2 n_inith2_2 reset n_wh2_2 0 syn W=1000u L=1u
+Mposh2_2 in2 n_wh2_2 n_hp2 0 syn W=10u L=1u
+Mnegh2_2 in2 vweight n_hn2 0 syn W=10u L=1u
+Cwh2_3 n_wh2_3 0 1.67e-06
+Rinith2_3hi reset n_inith2_3 304.8
+Rinith2_3lo n_inith2_3 0 695.2
+Mreseth2_3 n_inith2_3 reset n_wh2_3 0 syn W=1000u L=1u
+Mposh2_3 in3 n_wh2_3 n_hp2 0 syn W=10u L=1u
+Mnegh2_3 in3 vweight n_hn2 0 syn W=10u L=1u
+Cwh2_6 n_wh2_6 0 1.67e-06
+Rinith2_6hi reset n_inith2_6 143.6
+Rinith2_6lo n_inith2_6 0 856.4
+Mreseth2_6 n_inith2_6 reset n_wh2_6 0 syn W=1000u L=1u
+Mposh2_6 in6 n_wh2_6 n_hp2 0 syn W=10u L=1u
+Mnegh2_6 in6 vweight n_hn2 0 syn W=10u L=1u
+Cwh2_7 n_wh2_7 0 1.67e-06
+Rinith2_7hi reset n_inith2_7 647.6
+Rinith2_7lo n_inith2_7 0 352.4
+Mreseth2_7 n_inith2_7 reset n_wh2_7 0 syn W=1000u L=1u
+Mposh2_7 in7 n_wh2_7 n_hp2 0 syn W=10u L=1u
+Mnegh2_7 in7 vweight n_hn2 0 syn W=10u L=1u
+Cwh2_b n_wh2_b 0 1.67e-06
+Rinith2_bhi reset n_inith2_b 280
+Rinith2_blo n_inith2_b 0 720
+Mreseth2_b n_inith2_b reset n_wh2_b 0 syn W=1000u L=1u
+Mposh2_b vbias n_wh2_b n_hp2 0 syn W=10u L=1u
+Mnegh2_b vbias vweight n_hn2 0 syn W=10u L=1u
+Msah2 n_hn2 n_hn2 0 0 nch W=20u L=1u
+Msbh2 n_z2 n_hn2 0 0 nch W=20u L=1u
+Msch2 n_hp2 n_hp2 0 0 nch W=20u L=1u
+Msdh2 n_dpfh2 n_hp2 0 0 nch W=20u L=1u
+Mseh2 n_dpfh2 n_dpfh2 vdd vdd pch W=60u L=1u
+Msfh2 n_z2 n_dpfh2 vdd vdd pch W=60u L=1u
+Rsumh2 n_z2 vref 8000
+Mr2 n_hdd2 n_z2 n_ntail2 0 nch W=12u L=1u
+Mr2_2 n_dmp2 vref n_ntail2 0 nch W=12u L=1u
+Mtl2 n_ntail2 n_vtb 0 0 nch W=32u L=1u
+Mdm2 n_dmp2 n_dmp2 vdd vdd pch W=40u L=1u
+Mrp1_2 n_hdd2 n_hdd2 vdd vdd pch W=40u L=1u
+Mrp2_2 n_hv2 n_hdd2 vdd vdd pch W=40u L=1u
+Rhvlo2 n_hv2 vref 9600
+Rhvhi2 n_hv2 vbias 48000
+Mct2 n_ctail2 n_vcbias 0 0 nch W=10u L=1u
+Mca2 n_cna2 n_z2 n_ctail2 0 syn W=20u L=1u
+Mcb2 n_on2 vref n_ctail2 0 syn W=20u L=1u
+Mcp1_2 n_cna2 n_cna2 vdd vdd pch W=40u L=1u
+Mcp2_2 n_on2 n_cna2 vdd vdd pch W=40u L=1u
+Rulk2 n_on2 n_vulk 60000
+Cwh3_4 n_wh3_4 0 1.67e-06
+Rinith3_4hi reset n_inith3_4 419.6
+Rinith3_4lo n_inith3_4 0 580.4
+Mreseth3_4 n_inith3_4 reset n_wh3_4 0 syn W=1000u L=1u
+Mposh3_4 in4 n_wh3_4 n_hp3 0 syn W=10u L=1u
+Mnegh3_4 in4 vweight n_hn3 0 syn W=10u L=1u
+Cwh3_5 n_wh3_5 0 1.67e-06
+Rinith3_5hi reset n_inith3_5 562
+Rinith3_5lo n_inith3_5 0 438
+Mreseth3_5 n_inith3_5 reset n_wh3_5 0 syn W=1000u L=1u
+Mposh3_5 in5 n_wh3_5 n_hp3 0 syn W=10u L=1u
+Mnegh3_5 in5 vweight n_hn3 0 syn W=10u L=1u
+Cwh3_8 n_wh3_8 0 1.67e-06
+Rinith3_8hi reset n_inith3_8 372
+Rinith3_8lo n_inith3_8 0 628
+Mreseth3_8 n_inith3_8 reset n_wh3_8 0 syn W=1000u L=1u
+Mposh3_8 in8 n_wh3_8 n_hp3 0 syn W=10u L=1u
+Mnegh3_8 in8 vweight n_hn3 0 syn W=10u L=1u
+Cwh3_9 n_wh3_9 0 1.67e-06
+Rinith3_9hi reset n_inith3_9 352.8
+Rinith3_9lo n_inith3_9 0 647.2
+Mreseth3_9 n_inith3_9 reset n_wh3_9 0 syn W=1000u L=1u
+Mposh3_9 in9 n_wh3_9 n_hp3 0 syn W=10u L=1u
+Mnegh3_9 in9 vweight n_hn3 0 syn W=10u L=1u
+Cwh3_b n_wh3_b 0 1.67e-06
+Rinith3_bhi reset n_inith3_b 280
+Rinith3_blo n_inith3_b 0 720
+Mreseth3_b n_inith3_b reset n_wh3_b 0 syn W=1000u L=1u
+Mposh3_b vbias n_wh3_b n_hp3 0 syn W=10u L=1u
+Mnegh3_b vbias vweight n_hn3 0 syn W=10u L=1u
+Msah3 n_hn3 n_hn3 0 0 nch W=20u L=1u
+Msbh3 n_z3 n_hn3 0 0 nch W=20u L=1u
+Msch3 n_hp3 n_hp3 0 0 nch W=20u L=1u
+Msdh3 n_dpfh3 n_hp3 0 0 nch W=20u L=1u
+Mseh3 n_dpfh3 n_dpfh3 vdd vdd pch W=60u L=1u
+Msfh3 n_z3 n_dpfh3 vdd vdd pch W=60u L=1u
+Rsumh3 n_z3 vref 8000
+Mr3 n_hdd3 n_z3 n_ntail3 0 nch W=12u L=1u
+Mr2_3 n_dmp3 vref n_ntail3 0 nch W=12u L=1u
+Mtl3 n_ntail3 n_vtb 0 0 nch W=32u L=1u
+Mdm3 n_dmp3 n_dmp3 vdd vdd pch W=40u L=1u
+Mrp1_3 n_hdd3 n_hdd3 vdd vdd pch W=40u L=1u
+Mrp2_3 n_hv3 n_hdd3 vdd vdd pch W=40u L=1u
+Rhvlo3 n_hv3 vref 9600
+Rhvhi3 n_hv3 vbias 48000
+Mct3 n_ctail3 n_vcbias 0 0 nch W=10u L=1u
+Mca3 n_cna3 n_z3 n_ctail3 0 syn W=20u L=1u
+Mcb3 n_on3 vref n_ctail3 0 syn W=20u L=1u
+Mcp1_3 n_cna3 n_cna3 vdd vdd pch W=40u L=1u
+Mcp2_3 n_on3 n_cna3 vdd vdd pch W=40u L=1u
+Rulk3 n_on3 n_vulk 60000
+Cwh4_5 n_wh4_5 0 1.67e-06
+Rinith4_5hi reset n_inith4_5 711.6
+Rinith4_5lo n_inith4_5 0 288.4
+Mreseth4_5 n_inith4_5 reset n_wh4_5 0 syn W=1000u L=1u
+Mposh4_5 in5 n_wh4_5 n_hp4 0 syn W=10u L=1u
+Mnegh4_5 in5 vweight n_hn4 0 syn W=10u L=1u
+Cwh4_6 n_wh4_6 0 1.67e-06
+Rinith4_6hi reset n_inith4_6 581.2
+Rinith4_6lo n_inith4_6 0 418.8
+Mreseth4_6 n_inith4_6 reset n_wh4_6 0 syn W=1000u L=1u
+Mposh4_6 in6 n_wh4_6 n_hp4 0 syn W=10u L=1u
+Mnegh4_6 in6 vweight n_hn4 0 syn W=10u L=1u
+Cwh4_9 n_wh4_9 0 1.67e-06
+Rinith4_9hi reset n_inith4_9 541.2
+Rinith4_9lo n_inith4_9 0 458.8
+Mreseth4_9 n_inith4_9 reset n_wh4_9 0 syn W=1000u L=1u
+Mposh4_9 in9 n_wh4_9 n_hp4 0 syn W=10u L=1u
+Mnegh4_9 in9 vweight n_hn4 0 syn W=10u L=1u
+Cwh4_10 n_wh4_10 0 1.67e-06
+Rinith4_10hi reset n_inith4_10 133.6
+Rinith4_10lo n_inith4_10 0 866.4
+Mreseth4_10 n_inith4_10 reset n_wh4_10 0 syn W=1000u L=1u
+Mposh4_10 in10 n_wh4_10 n_hp4 0 syn W=10u L=1u
+Mnegh4_10 in10 vweight n_hn4 0 syn W=10u L=1u
+Cwh4_b n_wh4_b 0 1.67e-06
+Rinith4_bhi reset n_inith4_b 280
+Rinith4_blo n_inith4_b 0 720
+Mreseth4_b n_inith4_b reset n_wh4_b 0 syn W=1000u L=1u
+Mposh4_b vbias n_wh4_b n_hp4 0 syn W=10u L=1u
+Mnegh4_b vbias vweight n_hn4 0 syn W=10u L=1u
+Msah4 n_hn4 n_hn4 0 0 nch W=20u L=1u
+Msbh4 n_z4 n_hn4 0 0 nch W=20u L=1u
+Msch4 n_hp4 n_hp4 0 0 nch W=20u L=1u
+Msdh4 n_dpfh4 n_hp4 0 0 nch W=20u L=1u
+Mseh4 n_dpfh4 n_dpfh4 vdd vdd pch W=60u L=1u
+Msfh4 n_z4 n_dpfh4 vdd vdd pch W=60u L=1u
+Rsumh4 n_z4 vref 8000
+Mr4 n_hdd4 n_z4 n_ntail4 0 nch W=12u L=1u
+Mr2_4 n_dmp4 vref n_ntail4 0 nch W=12u L=1u
+Mtl4 n_ntail4 n_vtb 0 0 nch W=32u L=1u
+Mdm4 n_dmp4 n_dmp4 vdd vdd pch W=40u L=1u
+Mrp1_4 n_hdd4 n_hdd4 vdd vdd pch W=40u L=1u
+Mrp2_4 n_hv4 n_hdd4 vdd vdd pch W=40u L=1u
+Rhvlo4 n_hv4 vref 9600
+Rhvhi4 n_hv4 vbias 48000
+Mct4 n_ctail4 n_vcbias 0 0 nch W=10u L=1u
+Mca4 n_cna4 n_z4 n_ctail4 0 syn W=20u L=1u
+Mcb4 n_on4 vref n_ctail4 0 syn W=20u L=1u
+Mcp1_4 n_cna4 n_cna4 vdd vdd pch W=40u L=1u
+Mcp2_4 n_on4 n_cna4 vdd vdd pch W=40u L=1u
+Rulk4 n_on4 n_vulk 60000
+Cwh5_6 n_wh5_6 0 1.67e-06
+Rinith5_6hi reset n_inith5_6 230
+Rinith5_6lo n_inith5_6 0 770
+Mreseth5_6 n_inith5_6 reset n_wh5_6 0 syn W=1000u L=1u
+Mposh5_6 in6 n_wh5_6 n_hp5 0 syn W=10u L=1u
+Mnegh5_6 in6 vweight n_hn5 0 syn W=10u L=1u
+Cwh5_7 n_wh5_7 0 1.67e-06
+Rinith5_7hi reset n_inith5_7 618
+Rinith5_7lo n_inith5_7 0 382
+Mreseth5_7 n_inith5_7 reset n_wh5_7 0 syn W=1000u L=1u
+Mposh5_7 in7 n_wh5_7 n_hp5 0 syn W=10u L=1u
+Mnegh5_7 in7 vweight n_hn5 0 syn W=10u L=1u
+Cwh5_10 n_wh5_10 0 1.67e-06
+Rinith5_10hi reset n_inith5_10 210
+Rinith5_10lo n_inith5_10 0 790
+Mreseth5_10 n_inith5_10 reset n_wh5_10 0 syn W=1000u L=1u
+Mposh5_10 in10 n_wh5_10 n_hp5 0 syn W=10u L=1u
+Mnegh5_10 in10 vweight n_hn5 0 syn W=10u L=1u
+Cwh5_11 n_wh5_11 0 1.67e-06
+Rinith5_11hi reset n_inith5_11 631.2
+Rinith5_11lo n_inith5_11 0 368.8
+Mreseth5_11 n_inith5_11 reset n_wh5_11 0 syn W=1000u L=1u
+Mposh5_11 in11 n_wh5_11 n_hp5 0 syn W=10u L=1u
+Mnegh5_11 in11 vweight n_hn5 0 syn W=10u L=1u
+Cwh5_b n_wh5_b 0 1.67e-06
+Rinith5_bhi reset n_inith5_b 280
+Rinith5_blo n_inith5_b 0 720
+Mreseth5_b n_inith5_b reset n_wh5_b 0 syn W=1000u L=1u
+Mposh5_b vbias n_wh5_b n_hp5 0 syn W=10u L=1u
+Mnegh5_b vbias vweight n_hn5 0 syn W=10u L=1u
+Msah5 n_hn5 n_hn5 0 0 nch W=20u L=1u
+Msbh5 n_z5 n_hn5 0 0 nch W=20u L=1u
+Msch5 n_hp5 n_hp5 0 0 nch W=20u L=1u
+Msdh5 n_dpfh5 n_hp5 0 0 nch W=20u L=1u
+Mseh5 n_dpfh5 n_dpfh5 vdd vdd pch W=60u L=1u
+Msfh5 n_z5 n_dpfh5 vdd vdd pch W=60u L=1u
+Rsumh5 n_z5 vref 8000
+Mr5 n_hdd5 n_z5 n_ntail5 0 nch W=12u L=1u
+Mr2_5 n_dmp5 vref n_ntail5 0 nch W=12u L=1u
+Mtl5 n_ntail5 n_vtb 0 0 nch W=32u L=1u
+Mdm5 n_dmp5 n_dmp5 vdd vdd pch W=40u L=1u
+Mrp1_5 n_hdd5 n_hdd5 vdd vdd pch W=40u L=1u
+Mrp2_5 n_hv5 n_hdd5 vdd vdd pch W=40u L=1u
+Rhvlo5 n_hv5 vref 9600
+Rhvhi5 n_hv5 vbias 48000
+Mct5 n_ctail5 n_vcbias 0 0 nch W=10u L=1u
+Mca5 n_cna5 n_z5 n_ctail5 0 syn W=20u L=1u
+Mcb5 n_on5 vref n_ctail5 0 syn W=20u L=1u
+Mcp1_5 n_cna5 n_cna5 vdd vdd pch W=40u L=1u
+Mcp2_5 n_on5 n_cna5 vdd vdd pch W=40u L=1u
+Rulk5 n_on5 n_vulk 60000
+Cwh6_8 n_wh6_8 0 1.67e-06
+Rinith6_8hi reset n_inith6_8 324.8
+Rinith6_8lo n_inith6_8 0 675.2
+Mreseth6_8 n_inith6_8 reset n_wh6_8 0 syn W=1000u L=1u
+Mposh6_8 in8 n_wh6_8 n_hp6 0 syn W=10u L=1u
+Mnegh6_8 in8 vweight n_hn6 0 syn W=10u L=1u
+Cwh6_9 n_wh6_9 0 1.67e-06
+Rinith6_9hi reset n_inith6_9 638.8
+Rinith6_9lo n_inith6_9 0 361.2
+Mreseth6_9 n_inith6_9 reset n_wh6_9 0 syn W=1000u L=1u
+Mposh6_9 in9 n_wh6_9 n_hp6 0 syn W=10u L=1u
+Mnegh6_9 in9 vweight n_hn6 0 syn W=10u L=1u
+Cwh6_12 n_wh6_12 0 1.67e-06
+Rinith6_12hi reset n_inith6_12 718.8
+Rinith6_12lo n_inith6_12 0 281.2
+Mreseth6_12 n_inith6_12 reset n_wh6_12 0 syn W=1000u L=1u
+Mposh6_12 in12 n_wh6_12 n_hp6 0 syn W=10u L=1u
+Mnegh6_12 in12 vweight n_hn6 0 syn W=10u L=1u
+Cwh6_13 n_wh6_13 0 1.67e-06
+Rinith6_13hi reset n_inith6_13 162.4
+Rinith6_13lo n_inith6_13 0 837.6
+Mreseth6_13 n_inith6_13 reset n_wh6_13 0 syn W=1000u L=1u
+Mposh6_13 in13 n_wh6_13 n_hp6 0 syn W=10u L=1u
+Mnegh6_13 in13 vweight n_hn6 0 syn W=10u L=1u
+Cwh6_b n_wh6_b 0 1.67e-06
+Rinith6_bhi reset n_inith6_b 280
+Rinith6_blo n_inith6_b 0 720
+Mreseth6_b n_inith6_b reset n_wh6_b 0 syn W=1000u L=1u
+Mposh6_b vbias n_wh6_b n_hp6 0 syn W=10u L=1u
+Mnegh6_b vbias vweight n_hn6 0 syn W=10u L=1u
+Msah6 n_hn6 n_hn6 0 0 nch W=20u L=1u
+Msbh6 n_z6 n_hn6 0 0 nch W=20u L=1u
+Msch6 n_hp6 n_hp6 0 0 nch W=20u L=1u
+Msdh6 n_dpfh6 n_hp6 0 0 nch W=20u L=1u
+Mseh6 n_dpfh6 n_dpfh6 vdd vdd pch W=60u L=1u
+Msfh6 n_z6 n_dpfh6 vdd vdd pch W=60u L=1u
+Rsumh6 n_z6 vref 8000
+Mr6 n_hdd6 n_z6 n_ntail6 0 nch W=12u L=1u
+Mr2_6 n_dmp6 vref n_ntail6 0 nch W=12u L=1u
+Mtl6 n_ntail6 n_vtb 0 0 nch W=32u L=1u
+Mdm6 n_dmp6 n_dmp6 vdd vdd pch W=40u L=1u
+Mrp1_6 n_hdd6 n_hdd6 vdd vdd pch W=40u L=1u
+Mrp2_6 n_hv6 n_hdd6 vdd vdd pch W=40u L=1u
+Rhvlo6 n_hv6 vref 9600
+Rhvhi6 n_hv6 vbias 48000
+Mct6 n_ctail6 n_vcbias 0 0 nch W=10u L=1u
+Mca6 n_cna6 n_z6 n_ctail6 0 syn W=20u L=1u
+Mcb6 n_on6 vref n_ctail6 0 syn W=20u L=1u
+Mcp1_6 n_cna6 n_cna6 vdd vdd pch W=40u L=1u
+Mcp2_6 n_on6 n_cna6 vdd vdd pch W=40u L=1u
+Rulk6 n_on6 n_vulk 60000
+Cwh7_9 n_wh7_9 0 1.67e-06
+Rinith7_9hi reset n_inith7_9 586
+Rinith7_9lo n_inith7_9 0 414
+Mreseth7_9 n_inith7_9 reset n_wh7_9 0 syn W=1000u L=1u
+Mposh7_9 in9 n_wh7_9 n_hp7 0 syn W=10u L=1u
+Mnegh7_9 in9 vweight n_hn7 0 syn W=10u L=1u
+Cwh7_10 n_wh7_10 0 1.67e-06
+Rinith7_10hi reset n_inith7_10 582
+Rinith7_10lo n_inith7_10 0 418
+Mreseth7_10 n_inith7_10 reset n_wh7_10 0 syn W=1000u L=1u
+Mposh7_10 in10 n_wh7_10 n_hp7 0 syn W=10u L=1u
+Mnegh7_10 in10 vweight n_hn7 0 syn W=10u L=1u
+Cwh7_13 n_wh7_13 0 1.67e-06
+Rinith7_13hi reset n_inith7_13 91.2
+Rinith7_13lo n_inith7_13 0 908.8
+Mreseth7_13 n_inith7_13 reset n_wh7_13 0 syn W=1000u L=1u
+Mposh7_13 in13 n_wh7_13 n_hp7 0 syn W=10u L=1u
+Mnegh7_13 in13 vweight n_hn7 0 syn W=10u L=1u
+Cwh7_14 n_wh7_14 0 1.67e-06
+Rinith7_14hi reset n_inith7_14 161.6
+Rinith7_14lo n_inith7_14 0 838.4
+Mreseth7_14 n_inith7_14 reset n_wh7_14 0 syn W=1000u L=1u
+Mposh7_14 in14 n_wh7_14 n_hp7 0 syn W=10u L=1u
+Mnegh7_14 in14 vweight n_hn7 0 syn W=10u L=1u
+Cwh7_b n_wh7_b 0 1.67e-06
+Rinith7_bhi reset n_inith7_b 280
+Rinith7_blo n_inith7_b 0 720
+Mreseth7_b n_inith7_b reset n_wh7_b 0 syn W=1000u L=1u
+Mposh7_b vbias n_wh7_b n_hp7 0 syn W=10u L=1u
+Mnegh7_b vbias vweight n_hn7 0 syn W=10u L=1u
+Msah7 n_hn7 n_hn7 0 0 nch W=20u L=1u
+Msbh7 n_z7 n_hn7 0 0 nch W=20u L=1u
+Msch7 n_hp7 n_hp7 0 0 nch W=20u L=1u
+Msdh7 n_dpfh7 n_hp7 0 0 nch W=20u L=1u
+Mseh7 n_dpfh7 n_dpfh7 vdd vdd pch W=60u L=1u
+Msfh7 n_z7 n_dpfh7 vdd vdd pch W=60u L=1u
+Rsumh7 n_z7 vref 8000
+Mr7 n_hdd7 n_z7 n_ntail7 0 nch W=12u L=1u
+Mr2_7 n_dmp7 vref n_ntail7 0 nch W=12u L=1u
+Mtl7 n_ntail7 n_vtb 0 0 nch W=32u L=1u
+Mdm7 n_dmp7 n_dmp7 vdd vdd pch W=40u L=1u
+Mrp1_7 n_hdd7 n_hdd7 vdd vdd pch W=40u L=1u
+Mrp2_7 n_hv7 n_hdd7 vdd vdd pch W=40u L=1u
+Rhvlo7 n_hv7 vref 9600
+Rhvhi7 n_hv7 vbias 48000
+Mct7 n_ctail7 n_vcbias 0 0 nch W=10u L=1u
+Mca7 n_cna7 n_z7 n_ctail7 0 syn W=20u L=1u
+Mcb7 n_on7 vref n_ctail7 0 syn W=20u L=1u
+Mcp1_7 n_cna7 n_cna7 vdd vdd pch W=40u L=1u
+Mcp2_7 n_on7 n_cna7 vdd vdd pch W=40u L=1u
+Rulk7 n_on7 n_vulk 60000
+Cwh8_10 n_wh8_10 0 1.67e-06
+Rinith8_10hi reset n_inith8_10 534.8
+Rinith8_10lo n_inith8_10 0 465.2
+Mreseth8_10 n_inith8_10 reset n_wh8_10 0 syn W=1000u L=1u
+Mposh8_10 in10 n_wh8_10 n_hp8 0 syn W=10u L=1u
+Mnegh8_10 in10 vweight n_hn8 0 syn W=10u L=1u
+Cwh8_11 n_wh8_11 0 1.67e-06
+Rinith8_11hi reset n_inith8_11 104.8
+Rinith8_11lo n_inith8_11 0 895.2
+Mreseth8_11 n_inith8_11 reset n_wh8_11 0 syn W=1000u L=1u
+Mposh8_11 in11 n_wh8_11 n_hp8 0 syn W=10u L=1u
+Mnegh8_11 in11 vweight n_hn8 0 syn W=10u L=1u
+Cwh8_14 n_wh8_14 0 1.67e-06
+Rinith8_14hi reset n_inith8_14 374.8
+Rinith8_14lo n_inith8_14 0 625.2
+Mreseth8_14 n_inith8_14 reset n_wh8_14 0 syn W=1000u L=1u
+Mposh8_14 in14 n_wh8_14 n_hp8 0 syn W=10u L=1u
+Mnegh8_14 in14 vweight n_hn8 0 syn W=10u L=1u
+Cwh8_15 n_wh8_15 0 1.67e-06
+Rinith8_15hi reset n_inith8_15 286
+Rinith8_15lo n_inith8_15 0 714
+Mreseth8_15 n_inith8_15 reset n_wh8_15 0 syn W=1000u L=1u
+Mposh8_15 in15 n_wh8_15 n_hp8 0 syn W=10u L=1u
+Mnegh8_15 in15 vweight n_hn8 0 syn W=10u L=1u
+Cwh8_b n_wh8_b 0 1.67e-06
+Rinith8_bhi reset n_inith8_b 280
+Rinith8_blo n_inith8_b 0 720
+Mreseth8_b n_inith8_b reset n_wh8_b 0 syn W=1000u L=1u
+Mposh8_b vbias n_wh8_b n_hp8 0 syn W=10u L=1u
+Mnegh8_b vbias vweight n_hn8 0 syn W=10u L=1u
+Msah8 n_hn8 n_hn8 0 0 nch W=20u L=1u
+Msbh8 n_z8 n_hn8 0 0 nch W=20u L=1u
+Msch8 n_hp8 n_hp8 0 0 nch W=20u L=1u
+Msdh8 n_dpfh8 n_hp8 0 0 nch W=20u L=1u
+Mseh8 n_dpfh8 n_dpfh8 vdd vdd pch W=60u L=1u
+Msfh8 n_z8 n_dpfh8 vdd vdd pch W=60u L=1u
+Rsumh8 n_z8 vref 8000
+Mr8 n_hdd8 n_z8 n_ntail8 0 nch W=12u L=1u
+Mr2_8 n_dmp8 vref n_ntail8 0 nch W=12u L=1u
+Mtl8 n_ntail8 n_vtb 0 0 nch W=32u L=1u
+Mdm8 n_dmp8 n_dmp8 vdd vdd pch W=40u L=1u
+Mrp1_8 n_hdd8 n_hdd8 vdd vdd pch W=40u L=1u
+Mrp2_8 n_hv8 n_hdd8 vdd vdd pch W=40u L=1u
+Rhvlo8 n_hv8 vref 9600
+Rhvhi8 n_hv8 vbias 48000
+Mct8 n_ctail8 n_vcbias 0 0 nch W=10u L=1u
+Mca8 n_cna8 n_z8 n_ctail8 0 syn W=20u L=1u
+Mcb8 n_on8 vref n_ctail8 0 syn W=20u L=1u
+Mcp1_8 n_cna8 n_cna8 vdd vdd pch W=40u L=1u
+Mcp2_8 n_on8 n_cna8 vdd vdd pch W=40u L=1u
+Rulk8 n_on8 n_vulk 60000
+Cwo0_0 n_wo0_0 0 1.67e-06
+Rinito0_0hi reset n_inito0_0 470.8
+Rinito0_0lo n_inito0_0 0 529.2
+Mreseto0_0 n_inito0_0 reset n_wo0_0 0 syn W=1000u L=1u
+Mposo0_0 n_hv0 n_wo0_0 n_op0 0 syn W=10u L=1u
+Mnego0_0 n_hv0 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_0 n_enableo0_0 learn 0 0 nch W=1000u L=1u
+Mtailo0_0 n_tailo0_0 n_hv0 n_enableo0_0 0 nch W=20u L=1u
+Mu1o0_0 n_upo0_0 verror n_tailo0_0 0 nch W=20u L=1u
+Mu2o0_0 n_wo0_0 n_err0 n_tailo0_0 0 nch W=20u L=1u
+Mu3o0_0 n_upo0_0 n_upo0_0 vdd vdd pch W=60u L=1u
+Mu4o0_0 n_wo0_0 n_upo0_0 vdd vdd pch W=60u L=1u
+Cwo0_1 n_wo0_1 0 1.67e-06
+Rinito0_1hi reset n_inito0_1 294
+Rinito0_1lo n_inito0_1 0 706
+Mreseto0_1 n_inito0_1 reset n_wo0_1 0 syn W=1000u L=1u
+Mposo0_1 n_hv1 n_wo0_1 n_op0 0 syn W=10u L=1u
+Mnego0_1 n_hv1 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_1 n_enableo0_1 learn 0 0 nch W=1000u L=1u
+Mtailo0_1 n_tailo0_1 n_hv1 n_enableo0_1 0 nch W=20u L=1u
+Mu1o0_1 n_upo0_1 verror n_tailo0_1 0 nch W=20u L=1u
+Mu2o0_1 n_wo0_1 n_err0 n_tailo0_1 0 nch W=20u L=1u
+Mu3o0_1 n_upo0_1 n_upo0_1 vdd vdd pch W=60u L=1u
+Mu4o0_1 n_wo0_1 n_upo0_1 vdd vdd pch W=60u L=1u
+Cwo0_2 n_wo0_2 0 1.67e-06
+Rinito0_2hi reset n_inito0_2 354.4
+Rinito0_2lo n_inito0_2 0 645.6
+Mreseto0_2 n_inito0_2 reset n_wo0_2 0 syn W=1000u L=1u
+Mposo0_2 n_hv2 n_wo0_2 n_op0 0 syn W=10u L=1u
+Mnego0_2 n_hv2 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_2 n_enableo0_2 learn 0 0 nch W=1000u L=1u
+Mtailo0_2 n_tailo0_2 n_hv2 n_enableo0_2 0 nch W=20u L=1u
+Mu1o0_2 n_upo0_2 verror n_tailo0_2 0 nch W=20u L=1u
+Mu2o0_2 n_wo0_2 n_err0 n_tailo0_2 0 nch W=20u L=1u
+Mu3o0_2 n_upo0_2 n_upo0_2 vdd vdd pch W=60u L=1u
+Mu4o0_2 n_wo0_2 n_upo0_2 vdd vdd pch W=60u L=1u
+Cwo0_3 n_wo0_3 0 1.67e-06
+Rinito0_3hi reset n_inito0_3 288
+Rinito0_3lo n_inito0_3 0 712
+Mreseto0_3 n_inito0_3 reset n_wo0_3 0 syn W=1000u L=1u
+Mposo0_3 n_hv3 n_wo0_3 n_op0 0 syn W=10u L=1u
+Mnego0_3 n_hv3 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_3 n_enableo0_3 learn 0 0 nch W=1000u L=1u
+Mtailo0_3 n_tailo0_3 n_hv3 n_enableo0_3 0 nch W=20u L=1u
+Mu1o0_3 n_upo0_3 verror n_tailo0_3 0 nch W=20u L=1u
+Mu2o0_3 n_wo0_3 n_err0 n_tailo0_3 0 nch W=20u L=1u
+Mu3o0_3 n_upo0_3 n_upo0_3 vdd vdd pch W=60u L=1u
+Mu4o0_3 n_wo0_3 n_upo0_3 vdd vdd pch W=60u L=1u
+Cwo0_4 n_wo0_4 0 1.67e-06
+Rinito0_4hi reset n_inito0_4 305.6
+Rinito0_4lo n_inito0_4 0 694.4
+Mreseto0_4 n_inito0_4 reset n_wo0_4 0 syn W=1000u L=1u
+Mposo0_4 n_hv4 n_wo0_4 n_op0 0 syn W=10u L=1u
+Mnego0_4 n_hv4 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_4 n_enableo0_4 learn 0 0 nch W=1000u L=1u
+Mtailo0_4 n_tailo0_4 n_hv4 n_enableo0_4 0 nch W=20u L=1u
+Mu1o0_4 n_upo0_4 verror n_tailo0_4 0 nch W=20u L=1u
+Mu2o0_4 n_wo0_4 n_err0 n_tailo0_4 0 nch W=20u L=1u
+Mu3o0_4 n_upo0_4 n_upo0_4 vdd vdd pch W=60u L=1u
+Mu4o0_4 n_wo0_4 n_upo0_4 vdd vdd pch W=60u L=1u
+Cwo0_5 n_wo0_5 0 1.67e-06
+Rinito0_5hi reset n_inito0_5 448.4
+Rinito0_5lo n_inito0_5 0 551.6
+Mreseto0_5 n_inito0_5 reset n_wo0_5 0 syn W=1000u L=1u
+Mposo0_5 n_hv5 n_wo0_5 n_op0 0 syn W=10u L=1u
+Mnego0_5 n_hv5 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_5 n_enableo0_5 learn 0 0 nch W=1000u L=1u
+Mtailo0_5 n_tailo0_5 n_hv5 n_enableo0_5 0 nch W=20u L=1u
+Mu1o0_5 n_upo0_5 verror n_tailo0_5 0 nch W=20u L=1u
+Mu2o0_5 n_wo0_5 n_err0 n_tailo0_5 0 nch W=20u L=1u
+Mu3o0_5 n_upo0_5 n_upo0_5 vdd vdd pch W=60u L=1u
+Mu4o0_5 n_wo0_5 n_upo0_5 vdd vdd pch W=60u L=1u
+Cwo0_6 n_wo0_6 0 1.67e-06
+Rinito0_6hi reset n_inito0_6 433.2
+Rinito0_6lo n_inito0_6 0 566.8
+Mreseto0_6 n_inito0_6 reset n_wo0_6 0 syn W=1000u L=1u
+Mposo0_6 n_hv6 n_wo0_6 n_op0 0 syn W=10u L=1u
+Mnego0_6 n_hv6 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_6 n_enableo0_6 learn 0 0 nch W=1000u L=1u
+Mtailo0_6 n_tailo0_6 n_hv6 n_enableo0_6 0 nch W=20u L=1u
+Mu1o0_6 n_upo0_6 verror n_tailo0_6 0 nch W=20u L=1u
+Mu2o0_6 n_wo0_6 n_err0 n_tailo0_6 0 nch W=20u L=1u
+Mu3o0_6 n_upo0_6 n_upo0_6 vdd vdd pch W=60u L=1u
+Mu4o0_6 n_wo0_6 n_upo0_6 vdd vdd pch W=60u L=1u
+Cwo0_7 n_wo0_7 0 1.67e-06
+Rinito0_7hi reset n_inito0_7 480
+Rinito0_7lo n_inito0_7 0 520
+Mreseto0_7 n_inito0_7 reset n_wo0_7 0 syn W=1000u L=1u
+Mposo0_7 n_hv7 n_wo0_7 n_op0 0 syn W=10u L=1u
+Mnego0_7 n_hv7 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_7 n_enableo0_7 learn 0 0 nch W=1000u L=1u
+Mtailo0_7 n_tailo0_7 n_hv7 n_enableo0_7 0 nch W=20u L=1u
+Mu1o0_7 n_upo0_7 verror n_tailo0_7 0 nch W=20u L=1u
+Mu2o0_7 n_wo0_7 n_err0 n_tailo0_7 0 nch W=20u L=1u
+Mu3o0_7 n_upo0_7 n_upo0_7 vdd vdd pch W=60u L=1u
+Mu4o0_7 n_wo0_7 n_upo0_7 vdd vdd pch W=60u L=1u
+Cwo0_8 n_wo0_8 0 1.67e-06
+Rinito0_8hi reset n_inito0_8 485.2
+Rinito0_8lo n_inito0_8 0 514.8
+Mreseto0_8 n_inito0_8 reset n_wo0_8 0 syn W=1000u L=1u
+Mposo0_8 n_hv8 n_wo0_8 n_op0 0 syn W=10u L=1u
+Mnego0_8 n_hv8 vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_8 n_enableo0_8 learn 0 0 nch W=1000u L=1u
+Mtailo0_8 n_tailo0_8 n_hv8 n_enableo0_8 0 nch W=20u L=1u
+Mu1o0_8 n_upo0_8 verror n_tailo0_8 0 nch W=20u L=1u
+Mu2o0_8 n_wo0_8 n_err0 n_tailo0_8 0 nch W=20u L=1u
+Mu3o0_8 n_upo0_8 n_upo0_8 vdd vdd pch W=60u L=1u
+Mu4o0_8 n_wo0_8 n_upo0_8 vdd vdd pch W=60u L=1u
+Cwo0_b n_wo0_b 0 1.67e-06
+Rinito0_bhi reset n_inito0_b 504.4
+Rinito0_blo n_inito0_b 0 495.6
+Mreseto0_b n_inito0_b reset n_wo0_b 0 syn W=1000u L=1u
+Mposo0_b vbias n_wo0_b n_op0 0 syn W=10u L=1u
+Mnego0_b vbias vweight n_ocn0 0 syn W=10u L=1u
+Menableo0_b n_enableo0_b learn 0 0 nch W=1000u L=1u
+Mtailo0_b n_tailo0_b vbias n_enableo0_b 0 nch W=20u L=1u
+Mu1o0_b n_upo0_b verror n_tailo0_b 0 nch W=20u L=1u
+Mu2o0_b n_wo0_b n_err0 n_tailo0_b 0 nch W=20u L=1u
+Mu3o0_b n_upo0_b n_upo0_b vdd vdd pch W=60u L=1u
+Mu4o0_b n_wo0_b n_upo0_b vdd vdd pch W=60u L=1u
+Msao0 n_ocn0 n_ocn0 0 0 nch W=20u L=1u
+Msbo0 out0 n_ocn0 0 0 nch W=20u L=1u
+Msco0 n_op0 n_op0 0 0 nch W=20u L=1u
+Msdo0 n_dpfo0 n_op0 0 0 nch W=20u L=1u
+Mseo0 n_dpfo0 n_dpfo0 vdd vdd pch W=60u L=1u
+Msfo0 out0 n_dpfo0 vdd vdd pch W=60u L=1u
+Rsumo0 out0 vref 7000
+Mep0 n_err0 n_dpfo0 vdd vdd pch W=60u L=1u
+Men0 n_err0 n_ocn0 0 0 nch W=20u L=1u
+Moff0 n_err0 voffset vdd vdd pch W=10u L=1u
+Mtarget0 n_err0 target0 0 0 nch W=10u L=1u
+Rerr0 n_err0 verror 7000
+Mqa0 n_eps0 n_ocn0 0 0 nch W=20u L=1u
+Mqb0 n_eps0 target0 0 0 nch W=10u L=1u
+Mpd0 n_eps0 n_eps0 vdd vdd pch W=60u L=1u
+Mpm0 n_errn0 n_eps0 vdd vdd pch W=60u L=1u
+Mqc0 n_ens0 n_dpfo0 vdd vdd pch W=60u L=1u
+Mqd0 n_ens0 voffset vdd vdd pch W=10u L=1u
+Mnd0 n_ens0 n_ens0 0 0 nch W=20u L=1u
+Mnm0 n_errn0 n_ens0 0 0 nch W=20u L=1u
+Rerrn0 n_errn0 verror 7000
+Mbufp0 vdd n_err0 n_bufp0 0 syn W=200u L=1u
+Rbufp0 n_bufp0 0 20000
+Mbufn0 vdd n_errn0 n_bufn0 0 syn W=200u L=1u
+Rbufn0 n_bufn0 0 20000
+Cwo1_0 n_wo1_0 0 1.67e-06
+Rinito1_0hi reset n_inito1_0 447.6
+Rinito1_0lo n_inito1_0 0 552.4
+Mreseto1_0 n_inito1_0 reset n_wo1_0 0 syn W=1000u L=1u
+Mposo1_0 n_hv0 n_wo1_0 n_op1 0 syn W=10u L=1u
+Mnego1_0 n_hv0 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_0 n_enableo1_0 learn 0 0 nch W=1000u L=1u
+Mtailo1_0 n_tailo1_0 n_hv0 n_enableo1_0 0 nch W=20u L=1u
+Mu1o1_0 n_upo1_0 verror n_tailo1_0 0 nch W=20u L=1u
+Mu2o1_0 n_wo1_0 n_err1 n_tailo1_0 0 nch W=20u L=1u
+Mu3o1_0 n_upo1_0 n_upo1_0 vdd vdd pch W=60u L=1u
+Mu4o1_0 n_wo1_0 n_upo1_0 vdd vdd pch W=60u L=1u
+Cwo1_1 n_wo1_1 0 1.67e-06
+Rinito1_1hi reset n_inito1_1 375.2
+Rinito1_1lo n_inito1_1 0 624.8
+Mreseto1_1 n_inito1_1 reset n_wo1_1 0 syn W=1000u L=1u
+Mposo1_1 n_hv1 n_wo1_1 n_op1 0 syn W=10u L=1u
+Mnego1_1 n_hv1 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_1 n_enableo1_1 learn 0 0 nch W=1000u L=1u
+Mtailo1_1 n_tailo1_1 n_hv1 n_enableo1_1 0 nch W=20u L=1u
+Mu1o1_1 n_upo1_1 verror n_tailo1_1 0 nch W=20u L=1u
+Mu2o1_1 n_wo1_1 n_err1 n_tailo1_1 0 nch W=20u L=1u
+Mu3o1_1 n_upo1_1 n_upo1_1 vdd vdd pch W=60u L=1u
+Mu4o1_1 n_wo1_1 n_upo1_1 vdd vdd pch W=60u L=1u
+Cwo1_2 n_wo1_2 0 1.67e-06
+Rinito1_2hi reset n_inito1_2 519.2
+Rinito1_2lo n_inito1_2 0 480.8
+Mreseto1_2 n_inito1_2 reset n_wo1_2 0 syn W=1000u L=1u
+Mposo1_2 n_hv2 n_wo1_2 n_op1 0 syn W=10u L=1u
+Mnego1_2 n_hv2 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_2 n_enableo1_2 learn 0 0 nch W=1000u L=1u
+Mtailo1_2 n_tailo1_2 n_hv2 n_enableo1_2 0 nch W=20u L=1u
+Mu1o1_2 n_upo1_2 verror n_tailo1_2 0 nch W=20u L=1u
+Mu2o1_2 n_wo1_2 n_err1 n_tailo1_2 0 nch W=20u L=1u
+Mu3o1_2 n_upo1_2 n_upo1_2 vdd vdd pch W=60u L=1u
+Mu4o1_2 n_wo1_2 n_upo1_2 vdd vdd pch W=60u L=1u
+Cwo1_3 n_wo1_3 0 1.67e-06
+Rinito1_3hi reset n_inito1_3 357.2
+Rinito1_3lo n_inito1_3 0 642.8
+Mreseto1_3 n_inito1_3 reset n_wo1_3 0 syn W=1000u L=1u
+Mposo1_3 n_hv3 n_wo1_3 n_op1 0 syn W=10u L=1u
+Mnego1_3 n_hv3 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_3 n_enableo1_3 learn 0 0 nch W=1000u L=1u
+Mtailo1_3 n_tailo1_3 n_hv3 n_enableo1_3 0 nch W=20u L=1u
+Mu1o1_3 n_upo1_3 verror n_tailo1_3 0 nch W=20u L=1u
+Mu2o1_3 n_wo1_3 n_err1 n_tailo1_3 0 nch W=20u L=1u
+Mu3o1_3 n_upo1_3 n_upo1_3 vdd vdd pch W=60u L=1u
+Mu4o1_3 n_wo1_3 n_upo1_3 vdd vdd pch W=60u L=1u
+Cwo1_4 n_wo1_4 0 1.67e-06
+Rinito1_4hi reset n_inito1_4 438.8
+Rinito1_4lo n_inito1_4 0 561.2
+Mreseto1_4 n_inito1_4 reset n_wo1_4 0 syn W=1000u L=1u
+Mposo1_4 n_hv4 n_wo1_4 n_op1 0 syn W=10u L=1u
+Mnego1_4 n_hv4 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_4 n_enableo1_4 learn 0 0 nch W=1000u L=1u
+Mtailo1_4 n_tailo1_4 n_hv4 n_enableo1_4 0 nch W=20u L=1u
+Mu1o1_4 n_upo1_4 verror n_tailo1_4 0 nch W=20u L=1u
+Mu2o1_4 n_wo1_4 n_err1 n_tailo1_4 0 nch W=20u L=1u
+Mu3o1_4 n_upo1_4 n_upo1_4 vdd vdd pch W=60u L=1u
+Mu4o1_4 n_wo1_4 n_upo1_4 vdd vdd pch W=60u L=1u
+Cwo1_5 n_wo1_5 0 1.67e-06
+Rinito1_5hi reset n_inito1_5 445.6
+Rinito1_5lo n_inito1_5 0 554.4
+Mreseto1_5 n_inito1_5 reset n_wo1_5 0 syn W=1000u L=1u
+Mposo1_5 n_hv5 n_wo1_5 n_op1 0 syn W=10u L=1u
+Mnego1_5 n_hv5 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_5 n_enableo1_5 learn 0 0 nch W=1000u L=1u
+Mtailo1_5 n_tailo1_5 n_hv5 n_enableo1_5 0 nch W=20u L=1u
+Mu1o1_5 n_upo1_5 verror n_tailo1_5 0 nch W=20u L=1u
+Mu2o1_5 n_wo1_5 n_err1 n_tailo1_5 0 nch W=20u L=1u
+Mu3o1_5 n_upo1_5 n_upo1_5 vdd vdd pch W=60u L=1u
+Mu4o1_5 n_wo1_5 n_upo1_5 vdd vdd pch W=60u L=1u
+Cwo1_6 n_wo1_6 0 1.67e-06
+Rinito1_6hi reset n_inito1_6 323.6
+Rinito1_6lo n_inito1_6 0 676.4
+Mreseto1_6 n_inito1_6 reset n_wo1_6 0 syn W=1000u L=1u
+Mposo1_6 n_hv6 n_wo1_6 n_op1 0 syn W=10u L=1u
+Mnego1_6 n_hv6 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_6 n_enableo1_6 learn 0 0 nch W=1000u L=1u
+Mtailo1_6 n_tailo1_6 n_hv6 n_enableo1_6 0 nch W=20u L=1u
+Mu1o1_6 n_upo1_6 verror n_tailo1_6 0 nch W=20u L=1u
+Mu2o1_6 n_wo1_6 n_err1 n_tailo1_6 0 nch W=20u L=1u
+Mu3o1_6 n_upo1_6 n_upo1_6 vdd vdd pch W=60u L=1u
+Mu4o1_6 n_wo1_6 n_upo1_6 vdd vdd pch W=60u L=1u
+Cwo1_7 n_wo1_7 0 1.67e-06
+Rinito1_7hi reset n_inito1_7 404.8
+Rinito1_7lo n_inito1_7 0 595.2
+Mreseto1_7 n_inito1_7 reset n_wo1_7 0 syn W=1000u L=1u
+Mposo1_7 n_hv7 n_wo1_7 n_op1 0 syn W=10u L=1u
+Mnego1_7 n_hv7 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_7 n_enableo1_7 learn 0 0 nch W=1000u L=1u
+Mtailo1_7 n_tailo1_7 n_hv7 n_enableo1_7 0 nch W=20u L=1u
+Mu1o1_7 n_upo1_7 verror n_tailo1_7 0 nch W=20u L=1u
+Mu2o1_7 n_wo1_7 n_err1 n_tailo1_7 0 nch W=20u L=1u
+Mu3o1_7 n_upo1_7 n_upo1_7 vdd vdd pch W=60u L=1u
+Mu4o1_7 n_wo1_7 n_upo1_7 vdd vdd pch W=60u L=1u
+Cwo1_8 n_wo1_8 0 1.67e-06
+Rinito1_8hi reset n_inito1_8 444.4
+Rinito1_8lo n_inito1_8 0 555.6
+Mreseto1_8 n_inito1_8 reset n_wo1_8 0 syn W=1000u L=1u
+Mposo1_8 n_hv8 n_wo1_8 n_op1 0 syn W=10u L=1u
+Mnego1_8 n_hv8 vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_8 n_enableo1_8 learn 0 0 nch W=1000u L=1u
+Mtailo1_8 n_tailo1_8 n_hv8 n_enableo1_8 0 nch W=20u L=1u
+Mu1o1_8 n_upo1_8 verror n_tailo1_8 0 nch W=20u L=1u
+Mu2o1_8 n_wo1_8 n_err1 n_tailo1_8 0 nch W=20u L=1u
+Mu3o1_8 n_upo1_8 n_upo1_8 vdd vdd pch W=60u L=1u
+Mu4o1_8 n_wo1_8 n_upo1_8 vdd vdd pch W=60u L=1u
+Cwo1_b n_wo1_b 0 1.67e-06
+Rinito1_bhi reset n_inito1_b 404.4
+Rinito1_blo n_inito1_b 0 595.6
+Mreseto1_b n_inito1_b reset n_wo1_b 0 syn W=1000u L=1u
+Mposo1_b vbias n_wo1_b n_op1 0 syn W=10u L=1u
+Mnego1_b vbias vweight n_ocn1 0 syn W=10u L=1u
+Menableo1_b n_enableo1_b learn 0 0 nch W=1000u L=1u
+Mtailo1_b n_tailo1_b vbias n_enableo1_b 0 nch W=20u L=1u
+Mu1o1_b n_upo1_b verror n_tailo1_b 0 nch W=20u L=1u
+Mu2o1_b n_wo1_b n_err1 n_tailo1_b 0 nch W=20u L=1u
+Mu3o1_b n_upo1_b n_upo1_b vdd vdd pch W=60u L=1u
+Mu4o1_b n_wo1_b n_upo1_b vdd vdd pch W=60u L=1u
+Msao1 n_ocn1 n_ocn1 0 0 nch W=20u L=1u
+Msbo1 out1 n_ocn1 0 0 nch W=20u L=1u
+Msco1 n_op1 n_op1 0 0 nch W=20u L=1u
+Msdo1 n_dpfo1 n_op1 0 0 nch W=20u L=1u
+Mseo1 n_dpfo1 n_dpfo1 vdd vdd pch W=60u L=1u
+Msfo1 out1 n_dpfo1 vdd vdd pch W=60u L=1u
+Rsumo1 out1 vref 7000
+Mep1 n_err1 n_dpfo1 vdd vdd pch W=60u L=1u
+Men1 n_err1 n_ocn1 0 0 nch W=20u L=1u
+Moff1 n_err1 voffset vdd vdd pch W=10u L=1u
+Mtarget1 n_err1 target1 0 0 nch W=10u L=1u
+Rerr1 n_err1 verror 7000
+Mqa1 n_eps1 n_ocn1 0 0 nch W=20u L=1u
+Mqb1 n_eps1 target1 0 0 nch W=10u L=1u
+Mpd1 n_eps1 n_eps1 vdd vdd pch W=60u L=1u
+Mpm1 n_errn1 n_eps1 vdd vdd pch W=60u L=1u
+Mqc1 n_ens1 n_dpfo1 vdd vdd pch W=60u L=1u
+Mqd1 n_ens1 voffset vdd vdd pch W=10u L=1u
+Mnd1 n_ens1 n_ens1 0 0 nch W=20u L=1u
+Mnm1 n_errn1 n_ens1 0 0 nch W=20u L=1u
+Rerrn1 n_errn1 verror 7000
+Mbufp1 vdd n_err1 n_bufp1 0 syn W=200u L=1u
+Rbufp1 n_bufp1 0 20000
+Mbufn1 vdd n_errn1 n_bufn1 0 syn W=200u L=1u
+Rbufn1 n_bufn1 0 20000
+Cwo7_0 n_wo7_0 0 1.67e-06
+Rinito7_0hi reset n_inito7_0 350.8
+Rinito7_0lo n_inito7_0 0 649.2
+Mreseto7_0 n_inito7_0 reset n_wo7_0 0 syn W=1000u L=1u
+Mposo7_0 n_hv0 n_wo7_0 n_op7 0 syn W=10u L=1u
+Mnego7_0 n_hv0 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_0 n_enableo7_0 learn 0 0 nch W=1000u L=1u
+Mtailo7_0 n_tailo7_0 n_hv0 n_enableo7_0 0 nch W=20u L=1u
+Mu1o7_0 n_upo7_0 verror n_tailo7_0 0 nch W=20u L=1u
+Mu2o7_0 n_wo7_0 n_err7 n_tailo7_0 0 nch W=20u L=1u
+Mu3o7_0 n_upo7_0 n_upo7_0 vdd vdd pch W=60u L=1u
+Mu4o7_0 n_wo7_0 n_upo7_0 vdd vdd pch W=60u L=1u
+Cwo7_1 n_wo7_1 0 1.67e-06
+Rinito7_1hi reset n_inito7_1 506.4
+Rinito7_1lo n_inito7_1 0 493.6
+Mreseto7_1 n_inito7_1 reset n_wo7_1 0 syn W=1000u L=1u
+Mposo7_1 n_hv1 n_wo7_1 n_op7 0 syn W=10u L=1u
+Mnego7_1 n_hv1 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_1 n_enableo7_1 learn 0 0 nch W=1000u L=1u
+Mtailo7_1 n_tailo7_1 n_hv1 n_enableo7_1 0 nch W=20u L=1u
+Mu1o7_1 n_upo7_1 verror n_tailo7_1 0 nch W=20u L=1u
+Mu2o7_1 n_wo7_1 n_err7 n_tailo7_1 0 nch W=20u L=1u
+Mu3o7_1 n_upo7_1 n_upo7_1 vdd vdd pch W=60u L=1u
+Mu4o7_1 n_wo7_1 n_upo7_1 vdd vdd pch W=60u L=1u
+Cwo7_2 n_wo7_2 0 1.67e-06
+Rinito7_2hi reset n_inito7_2 286
+Rinito7_2lo n_inito7_2 0 714
+Mreseto7_2 n_inito7_2 reset n_wo7_2 0 syn W=1000u L=1u
+Mposo7_2 n_hv2 n_wo7_2 n_op7 0 syn W=10u L=1u
+Mnego7_2 n_hv2 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_2 n_enableo7_2 learn 0 0 nch W=1000u L=1u
+Mtailo7_2 n_tailo7_2 n_hv2 n_enableo7_2 0 nch W=20u L=1u
+Mu1o7_2 n_upo7_2 verror n_tailo7_2 0 nch W=20u L=1u
+Mu2o7_2 n_wo7_2 n_err7 n_tailo7_2 0 nch W=20u L=1u
+Mu3o7_2 n_upo7_2 n_upo7_2 vdd vdd pch W=60u L=1u
+Mu4o7_2 n_wo7_2 n_upo7_2 vdd vdd pch W=60u L=1u
+Cwo7_3 n_wo7_3 0 1.67e-06
+Rinito7_3hi reset n_inito7_3 514.4
+Rinito7_3lo n_inito7_3 0 485.6
+Mreseto7_3 n_inito7_3 reset n_wo7_3 0 syn W=1000u L=1u
+Mposo7_3 n_hv3 n_wo7_3 n_op7 0 syn W=10u L=1u
+Mnego7_3 n_hv3 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_3 n_enableo7_3 learn 0 0 nch W=1000u L=1u
+Mtailo7_3 n_tailo7_3 n_hv3 n_enableo7_3 0 nch W=20u L=1u
+Mu1o7_3 n_upo7_3 verror n_tailo7_3 0 nch W=20u L=1u
+Mu2o7_3 n_wo7_3 n_err7 n_tailo7_3 0 nch W=20u L=1u
+Mu3o7_3 n_upo7_3 n_upo7_3 vdd vdd pch W=60u L=1u
+Mu4o7_3 n_wo7_3 n_upo7_3 vdd vdd pch W=60u L=1u
+Cwo7_4 n_wo7_4 0 1.67e-06
+Rinito7_4hi reset n_inito7_4 340
+Rinito7_4lo n_inito7_4 0 660
+Mreseto7_4 n_inito7_4 reset n_wo7_4 0 syn W=1000u L=1u
+Mposo7_4 n_hv4 n_wo7_4 n_op7 0 syn W=10u L=1u
+Mnego7_4 n_hv4 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_4 n_enableo7_4 learn 0 0 nch W=1000u L=1u
+Mtailo7_4 n_tailo7_4 n_hv4 n_enableo7_4 0 nch W=20u L=1u
+Mu1o7_4 n_upo7_4 verror n_tailo7_4 0 nch W=20u L=1u
+Mu2o7_4 n_wo7_4 n_err7 n_tailo7_4 0 nch W=20u L=1u
+Mu3o7_4 n_upo7_4 n_upo7_4 vdd vdd pch W=60u L=1u
+Mu4o7_4 n_wo7_4 n_upo7_4 vdd vdd pch W=60u L=1u
+Cwo7_5 n_wo7_5 0 1.67e-06
+Rinito7_5hi reset n_inito7_5 317.2
+Rinito7_5lo n_inito7_5 0 682.8
+Mreseto7_5 n_inito7_5 reset n_wo7_5 0 syn W=1000u L=1u
+Mposo7_5 n_hv5 n_wo7_5 n_op7 0 syn W=10u L=1u
+Mnego7_5 n_hv5 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_5 n_enableo7_5 learn 0 0 nch W=1000u L=1u
+Mtailo7_5 n_tailo7_5 n_hv5 n_enableo7_5 0 nch W=20u L=1u
+Mu1o7_5 n_upo7_5 verror n_tailo7_5 0 nch W=20u L=1u
+Mu2o7_5 n_wo7_5 n_err7 n_tailo7_5 0 nch W=20u L=1u
+Mu3o7_5 n_upo7_5 n_upo7_5 vdd vdd pch W=60u L=1u
+Mu4o7_5 n_wo7_5 n_upo7_5 vdd vdd pch W=60u L=1u
+Cwo7_6 n_wo7_6 0 1.67e-06
+Rinito7_6hi reset n_inito7_6 515.6
+Rinito7_6lo n_inito7_6 0 484.4
+Mreseto7_6 n_inito7_6 reset n_wo7_6 0 syn W=1000u L=1u
+Mposo7_6 n_hv6 n_wo7_6 n_op7 0 syn W=10u L=1u
+Mnego7_6 n_hv6 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_6 n_enableo7_6 learn 0 0 nch W=1000u L=1u
+Mtailo7_6 n_tailo7_6 n_hv6 n_enableo7_6 0 nch W=20u L=1u
+Mu1o7_6 n_upo7_6 verror n_tailo7_6 0 nch W=20u L=1u
+Mu2o7_6 n_wo7_6 n_err7 n_tailo7_6 0 nch W=20u L=1u
+Mu3o7_6 n_upo7_6 n_upo7_6 vdd vdd pch W=60u L=1u
+Mu4o7_6 n_wo7_6 n_upo7_6 vdd vdd pch W=60u L=1u
+Cwo7_7 n_wo7_7 0 1.67e-06
+Rinito7_7hi reset n_inito7_7 330.8
+Rinito7_7lo n_inito7_7 0 669.2
+Mreseto7_7 n_inito7_7 reset n_wo7_7 0 syn W=1000u L=1u
+Mposo7_7 n_hv7 n_wo7_7 n_op7 0 syn W=10u L=1u
+Mnego7_7 n_hv7 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_7 n_enableo7_7 learn 0 0 nch W=1000u L=1u
+Mtailo7_7 n_tailo7_7 n_hv7 n_enableo7_7 0 nch W=20u L=1u
+Mu1o7_7 n_upo7_7 verror n_tailo7_7 0 nch W=20u L=1u
+Mu2o7_7 n_wo7_7 n_err7 n_tailo7_7 0 nch W=20u L=1u
+Mu3o7_7 n_upo7_7 n_upo7_7 vdd vdd pch W=60u L=1u
+Mu4o7_7 n_wo7_7 n_upo7_7 vdd vdd pch W=60u L=1u
+Cwo7_8 n_wo7_8 0 1.67e-06
+Rinito7_8hi reset n_inito7_8 432
+Rinito7_8lo n_inito7_8 0 568
+Mreseto7_8 n_inito7_8 reset n_wo7_8 0 syn W=1000u L=1u
+Mposo7_8 n_hv8 n_wo7_8 n_op7 0 syn W=10u L=1u
+Mnego7_8 n_hv8 vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_8 n_enableo7_8 learn 0 0 nch W=1000u L=1u
+Mtailo7_8 n_tailo7_8 n_hv8 n_enableo7_8 0 nch W=20u L=1u
+Mu1o7_8 n_upo7_8 verror n_tailo7_8 0 nch W=20u L=1u
+Mu2o7_8 n_wo7_8 n_err7 n_tailo7_8 0 nch W=20u L=1u
+Mu3o7_8 n_upo7_8 n_upo7_8 vdd vdd pch W=60u L=1u
+Mu4o7_8 n_wo7_8 n_upo7_8 vdd vdd pch W=60u L=1u
+Cwo7_b n_wo7_b 0 1.67e-06
+Rinito7_bhi reset n_inito7_b 381.2
+Rinito7_blo n_inito7_b 0 618.8
+Mreseto7_b n_inito7_b reset n_wo7_b 0 syn W=1000u L=1u
+Mposo7_b vbias n_wo7_b n_op7 0 syn W=10u L=1u
+Mnego7_b vbias vweight n_ocn7 0 syn W=10u L=1u
+Menableo7_b n_enableo7_b learn 0 0 nch W=1000u L=1u
+Mtailo7_b n_tailo7_b vbias n_enableo7_b 0 nch W=20u L=1u
+Mu1o7_b n_upo7_b verror n_tailo7_b 0 nch W=20u L=1u
+Mu2o7_b n_wo7_b n_err7 n_tailo7_b 0 nch W=20u L=1u
+Mu3o7_b n_upo7_b n_upo7_b vdd vdd pch W=60u L=1u
+Mu4o7_b n_wo7_b n_upo7_b vdd vdd pch W=60u L=1u
+Msao7 n_ocn7 n_ocn7 0 0 nch W=20u L=1u
+Msbo7 out7 n_ocn7 0 0 nch W=20u L=1u
+Msco7 n_op7 n_op7 0 0 nch W=20u L=1u
+Msdo7 n_dpfo7 n_op7 0 0 nch W=20u L=1u
+Mseo7 n_dpfo7 n_dpfo7 vdd vdd pch W=60u L=1u
+Msfo7 out7 n_dpfo7 vdd vdd pch W=60u L=1u
+Rsumo7 out7 vref 7000
+Mep7 n_err7 n_dpfo7 vdd vdd pch W=60u L=1u
+Men7 n_err7 n_ocn7 0 0 nch W=20u L=1u
+Moff7 n_err7 voffset vdd vdd pch W=10u L=1u
+Mtarget7 n_err7 target7 0 0 nch W=10u L=1u
+Rerr7 n_err7 verror 7000
+Mqa7 n_eps7 n_ocn7 0 0 nch W=20u L=1u
+Mqb7 n_eps7 target7 0 0 nch W=10u L=1u
+Mpd7 n_eps7 n_eps7 vdd vdd pch W=60u L=1u
+Mpm7 n_errn7 n_eps7 vdd vdd pch W=60u L=1u
+Mqc7 n_ens7 n_dpfo7 vdd vdd pch W=60u L=1u
+Mqd7 n_ens7 voffset vdd vdd pch W=10u L=1u
+Mnd7 n_ens7 n_ens7 0 0 nch W=20u L=1u
+Mnm7 n_errn7 n_ens7 0 0 nch W=20u L=1u
+Rerrn7 n_errn7 verror 7000
+Mbufp7 vdd n_err7 n_bufp7 0 syn W=200u L=1u
+Rbufp7 n_bufp7 0 20000
+Mbufn7 vdd n_errn7 n_bufn7 0 syn W=200u L=1u
+Rbufn7 n_bufn7 0 20000
+Mta0_0 n_bufp0 n_wo0_0 n_bkp0 0 syn W=10u L=1u
+Mtb0_0 n_bufn0 vweight n_bkp0 0 syn W=10u L=1u
+Mtc0_0 n_bufp0 vweight n_bkn0 0 syn W=10u L=1u
+Mtd0_0 n_bufn0 n_wo0_0 n_bkn0 0 syn W=10u L=1u
+Mta0_1 n_bufp1 n_wo1_0 n_bkp0 0 syn W=10u L=1u
+Mtb0_1 n_bufn1 vweight n_bkp0 0 syn W=10u L=1u
+Mtc0_1 n_bufp1 vweight n_bkn0 0 syn W=10u L=1u
+Mtd0_1 n_bufn1 n_wo1_0 n_bkn0 0 syn W=10u L=1u
+Mta0_7 n_bufp7 n_wo7_0 n_bkp0 0 syn W=10u L=1u
+Mtb0_7 n_bufn7 vweight n_bkp0 0 syn W=10u L=1u
+Mtc0_7 n_bufp7 vweight n_bkn0 0 syn W=10u L=1u
+Mtd0_7 n_bufn7 n_wo7_0 n_bkn0 0 syn W=10u L=1u
+Msabk0 n_bkn0 n_bkn0 0 0 nch W=20u L=1u
+Msbbk0 n_bkerr0 n_bkn0 0 0 nch W=20u L=1u
+Mscbk0 n_bkp0 n_bkp0 0 0 nch W=20u L=1u
+Msdbk0 n_dpfbk0 n_bkp0 0 0 nch W=20u L=1u
+Msebk0 n_dpfbk0 n_dpfbk0 vdd vdd pch W=60u L=1u
+Msfbk0 n_bkerr0 n_dpfbk0 vdd vdd pch W=60u L=1u
+Rsumbk0 n_bkerr0 verror 16000
+Rcmsub0 n_bkerr0 n_bkmean 10000
+Menableh0_0 n_enableh0_0 learn 0 0 nch W=1000u L=1u
+Mhtailh0_0 n_tailh0_0 n_on0 n_middleh0_0 0 nch W=48u L=1u
+Mhinputh0_0 n_middleh0_0 n_au0 n_enableh0_0 0 nch W=48u L=1u
+Mu1h0_0 n_uph0_0 n_bkmean n_tailh0_0 0 nch W=20u L=1u
+Mu2h0_0 n_wh0_0 n_bkerr0 n_tailh0_0 0 nch W=20u L=1u
+Mu3h0_0 n_uph0_0 n_uph0_0 vdd vdd pch W=60u L=1u
+Mu4h0_0 n_wh0_0 n_uph0_0 vdd vdd pch W=60u L=1u
+Menableh0_1 n_enableh0_1 learn 0 0 nch W=1000u L=1u
+Mhtailh0_1 n_tailh0_1 n_on0 n_middleh0_1 0 nch W=48u L=1u
+Mhinputh0_1 n_middleh0_1 n_au1 n_enableh0_1 0 nch W=48u L=1u
+Mu1h0_1 n_uph0_1 n_bkmean n_tailh0_1 0 nch W=20u L=1u
+Mu2h0_1 n_wh0_1 n_bkerr0 n_tailh0_1 0 nch W=20u L=1u
+Mu3h0_1 n_uph0_1 n_uph0_1 vdd vdd pch W=60u L=1u
+Mu4h0_1 n_wh0_1 n_uph0_1 vdd vdd pch W=60u L=1u
+Menableh0_4 n_enableh0_4 learn 0 0 nch W=1000u L=1u
+Mhtailh0_4 n_tailh0_4 n_on0 n_middleh0_4 0 nch W=48u L=1u
+Mhinputh0_4 n_middleh0_4 n_au4 n_enableh0_4 0 nch W=48u L=1u
+Mu1h0_4 n_uph0_4 n_bkmean n_tailh0_4 0 nch W=20u L=1u
+Mu2h0_4 n_wh0_4 n_bkerr0 n_tailh0_4 0 nch W=20u L=1u
+Mu3h0_4 n_uph0_4 n_uph0_4 vdd vdd pch W=60u L=1u
+Mu4h0_4 n_wh0_4 n_uph0_4 vdd vdd pch W=60u L=1u
+Menableh0_5 n_enableh0_5 learn 0 0 nch W=1000u L=1u
+Mhtailh0_5 n_tailh0_5 n_on0 n_middleh0_5 0 nch W=48u L=1u
+Mhinputh0_5 n_middleh0_5 n_au5 n_enableh0_5 0 nch W=48u L=1u
+Mu1h0_5 n_uph0_5 n_bkmean n_tailh0_5 0 nch W=20u L=1u
+Mu2h0_5 n_wh0_5 n_bkerr0 n_tailh0_5 0 nch W=20u L=1u
+Mu3h0_5 n_uph0_5 n_uph0_5 vdd vdd pch W=60u L=1u
+Mu4h0_5 n_wh0_5 n_uph0_5 vdd vdd pch W=60u L=1u
+Menableh0_b n_enableh0_b learn 0 0 nch W=1000u L=1u
+Mhtailh0_b n_tailh0_b n_on0 n_middleh0_b 0 nch W=48u L=1u
+Mhinputh0_b n_middleh0_b n_vcbias n_enableh0_b 0 nch W=48u L=1u
+Mu1h0_b n_uph0_b n_bkmean n_tailh0_b 0 nch W=20u L=1u
+Mu2h0_b n_wh0_b n_bkerr0 n_tailh0_b 0 nch W=20u L=1u
+Mu3h0_b n_uph0_b n_uph0_b vdd vdd pch W=60u L=1u
+Mu4h0_b n_wh0_b n_uph0_b vdd vdd pch W=60u L=1u
+Mta1_0 n_bufp0 n_wo0_1 n_bkp1 0 syn W=10u L=1u
+Mtb1_0 n_bufn0 vweight n_bkp1 0 syn W=10u L=1u
+Mtc1_0 n_bufp0 vweight n_bkn1 0 syn W=10u L=1u
+Mtd1_0 n_bufn0 n_wo0_1 n_bkn1 0 syn W=10u L=1u
+Mta1_1 n_bufp1 n_wo1_1 n_bkp1 0 syn W=10u L=1u
+Mtb1_1 n_bufn1 vweight n_bkp1 0 syn W=10u L=1u
+Mtc1_1 n_bufp1 vweight n_bkn1 0 syn W=10u L=1u
+Mtd1_1 n_bufn1 n_wo1_1 n_bkn1 0 syn W=10u L=1u
+Mta1_7 n_bufp7 n_wo7_1 n_bkp1 0 syn W=10u L=1u
+Mtb1_7 n_bufn7 vweight n_bkp1 0 syn W=10u L=1u
+Mtc1_7 n_bufp7 vweight n_bkn1 0 syn W=10u L=1u
+Mtd1_7 n_bufn7 n_wo7_1 n_bkn1 0 syn W=10u L=1u
+Msabk1 n_bkn1 n_bkn1 0 0 nch W=20u L=1u
+Msbbk1 n_bkerr1 n_bkn1 0 0 nch W=20u L=1u
+Mscbk1 n_bkp1 n_bkp1 0 0 nch W=20u L=1u
+Msdbk1 n_dpfbk1 n_bkp1 0 0 nch W=20u L=1u
+Msebk1 n_dpfbk1 n_dpfbk1 vdd vdd pch W=60u L=1u
+Msfbk1 n_bkerr1 n_dpfbk1 vdd vdd pch W=60u L=1u
+Rsumbk1 n_bkerr1 verror 16000
+Rcmsub1 n_bkerr1 n_bkmean 10000
+Menableh1_1 n_enableh1_1 learn 0 0 nch W=1000u L=1u
+Mhtailh1_1 n_tailh1_1 n_on1 n_middleh1_1 0 nch W=48u L=1u
+Mhinputh1_1 n_middleh1_1 n_au1 n_enableh1_1 0 nch W=48u L=1u
+Mu1h1_1 n_uph1_1 n_bkmean n_tailh1_1 0 nch W=20u L=1u
+Mu2h1_1 n_wh1_1 n_bkerr1 n_tailh1_1 0 nch W=20u L=1u
+Mu3h1_1 n_uph1_1 n_uph1_1 vdd vdd pch W=60u L=1u
+Mu4h1_1 n_wh1_1 n_uph1_1 vdd vdd pch W=60u L=1u
+Menableh1_2 n_enableh1_2 learn 0 0 nch W=1000u L=1u
+Mhtailh1_2 n_tailh1_2 n_on1 n_middleh1_2 0 nch W=48u L=1u
+Mhinputh1_2 n_middleh1_2 n_au2 n_enableh1_2 0 nch W=48u L=1u
+Mu1h1_2 n_uph1_2 n_bkmean n_tailh1_2 0 nch W=20u L=1u
+Mu2h1_2 n_wh1_2 n_bkerr1 n_tailh1_2 0 nch W=20u L=1u
+Mu3h1_2 n_uph1_2 n_uph1_2 vdd vdd pch W=60u L=1u
+Mu4h1_2 n_wh1_2 n_uph1_2 vdd vdd pch W=60u L=1u
+Menableh1_5 n_enableh1_5 learn 0 0 nch W=1000u L=1u
+Mhtailh1_5 n_tailh1_5 n_on1 n_middleh1_5 0 nch W=48u L=1u
+Mhinputh1_5 n_middleh1_5 n_au5 n_enableh1_5 0 nch W=48u L=1u
+Mu1h1_5 n_uph1_5 n_bkmean n_tailh1_5 0 nch W=20u L=1u
+Mu2h1_5 n_wh1_5 n_bkerr1 n_tailh1_5 0 nch W=20u L=1u
+Mu3h1_5 n_uph1_5 n_uph1_5 vdd vdd pch W=60u L=1u
+Mu4h1_5 n_wh1_5 n_uph1_5 vdd vdd pch W=60u L=1u
+Menableh1_6 n_enableh1_6 learn 0 0 nch W=1000u L=1u
+Mhtailh1_6 n_tailh1_6 n_on1 n_middleh1_6 0 nch W=48u L=1u
+Mhinputh1_6 n_middleh1_6 n_au6 n_enableh1_6 0 nch W=48u L=1u
+Mu1h1_6 n_uph1_6 n_bkmean n_tailh1_6 0 nch W=20u L=1u
+Mu2h1_6 n_wh1_6 n_bkerr1 n_tailh1_6 0 nch W=20u L=1u
+Mu3h1_6 n_uph1_6 n_uph1_6 vdd vdd pch W=60u L=1u
+Mu4h1_6 n_wh1_6 n_uph1_6 vdd vdd pch W=60u L=1u
+Menableh1_b n_enableh1_b learn 0 0 nch W=1000u L=1u
+Mhtailh1_b n_tailh1_b n_on1 n_middleh1_b 0 nch W=48u L=1u
+Mhinputh1_b n_middleh1_b n_vcbias n_enableh1_b 0 nch W=48u L=1u
+Mu1h1_b n_uph1_b n_bkmean n_tailh1_b 0 nch W=20u L=1u
+Mu2h1_b n_wh1_b n_bkerr1 n_tailh1_b 0 nch W=20u L=1u
+Mu3h1_b n_uph1_b n_uph1_b vdd vdd pch W=60u L=1u
+Mu4h1_b n_wh1_b n_uph1_b vdd vdd pch W=60u L=1u
+Mta2_0 n_bufp0 n_wo0_2 n_bkp2 0 syn W=10u L=1u
+Mtb2_0 n_bufn0 vweight n_bkp2 0 syn W=10u L=1u
+Mtc2_0 n_bufp0 vweight n_bkn2 0 syn W=10u L=1u
+Mtd2_0 n_bufn0 n_wo0_2 n_bkn2 0 syn W=10u L=1u
+Mta2_1 n_bufp1 n_wo1_2 n_bkp2 0 syn W=10u L=1u
+Mtb2_1 n_bufn1 vweight n_bkp2 0 syn W=10u L=1u
+Mtc2_1 n_bufp1 vweight n_bkn2 0 syn W=10u L=1u
+Mtd2_1 n_bufn1 n_wo1_2 n_bkn2 0 syn W=10u L=1u
+Mta2_7 n_bufp7 n_wo7_2 n_bkp2 0 syn W=10u L=1u
+Mtb2_7 n_bufn7 vweight n_bkp2 0 syn W=10u L=1u
+Mtc2_7 n_bufp7 vweight n_bkn2 0 syn W=10u L=1u
+Mtd2_7 n_bufn7 n_wo7_2 n_bkn2 0 syn W=10u L=1u
+Msabk2 n_bkn2 n_bkn2 0 0 nch W=20u L=1u
+Msbbk2 n_bkerr2 n_bkn2 0 0 nch W=20u L=1u
+Mscbk2 n_bkp2 n_bkp2 0 0 nch W=20u L=1u
+Msdbk2 n_dpfbk2 n_bkp2 0 0 nch W=20u L=1u
+Msebk2 n_dpfbk2 n_dpfbk2 vdd vdd pch W=60u L=1u
+Msfbk2 n_bkerr2 n_dpfbk2 vdd vdd pch W=60u L=1u
+Rsumbk2 n_bkerr2 verror 16000
+Rcmsub2 n_bkerr2 n_bkmean 10000
+Menableh2_2 n_enableh2_2 learn 0 0 nch W=1000u L=1u
+Mhtailh2_2 n_tailh2_2 n_on2 n_middleh2_2 0 nch W=48u L=1u
+Mhinputh2_2 n_middleh2_2 n_au2 n_enableh2_2 0 nch W=48u L=1u
+Mu1h2_2 n_uph2_2 n_bkmean n_tailh2_2 0 nch W=20u L=1u
+Mu2h2_2 n_wh2_2 n_bkerr2 n_tailh2_2 0 nch W=20u L=1u
+Mu3h2_2 n_uph2_2 n_uph2_2 vdd vdd pch W=60u L=1u
+Mu4h2_2 n_wh2_2 n_uph2_2 vdd vdd pch W=60u L=1u
+Menableh2_3 n_enableh2_3 learn 0 0 nch W=1000u L=1u
+Mhtailh2_3 n_tailh2_3 n_on2 n_middleh2_3 0 nch W=48u L=1u
+Mhinputh2_3 n_middleh2_3 n_au3 n_enableh2_3 0 nch W=48u L=1u
+Mu1h2_3 n_uph2_3 n_bkmean n_tailh2_3 0 nch W=20u L=1u
+Mu2h2_3 n_wh2_3 n_bkerr2 n_tailh2_3 0 nch W=20u L=1u
+Mu3h2_3 n_uph2_3 n_uph2_3 vdd vdd pch W=60u L=1u
+Mu4h2_3 n_wh2_3 n_uph2_3 vdd vdd pch W=60u L=1u
+Menableh2_6 n_enableh2_6 learn 0 0 nch W=1000u L=1u
+Mhtailh2_6 n_tailh2_6 n_on2 n_middleh2_6 0 nch W=48u L=1u
+Mhinputh2_6 n_middleh2_6 n_au6 n_enableh2_6 0 nch W=48u L=1u
+Mu1h2_6 n_uph2_6 n_bkmean n_tailh2_6 0 nch W=20u L=1u
+Mu2h2_6 n_wh2_6 n_bkerr2 n_tailh2_6 0 nch W=20u L=1u
+Mu3h2_6 n_uph2_6 n_uph2_6 vdd vdd pch W=60u L=1u
+Mu4h2_6 n_wh2_6 n_uph2_6 vdd vdd pch W=60u L=1u
+Menableh2_7 n_enableh2_7 learn 0 0 nch W=1000u L=1u
+Mhtailh2_7 n_tailh2_7 n_on2 n_middleh2_7 0 nch W=48u L=1u
+Mhinputh2_7 n_middleh2_7 n_au7 n_enableh2_7 0 nch W=48u L=1u
+Mu1h2_7 n_uph2_7 n_bkmean n_tailh2_7 0 nch W=20u L=1u
+Mu2h2_7 n_wh2_7 n_bkerr2 n_tailh2_7 0 nch W=20u L=1u
+Mu3h2_7 n_uph2_7 n_uph2_7 vdd vdd pch W=60u L=1u
+Mu4h2_7 n_wh2_7 n_uph2_7 vdd vdd pch W=60u L=1u
+Menableh2_b n_enableh2_b learn 0 0 nch W=1000u L=1u
+Mhtailh2_b n_tailh2_b n_on2 n_middleh2_b 0 nch W=48u L=1u
+Mhinputh2_b n_middleh2_b n_vcbias n_enableh2_b 0 nch W=48u L=1u
+Mu1h2_b n_uph2_b n_bkmean n_tailh2_b 0 nch W=20u L=1u
+Mu2h2_b n_wh2_b n_bkerr2 n_tailh2_b 0 nch W=20u L=1u
+Mu3h2_b n_uph2_b n_uph2_b vdd vdd pch W=60u L=1u
+Mu4h2_b n_wh2_b n_uph2_b vdd vdd pch W=60u L=1u
+Mta3_0 n_bufp0 n_wo0_3 n_bkp3 0 syn W=10u L=1u
+Mtb3_0 n_bufn0 vweight n_bkp3 0 syn W=10u L=1u
+Mtc3_0 n_bufp0 vweight n_bkn3 0 syn W=10u L=1u
+Mtd3_0 n_bufn0 n_wo0_3 n_bkn3 0 syn W=10u L=1u
+Mta3_1 n_bufp1 n_wo1_3 n_bkp3 0 syn W=10u L=1u
+Mtb3_1 n_bufn1 vweight n_bkp3 0 syn W=10u L=1u
+Mtc3_1 n_bufp1 vweight n_bkn3 0 syn W=10u L=1u
+Mtd3_1 n_bufn1 n_wo1_3 n_bkn3 0 syn W=10u L=1u
+Mta3_7 n_bufp7 n_wo7_3 n_bkp3 0 syn W=10u L=1u
+Mtb3_7 n_bufn7 vweight n_bkp3 0 syn W=10u L=1u
+Mtc3_7 n_bufp7 vweight n_bkn3 0 syn W=10u L=1u
+Mtd3_7 n_bufn7 n_wo7_3 n_bkn3 0 syn W=10u L=1u
+Msabk3 n_bkn3 n_bkn3 0 0 nch W=20u L=1u
+Msbbk3 n_bkerr3 n_bkn3 0 0 nch W=20u L=1u
+Mscbk3 n_bkp3 n_bkp3 0 0 nch W=20u L=1u
+Msdbk3 n_dpfbk3 n_bkp3 0 0 nch W=20u L=1u
+Msebk3 n_dpfbk3 n_dpfbk3 vdd vdd pch W=60u L=1u
+Msfbk3 n_bkerr3 n_dpfbk3 vdd vdd pch W=60u L=1u
+Rsumbk3 n_bkerr3 verror 16000
+Rcmsub3 n_bkerr3 n_bkmean 10000
+Menableh3_4 n_enableh3_4 learn 0 0 nch W=1000u L=1u
+Mhtailh3_4 n_tailh3_4 n_on3 n_middleh3_4 0 nch W=48u L=1u
+Mhinputh3_4 n_middleh3_4 n_au4 n_enableh3_4 0 nch W=48u L=1u
+Mu1h3_4 n_uph3_4 n_bkmean n_tailh3_4 0 nch W=20u L=1u
+Mu2h3_4 n_wh3_4 n_bkerr3 n_tailh3_4 0 nch W=20u L=1u
+Mu3h3_4 n_uph3_4 n_uph3_4 vdd vdd pch W=60u L=1u
+Mu4h3_4 n_wh3_4 n_uph3_4 vdd vdd pch W=60u L=1u
+Menableh3_5 n_enableh3_5 learn 0 0 nch W=1000u L=1u
+Mhtailh3_5 n_tailh3_5 n_on3 n_middleh3_5 0 nch W=48u L=1u
+Mhinputh3_5 n_middleh3_5 n_au5 n_enableh3_5 0 nch W=48u L=1u
+Mu1h3_5 n_uph3_5 n_bkmean n_tailh3_5 0 nch W=20u L=1u
+Mu2h3_5 n_wh3_5 n_bkerr3 n_tailh3_5 0 nch W=20u L=1u
+Mu3h3_5 n_uph3_5 n_uph3_5 vdd vdd pch W=60u L=1u
+Mu4h3_5 n_wh3_5 n_uph3_5 vdd vdd pch W=60u L=1u
+Menableh3_8 n_enableh3_8 learn 0 0 nch W=1000u L=1u
+Mhtailh3_8 n_tailh3_8 n_on3 n_middleh3_8 0 nch W=48u L=1u
+Mhinputh3_8 n_middleh3_8 n_au8 n_enableh3_8 0 nch W=48u L=1u
+Mu1h3_8 n_uph3_8 n_bkmean n_tailh3_8 0 nch W=20u L=1u
+Mu2h3_8 n_wh3_8 n_bkerr3 n_tailh3_8 0 nch W=20u L=1u
+Mu3h3_8 n_uph3_8 n_uph3_8 vdd vdd pch W=60u L=1u
+Mu4h3_8 n_wh3_8 n_uph3_8 vdd vdd pch W=60u L=1u
+Menableh3_9 n_enableh3_9 learn 0 0 nch W=1000u L=1u
+Mhtailh3_9 n_tailh3_9 n_on3 n_middleh3_9 0 nch W=48u L=1u
+Mhinputh3_9 n_middleh3_9 n_au9 n_enableh3_9 0 nch W=48u L=1u
+Mu1h3_9 n_uph3_9 n_bkmean n_tailh3_9 0 nch W=20u L=1u
+Mu2h3_9 n_wh3_9 n_bkerr3 n_tailh3_9 0 nch W=20u L=1u
+Mu3h3_9 n_uph3_9 n_uph3_9 vdd vdd pch W=60u L=1u
+Mu4h3_9 n_wh3_9 n_uph3_9 vdd vdd pch W=60u L=1u
+Menableh3_b n_enableh3_b learn 0 0 nch W=1000u L=1u
+Mhtailh3_b n_tailh3_b n_on3 n_middleh3_b 0 nch W=48u L=1u
+Mhinputh3_b n_middleh3_b n_vcbias n_enableh3_b 0 nch W=48u L=1u
+Mu1h3_b n_uph3_b n_bkmean n_tailh3_b 0 nch W=20u L=1u
+Mu2h3_b n_wh3_b n_bkerr3 n_tailh3_b 0 nch W=20u L=1u
+Mu3h3_b n_uph3_b n_uph3_b vdd vdd pch W=60u L=1u
+Mu4h3_b n_wh3_b n_uph3_b vdd vdd pch W=60u L=1u
+Mta4_0 n_bufp0 n_wo0_4 n_bkp4 0 syn W=10u L=1u
+Mtb4_0 n_bufn0 vweight n_bkp4 0 syn W=10u L=1u
+Mtc4_0 n_bufp0 vweight n_bkn4 0 syn W=10u L=1u
+Mtd4_0 n_bufn0 n_wo0_4 n_bkn4 0 syn W=10u L=1u
+Mta4_1 n_bufp1 n_wo1_4 n_bkp4 0 syn W=10u L=1u
+Mtb4_1 n_bufn1 vweight n_bkp4 0 syn W=10u L=1u
+Mtc4_1 n_bufp1 vweight n_bkn4 0 syn W=10u L=1u
+Mtd4_1 n_bufn1 n_wo1_4 n_bkn4 0 syn W=10u L=1u
+Mta4_7 n_bufp7 n_wo7_4 n_bkp4 0 syn W=10u L=1u
+Mtb4_7 n_bufn7 vweight n_bkp4 0 syn W=10u L=1u
+Mtc4_7 n_bufp7 vweight n_bkn4 0 syn W=10u L=1u
+Mtd4_7 n_bufn7 n_wo7_4 n_bkn4 0 syn W=10u L=1u
+Msabk4 n_bkn4 n_bkn4 0 0 nch W=20u L=1u
+Msbbk4 n_bkerr4 n_bkn4 0 0 nch W=20u L=1u
+Mscbk4 n_bkp4 n_bkp4 0 0 nch W=20u L=1u
+Msdbk4 n_dpfbk4 n_bkp4 0 0 nch W=20u L=1u
+Msebk4 n_dpfbk4 n_dpfbk4 vdd vdd pch W=60u L=1u
+Msfbk4 n_bkerr4 n_dpfbk4 vdd vdd pch W=60u L=1u
+Rsumbk4 n_bkerr4 verror 16000
+Rcmsub4 n_bkerr4 n_bkmean 10000
+Menableh4_5 n_enableh4_5 learn 0 0 nch W=1000u L=1u
+Mhtailh4_5 n_tailh4_5 n_on4 n_middleh4_5 0 nch W=48u L=1u
+Mhinputh4_5 n_middleh4_5 n_au5 n_enableh4_5 0 nch W=48u L=1u
+Mu1h4_5 n_uph4_5 n_bkmean n_tailh4_5 0 nch W=20u L=1u
+Mu2h4_5 n_wh4_5 n_bkerr4 n_tailh4_5 0 nch W=20u L=1u
+Mu3h4_5 n_uph4_5 n_uph4_5 vdd vdd pch W=60u L=1u
+Mu4h4_5 n_wh4_5 n_uph4_5 vdd vdd pch W=60u L=1u
+Menableh4_6 n_enableh4_6 learn 0 0 nch W=1000u L=1u
+Mhtailh4_6 n_tailh4_6 n_on4 n_middleh4_6 0 nch W=48u L=1u
+Mhinputh4_6 n_middleh4_6 n_au6 n_enableh4_6 0 nch W=48u L=1u
+Mu1h4_6 n_uph4_6 n_bkmean n_tailh4_6 0 nch W=20u L=1u
+Mu2h4_6 n_wh4_6 n_bkerr4 n_tailh4_6 0 nch W=20u L=1u
+Mu3h4_6 n_uph4_6 n_uph4_6 vdd vdd pch W=60u L=1u
+Mu4h4_6 n_wh4_6 n_uph4_6 vdd vdd pch W=60u L=1u
+Menableh4_9 n_enableh4_9 learn 0 0 nch W=1000u L=1u
+Mhtailh4_9 n_tailh4_9 n_on4 n_middleh4_9 0 nch W=48u L=1u
+Mhinputh4_9 n_middleh4_9 n_au9 n_enableh4_9 0 nch W=48u L=1u
+Mu1h4_9 n_uph4_9 n_bkmean n_tailh4_9 0 nch W=20u L=1u
+Mu2h4_9 n_wh4_9 n_bkerr4 n_tailh4_9 0 nch W=20u L=1u
+Mu3h4_9 n_uph4_9 n_uph4_9 vdd vdd pch W=60u L=1u
+Mu4h4_9 n_wh4_9 n_uph4_9 vdd vdd pch W=60u L=1u
+Menableh4_10 n_enableh4_10 learn 0 0 nch W=1000u L=1u
+Mhtailh4_10 n_tailh4_10 n_on4 n_middleh4_10 0 nch W=48u L=1u
+Mhinputh4_10 n_middleh4_10 n_au10 n_enableh4_10 0 nch W=48u L=1u
+Mu1h4_10 n_uph4_10 n_bkmean n_tailh4_10 0 nch W=20u L=1u
+Mu2h4_10 n_wh4_10 n_bkerr4 n_tailh4_10 0 nch W=20u L=1u
+Mu3h4_10 n_uph4_10 n_uph4_10 vdd vdd pch W=60u L=1u
+Mu4h4_10 n_wh4_10 n_uph4_10 vdd vdd pch W=60u L=1u
+Menableh4_b n_enableh4_b learn 0 0 nch W=1000u L=1u
+Mhtailh4_b n_tailh4_b n_on4 n_middleh4_b 0 nch W=48u L=1u
+Mhinputh4_b n_middleh4_b n_vcbias n_enableh4_b 0 nch W=48u L=1u
+Mu1h4_b n_uph4_b n_bkmean n_tailh4_b 0 nch W=20u L=1u
+Mu2h4_b n_wh4_b n_bkerr4 n_tailh4_b 0 nch W=20u L=1u
+Mu3h4_b n_uph4_b n_uph4_b vdd vdd pch W=60u L=1u
+Mu4h4_b n_wh4_b n_uph4_b vdd vdd pch W=60u L=1u
+Mta5_0 n_bufp0 n_wo0_5 n_bkp5 0 syn W=10u L=1u
+Mtb5_0 n_bufn0 vweight n_bkp5 0 syn W=10u L=1u
+Mtc5_0 n_bufp0 vweight n_bkn5 0 syn W=10u L=1u
+Mtd5_0 n_bufn0 n_wo0_5 n_bkn5 0 syn W=10u L=1u
+Mta5_1 n_bufp1 n_wo1_5 n_bkp5 0 syn W=10u L=1u
+Mtb5_1 n_bufn1 vweight n_bkp5 0 syn W=10u L=1u
+Mtc5_1 n_bufp1 vweight n_bkn5 0 syn W=10u L=1u
+Mtd5_1 n_bufn1 n_wo1_5 n_bkn5 0 syn W=10u L=1u
+Mta5_7 n_bufp7 n_wo7_5 n_bkp5 0 syn W=10u L=1u
+Mtb5_7 n_bufn7 vweight n_bkp5 0 syn W=10u L=1u
+Mtc5_7 n_bufp7 vweight n_bkn5 0 syn W=10u L=1u
+Mtd5_7 n_bufn7 n_wo7_5 n_bkn5 0 syn W=10u L=1u
+Msabk5 n_bkn5 n_bkn5 0 0 nch W=20u L=1u
+Msbbk5 n_bkerr5 n_bkn5 0 0 nch W=20u L=1u
+Mscbk5 n_bkp5 n_bkp5 0 0 nch W=20u L=1u
+Msdbk5 n_dpfbk5 n_bkp5 0 0 nch W=20u L=1u
+Msebk5 n_dpfbk5 n_dpfbk5 vdd vdd pch W=60u L=1u
+Msfbk5 n_bkerr5 n_dpfbk5 vdd vdd pch W=60u L=1u
+Rsumbk5 n_bkerr5 verror 16000
+Rcmsub5 n_bkerr5 n_bkmean 10000
+Menableh5_6 n_enableh5_6 learn 0 0 nch W=1000u L=1u
+Mhtailh5_6 n_tailh5_6 n_on5 n_middleh5_6 0 nch W=48u L=1u
+Mhinputh5_6 n_middleh5_6 n_au6 n_enableh5_6 0 nch W=48u L=1u
+Mu1h5_6 n_uph5_6 n_bkmean n_tailh5_6 0 nch W=20u L=1u
+Mu2h5_6 n_wh5_6 n_bkerr5 n_tailh5_6 0 nch W=20u L=1u
+Mu3h5_6 n_uph5_6 n_uph5_6 vdd vdd pch W=60u L=1u
+Mu4h5_6 n_wh5_6 n_uph5_6 vdd vdd pch W=60u L=1u
+Menableh5_7 n_enableh5_7 learn 0 0 nch W=1000u L=1u
+Mhtailh5_7 n_tailh5_7 n_on5 n_middleh5_7 0 nch W=48u L=1u
+Mhinputh5_7 n_middleh5_7 n_au7 n_enableh5_7 0 nch W=48u L=1u
+Mu1h5_7 n_uph5_7 n_bkmean n_tailh5_7 0 nch W=20u L=1u
+Mu2h5_7 n_wh5_7 n_bkerr5 n_tailh5_7 0 nch W=20u L=1u
+Mu3h5_7 n_uph5_7 n_uph5_7 vdd vdd pch W=60u L=1u
+Mu4h5_7 n_wh5_7 n_uph5_7 vdd vdd pch W=60u L=1u
+Menableh5_10 n_enableh5_10 learn 0 0 nch W=1000u L=1u
+Mhtailh5_10 n_tailh5_10 n_on5 n_middleh5_10 0 nch W=48u L=1u
+Mhinputh5_10 n_middleh5_10 n_au10 n_enableh5_10 0 nch W=48u L=1u
+Mu1h5_10 n_uph5_10 n_bkmean n_tailh5_10 0 nch W=20u L=1u
+Mu2h5_10 n_wh5_10 n_bkerr5 n_tailh5_10 0 nch W=20u L=1u
+Mu3h5_10 n_uph5_10 n_uph5_10 vdd vdd pch W=60u L=1u
+Mu4h5_10 n_wh5_10 n_uph5_10 vdd vdd pch W=60u L=1u
+Menableh5_11 n_enableh5_11 learn 0 0 nch W=1000u L=1u
+Mhtailh5_11 n_tailh5_11 n_on5 n_middleh5_11 0 nch W=48u L=1u
+Mhinputh5_11 n_middleh5_11 n_au11 n_enableh5_11 0 nch W=48u L=1u
+Mu1h5_11 n_uph5_11 n_bkmean n_tailh5_11 0 nch W=20u L=1u
+Mu2h5_11 n_wh5_11 n_bkerr5 n_tailh5_11 0 nch W=20u L=1u
+Mu3h5_11 n_uph5_11 n_uph5_11 vdd vdd pch W=60u L=1u
+Mu4h5_11 n_wh5_11 n_uph5_11 vdd vdd pch W=60u L=1u
+Menableh5_b n_enableh5_b learn 0 0 nch W=1000u L=1u
+Mhtailh5_b n_tailh5_b n_on5 n_middleh5_b 0 nch W=48u L=1u
+Mhinputh5_b n_middleh5_b n_vcbias n_enableh5_b 0 nch W=48u L=1u
+Mu1h5_b n_uph5_b n_bkmean n_tailh5_b 0 nch W=20u L=1u
+Mu2h5_b n_wh5_b n_bkerr5 n_tailh5_b 0 nch W=20u L=1u
+Mu3h5_b n_uph5_b n_uph5_b vdd vdd pch W=60u L=1u
+Mu4h5_b n_wh5_b n_uph5_b vdd vdd pch W=60u L=1u
+Mta6_0 n_bufp0 n_wo0_6 n_bkp6 0 syn W=10u L=1u
+Mtb6_0 n_bufn0 vweight n_bkp6 0 syn W=10u L=1u
+Mtc6_0 n_bufp0 vweight n_bkn6 0 syn W=10u L=1u
+Mtd6_0 n_bufn0 n_wo0_6 n_bkn6 0 syn W=10u L=1u
+Mta6_1 n_bufp1 n_wo1_6 n_bkp6 0 syn W=10u L=1u
+Mtb6_1 n_bufn1 vweight n_bkp6 0 syn W=10u L=1u
+Mtc6_1 n_bufp1 vweight n_bkn6 0 syn W=10u L=1u
+Mtd6_1 n_bufn1 n_wo1_6 n_bkn6 0 syn W=10u L=1u
+Mta6_7 n_bufp7 n_wo7_6 n_bkp6 0 syn W=10u L=1u
+Mtb6_7 n_bufn7 vweight n_bkp6 0 syn W=10u L=1u
+Mtc6_7 n_bufp7 vweight n_bkn6 0 syn W=10u L=1u
+Mtd6_7 n_bufn7 n_wo7_6 n_bkn6 0 syn W=10u L=1u
+Msabk6 n_bkn6 n_bkn6 0 0 nch W=20u L=1u
+Msbbk6 n_bkerr6 n_bkn6 0 0 nch W=20u L=1u
+Mscbk6 n_bkp6 n_bkp6 0 0 nch W=20u L=1u
+Msdbk6 n_dpfbk6 n_bkp6 0 0 nch W=20u L=1u
+Msebk6 n_dpfbk6 n_dpfbk6 vdd vdd pch W=60u L=1u
+Msfbk6 n_bkerr6 n_dpfbk6 vdd vdd pch W=60u L=1u
+Rsumbk6 n_bkerr6 verror 16000
+Rcmsub6 n_bkerr6 n_bkmean 10000
+Menableh6_8 n_enableh6_8 learn 0 0 nch W=1000u L=1u
+Mhtailh6_8 n_tailh6_8 n_on6 n_middleh6_8 0 nch W=48u L=1u
+Mhinputh6_8 n_middleh6_8 n_au8 n_enableh6_8 0 nch W=48u L=1u
+Mu1h6_8 n_uph6_8 n_bkmean n_tailh6_8 0 nch W=20u L=1u
+Mu2h6_8 n_wh6_8 n_bkerr6 n_tailh6_8 0 nch W=20u L=1u
+Mu3h6_8 n_uph6_8 n_uph6_8 vdd vdd pch W=60u L=1u
+Mu4h6_8 n_wh6_8 n_uph6_8 vdd vdd pch W=60u L=1u
+Menableh6_9 n_enableh6_9 learn 0 0 nch W=1000u L=1u
+Mhtailh6_9 n_tailh6_9 n_on6 n_middleh6_9 0 nch W=48u L=1u
+Mhinputh6_9 n_middleh6_9 n_au9 n_enableh6_9 0 nch W=48u L=1u
+Mu1h6_9 n_uph6_9 n_bkmean n_tailh6_9 0 nch W=20u L=1u
+Mu2h6_9 n_wh6_9 n_bkerr6 n_tailh6_9 0 nch W=20u L=1u
+Mu3h6_9 n_uph6_9 n_uph6_9 vdd vdd pch W=60u L=1u
+Mu4h6_9 n_wh6_9 n_uph6_9 vdd vdd pch W=60u L=1u
+Menableh6_12 n_enableh6_12 learn 0 0 nch W=1000u L=1u
+Mhtailh6_12 n_tailh6_12 n_on6 n_middleh6_12 0 nch W=48u L=1u
+Mhinputh6_12 n_middleh6_12 n_au12 n_enableh6_12 0 nch W=48u L=1u
+Mu1h6_12 n_uph6_12 n_bkmean n_tailh6_12 0 nch W=20u L=1u
+Mu2h6_12 n_wh6_12 n_bkerr6 n_tailh6_12 0 nch W=20u L=1u
+Mu3h6_12 n_uph6_12 n_uph6_12 vdd vdd pch W=60u L=1u
+Mu4h6_12 n_wh6_12 n_uph6_12 vdd vdd pch W=60u L=1u
+Menableh6_13 n_enableh6_13 learn 0 0 nch W=1000u L=1u
+Mhtailh6_13 n_tailh6_13 n_on6 n_middleh6_13 0 nch W=48u L=1u
+Mhinputh6_13 n_middleh6_13 n_au13 n_enableh6_13 0 nch W=48u L=1u
+Mu1h6_13 n_uph6_13 n_bkmean n_tailh6_13 0 nch W=20u L=1u
+Mu2h6_13 n_wh6_13 n_bkerr6 n_tailh6_13 0 nch W=20u L=1u
+Mu3h6_13 n_uph6_13 n_uph6_13 vdd vdd pch W=60u L=1u
+Mu4h6_13 n_wh6_13 n_uph6_13 vdd vdd pch W=60u L=1u
+Menableh6_b n_enableh6_b learn 0 0 nch W=1000u L=1u
+Mhtailh6_b n_tailh6_b n_on6 n_middleh6_b 0 nch W=48u L=1u
+Mhinputh6_b n_middleh6_b n_vcbias n_enableh6_b 0 nch W=48u L=1u
+Mu1h6_b n_uph6_b n_bkmean n_tailh6_b 0 nch W=20u L=1u
+Mu2h6_b n_wh6_b n_bkerr6 n_tailh6_b 0 nch W=20u L=1u
+Mu3h6_b n_uph6_b n_uph6_b vdd vdd pch W=60u L=1u
+Mu4h6_b n_wh6_b n_uph6_b vdd vdd pch W=60u L=1u
+Mta7_0 n_bufp0 n_wo0_7 n_bkp7 0 syn W=10u L=1u
+Mtb7_0 n_bufn0 vweight n_bkp7 0 syn W=10u L=1u
+Mtc7_0 n_bufp0 vweight n_bkn7 0 syn W=10u L=1u
+Mtd7_0 n_bufn0 n_wo0_7 n_bkn7 0 syn W=10u L=1u
+Mta7_1 n_bufp1 n_wo1_7 n_bkp7 0 syn W=10u L=1u
+Mtb7_1 n_bufn1 vweight n_bkp7 0 syn W=10u L=1u
+Mtc7_1 n_bufp1 vweight n_bkn7 0 syn W=10u L=1u
+Mtd7_1 n_bufn1 n_wo1_7 n_bkn7 0 syn W=10u L=1u
+Mta7_7 n_bufp7 n_wo7_7 n_bkp7 0 syn W=10u L=1u
+Mtb7_7 n_bufn7 vweight n_bkp7 0 syn W=10u L=1u
+Mtc7_7 n_bufp7 vweight n_bkn7 0 syn W=10u L=1u
+Mtd7_7 n_bufn7 n_wo7_7 n_bkn7 0 syn W=10u L=1u
+Msabk7 n_bkn7 n_bkn7 0 0 nch W=20u L=1u
+Msbbk7 n_bkerr7 n_bkn7 0 0 nch W=20u L=1u
+Mscbk7 n_bkp7 n_bkp7 0 0 nch W=20u L=1u
+Msdbk7 n_dpfbk7 n_bkp7 0 0 nch W=20u L=1u
+Msebk7 n_dpfbk7 n_dpfbk7 vdd vdd pch W=60u L=1u
+Msfbk7 n_bkerr7 n_dpfbk7 vdd vdd pch W=60u L=1u
+Rsumbk7 n_bkerr7 verror 16000
+Rcmsub7 n_bkerr7 n_bkmean 10000
+Menableh7_9 n_enableh7_9 learn 0 0 nch W=1000u L=1u
+Mhtailh7_9 n_tailh7_9 n_on7 n_middleh7_9 0 nch W=48u L=1u
+Mhinputh7_9 n_middleh7_9 n_au9 n_enableh7_9 0 nch W=48u L=1u
+Mu1h7_9 n_uph7_9 n_bkmean n_tailh7_9 0 nch W=20u L=1u
+Mu2h7_9 n_wh7_9 n_bkerr7 n_tailh7_9 0 nch W=20u L=1u
+Mu3h7_9 n_uph7_9 n_uph7_9 vdd vdd pch W=60u L=1u
+Mu4h7_9 n_wh7_9 n_uph7_9 vdd vdd pch W=60u L=1u
+Menableh7_10 n_enableh7_10 learn 0 0 nch W=1000u L=1u
+Mhtailh7_10 n_tailh7_10 n_on7 n_middleh7_10 0 nch W=48u L=1u
+Mhinputh7_10 n_middleh7_10 n_au10 n_enableh7_10 0 nch W=48u L=1u
+Mu1h7_10 n_uph7_10 n_bkmean n_tailh7_10 0 nch W=20u L=1u
+Mu2h7_10 n_wh7_10 n_bkerr7 n_tailh7_10 0 nch W=20u L=1u
+Mu3h7_10 n_uph7_10 n_uph7_10 vdd vdd pch W=60u L=1u
+Mu4h7_10 n_wh7_10 n_uph7_10 vdd vdd pch W=60u L=1u
+Menableh7_13 n_enableh7_13 learn 0 0 nch W=1000u L=1u
+Mhtailh7_13 n_tailh7_13 n_on7 n_middleh7_13 0 nch W=48u L=1u
+Mhinputh7_13 n_middleh7_13 n_au13 n_enableh7_13 0 nch W=48u L=1u
+Mu1h7_13 n_uph7_13 n_bkmean n_tailh7_13 0 nch W=20u L=1u
+Mu2h7_13 n_wh7_13 n_bkerr7 n_tailh7_13 0 nch W=20u L=1u
+Mu3h7_13 n_uph7_13 n_uph7_13 vdd vdd pch W=60u L=1u
+Mu4h7_13 n_wh7_13 n_uph7_13 vdd vdd pch W=60u L=1u
+Menableh7_14 n_enableh7_14 learn 0 0 nch W=1000u L=1u
+Mhtailh7_14 n_tailh7_14 n_on7 n_middleh7_14 0 nch W=48u L=1u
+Mhinputh7_14 n_middleh7_14 n_au14 n_enableh7_14 0 nch W=48u L=1u
+Mu1h7_14 n_uph7_14 n_bkmean n_tailh7_14 0 nch W=20u L=1u
+Mu2h7_14 n_wh7_14 n_bkerr7 n_tailh7_14 0 nch W=20u L=1u
+Mu3h7_14 n_uph7_14 n_uph7_14 vdd vdd pch W=60u L=1u
+Mu4h7_14 n_wh7_14 n_uph7_14 vdd vdd pch W=60u L=1u
+Menableh7_b n_enableh7_b learn 0 0 nch W=1000u L=1u
+Mhtailh7_b n_tailh7_b n_on7 n_middleh7_b 0 nch W=48u L=1u
+Mhinputh7_b n_middleh7_b n_vcbias n_enableh7_b 0 nch W=48u L=1u
+Mu1h7_b n_uph7_b n_bkmean n_tailh7_b 0 nch W=20u L=1u
+Mu2h7_b n_wh7_b n_bkerr7 n_tailh7_b 0 nch W=20u L=1u
+Mu3h7_b n_uph7_b n_uph7_b vdd vdd pch W=60u L=1u
+Mu4h7_b n_wh7_b n_uph7_b vdd vdd pch W=60u L=1u
+Mta8_0 n_bufp0 n_wo0_8 n_bkp8 0 syn W=10u L=1u
+Mtb8_0 n_bufn0 vweight n_bkp8 0 syn W=10u L=1u
+Mtc8_0 n_bufp0 vweight n_bkn8 0 syn W=10u L=1u
+Mtd8_0 n_bufn0 n_wo0_8 n_bkn8 0 syn W=10u L=1u
+Mta8_1 n_bufp1 n_wo1_8 n_bkp8 0 syn W=10u L=1u
+Mtb8_1 n_bufn1 vweight n_bkp8 0 syn W=10u L=1u
+Mtc8_1 n_bufp1 vweight n_bkn8 0 syn W=10u L=1u
+Mtd8_1 n_bufn1 n_wo1_8 n_bkn8 0 syn W=10u L=1u
+Mta8_7 n_bufp7 n_wo7_8 n_bkp8 0 syn W=10u L=1u
+Mtb8_7 n_bufn7 vweight n_bkp8 0 syn W=10u L=1u
+Mtc8_7 n_bufp7 vweight n_bkn8 0 syn W=10u L=1u
+Mtd8_7 n_bufn7 n_wo7_8 n_bkn8 0 syn W=10u L=1u
+Msabk8 n_bkn8 n_bkn8 0 0 nch W=20u L=1u
+Msbbk8 n_bkerr8 n_bkn8 0 0 nch W=20u L=1u
+Mscbk8 n_bkp8 n_bkp8 0 0 nch W=20u L=1u
+Msdbk8 n_dpfbk8 n_bkp8 0 0 nch W=20u L=1u
+Msebk8 n_dpfbk8 n_dpfbk8 vdd vdd pch W=60u L=1u
+Msfbk8 n_bkerr8 n_dpfbk8 vdd vdd pch W=60u L=1u
+Rsumbk8 n_bkerr8 verror 16000
+Rcmsub8 n_bkerr8 n_bkmean 10000
+Menableh8_10 n_enableh8_10 learn 0 0 nch W=1000u L=1u
+Mhtailh8_10 n_tailh8_10 n_on8 n_middleh8_10 0 nch W=48u L=1u
+Mhinputh8_10 n_middleh8_10 n_au10 n_enableh8_10 0 nch W=48u L=1u
+Mu1h8_10 n_uph8_10 n_bkmean n_tailh8_10 0 nch W=20u L=1u
+Mu2h8_10 n_wh8_10 n_bkerr8 n_tailh8_10 0 nch W=20u L=1u
+Mu3h8_10 n_uph8_10 n_uph8_10 vdd vdd pch W=60u L=1u
+Mu4h8_10 n_wh8_10 n_uph8_10 vdd vdd pch W=60u L=1u
+Menableh8_11 n_enableh8_11 learn 0 0 nch W=1000u L=1u
+Mhtailh8_11 n_tailh8_11 n_on8 n_middleh8_11 0 nch W=48u L=1u
+Mhinputh8_11 n_middleh8_11 n_au11 n_enableh8_11 0 nch W=48u L=1u
+Mu1h8_11 n_uph8_11 n_bkmean n_tailh8_11 0 nch W=20u L=1u
+Mu2h8_11 n_wh8_11 n_bkerr8 n_tailh8_11 0 nch W=20u L=1u
+Mu3h8_11 n_uph8_11 n_uph8_11 vdd vdd pch W=60u L=1u
+Mu4h8_11 n_wh8_11 n_uph8_11 vdd vdd pch W=60u L=1u
+Menableh8_14 n_enableh8_14 learn 0 0 nch W=1000u L=1u
+Mhtailh8_14 n_tailh8_14 n_on8 n_middleh8_14 0 nch W=48u L=1u
+Mhinputh8_14 n_middleh8_14 n_au14 n_enableh8_14 0 nch W=48u L=1u
+Mu1h8_14 n_uph8_14 n_bkmean n_tailh8_14 0 nch W=20u L=1u
+Mu2h8_14 n_wh8_14 n_bkerr8 n_tailh8_14 0 nch W=20u L=1u
+Mu3h8_14 n_uph8_14 n_uph8_14 vdd vdd pch W=60u L=1u
+Mu4h8_14 n_wh8_14 n_uph8_14 vdd vdd pch W=60u L=1u
+Menableh8_15 n_enableh8_15 learn 0 0 nch W=1000u L=1u
+Mhtailh8_15 n_tailh8_15 n_on8 n_middleh8_15 0 nch W=48u L=1u
+Mhinputh8_15 n_middleh8_15 n_au15 n_enableh8_15 0 nch W=48u L=1u
+Mu1h8_15 n_uph8_15 n_bkmean n_tailh8_15 0 nch W=20u L=1u
+Mu2h8_15 n_wh8_15 n_bkerr8 n_tailh8_15 0 nch W=20u L=1u
+Mu3h8_15 n_uph8_15 n_uph8_15 vdd vdd pch W=60u L=1u
+Mu4h8_15 n_wh8_15 n_uph8_15 vdd vdd pch W=60u L=1u
+Menableh8_b n_enableh8_b learn 0 0 nch W=1000u L=1u
+Mhtailh8_b n_tailh8_b n_on8 n_middleh8_b 0 nch W=48u L=1u
+Mhinputh8_b n_middleh8_b n_vcbias n_enableh8_b 0 nch W=48u L=1u
+Mu1h8_b n_uph8_b n_bkmean n_tailh8_b 0 nch W=20u L=1u
+Mu2h8_b n_wh8_b n_bkerr8 n_tailh8_b 0 nch W=20u L=1u
+Mu3h8_b n_uph8_b n_uph8_b vdd vdd pch W=60u L=1u
+Mu4h8_b n_wh8_b n_uph8_b vdd vdd pch W=60u L=1u
+Ccmsub n_bkmean 0 5e-14
