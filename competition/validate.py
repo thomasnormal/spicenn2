@@ -40,12 +40,13 @@ def main(argv=None):
             if path.is_symlink():
                 raise ValueError("symlink submissions are not accepted")
             _, counts, digest = validate_folder(path) if path.is_dir() else validate_submission(path)
-            print(f"OK {path}: {sum(counts.values())} components; SHA-256 {digest}")
+            print(f"OK (syntax/file checks only) {path}: {sum(counts.values())} components; SHA-256 {digest}")
         except (OSError, ValueError) as error:
             print(f"ERROR {path}: {error}")
             failed = True
     if failed:
         parser.exit(1)
+    print("This does not check learning, README completeness, licensing rights, or score eligibility.")
 
 
 if __name__ == "__main__":

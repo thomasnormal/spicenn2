@@ -146,7 +146,8 @@ def render(release):
              "Startup and training energy are shown separately, not hidden in an amortized score.", "",
              "These are public-development-set results, not estimates on a secret held-out set.",
              "Only organizer reruns with matching reference-image/configuration metadata and a passing",
-             "half-timestep check are recorded here. Metadata checks alone do not authenticate a run.", ""]
+             "half-timestep check are recorded here. Metadata checks alone do not authenticate a run.", "",
+             "[Reproduce a score and verify your reports](REPRODUCE.md) without changing the leaderboard.", ""]
     for task in release["tasks"]:
         rows = [(entry, report) for entry, report in records if entry["task"] == task]
         rows.sort(key=lambda pair: (-pair[1]["accuracy"], pair[1]["energy"]["inference"]["delivered_j_per_image"], pair[0]["id"]))
@@ -154,32 +155,57 @@ def render(release):
         if not rows:
             lines += ["No verified results recorded yet.", ""]
             continue
-        lines += ["| Circuit | Accuracy | Inference / image | Startup | Training | Frontier |",
-                  "| --- | --- | --- | --- | --- | --- |"]
+        lines += ["| Circuit | Accuracy | Inference / image | Startup | Training | Frontier | Evidence |",
+                  "| --- | --- | --- | --- | --- | --- | --- |"]
         for (entry, report), on_frontier in zip(rows, frontier([r for _, r in rows])):
             energy = report["energy"]
             name = entry["name"].replace("|", "\\|").replace("[", "\\[").replace("]", "\\]")
-            link = f"results/{task}/{entry['id']}/entry.json"
-            lines.append(f"| [{name}]({link}) | {report['accuracy']:.2%} ({report['correct']}/{report['test_images']}) | "
+            directory = f"results/{task}/{entry['id']}"
+            circuit_link = "../" + entry["circuit"]
+            lines.append(f"| [{name}]({circuit_link}) | {report['accuracy']:.2%} ({report['correct']}/{report['test_images']}) | "
                          f"{energy['inference']['delivered_j_per_image']*1e6:.6g} µJ | {energy['startup']['delivered_j']*1e3:.6g} mJ | "
-                         f"{energy['training']['delivered_j']*1e3:.6g} mJ | {'Yes' if on_frontier else 'No'} |")
+                         f"{energy['training']['delivered_j']*1e3:.6g} mJ | {'Yes' if on_frontier else 'No'} | "
+                         f"[Report]({directory}/report.json) · [Half-step]({directory}/verification.json) · "
+                         f"[Identity]({directory}/entry.json) |")
         lines.append("")
     lines += ["Regenerate with `python competition/leaderboard.py render`. CI checks metadata and table consistency;",
               "it does not promote self-reported submissions to verified results.", ""]
     return "\n".join(lines)
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("render")
-    sub.add_parser("check")
+    sub.add_parser("check", help="check the already-recorded leaderboard, not new local reports")
+    verify = sub.add_parser("verify", help="read-only: validate your reference and half-step reports; never record a score")
+    for name in ("task", "circuit", "report", "verification", "dataset"):
+        verify.add_argument("--" + name, required=True)
+    verify.add_argument("--against", type=Path, help="also compare with this published reference report (same circuit/task)")
     record = sub.add_parser("record", help="organizer-only: record completed reference and half-step reruns")
     for name in ("id", "name", "task", "circuit", "report", "verification", "dataset"):
         record.add_argument("--" + name, required=True)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     try:
         release = read_json(HERE / "release.json")
+        if args.command == "verify":
+            require(args.task in release["tasks"], "unknown released task")
+            task = HERE / "tasks" / (args.task + ".json")
+            circuit = Path(args.circuit)
+            data = load_data(Path(args.dataset))
+            report, verification = read_json(Path(args.report)), read_json(Path(args.verification))
+            validate_report(report, circuit, task, release, data=data)
+            validate_report(verification, circuit, task, release, half_step=True, data=data)
+            check_stability(report, verification, release)
+            if args.against:
+                expected = read_json(args.against)
+                validate_report(expected, circuit, task, release, data=data)
+                check_stability(report, expected, release)
+                print("PASS: published result comparison (identical predictions; phase energy within 1%).")
+            print("PASS: circuit, dataset, task, simulator image, settings, harnesses and score consistency.")
+            print("PASS: half-step predictions match; delivered energy in every phase is within 1%.")
+            print("Read-only: no result or leaderboard files written. This does not authenticate a run or award an official score.")
+            return
         if args.command == "record":
             require(re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", args.id), "invalid entry ID")
             require(args.task in release["tasks"], "unknown released task")

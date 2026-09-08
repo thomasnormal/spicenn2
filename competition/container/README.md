@@ -5,6 +5,10 @@ circuits. For third-party circuits, use the Docker backend on a disposable scori
 machine. This is defense in depth, not a claim that a container is an impenetrable
 security boundary. Do not run an entrant's Python generator to obtain its circuit.
 
+To reproduce a leaderboard score, follow the [reader walkthrough](../REPRODUCE.md)
+and [load the published reference image](#reference-image-artifact). The build
+example below is for local simulator development, not obtaining the frozen image.
+
 From the repository root:
 
 ```bash

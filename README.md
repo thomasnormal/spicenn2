@@ -54,11 +54,19 @@ therefore control how strongly an input contributes to a prediction.
 
 ### Draw it and watch it work
 
-Open **[Spice Sim in your browser](https://thomasahle.com/spice-sim/)** to draw circuits
-and run ngspice simulations without installing anything. Build the source–resistor–
-capacitor circuit above, run a transient analysis, and look at the capacitor voltage.
-Try increasing the resistance or capacitance: the voltage should respond more slowly.
-The diagram and netlist describe the same connections.
+Open **[Spice Sim in your browser](https://thomasahle.com/spice-sim/)**—no installation needed:
+
+1. Under **Examples → Fundamentals**, click **RC step response**.
+2. It selects **Transient** and automatically plots **V(out)**, the capacitor voltage.
+3. Change **Stop time** from **10** to **4**, leaving its unit as **ms**, then click **Run**.
+4. The voltage should rise from 0 V to about **4.91 V**. Try increasing the resistance
+   or capacitance: the voltage should respond more slowly.
+
+The browser example uses 1 kΩ, 1 µF and a 5 V input; our netlist uses 10 kΩ,
+100 nF and 1 V. Both have the same **1 ms time constant**. The browser's output
+is named `out` instead of `memory`. Its default 10 ms view also shows discharge
+after the pulse falls at 5 ms. You can later use **Import netlist** to explore
+your own code; imported circuits may need voltage probes or traces selected.
 
 For batch experiments, install [ngspice](https://ngspice.sourceforge.io/download.html)
 or an [open source build of Xyce](https://xyce.sandia.gov/downloads/source-code/).
@@ -70,13 +78,25 @@ For ngspice, use `brew install ngspice` on macOS, or
 `ngspice --version`; scores from different simulator versions are not automatically
 interchangeable.
 
-From this repository:
+Clone the repository before running local commands (Git is required):
+
+```bash
+git clone --depth 1 https://github.com/thomasnormal/spicenn2.git
+cd spicenn2
+```
+
+Now run the complete RC netlist:
 
 ```bash
 ngspice -b circuits/first_capacitor.cir
 # Or:
 Xyce circuits/first_capacitor.cir
 ```
+
+The table contains `time` in seconds and node voltages in volts. Find the
+`v(memory)` column: it should be about **0.63 V at 0.001 s** and **0.982 V at
+0.004 s**. The simulator prints many intermediate rows. A successful run exits
+without errors; these values connect the numerical output to the charging curve.
 
 The browser is useful for exploring small circuits. The Python runner below handles
 the repeated data presentation and measurements needed for learning experiments.
@@ -141,11 +161,10 @@ charges the capacitor from a metered bias source; it does not begin with free st
 
 ### Run the circuit on the dataset
 
-Install Python 3.9+ and ngspice, then set up the runner:
+Install Python 3.9+ and ngspice, then set up the runner from the repository
+directory you cloned above:
 
 ```bash
-git clone --depth 1 https://github.com/thomasnormal/spicenn2.git
-cd spicenn2
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r competition/requirements.txt
@@ -165,6 +184,18 @@ This example scored **100/100 test points** on both ngspice and Xyce, drawing ab
 **4.81 µJ per test example** with the settings above. Without training (`--epochs 0`),
 the symmetric initial outputs tie and count as invalid predictions. These are small
 demonstration results, not an estimate of handwriting accuracy.
+
+Try the untrained control explicitly, reusing the same dataset:
+
+```bash
+python competition/runner.py competition/examples/blobs.cir /tmp/blobs.npz \
+  --epochs 0 --startup 0.02 --output /tmp/blobs-untrained-score
+```
+
+Expect **0/100 correct and 100 tied/invalid predictions**, versus 100/100 with
+training. That is because identical initialized class scores tie, not because
+random guessing in a two-class problem normally scores zero. Compare `correct`,
+`invalid_predictions`, and the energy fields in the two `report.json` files.
 
 To use Xyce, add `--simulator xyce` and choose a new output directory. Its executable
 should be named `Xyce` on your PATH, or supplied through `--binary /path/to/Xyce`.
@@ -208,6 +239,13 @@ With the command above, the circuit scored **66% (99/150 test images)** in ngspi
 using about **10.72 µJ per test image**. Chance is 33.3%. This is a **three-digit, 4×4
 baseline**, not the full ten-digit, 28×28 task. See [the run record](docs/TUTORIAL_RESULTS.md)
 for settings, energy breakdowns, simulator versions, and limitations.
+
+Allow a few minutes of wall-clock time: recent starter runs took roughly 90–130
+seconds on one CPU, despite simulating only 1.61 seconds. The terminal can stay
+quiet between the initial schedule and final score. In a second terminal,
+`tail -f /tmp/mnist017-score/simulator.log` shows simulator progress; press Ctrl+C
+there to stop watching, not in the terminal running the benchmark. Reuse the
+prepared dataset for experiments, but always choose a new output directory.
 
 ### A component value is also a learning parameter
 
@@ -259,6 +297,10 @@ The goal is to learn MNIST accurately with low electrical energy. The
 starter track, with separate [leaderboards](competition/LEADERBOARD.md). This is a
 rolling benchmark with no closing date. Evaluation data is public, so these are
 development-set results, not claims about a secret final test set.
+
+Want to check a published score first? Follow the
+[reproduction walkthrough](competition/REPRODUCE.md): it pins the original v0
+runner, loads the published image, and checks your reports without adding an entry.
 
 1. Start from [an example circuit](competition/examples/) and change the connections
    or component values. The current format accepts resistors, capacitors, diodes and

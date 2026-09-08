@@ -1,6 +1,9 @@
 # Organizer scoring workflow
 
 Use a trusted checkout of the v0 runner, not a PR's modified runner or workflow.
+The [reader reproduction walkthrough](REPRODUCE.md) gives the explicit frozen
+checkout command and read-only report verification. Use that path to reproduce
+a result without creating a leaderboard entry.
 Review the submitted netlist and licensing before simulation. Do not run entrant
 generators. Scoring should take place on a disposable machine without credentials;
 the Docker backend adds restrictions but is not a replacement for that separation.
