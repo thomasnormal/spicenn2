@@ -6,9 +6,12 @@ that use the public runner. **An old research accuracy is not a v0 score.**
 Only fresh, matching reference-image and half-step measurements belong on the
 [leaderboard](../competition/LEADERBOARD.md).
 
-Fresh full-task measurements include **81.33%** for the CMSUB backprop port and
-**33.33%** for each PC port. The lower PC scores are reported, not replaced by the
-historical scores. See each entry for energy, controls and numerical verification.
+Fresh full-task measurements include **81.33%** for the CMSUB backprop port,
+**83.33%** for the physical PERAZ port, and **33.33%** for each PC port. The lower
+PC scores are reported, not replaced by historical scores. See each entry for
+energy, controls and numerical-verification status; a reference run alone is not
+sufficient for ranking. The PERAZ port is **unranked** because its finer-step run
+exceeded the 30-minute budget. Backprop and both PC ports have checked pairs.
 
 | Family | Submission | What learns electrically? | Earlier evidence and caveats |
 | --- | --- | --- | --- |

@@ -1,0 +1,12 @@
+{
+  "status": "failed",
+  "stage": "simulation",
+  "error": "simulator timed out after 1800 seconds; use --timeout to increase the local limit",
+  "protocol": "mnist4-circuit-learning-v0",
+  "container_name": "spicenn2-simulator-08c23689bf724b1d95f04a47b91e2021",
+  "docker_image_id": "sha256:a2ae90e8bc3a84c14f0ce18ac2151189804d06b8c571ca24455a4d896f21113d",
+  "elapsed_s": 1800.1820287071168,
+  "submission_sha256": "912ea200d9ce73c69e75ccb673e81fd271a69139c3d158a41e3b2ac0a3567ced",
+  "dataset_sha256": "7e615774a3a79e96bd5f50bf16ae2eda0b4b7521a47cb154d759ba7ac8f04a3e",
+  "harness_sha256": "e010248f17167fbe3ef6c925992558dd3d981aa159346268c4e330ca098c5ba1"
+}

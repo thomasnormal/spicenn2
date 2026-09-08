@@ -85,5 +85,26 @@ The untrained measurement uses the same submitted circuit with `--epochs 0
 --startup .02`; the optional `--freeze` generator control is a separate wiring
 variant, not the circuit measured in that report. These checks demonstrate
 readout learning on this short schedule; they do not earn a ranked score.
-Full 20-pass reference and half-step checks are in progress. The physical feature
-front end consumes substantially more energy than the small linear baseline.
+The full 20-pass reference run completed with **83.33% (125/150)** and no invalid
+predictions, at **286.780 µJ/image**; see [report.json](report.json). Startup energy
+was 61.4485 mJ and training energy 834.565 mJ. Runtime was 1,757 seconds (29.3 min).
+The physical feature front end consumes substantially more energy than the small
+linear baseline and this port does not improve on that baseline's accuracy.
+
+**Unverified and unranked:** the required 5-µs run timed out at the published
+1,800-second limit, before completing evaluation. The runner returned exit code 2
+and retained its harness/log; no fine-step score was produced. See the actual
+[half-step failure record](half-step-failure.json), including circuit, dataset,
+harness and reference-image identifiers. Container cleanup was confirmed.
+This is a resource-limit failure, not evidence of numerical instability; stability
+has not been established. A successful coarse run alone is insufficient to rank.
+
+The attempted numerical check was:
+
+```bash
+python3 competition/runner.py submissions/random-feature-peraz/circuit.cir /tmp/peraz-data.npz --epochs 20 --startup .02 --step 5e-6 --docker-image sha256:a2ae90e8bc3a84c14f0ce18ac2151189804d06b8c571ca24455a4d896f21113d --timeout 1800 --output /tmp/peraz-halfstep
+```
+
+An extended local timeout may help investigate the circuit, but it would not
+waive the [v0 resource limit](../../competition/RULES.md#verification-and-failures).
+The circuit and its short learning controls remain useful architecture examples.

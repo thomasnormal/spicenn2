@@ -7,6 +7,7 @@ import tempfile
 import unittest
 
 from competition.runner import validate_submission
+from competition import leaderboard
 
 
 DIRECTORY = Path(__file__).resolve().parents[1] / "submissions/random-feature-peraz"
@@ -46,6 +47,17 @@ class PerazSubmissionTests(unittest.TestCase):
             self.assertEqual(report["settings"]["epochs"], epochs)
             self.assertEqual(report["correct"], correct)
             self.assertEqual(report["accuracy"], correct/150)
+
+    def test_reference_identity_and_finer_step_failure_cannot_rank(self):
+        report = json.loads((DIRECTORY / "report.json").read_text())
+        failure = json.loads((DIRECTORY / "half-step-failure.json").read_text())
+        task = leaderboard.HERE / "tasks/mnist017-v0.json"
+        release = leaderboard.read_json(leaderboard.HERE / "release.json")
+        leaderboard.validate_report(report, DIRECTORY / "circuit.cir", task, release)
+        self.assertEqual(failure["submission_sha256"], report["submission_sha256"])
+        self.assertIn("timed out after 1800 seconds", failure["error"])
+        with self.assertRaisesRegex(ValueError, "not a successful local result"):
+            leaderboard.validate_report(failure, DIRECTORY / "circuit.cir", task, release, half_step=True)
 
 
 if __name__ == "__main__":
