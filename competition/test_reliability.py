@@ -83,10 +83,25 @@ class ReliabilityTests(unittest.TestCase):
             path.write_text("* A 10 kΩ resistor, not a µF capacitor\nRtest out0 gnd 10K ; Unicode Ω comment\n")
             self.assertEqual(validate_submission(path)[0], "rtest out0 0 10k")
             for line, message in [(".end", "without a title or .end"), ("Example title", "prefix title comments"),
+                                  ("My circuit title line", "prefix title comments"),
+                                  ("Resistor circuit title", "prefix title comments"),
+                                  ("Capacitor circuit title", "prefix title comments"),
                                   ("M1 out0 in0 0 0 nch W=10u L=1u M=2", "extra parameters"),
                                   ("C1 out0 0 1µF", "use 'u'")]:
                 path.write_text(line)
                 with self.assertRaisesRegex(ValueError, message):
+                    validate_submission(path)
+
+    def test_all_component_value_and_model_errors_have_line_numbers(self):
+        invalid = ["R1 out0 0 nonsense", "C1 out0 0 -1u", "R1 out0 0 1e999",
+                   "M1 out0 in0 0 0 nch L=1u W=10u", "M1 out0 in0 0 0 nch W=bad L=1u",
+                   "M1 out0 in0 0 0 nch W=1n L=1u", "M1 out0 in0 0 0 homemade W=10u L=1u",
+                   "D1 out0 0 homemade"]
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "entry.cir"
+            for line in invalid:
+                path.write_text("* a comment\n\n" + line + "\n")
+                with self.subTest(line=line), self.assertRaisesRegex(ValueError, r"^line 3: "):
                     validate_submission(path)
 
     def test_streaming_matches_independent_energy_integral(self):

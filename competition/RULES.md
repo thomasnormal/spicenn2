@@ -82,6 +82,20 @@ and a 1,800-second simulation timeout. Resource-limit failures, simulator aborts
 and incomplete or non-monotonic traces produce **no ranked score**. Failure details
 are retained and the entrant can submit a corrected version.
 
+**The 30-minute wall-clock budget applies separately to both the 10 µs scoring
+run and the 5 µs verification run.** It is a v0 eligibility/resource limit, not
+an accuracy or electrical-energy metric. Plan for the finer-step run: the bundled
+ten-digit baseline took about 22 minutes at 10 µs and 29 minutes at 5 µs on the
+organizer's host, leaving little margin. Slower/larger circuits may exceed this
+budget even when their electrical simulation is otherwise valid. The starter
+track is a cheaper place to develop them.
+
+CPU quotas do not make different processors equally fast; an entrant's local
+timeout is not by itself a rejection. Organizer reference-machine reruns determine
+resource eligibility. Raising `--timeout` is useful for local debugging but does
+not waive the organizer's limit or yield a ranked score. Increasing the published
+budget would need an announced new release policy, not an exception for one entry.
+
 Before recording a result, rerun with maximum timestep 5 µs and otherwise identical
 settings. The entire prediction list must match, and each phase's delivered energy
 must differ by no more than 1%. A failing numerical check is marked unverified,

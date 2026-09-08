@@ -39,7 +39,8 @@ dataset, and harness hashes. Organizer scoring additionally requires the
 [reference container image](../container/README.md) and a half-step numerical check.
 Local results are not automatically organizer-verified entries.
 
-MNIST is by Yann LeCun, Corinna Cortes, and Christopher J. C. Burges; see its
-[original site](https://yann.lecun.org/exdb/mnist/index.html) and
-[CVDF mirror](https://github.com/cvdfoundation/mnist). The project's MIT license
+MNIST is by Yann LeCun, Corinna Cortes, and Christopher J. C. Burges; use the
+[CVDF mirror and dataset documentation](https://github.com/cvdfoundation/mnist),
+which hosts the files used by our downloader. The original MNIST website can be
+unavailable; no visit to it is needed to prepare either task. The project's MIT license
 does not relicense this third-party dataset.

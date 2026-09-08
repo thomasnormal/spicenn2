@@ -80,12 +80,13 @@ class WorkflowTests(unittest.TestCase):
                 patch("competition.container_backend.os.getuid", return_value=1000), \
                 patch("competition.container_backend.os.getgid", return_value=1000):
             backend = ContainerBackend("example:tag")
-        command = backend.create_command(Path("/tmp/isolated-test"))
+        work = Path("/tmp/isolated-test").resolve()
+        command = backend.create_command(work)
         for value in (identity, "--network=none", "--read-only", "--cap-drop=ALL", "--security-opt=no-new-privileges",
                       "--memory=4g", "--memory-swap=4g", "--pids-limit=64", "--cpus=2", "--pull=never"):
             self.assertIn(value, command)
         self.assertEqual(command.count("--mount"), 1)
-        self.assertIn("type=bind,src=/tmp/isolated-test,dst=/work", command)
+        self.assertIn(f"type=bind,src={work},dst=/work", command)
         self.assertNotIn("example:tag", command)
         self.assertTrue(backend.name.startswith("spicenn2-simulator-"))
 

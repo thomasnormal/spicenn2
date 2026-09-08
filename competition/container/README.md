@@ -55,7 +55,14 @@ testing, but organizer scoring uses the exact image in [release.json](../release
 
 Download [ngspice46-v0-image.tar.gz](https://github.com/thomasnormal/spicenn2/releases/download/v0/ngspice46-v0-image.tar.gz)
 from the [v0 release](https://github.com/thomasnormal/spicenn2/releases/tag/v0)
-(Linux/amd64). Verify its SHA-256 before loading it:
+(Linux/amd64, about 59 MiB). You can download it in a terminal with:
+
+```bash
+curl --fail --location --output ngspice46-v0-image.tar.gz \
+  https://github.com/thomasnormal/spicenn2/releases/download/v0/ngspice46-v0-image.tar.gz
+```
+
+Verify its SHA-256 before loading it:
 
 ```bash
 sha256sum ngspice46-v0-image.tar.gz

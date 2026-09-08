@@ -49,14 +49,15 @@ MODELS = """.model nch nmos (level=1 vto=0.5 kp=120u lambda=0.02 gamma=0 phi=0.7
 .model diode d (is=1e-14 n=1 cj0=1p)"""
 
 
-def number(token):
+def number(token, line=None):
+    prefix = f"line {line}: " if line is not None else ""
     if not NUMBER.fullmatch(token):
-        raise ValueError(f"expected positive literal, got {token!r}")
+        raise ValueError(f"{prefix}expected positive literal, got {token!r}")
     suffix = re.search(r"(meg|[fpnumkgt])$", token, re.I)
     value = float(token[:suffix.start()] if suffix else token)
     value *= SCALE[suffix[0].lower()] if suffix else 1
     if not math.isfinite(value) or value <= 0:
-        raise ValueError("component values must be positive and finite")
+        raise ValueError(prefix + "component values must be positive and finite")
     return value
 
 
@@ -96,27 +97,28 @@ def validate_submission(path):
         if len(fields) != expected:
             syntax = {"r": "Rname node1 node2 value", "c": "Cname node1 node2 value",
                       "d": "Dname node1 node2 diode", "m": "Mname drain gate source body nch|pch|syn W=value L=value"}
-            raise ValueError(f"line {index}: expected {syntax[kind]}; extra parameters (including M= or IC=) are not allowed")
+            hint = "; prefix title comments with '*'" if not lines else ""
+            raise ValueError(f"line {index}: expected {syntax[kind]}; extra parameters (including M= or IC=) are not allowed{hint}")
         fields[1:1 + nodes] = ["0" if node == "gnd" else node for node in fields[1:1 + nodes]]
         for node in fields[1:1 + nodes]:
             if node not in PINS and not re.fullmatch(r"n_[a-z0-9_]+", node):
                 raise ValueError(f"line {index}: internal nodes must start n_: {node}")
         if kind in "rc":
-            value = number(fields[3])
+            value = number(fields[3], index)
             low, high = (1, 1e12) if kind == "r" else (1e-16, 1e-3)
             if not low <= value <= high:
                 raise ValueError(f"line {index}: component outside allowed bounds")
         elif kind == "d":
             if fields[3] != "diode":
-                raise ValueError("only organizer diode model is allowed")
+                raise ValueError(f"line {index}: only organizer diode model is allowed")
         else:
             if fields[5] not in ("nch", "pch", "syn"):
-                raise ValueError("only organizer MOS models are allowed")
+                raise ValueError(f"line {index}: only organizer MOS models are allowed")
             if not fields[6].startswith("w=") or not fields[7].startswith("l="):
-                raise ValueError("MOS syntax: Mname d g s b nch|pch|syn W=value L=value")
+                raise ValueError(f"line {index}: MOS syntax: Mname d g s b nch|pch|syn W=value L=value")
             for field in fields[6:]:
-                if not 1e-6 <= number(field[2:]) <= 1e-2:
-                    raise ValueError("MOS W/L must be between 1 um and 10 mm")
+                if not 1e-6 <= number(field[2:], index) <= 1e-2:
+                    raise ValueError(f"line {index}: MOS W/L must be between 1 um and 10 mm")
         counts[kind] += 1
         lines.append(" ".join(fields))
     if not lines or len(lines) > 20000:
