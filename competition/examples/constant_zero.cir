@@ -1,0 +1,12 @@
+* Wiring and energy sanity check only: always predicts zero, does not learn.
+Rbias vdd out0 10k
+Rreturn out0 0 10k
+R1 out1 0 10k
+R2 out2 0 10k
+R3 out3 0 10k
+R4 out4 0 10k
+R5 out5 0 10k
+R6 out6 0 10k
+R7 out7 0 10k
+R8 out8 0 10k
+R9 out9 0 10k

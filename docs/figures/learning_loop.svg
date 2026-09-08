@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="290" viewBox="0 0 900 290" role="img" aria-labelledby="title desc">
+  <title id="title">Learning inside the analog circuit</title>
+  <desc id="desc">Inputs enter transistor synapses controlled by weight capacitors. Currents add to make scores. The target and score drive an error circuit. An update cell uses that error and the input to charge or discharge the weight capacitor. The Python runner only provides inputs, targets and timing.</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#0969da"/></marker></defs>
+  <rect width="900" height="290" rx="16" fill="#f6f8fa"/>
+  <g fill="white" stroke="#8c959f" stroke-width="1.5">
+    <rect x="155" y="44" width="175" height="72" rx="8"/>
+    <rect x="405" y="44" width="150" height="72" rx="8"/>
+    <rect x="653" y="44" width="175" height="72" rx="8"/>
+    <rect x="406" y="188" width="215" height="64" rx="8"/>
+  </g>
+  <g fill="none" stroke="#0969da" stroke-width="2.5" marker-end="url(#a)">
+    <path d="M65 80 H150"/><path d="M330 80 H400"/><path d="M555 80 H648"/>
+    <path d="M740 22 V40"/><path d="M740 116 V220 H627"/>
+    <path d="M406 220 H242 V121"/><path d="M100 80 V272 H514 V256"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="17" fill="#243746" text-anchor="middle">
+    <text x="60" y="60">inputs</text>
+    <text x="242" y="74">Transistor synapses</text><text x="242" y="98" font-size="14">controlled by weight voltage</text>
+    <text x="480" y="74">Currents add</text><text x="480" y="98" font-size="14">one score per class</text>
+    <text x="740" y="74">Error circuit</text><text x="740" y="98" font-size="14">compare score with target</text>
+    <text x="679" y="22" font-size="14">target</text>
+    <text x="601" y="66" font-size="14">scores</text>
+    <text x="514" y="215">Update cell + capacitor</text><text x="514" y="239" font-size="14">store the changed weight</text>
+    <text x="310" y="207" font-size="14">weight voltage</text>
+  </g>
+</svg>

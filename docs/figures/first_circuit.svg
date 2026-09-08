@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="250" viewBox="0 0 850 250" role="img" aria-labelledby="title desc">
+  <title id="title">A resistor charges a capacitor</title>
+  <desc id="desc">A voltage source Vin drives a 10 kiloohm resistor R1. The other side connects to a 100 nanofarad capacitor C1 to ground. The voltage at the capacitor is called memory.</desc>
+  <rect width="850" height="250" rx="16" fill="#f6f8fa"/>
+  <g fill="none" stroke="#243746" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M100 99 V65 H235 l10 -12 15 24 15 -24 15 24 15 -24 15 24 10 -12 H445 V124 M422 125 H468 M422 139 H468 M445 140 V200 H100 V169"/>
+    <circle cx="100" cy="134" r="35"/>
+    <path d="M91 121 H109 M100 112 V130 M92 149 H108 M445 200 V210 M425 210 H465 M432 219 H458 M439 228 H451"/>
+    <path d="M445 65 H550" stroke="#0969da"/>
+  </g>
+  <circle cx="445" cy="65" r="5" fill="#0969da"/>
+  <g font-family="Arial, sans-serif" font-size="18" fill="#243746">
+    <text x="57" y="45">input</text><text x="35" y="188">Vin</text>
+    <text x="233" y="32">R1 · 10 kΩ</text>
+    <text x="477" y="136">C1 · 100 nF</text>
+    <text x="565" y="71" fill="#0969da">memory</text>
+    <text x="565" y="100" font-size="15">Measure this voltage.</text>
+    <text x="565" y="161" font-size="15">The capacitor stores charge.</text>
+    <text x="565" y="186" font-size="15">Its voltage changes gradually.</text>
+  </g>
+</svg>

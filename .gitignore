@@ -71,6 +71,7 @@ rawcn_*/
 /*.txt
 !/requirements.txt
 /rec2_vg
+/results/
 
 # Local copies of former root entry points; canonical sources are in experiments/.
 /gen_mc.py

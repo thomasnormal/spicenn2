@@ -1,10 +1,14 @@
 # Research documentation
 
-Start with [MNIST results](MNIST_RESULTS.md), [XOR backpropagation](XOR_BACKPROP_README.md),
+New here? Start with the [hands-on tutorial](../README.md) and its
+[measured run record](TUTORIAL_RESULTS.md).
+
+For earlier research, see [MNIST results](MNIST_RESULTS.md), [XOR backpropagation](XOR_BACKPROP_README.md),
 or the [simulator comparison](SIMULATORS.md). The [experiment ledger](IDEAS_LEDGER.md)
 is the full chronological research record, including failed approaches.
 
 - [figures/](figures/): saved plots accompanying the findings documents.
+- [Earlier headline results](RESEARCH_RESULTS.md): the research summary previously on the front page.
 - [results/](results/): frozen measurement summaries in JSON and text form.
 - [Repository hygiene](REPOSITORY_HYGIENE.md): tracked assets, generated files, and regeneration notes.
 

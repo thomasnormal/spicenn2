@@ -1,0 +1,7 @@
+* A first analog circuit: a resistor charges a capacitor.
+Vin input 0 PULSE(0 1 0 1u 1u 5m 10m)
+R1 input memory 10k
+C1 memory 0 100n
+.tran 10u 4m
+.print tran V(input) V(memory)
+.end
