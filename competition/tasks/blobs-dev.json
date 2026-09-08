@@ -1,0 +1,19 @@
+{
+  "id": "blobs-dev",
+  "status": "development",
+  "protocol": "mnist4-circuit-learning-v0",
+  "simulator_version": "ngspice-46",
+  "dataset_sha256": "55b8c2612669e6c77df3a881126a08f1f2d02a8392bcd8891ea0e7c3af8d42ed",
+  "preparation": {
+    "generator": "two-blobs-v1",
+    "seed": 7
+  },
+  "settings": {
+    "simulator": "ngspice",
+    "epochs": 10,
+    "seed": 0,
+    "slot": 0.001,
+    "startup": 0.02,
+    "step": 0.00001
+  }
+}

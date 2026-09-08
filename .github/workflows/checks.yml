@@ -1,0 +1,68 @@
+name: Runner and submission checks
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+# Fork PRs run only on disposable GitHub-hosted runners, with no secrets or
+# write token. Never change this to pull_request_target to execute PR code.
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.9', '3.14']
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes ngspice
+          python -m pip install -r competition/requirements.txt
+      - name: Validate example and submission netlists (does not run submissions)
+        run: python competition/validate.py --all
+      - name: Unit and simulator regression tests
+        run: python -m unittest discover -s competition -p 'test_*.py' -v
+      - name: Check recorded results and leaderboard
+        run: python competition/leaderboard.py check
+      - name: Check schematic regeneration
+        run: |
+          python competition/draw_blobs.py
+          git diff --exit-code -- docs/figures/blobs_circuit.svg docs/figures/blobs_weight_cell.svg
+      - name: Check whitespace
+        run: git diff --check
+
+  container:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+      - name: Install host dependencies
+        run: python -m pip install -r competition/requirements.txt
+      - name: Build isolated simulator (integration test, not the frozen scoring image)
+        run: docker build -f competition/container/Dockerfile -t spicenn2-ci .
+      - name: Test scoring and timeout cleanup
+        env:
+          TEST_DOCKER_IMAGE: spicenn2-ci
+        run: python -m unittest competition.test_workflow -v

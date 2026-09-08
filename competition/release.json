@@ -1,0 +1,26 @@
+{
+  "release": "v0",
+  "protocol": "mnist4-circuit-learning-v0",
+  "tasks": ["mnist10-v0", "mnist017-v0"],
+  "reference_image": {
+    "id": "sha256:a2ae90e8bc3a84c14f0ce18ac2151189804d06b8c571ca24455a4d896f21113d",
+    "platform": "linux/amd64",
+    "ngspice_commit": "ebdaf58ec76a06ffaac7e0f138360dd1cf5ee4b6",
+    "archive": "ngspice46-v0-image.tar.gz",
+    "archive_url": "https://github.com/thomasnormal/spicenn2/releases/download/v0/ngspice46-v0-image.tar.gz",
+    "archive_sha256": "ffad711075b754155b406ef7e49a8716f290a48ce209a6e653b17ffe2a44c045"
+  },
+  "ranking": "accuracy-inference-energy-pareto",
+  "verification": {
+    "half_step": 0.000005,
+    "predictions_must_match": true,
+    "maximum_energy_relative_difference": 0.01
+  },
+  "resources": {
+    "simulator_timeout_s": 1800,
+    "cpus": 2,
+    "memory_bytes": 4294967296,
+    "pids": 64,
+    "maximum_trace_bytes": 2147483648
+  }
+}

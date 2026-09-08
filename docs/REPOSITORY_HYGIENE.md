@@ -27,6 +27,10 @@ git clone --depth 1 https://github.com/thomasnormal/spicenn2.git
 - Documentation figures in `docs/figures/`, `figs/*.pdf`, compact published result summaries in
   `docs/results/`, and paper
   `.tex` sources remain tracked. Compiled `paper/paper.pdf` and `position.pdf` do not.
+- Competition circuits belong in `competition/examples/` or `submissions/<name>/`.
+  Only `entry.json`, `report.json`, and `verification.json` under
+  `competition/results/<task>/<entry>/` are retained for verified leaderboard
+  records. Full traces, harness output directories, and downloaded arrays stay local.
 
 ## Regenerating local artifacts
 

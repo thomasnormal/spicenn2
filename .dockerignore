@@ -1,0 +1,12 @@
+# The build must not send datasets, local experiments, credentials, or traces.
+**
+!LICENSE
+!competition/
+!competition/*.py
+!competition/requirements.txt
+!competition/examples/
+!competition/examples/*.cir
+!competition/tasks/
+!competition/tasks/*.json
+!competition/container/
+!competition/container/Dockerfile

@@ -6,6 +6,7 @@ error/input-gated update cell. Adds physical reset and learning-enable switches.
 No dataset is read and no weights are trained by this generator.
 """
 import argparse
+import math
 from pathlib import Path
 
 
@@ -57,12 +58,24 @@ def main():
     parser.add_argument("output", type=Path)
     parser.add_argument("--inputs", type=int, choices=range(1, 17), default=16)
     parser.add_argument("--labels", default="0,1,7")
+    parser.add_argument("--capacitance", type=float, default=1.67e-6,
+                        help="weight capacitance in farads (default: 1.67e-6); changes the learning timescale")
     args = parser.parse_args()
-    labels = [int(x) for x in args.labels.split(",")]
+    try:
+        labels = [int(x) for x in args.labels.split(",")]
+    except ValueError:
+        parser.error("--labels must be comma-separated integers, for example 0,1,7")
     if not labels or len(set(labels)) != len(labels) or any(x not in range(10) for x in labels):
         parser.error("labels must be distinct integers in 0..9")
-    with args.output.open("x") as output:
-        output.write(circuit(args.inputs, labels))
+    if not math.isfinite(args.capacitance) or not 1e-16 <= args.capacitance <= 1e-3:
+        parser.error("--capacitance must be between 1e-16 and 1e-3 farads")
+    if args.output.exists():
+        parser.error(f"output already exists: {args.output}; choose a new circuit path")
+    try:
+        with args.output.open("x") as output:
+            output.write(circuit(args.inputs, labels, args.capacitance))
+    except OSError as error:
+        parser.exit(2, f"error: {error}\n")
 
 
 if __name__ == "__main__":

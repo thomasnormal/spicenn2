@@ -1,0 +1,1001 @@
+{
+  "accuracy": 1.0,
+  "correct": 100,
+  "test_images": 100,
+  "invalid_predictions": 0,
+  "predictions": [
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+  ],
+  "confusion_matrix": [
+    [
+      50,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      50,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "energy": {
+    "startup": {
+      "delivered_j": 9.802778304751679e-05,
+      "returned_j": 3.543287282882202e-06,
+      "net_j": 9.448449576463457e-05,
+      "by_source": {
+        "vdd": {
+          "delivered_j": 8.87972719384762e-06,
+          "returned_j": 0.0,
+          "net_j": 8.87972719384762e-06
+        },
+        "vref": {
+          "delivered_j": 1.0170773321200677e-11,
+          "returned_j": 0.0,
+          "net_j": 1.0170773321200677e-11
+        },
+        "vweight": {
+          "delivered_j": 3.120074364263207e-05,
+          "returned_j": 3.5490041013961325e-12,
+          "net_j": 3.120074009362797e-05
+        },
+        "verror": {
+          "delivered_j": 6.427255429413528e-14,
+          "returned_j": 3.5431915303423663e-06,
+          "net_j": -3.543191466069812e-06
+        },
+        "voffset": {
+          "delivered_j": 1.2051689639246234e-13,
+          "returned_j": 1.5116048553631699e-13,
+          "net_j": -3.064358914385465e-14
+        },
+        "vbias": {
+          "delivered_j": 5.794726119977733e-05,
+          "returned_j": 0.0,
+          "net_j": 5.794726119977733e-05
+        },
+        "reset": {
+          "delivered_j": 4.0655696991742103e-11,
+          "returned_j": 9.205237524884254e-11,
+          "net_j": -5.139667825710043e-11
+        },
+        "learn": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "clock": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in0": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in1": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in10": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in11": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in12": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in13": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in14": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in15": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target0": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target1": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        }
+      }
+    },
+    "inference": {
+      "delivered_j": 0.00048117503339783054,
+      "returned_j": 3.8663908308068535e-05,
+      "net_j": 0.00044251112508976193,
+      "by_source": {
+        "vdd": {
+          "delivered_j": 0.0003352048797327673,
+          "returned_j": 0.0,
+          "net_j": 0.0003352048797327673
+        },
+        "vref": {
+          "delivered_j": 5.313454894673272e-10,
+          "returned_j": 1.7964722196610787e-06,
+          "net_j": -1.7959408741716113e-06
+        },
+        "vweight": {
+          "delivered_j": 3.2966351134423716e-12,
+          "returned_j": 5.961232978110869e-13,
+          "net_j": 2.7005118156312845e-12
+        },
+        "verror": {
+          "delivered_j": 6.416618461041004e-14,
+          "returned_j": 1.7305658301633567e-05,
+          "net_j": -1.730565823746738e-05
+        },
+        "voffset": {
+          "delivered_j": 5.884044908197423e-14,
+          "returned_j": 6.505800904274696e-14,
+          "net_j": -6.2175599607727224e-15
+        },
+        "vbias": {
+          "delivered_j": 8.326784359729222e-05,
+          "returned_j": 0.0,
+          "net_j": 8.326784359729222e-05
+        },
+        "reset": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "learn": {
+          "delivered_j": 0.0,
+          "returned_j": 6.297441329323484e-11,
+          "net_j": -6.297441329323484e-11
+        },
+        "clock": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in0": {
+          "delivered_j": 3.1469361735600715e-05,
+          "returned_j": 9.639375378165723e-06,
+          "net_j": 2.1829986357434996e-05
+        },
+        "in1": {
+          "delivered_j": 3.123241356703907e-05,
+          "returned_j": 9.922338763407997e-06,
+          "net_j": 2.1310074803631074e-05
+        },
+        "in2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in10": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in11": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in12": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in13": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in14": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in15": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target0": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target1": {
+          "delivered_j": 0.0,
+          "returned_j": 9.605570167923472e-15,
+          "net_j": -9.605570167923472e-15
+        },
+        "target2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        }
+      },
+      "delivered_j_per_image": 4.811750333978306e-06
+    },
+    "total": {
+      "delivered_j": 0.005040369717106016,
+      "returned_j": 0.00013387801425962788,
+      "net_j": 0.004906491702846389,
+      "by_source": {
+        "vdd": {
+          "delivered_j": 0.004208309295625311,
+          "returned_j": 0.0,
+          "net_j": 0.004208309295625311
+        },
+        "vref": {
+          "delivered_j": 7.482045922526087e-09,
+          "returned_j": 8.990359227340884e-06,
+          "net_j": -8.982877181418354e-06
+        },
+        "vweight": {
+          "delivered_j": 3.1200760474258604e-05,
+          "returned_j": 7.04502055439668e-12,
+          "net_j": 3.120075342923805e-05
+        },
+        "verror": {
+          "delivered_j": 1.0468279823157658e-06,
+          "returned_j": 2.2018910637456987e-05,
+          "net_j": -2.0972082655141224e-05
+        },
+        "voffset": {
+          "delivered_j": 1.4583406876999782e-12,
+          "returned_j": 1.4850045470139869e-12,
+          "net_j": -2.666385931400824e-14
+        },
+        "vbias": {
+          "delivered_j": 0.00048157386179045525,
+          "returned_j": 0.0,
+          "net_j": 0.00048157386179045525
+        },
+        "reset": {
+          "delivered_j": 4.0655696991742103e-11,
+          "returned_j": 9.205237524884254e-11,
+          "net_j": -5.139667825710043e-11
+        },
+        "learn": {
+          "delivered_j": 6.55142251514772e-11,
+          "returned_j": 6.547994081994822e-11,
+          "net_j": 3.42843315289909e-14
+        },
+        "clock": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in0": {
+          "delivered_j": 0.00016183529903030688,
+          "returned_j": 5.3413011877772954e-05,
+          "net_j": 0.00010842228715253391
+        },
+        "in1": {
+          "delivered_j": 0.00015639608035760902,
+          "returned_j": 4.945556427665114e-05,
+          "net_j": 0.00010694051608095785
+        },
+        "in2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in10": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in11": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in12": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in13": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in14": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in15": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target0": {
+          "delivered_j": 1.0759996325787231e-12,
+          "returned_j": 1.0792459464999433e-12,
+          "net_j": -3.2463139212201443e-15
+        },
+        "target1": {
+          "delivered_j": 1.0955750678459956e-12,
+          "returned_j": 1.0988188369630627e-12,
+          "net_j": -3.243769117067063e-15
+        },
+        "target2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        }
+      }
+    },
+    "training": {
+      "delivered_j": 0.004461166900660673,
+      "returned_j": 9.167081866867705e-05,
+      "net_j": 0.004369496081991996,
+      "by_source": {
+        "vdd": {
+          "delivered_j": 0.003864224688698696,
+          "returned_j": 0.0,
+          "net_j": 0.003864224688698696
+        },
+        "vref": {
+          "delivered_j": 6.940529659737558e-09,
+          "returned_j": 7.193887007679805e-06,
+          "net_j": -7.186946478020066e-06
+        },
+        "vweight": {
+          "delivered_j": 1.3534995241293981e-11,
+          "returned_j": 2.8998930290048206e-12,
+          "net_j": 1.0635102212289162e-11
+        },
+        "verror": {
+          "delivered_j": 1.0468278538770268e-06,
+          "returned_j": 1.1700608054810735e-06,
+          "net_j": -1.2323295160404663e-07
+        },
+        "voffset": {
+          "delivered_j": 1.278983342225542e-12,
+          "returned_j": 1.268786052434923e-12,
+          "net_j": 1.0197289790619185e-14
+        },
+        "vbias": {
+          "delivered_j": 0.0003403587569933859,
+          "returned_j": 0.0,
+          "net_j": 0.0003403587569933859
+        },
+        "reset": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "learn": {
+          "delivered_j": 6.55142251514772e-11,
+          "returned_j": 2.505527526713381e-12,
+          "net_j": 6.300869762476383e-11
+        },
+        "clock": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in0": {
+          "delivered_j": 0.00013036593729470614,
+          "returned_j": 4.37736364996072e-05,
+          "net_j": 8.659230079509894e-05
+        },
+        "in1": {
+          "delivered_j": 0.00012516366679056994,
+          "returned_j": 3.9533225513243146e-05,
+          "net_j": 8.563044127732679e-05
+        },
+        "in2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in10": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in11": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in12": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in13": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in14": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "in15": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target0": {
+          "delivered_j": 1.0759996325787231e-12,
+          "returned_j": 1.0792459464999433e-12,
+          "net_j": -3.2463139212201443e-15
+        },
+        "target1": {
+          "delivered_j": 1.0955750678459956e-12,
+          "returned_j": 1.0892132667951394e-12,
+          "net_j": 6.36180105085641e-15
+        },
+        "target2": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target3": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target4": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target5": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target6": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target7": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target8": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        },
+        "target9": {
+          "delivered_j": 0.0,
+          "returned_j": 0.0,
+          "net_j": 0.0
+        }
+      }
+    }
+  },
+  "protocol": "mnist4-circuit-learning-v0",
+  "simulator": "Xyce DEVELOPMENT-202606041546-(Release-7.10.0-182-gd72b5846)-opensource",
+  "task": null,
+  "task_sha256": null,
+  "docker_image_id": null,
+  "simulator_version_output": "Xyce DEVELOPMENT-202606041546-(Release-7.10.0-182-gd72b5846)-opensource",
+  "components": {
+    "r": 4,
+    "c": 6,
+    "m": 74,
+    "d": 0
+  },
+  "warnings": [],
+  "submission_sha256": "c600f94f5d7f1fe4afb322218d2b6996ab602fc4c2457d3ecae0aa08d6d08b3f",
+  "dataset_sha256": "55b8c2612669e6c77df3a881126a08f1f2d02a8392bcd8891ea0e7c3af8d42ed",
+  "dataset_hash_format": "spicenn2-dataset-content-v1",
+  "dataset_archive_sha256": "5d610d1ef39269288284fa2b79ced84797fc9b5e09f3d7594138a382cda52c9e",
+  "harness_sha256": "f53be386d8d182291479c3e06fd1fdccdcf8e278fae17e9810a36734169b0c72",
+  "settings": {
+    "simulator": "xyce",
+    "epochs": 10,
+    "seed": 0,
+    "slot": 0.001,
+    "startup": 0.02,
+    "step": 1e-05
+  },
+  "training_presentations": 400,
+  "elapsed_s": 18.24892656132579,
+  "inference_latency_s": 0.001,
+  "status": "local_result"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "mnist10-dev",
+  "status": "experimental",
+  "protocol": "mnist4-circuit-learning-v0",
+  "simulator_version": "ngspice-46",
+  "dataset_sha256": "9c7fd4db02f655862f8f50a94bf331da47a77986e747a201d82f46d7dd4a07b0",
+  "preparation": {
+    "labels": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "train_per_class": 24,
+    "test_per_class": 50,
+    "seed": 0,
+    "normalize": "zscore"
+  },
+  "settings": {
+    "simulator": "ngspice",
+    "epochs": 20,
+    "seed": 0,
+    "slot": 0.001,
+    "startup": 0.02,
+    "step": 0.00001
+  }
+}

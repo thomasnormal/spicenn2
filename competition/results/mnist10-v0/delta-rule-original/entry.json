@@ -1,0 +1,7 @@
+{
+  "id": "delta-rule-original",
+  "name": "Delta rule, 1.67 \u00b5F",
+  "task": "mnist10-v0",
+  "circuit": "competition/examples/mnist_10.cir",
+  "verification": "organizer reference-image rerun and half-step stability check"
+}

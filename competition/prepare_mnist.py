@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare the draft benchmark from the four official MNIST IDX gzip files."""
+"""Prepare reproducible benchmark subsets from the four official MNIST IDX files."""
 import argparse
 import gzip
 import hashlib
@@ -9,6 +9,11 @@ import struct
 import urllib.request
 
 import numpy as np
+
+try:
+    from .data import content_hash
+except ImportError:
+    from data import content_hash
 
 # Standard MNIST archive checksums, also published by torchvision's MNIST loader:
 # https://github.com/pytorch/vision/blob/main/torchvision/datasets/mnist.py
@@ -86,9 +91,19 @@ def main():
         parser.error("sample counts must be positive and seed nonnegative")
     if args.output.exists() or args.output.with_suffix(".json").exists() or args.output.suffix != ".npz":
         parser.error("choose a new .npz path (including an unused .json sidecar)")
-    classes = [int(x) for x in args.labels.split(",")]
+    try:
+        classes = [int(x) for x in args.labels.split(",")]
+    except ValueError:
+        parser.error("--labels must be comma-separated integers, for example 0,1,7")
     if len(classes) < 2 or len(set(classes)) != len(classes) or any(x not in range(10) for x in classes):
         parser.error("choose at least two distinct labels from 0..9")
+    try:
+        prepare(args, classes)
+    except (OSError, ValueError, EOFError, struct.error) as error:
+        parser.exit(2, f"error: {error}\n")
+
+
+def prepare(args, classes):
     if args.download:
         download(args.idx_directory)
     arrays, hashes = {}, {}
@@ -109,7 +124,8 @@ def main():
                 "normalization": args.normalize, "classes": classes,
                 "seed": args.seed, "train_per_class": args.train_per_class,
                 "test_per_class": args.test_per_class, "source_sha256": hashes,
-                "dataset_sha256": hashlib.sha256(args.output.read_bytes()).hexdigest(),
+                "dataset_sha256": content_hash(arrays), "dataset_hash_format": "spicenn2-dataset-content-v1",
+                "dataset_archive_sha256": hashlib.sha256(args.output.read_bytes()).hexdigest(),
                 "note": "Public development data, not a secret final test set. Source authenticity must be verified by organizer."}
     with args.output.with_suffix(".json").open("x") as output:
         json.dump(metadata, output, indent=2)

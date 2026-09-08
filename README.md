@@ -5,7 +5,7 @@ them by adjusting numbers in a neural network. **Here, we want the electrical ci
 itself to learn.** An image becomes a set of voltages, transistors turn those voltages
 into currents, and capacitors store learned weights as electrical charge.
 
-This project is a playground for learning that idea and a developing competition:
+This project teaches analog learning through runnable examples and an open competition:
 **design a circuit that learns to classify digits accurately, using little energy.**
 You submit the circuit; a Python runner presents the data, simulates it, and measures
 its performance. You can do everything in software—no electronics lab is needed.
@@ -63,7 +63,14 @@ The diagram and netlist describe the same connections.
 For batch experiments, install [ngspice](https://ngspice.sourceforge.io/download.html)
 or an [open source build of Xyce](https://xyce.sandia.gov/downloads/source-code/).
 Both solve the circuit's electrical equations over time. Xyce also supports parallel
-simulation; whether that is faster depends on the circuit and build. From this repository:
+simulation; whether that is faster depends on the circuit and build.
+
+For ngspice, use `brew install ngspice` on macOS, or
+`sudo apt-get install ngspice` on Debian/Ubuntu. Check the installed version with
+`ngspice --version`; scores from different simulator versions are not automatically
+interchangeable.
+
+From this repository:
 
 ```bash
 ngspice -b circuits/first_capacitor.cir
@@ -161,8 +168,15 @@ demonstration results, not an estimate of handwriting accuracy.
 
 To use Xyce, add `--simulator xyce` and choose a new output directory. Its executable
 should be named `Xyce` on your PATH, or supplied through `--binary /path/to/Xyce`.
-Each run saves a `report.json`, generated test harness, simulator log, and voltage/
-power trace. Output directories must be new so one experiment cannot overwrite another.
+Each run saves a `report.json`, generated test harness, and simulator log. Add
+`--keep-trace` to retain a compressed voltage/power trace too. Output directories
+must be new so one experiment cannot overwrite another. If simulation fails, the
+runner retains the harness, log, failure details, and any partial trace for debugging.
+
+To reproduce the complete ngspice tutorial configuration without remembering its
+flags, use `--task blobs-dev` instead of `--epochs 10 --startup 0.02`. Named tasks
+check the dataset contents and simulator version too; see the
+[task presets](competition/tasks/README.md).
 
 ## 3. From two inputs to MNIST
 
@@ -195,25 +209,74 @@ using about **10.72 µJ per test image**. Chance is 33.3%. This is a **three-dig
 baseline**, not the full ten-digit, 28×28 task. See [the run record](docs/TUTORIAL_RESULTS.md)
 for settings, energy breakdowns, simulator versions, and limitations.
 
-To explore all ten digits, export a circuit with
-`--labels 0,1,2,3,4,5,6,7,8,9` using `make_baseline.py`, and prepare the matching
-dataset. More classes are harder; simply adding outputs does not guarantee good accuracy.
+### A component value is also a learning parameter
+
+For a capacitor, `dV/dt = I/C`: a larger weight capacitor changes voltage more slowly
+under the same update current. The learning timescale matters. Keeping this circuit
+unchanged except for increasing its weight capacitors from **1.67 µF to 16 µF**
+gave **89.33% (134/150)** at **9.86249 µJ/image** on the same public development set.
+The [tuned example](competition/examples/mnist_017_tuned.cir) is included:
+
+```bash
+python competition/runner.py competition/examples/mnist_017_tuned.cir /tmp/mnist017.npz \
+  --epochs 20 --startup 0.02 --output /tmp/mnist017-tuned-score
+```
+
+This capacitance was chosen after inspecting development scores, so this is a
+tuning result, not performance on an untouched final test set. The circuit still
+learns its weights during the run; choosing its capacitance is an offline design
+decision. Larger capacitors also cost startup energy and physical area. You can
+export other values with `make_baseline.py --capacitance <farads>`.
+
+For this MNIST configuration, `--task mnist017-v0` replaces
+`--epochs 20 --startup 0.02` and rejects accidentally mismatched data or settings.
+
+### All ten digits: the main track
+
+The [ten-digit circuit](competition/examples/mnist_10.cir) repeats the same cells
+for all ten classes: 170 weight capacitors and 1,630 transistors. Run it with:
+
+```bash
+python competition/prepare_mnist.py data/mnist-idx /tmp/mnist10.npz \
+  --download --labels 0,1,2,3,4,5,6,7,8,9 --normalize zscore
+python competition/runner.py competition/examples/mnist_10.cir /tmp/mnist10.npz \
+  --task mnist10-v0 --output /tmp/mnist10-score
+```
+
+This uses 240 training images, 20 training passes, and 500 evaluation images:
+5.32 simulated seconds, which can take tens of minutes on a CPU. Adding outputs
+does not guarantee good accuracy, especially at 4×4 resolution. See the
+[separate leaderboard tables](competition/LEADERBOARD.md) for measured results;
+the 0/1/7 tutorial's 89.33% must not be read as ten-digit accuracy.
+The untuned ten-digit circuit scores only **18.6% (93/500)** at **27.09 µJ/image**
+in the reference run. It is a runnable starting point with substantial room for
+improvement, not a competitive handwriting recognizer.
 
 ## 4. Enter the competition
 
-The goal is to learn MNIST accurately with low electrical energy. **The runner and
-example submissions are available; official benchmark settings and the leaderboard
-are still being finalized.** Current scores are development results.
+The goal is to learn MNIST accurately with low electrical energy. The
+[v0 rules](competition/RULES.md) define a ten-digit main track and a faster 0/1/7
+starter track, with separate [leaderboards](competition/LEADERBOARD.md). This is a
+rolling benchmark with no closing date. Evaluation data is public, so these are
+development-set results, not claims about a secret final test set.
 
 1. Start from [an example circuit](competition/examples/) and change the connections
    or component values. The current format accepts resistors, capacitors, diodes and
    MOS transistors using the provided device models.
+   `python competition/new_submission.py my-design --author "Your Name"` creates
+   a ready-to-edit folder with the tuned MNIST circuit, README, and MIT license.
+   Add `--baseline mnist_10` to start from the ten-digit circuit instead.
 2. Run it locally with `competition/runner.py`. The runner supplies the image, training
    label, power/bias voltages, reset, and timing. Your circuit supplies the class scores.
 3. Open a pull request adding `submissions/<name>/circuit.cir` and a short README with
    your learning algorithm, exact run command, data configuration, and local results.
-   Include attribution and a license. See [submission instructions](submissions/README.md).
-4. The organizer reruns the circuit using the common configuration. Comparisons must
+   Include attribution and the MIT license. Run
+   `python competition/validate.py submissions/my-design` before opening the PR.
+   See [submission instructions](submissions/README.md) and the
+   [complete example directory](submissions/example-delta-rule/).
+4. The organizer reruns the circuit in the reference container using your named
+   task, then checks that predictions and energy are stable at half the timestep.
+   Comparisons must
    use the same dataset, labels, preprocessing, training budget, timing, models,
    and simulator version.
 
@@ -233,8 +296,10 @@ main supply would miss circuits powered through their inputs. Returned energy is
 reported separately and does not cancel energy drawn elsewhere.
 
 Accuracy and energy are separate objectives: always guessing one digit is cheap but
-not useful. We intend to compare the accuracy–energy tradeoff at fixed training and
-latency budgets; an official ranking formula has not yet been frozen.
+not useful. We mark the **Pareto frontier**: entries for which no other circuit has
+at least as much accuracy and no more inference energy, with a strict improvement
+in one. Training and latency budgets are fixed, and startup/training energy stays
+visible. There is no weighted sum that hides this tradeoff.
 See [the runner specification](competition/README.md) for the exact interface and measurements.
 
 These are **simulated circuit energy** figures, not the computer's electricity use.
@@ -250,3 +315,11 @@ circuits; it is a research program, not the submission runner. Historical script
 in [experiments/](experiments/README.md), reference circuits in [circuits/](circuits/README.md),
 and manuscript sources in [paper/](paper/). Generated output and datasets are
 [kept out of Git](docs/REPOSITORY_HYGIENE.md).
+
+## License
+
+The project's original code, circuit examples, and documentation are available
+under the [MIT License](LICENSE). Preserve attribution when adapting an example.
+Third-party materials and downloaded datasets retain their own terms; the project
+license does not relicense them. See [submission instructions](submissions/README.md)
+for how to license a contribution.

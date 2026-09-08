@@ -1,10 +1,14 @@
-# Circuit-learning competition — draft runner
+# Circuit-learning competition — runner specification
 
 Submit a circuit; the organizer supplies examples, runs an open source transient
 simulator, and measures classification accuracy and electrical energy. This is the
 circuit-in, score-out runner used by the [introductory tutorial](../README.md).
-The examples learn in the circuit. Final competition settings and hosted scoring
-are not yet available; the protocol below is a development benchmark.
+The examples learn in the circuit. See the [v0 rules](RULES.md),
+[leaderboard](LEADERBOARD.md), and [submission instructions](../submissions/README.md).
+Submissions are reviewed and rerun by the organizer; there is no automatic upload service.
+
+Use a [named task](tasks/README.md), such as `--task mnist017-v0`,
+to select the full configuration and reject mismatched data or simulator versions.
 
 ## Run it
 
@@ -17,7 +21,7 @@ python3 competition/runner.py competition/examples/blobs.cir \
   /tmp/competition-blobs.npz --epochs 10 --startup 0.02 --output /tmp/competition-ngspice
 python3 competition/runner.py competition/examples/blobs.cir \
   /tmp/competition-blobs.npz --epochs 10 --startup 0.02 --simulator xyce --output /tmp/competition-xyce
-python3 -m unittest competition.test_runner -v
+python3 -m unittest discover -s competition -p 'test_*.py' -v
 ```
 
 `blobs.cir` is the small delta-rule learner. `mnist_017.cir` expands it to 16 inputs
@@ -26,31 +30,49 @@ reading training data. See the tutorial for MNIST download/preparation and the
 [measured results](../docs/TUTORIAL_RESULTS.md). `constant_zero.cir` is retained
 only as a wiring/energy sanity check; it always predicts zero and does not learn.
 
-The local Xyce installation is outside PATH. On this machine use:
+If Xyce is outside PATH, supply its executable explicitly:
 
 ```bash
-LD_LIBRARY_PATH=/home/thomas-ahle/xyce_deps/lib \
 python3 competition/runner.py competition/examples/blobs.cir \
   /tmp/competition-blobs.npz --epochs 10 --startup 0.02 --simulator xyce \
-  --binary /home/thomas-ahle/Xyce/build/src/Xyce --output /tmp/competition-xyce-local
+  --binary /path/to/Xyce --output /tmp/competition-xyce-custom
 ```
 
-Use `XYCE_BINARY` with the same path and library environment to include Xyce in tests.
+Use `XYCE_BINARY=/path/to/Xyce` to include that build in tests. Follow your Xyce
+installation's instructions for any required shared-library search path.
 The simulator integrations were tested here with ngspice 46 and Xyce's local
-7.10 development build. These are recorded versions, not pinned release artifacts.
+7.10 development build. Xyce is an exploratory cross-check; v0 scoring uses the
+exact ngspice 46 image identified in [release.json](release.json).
 
-Each run creates a new output directory with `report.json`, `harness.cir`,
-`trace.txt`, and `simulator.log`. The report records dataset, circuit and harness
+Each successful run creates a new output directory with `report.json`, `harness.cir`,
+and `simulator.log`. Add `--keep-trace` to retain `trace.txt.gz`; otherwise the raw
+trace is temporary. Parsing and energy integration use bounded batches, not a
+full in-memory text load. The report records dataset, circuit and harness
 SHA-256 hashes, simulator version, schedule, accuracy, confusion matrix, component
 counts, and energy by phase and source. Never publish a private evaluation harness:
 it contains the evaluation input images even though it omits their labels.
 
-## Draft interface
+`dataset_sha256` identifies array contents, not ZIP archive bytes. Its versioned
+format hashes the four names and shapes in fixed order plus little-endian float64
+inputs and int64 labels. Archive compression/metadata and integer storage width
+do not affect it. `dataset_archive_sha256` is retained for file-level diagnostics.
 
-The submission is a flat ASCII list of R, C, M and D devices, optionally with
-full-line `*` comments. The runner wraps it in a subcircuit. No submitted models,
+The default simulator timeout is 1,800 wall-clock seconds; `--timeout` changes this
+local limit, not the simulated schedule. On an abort, timeout, or invalid trace,
+the runner exits nonzero and keeps `harness.cir`, `simulator.log`, `failure.json`,
+and `trace.partial.txt` if one exists. A failed run never produces a score report.
+This includes ngspice failures that print an abort but exit with status zero.
+
+## Circuit interface
+
+The submission is a flat list of R, C, M and D devices, optionally with full-line
+`*` or trailing `;` comments. Device syntax is ASCII; comments may contain UTF-8
+text such as µF or kΩ. `gnd` is accepted as an alias for `0`. The runner wraps it
+in a subcircuit; do not include a SPICE title line or `.end`. No submitted models,
 sources, behavioral expressions, initial conditions, `.include`, `.control`,
 subcircuits, or commands are accepted. Internal nodes must start `n_`.
+MOS multipliers such as `M=2` are not part of this format; use separate devices.
+Check syntax without simulation using `python competition/validate.py your.cir`.
 
 | Pins | Harness behavior |
 | --- | --- |
@@ -83,19 +105,50 @@ be positive literals: R in [1 Ω, 1 TΩ], C in [0.1 fF, 1 mF], and MOS W/L
 in [1 µm, 10 mm]. Maximum 20,000 components and 2 MB per submission. These broad
 prototype bounds are not manufacturing constraints or a credible chip-area budget.
 
-Protocol: `mnist4-circuit-learning-draft2`. Startup defaults to 1 ms (the learning
-tutorials explicitly use 20 ms), each example to 1 ms, maximum simulation timestep to
-10 µs, temperature to 27 °C. All sources and capacitor states start at zero;
+Protocol: `mnist4-circuit-learning-v0`. The named MNIST tasks fix startup to 20 ms,
+training to 20 passes, each example to 1 ms, maximum simulation timestep to
+10 µs, and temperature to 27 °C. All sources and capacitor states start at zero;
 startup energy is included. Inputs/targets transition over 1% of a slot.
 The reset pin permits circuits to initialize their weight capacitors by drawing
 metered energy from the bias rails; free precharged initial conditions are not accepted.
-Training defaults to one shuffled pass, followed by shuffled test examples in the
+Training uses shuffled passes, followed by shuffled test examples in the
 **same transient**, with stored state preserved. Test targets ramp to zero over
 the first 1% of the first test slot. Circuits must use `learn` to gate updates;
 the harness cannot guarantee a submitted circuit actually stops learning.
-`--epochs 0` supports inference experiments, but is not a separate finalized track.
+Without a named task, custom-run defaults are one training pass and 1 ms startup.
+`--epochs 0` supports untrained controls, but is not a ranked track.
 Changing timing, model, dataset, seed, epochs or simulator changes the benchmark
 configuration: results from different configurations must not share a ranking.
+
+The tutorial flags specify reproducible experiments, not minimum requirements for
+learning: blobs can already learn with fewer passes. Twenty milliseconds of startup
+gives the reset switches more initialization time; ten or twenty epochs give the
+chosen learner repeated training opportunities. Do not omit these flags when
+comparing to the published tutorial scores.
+
+The v0 harness uses ngspice's behavioral `pwl(time, ...)` to supply the same voltage
+waveforms, with series 0 V current meters. Native PULSE sources force the clock
+and startup ramp boundaries. This avoids a native voltage-source PWL breakpoint
+failure near four seconds in ngspice 46; removing redundant flat points alone was
+not sufficient. Behavioral sources are allowed **only in the organizer's harness**,
+not in submissions, and perform no learning or classification. Xyce continues to
+use its native PWL voltage sources. The disconnected startup timing source has
+zero current and delivers no energy to the circuit.
+
+The runner also removes redundant flat points, saves only needed vectors, and writes
+higher-precision ngspice traces. A varying-input learner regression crosses four
+seconds without changing the 10 µs maximum timestep. A full ten-digit run also
+completes its 5.32-second schedule. See the [run records](../docs/TUTORIAL_RESULTS.md)
+for identifiers; previous draft harness hashes necessarily differ.
+
+## Running other people's circuits
+
+Use the [isolated Docker backend](container/README.md), not your unrestricted local
+simulator, for third-party submissions. `--docker-image` exposes only the generated
+simulator work directory, with no network, a non-root user, and resource limits.
+The Python runner still needs to be trusted; do not substitute a PR's modified
+runner or execute its generator during organizer scoring. Use a disposable machine
+without credentials for additional separation.
 
 ## Energy definition
 
@@ -125,46 +178,13 @@ They do not establish realistic layout parasitics, device leakage, area, process
 variation, or fabricated-chip energy. Before claiming physical efficiency, select
 and validate a redistributable technology model plus geometry/parasitic rules.
 
-## Before opening submissions
+## Rules and result verification
 
-- Agree on the learning task: on-chip training and inference, pretrained inference,
-  or separately ranked tracks. Decide whether designs may encode pretrained weights
-  in component values; a netlist parser cannot prove learning happened from scratch.
-- The tutorial's DIRECT delta-rule learner is adapted and measured on blobs and
-  three MNIST classes. Extend validation to harder datasets, different learning
-  rules, more seeds and ten classes. The historical scripts' published accuracies
-  do not transfer to this protocol automatically.
-- Freeze the circuit interface, resolution, supply, output load, training budget,
-  latency, seeds, allowed components and technology. Package a pinned simulator
-  build/container digest and dependency versions. Xyce and ngspice share the circuit
-  format here, but only one pinned backend should decide official scores.
-- Tests cover known resistor power, a MOS charging a storage capacitor through a
-  target pin, and retention after training on both simulators. Broaden these checks
-  to representative learners; repeat candidate scores at smaller timesteps and tighter tolerances to establish
-  an acceptance tolerance. Cross-check finalists with the other simulator.
-- Publish a development dataset and a leaderboard policy. `prepare_mnist.py` keeps
-  the official 60k/10k source splits separate, records source hashes, then selects
-  balanced subsets. `--labels` selects a subset and `--normalize zscore` enables
-  per-image contrast normalization after block averaging. `--download` obtains the
-  original archives from the torchvision mirror and checks their published MD5
-  checksums; preparation records SHA-256 hashes too. The repository's
-  existing pooled 70k caches are deliberately not used because they lack split
-  provenance. Standard MNIST test data is public: keeping its labels out of SPICE
-  prevents direct harness leakage but does not make it a secret test set. Plan a
-  separately collected final set or explicitly disclose this limitation.
-- Rank the accuracy–energy Pareto frontier at a fixed latency/budget, or publish
-  minimum-accuracy tiers with lowest J/image winning. Keep training energy visible;
-  if combining it with inference, fix an amortization workload in advance.
-- Run third-party submissions in disposable, unprivileged isolation with no network,
-  secrets or host mounts and with CPU, memory, process, file-size and wall-time caps.
-  This prototype validates a narrow format, disables ngspice startup files, and uses
-  a temporary directory and timeout; **it is not a security sandbox**. Do not expose
-  it directly as an upload-and-run service.
-- Publish submission licensing, attribution, resource-limit/failure policy and
-  reproducible result artifacts. Submission intake and a hosted leaderboard are
-  not implemented here. Development submissions are accepted through pull requests;
-  see [submission instructions](../submissions/README.md).
-
+The [v0 rules](RULES.md) fix the learning task, budgets, ranking, licensing,
+and failure policy. The [organizer workflow](MAINTAINERS.md) describes independent
+reruns and recording results. Public evaluation labels are a deliberate limitation:
+keeping labels out of the SPICE harness does not make MNIST a secret test set.
+Future tasks or more realistic device models need a new version and separate scores.
 References: [ngspice documentation](https://ngspice.sourceforge.io/docs.html),
 [Xyce](https://xyce.sandia.gov/),
 [Xyce documentation](https://xyce.sandia.gov/documentation-tutorials/), and the

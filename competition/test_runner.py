@@ -50,7 +50,9 @@ class ProtocolTests(unittest.TestCase):
     def test_checked_in_baselines_match_generator(self):
         self.assertEqual((ROOT / "examples/blobs.cir").read_text(), circuit(2, [0, 1]))
         self.assertEqual((ROOT / "examples/mnist_017.cir").read_text(), circuit(16, [0, 1, 7]))
-        for name in ("blobs.cir", "mnist_017.cir"):
+        self.assertEqual((ROOT / "examples/mnist_017_tuned.cir").read_text(), circuit(16, [0, 1, 7], 16e-6))
+        self.assertEqual((ROOT / "examples/mnist_10.cir").read_text(), circuit(16, list(range(10))))
+        for name in ("blobs.cir", "mnist_017.cir", "mnist_017_tuned.cir", "mnist_10.cir"):
             validate_submission(ROOT / "examples" / name)
 
     def test_preprocessing_and_balanced_selection(self):
