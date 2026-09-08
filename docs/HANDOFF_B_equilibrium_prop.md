@@ -35,7 +35,7 @@ honest about what does and doesn't converge.
   models device noise.
 
 ## Context from the project (read for device models + constraints)
-In `/mnt/user-data/outputs/`: `xor_full.cir` (a working *backprop* trainer — the OTHER fork; NOT a
+In `/mnt/user-data/outputs/`: [xor_full.cir](../circuits/xor_full.cir) (a working *backprop* trainer — the OTHER fork; NOT a
 template here because it's non-reciprocal, but its MOSFET model cards and structure are reference),
 `SURROGATE_STUDY.md` / `README.md` (project context, device constants, the user's hard constraints),
 `surrogate.py` / `mc_experiment.py` (the backprop surrogate — note: it CANNOT model EP, because it

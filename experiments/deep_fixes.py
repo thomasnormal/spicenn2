@@ -1,7 +1,8 @@
+from pathlib import Path
 import numpy as np
 from mc_experiment import keystone, NORMS, onehot, make_blobs, scale_fit, scale_apply
 from surrogate import relu_act, VC, Gs, VREFH, RTH, VREFO, RTO, HI, VG0, VT_REL, RH, BETA_REL
-kg,clamp=np.load('cal.npy'); ORTH_SCALE=1.2
+kg,clamp=np.load(Path(__file__).resolve().parent / "fixtures" / "cal.npy"); ORTH_SCALE=1.2
 def relu_g(z,gain,clmp):
     I=0.5*BETA_REL*np.clip(z-VT_REL,0,None)**2
     return np.clip(VG0+gain*RH*I, VG0, clmp)

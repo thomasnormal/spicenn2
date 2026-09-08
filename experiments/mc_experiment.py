@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # Multi-class scaling experiment on the circuit-faithful surrogate (batch-vectorized).
+from pathlib import Path
 import numpy as np
 from surrogate import iDS, diode, relu_act, VC, Gs, VREFH, RTH, VREFO, RTO, HI, LO, VT_REL
-kg,clamp = np.load('cal.npy')
+kg,clamp = np.load(Path(__file__).resolve().parent / "fixtures" / "cal.npy")
 
 def solve_col(gp, X, iters=12):
     # gp:(No,Nin), X:(B,Nin) -> Icol:(B,No)

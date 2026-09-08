@@ -4,6 +4,7 @@
 # (tg_c) are DC sources; the Python controller `alter`s them per example and advances the
 # continuous, state-preserving simulation one slot at a time. Learning stays in-circuit.
 # Usage: env (same as gen_mc) DATAFILE=... stream_mc.py <N_slots>
+from pathlib import Path
 import subprocess, time, numpy as np, os, re, sys
 def ef(k,d): return float(os.environ.get(k,d))
 def ei(k,d): return int(os.environ.get(k,d))
@@ -12,7 +13,7 @@ INLO=ef("INLO","0.3"); INHI=ef("INHI","1.7"); AULO=0.3; AUHI=1.0
 N=int(sys.argv[1]) if len(sys.argv)>1 else 1500
 
 # 1. generate the (sparse, digit) trainer deck with PWL sources; parse weight nodes; make DC/stream deck
-subprocess.run([sys.executable,"gen_mc.py","40","0.3","5e-4"],check=True,stdout=subprocess.DEVNULL)
+subprocess.run([sys.executable,str(Path(__file__).resolve().with_name("gen_mc.py")),"40","0.3","5e-4"],check=True,stdout=subprocess.DEVNULL)
 deck=open("mc.cir").read().splitlines()
 GP=re.findall(r"v\(([^)]+)\)", [l for l in deck if l.startswith("  wrdata mc_weights.txt")][0])
 ic_idx=max(i for i,l in enumerate(deck) if l.startswith(".ic"))
@@ -70,9 +71,9 @@ except: p.kill()
 w=np.loadtxt("wfinal.txt")[-1,1::2]
 row=np.empty(2*len(w)); row[0::2]=np.arange(len(w)); row[1::2]=w; np.savetxt("isnap.txt",row[None,:])
 if os.path.exists("mc_infer_trace.txt"): os.remove("mc_infer_trace.txt")
-subprocess.run([sys.executable,"gen_mc_infer.py"],
+subprocess.run([sys.executable,str(Path(__file__).resolve().with_name("gen_mc_infer.py"))],
                env=dict(os.environ,WFILE="isnap.txt",AVGW="1",DATAFILE_TE=os.environ.get("DATAFILE_TE","digits_test.npz")),
                stdout=subprocess.DEVNULL,check=True)
 subprocess.run(["ngspice","-b","mc_infer.cir"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 print("frozen score of STREAM-trained weights:")
-subprocess.run([sys.executable,"score_mc.py","stream-digits"],env=dict(os.environ,C=str(C)))
+subprocess.run([sys.executable,str(Path(__file__).resolve().with_name("score_mc.py")),"stream-digits"],env=dict(os.environ,C=str(C)))

@@ -1,10 +1,11 @@
 #!/bin/bash
+SPICENN_ROOT=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd) || exit 1
 # Isolated single-run C=10 trainer (zero-sum targets + tuned per-class auto-zero).
 # Each run gets its OWN temp dir so concurrent runs never clobber shared deck/weight files.
 # Usage: bash run_iso.sh <DIR> <N> <NTR> <NTE> <SLOTS>
 DIR=$1; N=$2; NTR=${3:-40}; NTE=${4:-60}; SLOTS=${5:-8000}
 rm -rf "$DIR" && mkdir -p "$DIR" && cd "$DIR" || exit 1
-cp ~/spicenn2/gen_mc.py ~/spicenn2/gen_mc_infer.py ~/spicenn2/score_mc.py ~/spicenn2/mnist_8x8.npz .
+cp "$SPICENN_ROOT/experiments/gen_mc.py" "$SPICENN_ROOT/experiments/gen_mc_infer.py" "$SPICENN_ROOT/experiments/score_mc.py" "$SPICENN_ROOT/mnist_8x8.npz" .
 python3 - "$N" "$NTR" "$NTE" <<'PY'
 import numpy as np, sys
 N,ntr,nte=int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3])
@@ -26,7 +27,7 @@ print('N=%d ideal=%.1f%%'%(N,100*LogisticRegression(max_iter=400).fit((Xtr+1)/2,
 PY
 SYNW=$(python3 -c "print(round(4*96/$N,3))")
 B="D=$N C=10 DIRECT=1 INIT=0.1 INLO=0.3 INHI=1.7 VREFH=0.5 SYNW=$SYNW RTO=7e3 OWTW=20 OCMSUB=1 TGHI=0.8 TGLO=0.467 PERAZ=1 RAZ=6e3 CAZ=3e-3"
-env $B DATAFILE=digits_train.npz SEED=1 python3 gen_mc.py $SLOTS 0.3 1.5e-3 >/dev/null
+env $B DATAFILE=digits_train.npz SEED=1 python3 "$SPICENN_ROOT/experiments/gen_mc.py" $SLOTS 0.3 1.5e-3 >/dev/null
 T0=$(date +%s); ngspice -b mc.cir >/dev/null 2>&1; echo "train $(($(date +%s)-T0))s"
-env $B DATAFILE_TE=digits_test.npz AVGW=20 python3 gen_mc_infer.py >/dev/null; ngspice -b mc_infer.cir >/dev/null 2>&1
-printf "N=%s tuned-PERAZ: " "$N"; C=10 python3 score_mc.py ""
+env $B DATAFILE_TE=digits_test.npz AVGW=20 python3 "$SPICENN_ROOT/experiments/gen_mc_infer.py" >/dev/null; ngspice -b mc_infer.cir >/dev/null 2>&1
+printf "N=%s tuned-PERAZ: " "$N"; C=10 python3 "$SPICENN_ROOT/experiments/score_mc.py" ""

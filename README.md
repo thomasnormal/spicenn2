@@ -21,27 +21,24 @@ training or inference path.
 | VT-mismatch dose-response (σ = 0/2/5/10 mV) | 0.84 / 0.46 / 0.31 / chance |
 | VT-mismatch **rescue** (bias + sign-update + freeze, 5-chip MC @2mV) | dead → **0.78 mean**, yield 1/3 → **5/5** |
 
-The full worked/refuted experiment record is **[IDEAS_LEDGER.md](IDEAS_LEDGER.md)** — every idea tried,
+The full worked/refuted experiment record is **[the experiment ledger](docs/IDEAS_LEDGER.md)** — every idea tried,
 every number, including the failures.
 
 ## Repo map
 
-```
-pc_deep.py        THE main learner: deep sparse PC/EP nets, deck generation + Spectre run + scoring.
-                  Env-knob driven (SOFTC soft β-nudge, BKSIGN, MMVT mismatch, MASKSSL, LATINH,
-                  WSAVE/WLOAD, REUSE, ...). See IDEAS_LEDGER.md for working configs.
-mm_queue.sh       Launcher for mismatch Monte-Carlo chips on the depth-4 baseline.
-IDEAS_LEDGER.md   The campaign record (read this first).
-paper/            paper.tex — LaTeX draft with circuitikz cell schematics
-                  (compile: `tectonic paper.tex`), plus the markdown pre-draft.
-fastsim/          Device-faithful fast surrogate (devnet.py, devmodel.py, fasttrain.py) and
-                  characterization decks/tables. Honest caveat: the surrogate under-predicts real
-                  Spectre training outcomes — see paper §Limitations.
-docs/             Findings documents from each era (depth, digits, EP, surrogate study, XOR backprop...).
-experiments/      Historical one-off trainers and run scripts from earlier eras (XOR, MNIST pyramid,
-                  chopper/CDS, in-SPICE pc_spice, 2D benchmark generators gen_*). Kept for the record;
-                  most expect to run from the repo root and reference era-specific decks.
-```
+| Start here | Contents |
+| --- | --- |
+| [pc_deep.py](pc_deep.py) | Main circuit learner: generate a deck, simulate, and score |
+| [circuits/](circuits/README.md) | Reference cell circuits and worked XOR examples |
+| [experiments/](experiments/README.md) | Historical trainers, generators, and calibration fixtures |
+| [scripts/](scripts/README.md) | Experiment launchers and batch runs |
+| [docs/](docs/README.md) | Findings, experiment ledger, figures, and saved result summaries |
+| [fastsim/](fastsim/) | Device-level numerical surrogate and characterization tables |
+| [paper/](paper/) | LaTeX manuscript sources; publication figures are in [figs/](figs/) |
+
+The main learner is configured through environment variables; working configurations
+are recorded in the ledger. The numerical surrogate under-predicts some real Spectre
+training outcomes; see the paper's limitations.
 
 ## Reproducing a run
 

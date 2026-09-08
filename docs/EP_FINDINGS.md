@@ -89,7 +89,7 @@ literally *is* the gate voltage), per-synapse 4-quadrant cells physically correl
 pre/post activities and chopper the two-phase (nudge−free) difference back onto the caps, a PWL
 phase clock drives free/nudge, and the output is nudged toward the target by switch transistors.
 The controller only *writes the PWL schedule* (inputs, target, clock) — it never computes a
-gradient or a weight. ~400–700 MOSFETs depending on width. See `ep_e2e.png`.
+gradient or a weight. ~400–700 MOSFETs depending on width. See [ep_e2e.png](figures/ep_e2e.png).
 
 **What is demonstrated (all in-circuit, one `.tran`):**
 1. **A minimal 1-weight EP regression trains from scratch** — the weight cap converges so the
@@ -184,10 +184,10 @@ honest lever for reliability was the local update rule + the controller, not neu
 Recipe: `NHID=12 UPDATE=sqdiff ANNEAL=cos AFLOOR=0.05 DECAY=0.02 MOM=0.3 ITERS=220 FREEZE=1
 MARGIN=0.15 HOLD=2 NRESTART=4 STALLW=80` (USIGN=−1, WLOAD=3000u, RB=2e5, TD=0.10). The update
 primitive here is a numpy *rule-screen*; the *physical* single-NMOS squarer cell that computes
-it is validated separately in Xyce (`nmos_cell.cir`, below).
+it is validated separately in Xyce ([nmos_cell.cir](../circuits/nmos_cell.cir), below).
 
 ## (a) RISK 1 — the reciprocal network relaxes to a unique stable equilibrium
-`relax1.cir`: 3 inputs → 2 hidden → 1 output, fully-connected **symmetric two-terminal
+[relax1.cir](../circuits/relax1.cir): 3 inputs → 2 hidden → 1 output, fully-connected **symmetric two-terminal
 conductances** (ideal resistors here, to isolate the relaxation question), diode-clamp
 neurons, a capacitor per free node. `.tran` to 300 ns.
 
@@ -198,7 +198,7 @@ neurons, a capacitor per free node. `.tran` to 300 ns.
   co-content energy, and the circuit physically minimises it. Confirmed.
 
 ## (b) RISK 2 — the programmable triode conductance is reciprocal and gate-settable
-`rec2.cir`: one NSYN NMOS (`LEVEL=1 VTO=0.2 KP=50u LAMBDA=0`) in triode as a two-terminal
+[rec2.cir](../circuits/rec2.cir): one NSYN NMOS (`LEVEL=1 VTO=0.2 KP=50u LAMBDA=0`) in triode as a two-terminal
 conductance; common mode held fixed, both terminals driven symmetrically; current read with
 a series ammeter.
 
@@ -235,7 +235,7 @@ realised as a gate-voltage nudge. Each conductance updates only from the squared
 runs on the controller — sanctioned for the principle demo; the all-transistor update cell is
 the next build, not this milestone.)
 
-Result (`ep_findings.png`):
+Result ([ep_findings.png](figures/ep_findings.png)):
 
 | task | loss start → end | corners | learned outputs o* | targets |
 |---|---|---|---|---|
@@ -276,7 +276,7 @@ working in silicon.
    consistent with EP's known robustness, and with "the math doesn't have to be exact as long
    as it trains."
 
-## Follow-up — idea 2 validated: the reciprocal cell that unblocks depth (`rec3.cir`, `rec3b.cir`)
+## Follow-up — idea 2 validated: the reciprocal cell that unblocks depth ([rec3.cir](../circuits/rec3.cir), [rec3b.cir](../circuits/rec3b.cir))
 The binding constraint above (small-Vds reciprocity) is **removed** by building the conductance
 as a **CMOS transmission gate** instead of a single triode. Correct reciprocity metric: the
 energy needs Jacobian symmetry `∂I/∂Va + ∂I/∂Vb = 0`, which in common-mode/differential
@@ -310,7 +310,7 @@ Measured (NMOS W=200/L=100 + PMOS W=250/L=100, `PSYN` = PMOS triode VTO=−0.2 K
 **Consequence:** ideas 1 (one-port nonlinear neuron) + 2 (this cell) together remove both halves
 of the XOR blocker — strong in-range nonlinearity *and* exact reciprocity at full swing. The
 natural next experiment is to rerun XOR with T-gate synapses + a one-port neuron at full swing.
-Figure: `ep_reciprocal_cell.png`.
+Figure: [ep_reciprocal_cell.png](figures/ep_reciprocal_cell.png).
 
 ## XOR redux with the unblocks — and the deeper wall it exposed (`ep_xor2.py`, `ep_active.py`)
 Rebuilt the nonlinear net with T-gate synapses + one-port (clamp) neurons at full swing. **It
@@ -326,7 +326,7 @@ still does not train XOR**, and chasing why produced the most important finding 
   whole net is effectively linear. **Reciprocity (idea 2) was necessary but not sufficient — the
   missing ingredient is gain.** (This is also why OR/AND had only soft margins, and it is the EP
   twin of the surrogate's "stacked lossy analog neurons destroy signal" depth limit.)
-- **Fix identified and confirmed (`ep_active.py`, `ep_gain_diagnosis.png`):** in a Hopfield/EP
+- **Fix identified and confirmed (`ep_active.py`, [ep_gain_diagnosis.png](figures/ep_gain_diagnosis.png)):** in a Hopfield/EP
   network the *synapses* must be reciprocal but the *neurons* may be **active high-gain
   amplifiers** — gain in the neuron does **not** break the symmetric-synapse energy. Holding
   reciprocal averaging synapses fixed and sweeping neuron gain:
@@ -349,7 +349,7 @@ two-phase EP training (not just representability) on XOR.
 
 ## Full transistor XOR training attempt — representable, but EP gradient is invalid (the real wall)
 Built the validated recipe end-to-end (`ep_xor_train.py`): reciprocal T-gate synapses + **active
-high-gain inverter neurons** (`neuron_char.cir`: low-Vt CMOS inverter, gain≈14 under load, clean
+high-gain inverter neurons** ([neuron_char.cir](../circuits/neuron_char.cir): low-Vt CMOS inverter, gain≈14 under load, clean
 0–1 swing, complement output), in a **recurrent** 2-2-1 net with bidirectional weight-shared
 hidden↔output coupling so the output nudge can propagate back (the EP signal path).
 
@@ -385,7 +385,7 @@ It reuses the backprop fork's transconductance synapse, symmetrized. **Status: X
 ngspice is NOT yet achieved; the blocker is identified and FD-validated, and the next architecture
 is specified.**
 
-## RESOLVED — current-mode EP trains XOR in ngspice (`ep_cm.py`, `ep_deep.py`, `tc_cell.cir`)
+## RESOLVED — current-mode EP trains XOR in ngspice (`ep_cm.py`, `ep_deep.py`, [tc_cell.cir](../circuits/tc_cell.cir))
 The wall above was beaten. The fix is exactly idea 1: **current-mode synapses**. Found by using
 the finite-difference gradient check (idea 9) as a design instrument — it isolated every bug.
 
@@ -409,11 +409,11 @@ local weight update runs on the controller):
 | 4 | 4/5 |
 | **6** | **5/5** (three at loss = 0 exactly: `u_o=[0.15,0.85,0.85,0.15]`) |
 
-Loss falls 0.58 → 0 with clean convergence (`ep_xor_trained.png`). **Width buys reliability** —
+Loss falls 0.58 → 0 with clean convergence ([ep_xor_trained.png](figures/ep_xor_trained.png)). **Width buys reliability** —
 the surrogate's "spend transistors on width" reproduced for EP. This is the milestone: XOR, the
 first nonlinearly-separable task, trained by two-phase EP in SPICE with a local update.
 
-**The synapse is buildable (`tc_cell.cir`).** A 5-transistor OTA transconductor (our NNR/PNR
+**The synapse is buildable ([tc_cell.cir](../circuits/tc_cell.cir)).** A 5-transistor OTA transconductor (our NNR/PNR
 devices) gives output current `gm·(a_in−0.5)` into the node: signed (crosses zero at 0.5),
 gm programmable by the weight/tail voltage (46→59 µS), and **high Zout** (current flat at −13.5 µA
 across the output range = true current source). The current-mode synapse is realizable in the
@@ -441,9 +441,9 @@ correlation-update cell (a multiplier + charge pump). All are validated-buildabl
 ## FULLY-TRANSISTOR EP trains XOR — zero behavioral sources (`ep_tcm.py`)
 The behavioral cells were replaced with real transistors and the whole net trains XOR in ngspice.
 
-- **Cells:** synapse = 5-transistor OTA transconductor (the validated `tc_cell.cir`), signed via a
+- **Cells:** synapse = 5-transistor OTA transconductor (the validated [tc_cell.cir](../circuits/tc_cell.cir)), signed via a
   differential `w⁺/w⁻` OTA pair driven by the neuron's `a`/`ac`; neuron = 3-transistor diff-pair
-  amplifier (`neuron2.cir`, gain ≈7, increasing, with complement); state node = a leak resistor;
+  amplifier ([neuron2.cir](../circuits/neuron2.cir), gain ≈7, increasing, with complement); state node = a leak resistor;
   symmetric hidden↔output coupling shares the stored weight (transport-free). Weights are gate
   voltages; only the local correlation update runs on the controller.
 - **Deck audit:** `grep` confirms **0 behavioral/dependent (B/E/G/H) sources** and **366 MOSFETs**
@@ -453,7 +453,7 @@ The behavioral cells were replaced with real transistors and the whole net train
 - **It trains XOR and converges stably.** With a gentle optimizer (η=0.008, mom=0.3) seed 2 reaches
   **loss 3e-5, 4/4, `u_o=[0.432,0.565,0.561,0.432]`** = the XOR targets, and *stays* there.
   **All 5/5 seeds reach 4/4** (seed 0 hits loss = 0 exactly). A too-high learning rate oscillates
-  (finds XOR early then drifts); the gentle rate converges monotonically. Figure: `ep_xor_transistors.png`.
+  (finds XOR early then drifts); the gentle rate converges monotonically. Figure: [ep_xor_transistors.png](figures/ep_xor_transistors.png).
 
 **The analog hurdle, named honestly:** the single-ended OTA pair has a **systematic source/sink
 offset** (the `w⁺` branch sinks via NMOS, `w⁻` sources via PMOS — different devices don't cancel),
@@ -476,7 +476,7 @@ fully-differential fixes all of it at once.
 
 - **The differential signal IS the signed representation** → the complement is free (no separate
   `ac` path), and common-mode/offset is **rejected**. The synapse becomes two **crossed NMOS diff
-  pairs** (`dsyn`, 6T) — the mirror is gone. Validated (`dsyn_test.cir`): signed transfer, and
+  pairs** (`dsyn`, 6T) — the mirror is gone. Validated ([dsyn_test.cir](../circuits/dsyn_test.cir)): signed transfer, and
   **exactly 0 output at zero weight** (offset eliminated). State nodes use diode-PMOS loads that
   hold the common mode (the one new subtlety — the summed sink current droops the CM, so loads must
   source the fan-in current; sized once, the CM holds at ~0.49).
@@ -486,7 +486,7 @@ fully-differential fixes all of it at once.
 - **Much bigger margins:** trained `dout = [−115, +118, +118, −115] mV` (±~5× the single-ended
   ±30 mV about threshold) — because there's no offset to fight, the signal swings freely.
 - **Trains XOR reliably and scales with width:** stable 4/4 on **5/8 seeds at width 6, 7/8 at
-  width 8** (width buys reliability, as the surrogate predicted). Figure: `ep_xor_differential.png`.
+  width 8** (width buys reliability, as the surrogate predicted). Figure: [ep_xor_differential.png](figures/ep_xor_differential.png).
 
 **Net effect of the refinement:** simpler synapse (6T vs 10T), ~40% fewer transistors, offset-free
 (the property that matters for scale and mismatch-robustness), cleaner gradient, and ~5× margins —
@@ -607,7 +607,7 @@ is solid where ngspice's was not — adopting it was the unblock).
 integrate) → a CM-sense resistor that doubles as the weight **leak** (the prior). Phase/inputs are
 controller voltages (allowed); the *update arithmetic* is the circuit.
 
-**The decisive principle (`ep_cell1.cir`):** phase-gated sign-flipped integration is a built-in
+**The decisive principle ([ep_cell1.cir](../circuits/ep_cell1.cir)):** phase-gated sign-flipped integration is a built-in
 chopper — net ΔVw was **+27.5 mV regardless of an injected multiplier offset of 0, 1 µA, or 5 µA**
 (the free phase dips harder but the cycle-net is unchanged). The two-phase difference *is* the
 offset canceller, provided the two phases are equal duration.
@@ -625,7 +625,7 @@ wiring it to real neurons + synapse so the weight learns itself in one `.tran` �
 residual offset (~0.6 mV/cyc, charge injection / CMFB asymmetry) would accumulate over very long
 training (lock-in / dummy switches fix it); gain compresses at large steps; the leak sets the weight
 dynamic range. But the core is real: **the local EP weight update is now a transistor circuit.**
-Tooling: `gen_cell_scs.py` (Spectre deck gen), `specparse.py` (nutascii reader), `ep_cell1.cir`
+Tooling: `gen_cell_scs.py` (Spectre deck gen), `specparse.py` (nutascii reader), [ep_cell1.cir](../circuits/ep_cell1.cir)
 (ngspice principle test).
 
 ## Do we need the Gilbert? No — a SINGLE NMOS suffices (`gen_nmos_cell.py`, Xyce)
@@ -656,26 +656,26 @@ So the update *multiply* drops from 7 transistors to **1** (operating with Δv k
 2-NMOS pair covers the full range). Xyce ran the stiff switch+integrator deck cleanly (`.tran` with
 `gmin`/`voltagelimiterflag` + balanced `.ic`/UIC, per SIMULATORS.md). Remaining: close the loop —
 drive the actual XOR network's weights with these cells in one `.tran`. Caveat: `ep_dtcm.py prim()`
-is a numpy *rule-screen* (behavioral); the *cell* (`nmos_cell.cir`) is the transistor proof.
+is a numpy *rule-screen* (behavioral); the *cell* ([nmos_cell.cir](../circuits/nmos_cell.cir)) is the transistor proof.
 
 ## Files
-- `gen_nmos_cell.py` / `nmos_cell.cir` — single-NMOS squarer update cell (Xyce-validated).
+- `gen_nmos_cell.py` / [nmos_cell.cir](../circuits/nmos_cell.cir) — single-NMOS squarer update cell (Xyce-validated).
 - `gen_cell_scs.py` / `ep_cell.scs` — transistor EP update cell, Gilbert version (Spectre); `specparse.py` — raw reader.
 - `ng_live.py` — persistent interactive-ngspice driver (the requested live control loop).
 - `ep_digits.py` — sklearn-digits EP on the live process (4×4, C classes, fan-in-scaled, batch EP).
 - `ep_mc.py` — multi-class differential EP (flexible N/C/width; sum-mod-C; fan-in-scaled CM).
 - `ep_dtcm.py` — fully-differential transistor EP (218 MOSFETs, offset-free, the refined design);
-  `dsyn_test.cir` — differential synapse cell (offset-free validation); `ep_xor_differential.png`.
+  [dsyn_test.cir](../circuits/dsyn_test.cir) — differential synapse cell (offset-free validation); [ep_xor_differential.png](figures/ep_xor_differential.png).
 - `ep_tcm.py` — single-ended fully-transistor EP (trains XOR, 366 MOSFETs, 0 B-sources);
-  `tc_cell.cir`, `neuron2.cir` — the validated synapse/neuron cells; `ep_xor_transistors.png` — result.
+  [tc_cell.cir](../circuits/tc_cell.cir), [neuron2.cir](../circuits/neuron2.cir) — the validated synapse/neuron cells; [ep_xor_transistors.png](figures/ep_xor_transistors.png) — result.
 - `ep_cm.py` — behavioral current-mode EP (method validation); `ep_deep.py` — layer-based (depth).
-- `tc_cell.cir` — transistor OTA transconductor synapse (validated); `ep_xor_trained.png` — learning curve.
-- `ep_xor_train.py` — earlier T-gate + active neuron recurrent net (diagnostic); `neuron_char.cir` — neuron.
+- [tc_cell.cir](../circuits/tc_cell.cir) — transistor OTA transconductor synapse (validated); [ep_xor_trained.png](figures/ep_xor_trained.png) — learning curve.
+- `ep_xor_train.py` — earlier T-gate + active neuron recurrent net (diagnostic); [neuron_char.cir](../circuits/neuron_char.cir) — neuron.
 - `ep_gradcheck.py` — finite-difference validation of the EP gradient (the decisive diagnostic).
 - `ep_xor2.py` — T-gate + one-port neuron nonlinear net; `ep_xor_search.py` — representability search.
-- `ep_active.py` — neuron-gain diagnosis; `ep_gain_diagnosis.png` — the gain-vs-XOR-separation curve.
-- `rec3.cir`, `rec3b.cir` — reciprocal-cell (T-gate) validation; `ep_reciprocal_cell.png`.
-- `relax1.cir` — reciprocal relaxation network (RISK 1).
-- `rec2.cir` — triode-conductance reciprocity + programmability sweep (RISK 2).
+- `ep_active.py` — neuron-gain diagnosis; [ep_gain_diagnosis.png](figures/ep_gain_diagnosis.png) — the gain-vs-XOR-separation curve.
+- [rec3.cir](../circuits/rec3.cir), [rec3b.cir](../circuits/rec3b.cir) — reciprocal-cell (T-gate) validation; [ep_reciprocal_cell.png](figures/ep_reciprocal_cell.png).
+- [relax1.cir](../circuits/relax1.cir) — reciprocal relaxation network (RISK 1).
+- [rec2.cir](../circuits/rec2.cir) — triode-conductance reciprocity + programmability sweep (RISK 2).
 - `ep_train.py` — two-phase EP trainer (RISK 3); `ep_plot.py` — loss curves + truth tables.
-- `ep_findings.png` — loss curves (OR, AND, wrong-sign control) + learned truth tables.
+- [ep_findings.png](figures/ep_findings.png) — loss curves (OR, AND, wrong-sign control) + learned truth tables.

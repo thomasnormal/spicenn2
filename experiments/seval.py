@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Fast eval of frozen SPICE weights via the calibrated surrogate forward (predicts SPICE
 # inference; matched the collapse exactly). Reports hidden liveness + test argmax accuracy.
+from pathlib import Path
 import numpy as np, os, sys
 from surrogate import keystone, relu_act, VREFH as _vh, RTH, VREFO, RTO, VT_REL
 def ef(k,d): return float(os.environ.get(k,d))
@@ -8,7 +9,7 @@ def ei(k,d): return int(os.environ.get(k,d))
 D=ei("D",4); H=ei("H",8); C=ei("C",3)
 VREFH=ef("VREFH","0.5"); RTHe=ef("RTH","8e3"); RTOe=ef("RTO","7e3")
 INLO=ef("INLO","0.5"); INHI=ef("INHI","1.5")
-kg,clamp=np.load('cal.npy')
+kg,clamp=np.load(Path(__file__).resolve().parent / "fixtures" / "cal.npy")
 Wm=np.atleast_2d(np.loadtxt(os.environ.get("WFILE","mc_weights.txt")))[:,1::2]; AVG=ei("AVGW","1")
 W=Wm[-AVG:].mean(0)
 dat=np.load('mc_data.npz'); mn,mx=dat['mn'],dat['mx']; SPREAD=float(dat['spread'])

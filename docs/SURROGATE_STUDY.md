@@ -190,5 +190,5 @@ Going deeper is a forward-neuron design problem.
 - `surrogate.py` — device model, self-consistent col solve, calibrated forward (XOR validation).
 - `mc_experiment.py` — batched general net, transpose-read backward, normalization options, blob A/B.
 - `run_sweep.py`, `run_width.py` — timeout-robust sweep runners (incremental disk writes).
-- `results_hard.txt`, `results_width.txt`, `surrogate_results.json` — raw measurements.
-- `surrogate_findings.png` — the two figures above.
+- [results_hard.txt](results/results_hard.txt), [results_width.txt](results/results_width.txt), [surrogate_results.json](results/surrogate_results.json) — raw measurements.
+- [surrogate_findings.png](figures/surrogate_findings.png) — the two figures above.

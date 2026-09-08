@@ -1,4 +1,5 @@
 #!/bin/bash
+SPICENN_ROOT=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd) || exit 1
 # restart_run.sh — detect-and-restart wrapper for pc_deep.py (anti-lock remedy).
 # Anti-locked nets are PERFECTLY wrong (acc ~0 << chance), trivially detectable; re-roll WSEED and rerun.
 # Usage: env <all pc_deep knobs> RUNTAG=foo THRESH=0.5 TRIES=3 ./restart_run.sh
@@ -9,7 +10,7 @@ best=-1; bestlog=""
 for i in $(seq 0 $((TRIES-1))); do
   w=$((W0 + 10*i))
   log=${TAG}_t${i}.log
-  WSEED=$w RUNTAG=${TAG}_t${i} python3 -u pc_deep.py > "$log" 2>&1
+  WSEED=$w RUNTAG=${TAG}_t${i} python3 -u "$SPICENN_ROOT/pc_deep.py" > "$log" 2>&1
   acc=$(grep -m1 "TEST ACC" "$log" | sed 's/.*BEST(early-stop) = \([0-9.]*\).*/\1/')
   [ -z "$acc" ] && acc=0
   echo "[restart_run] try $i WSEED=$w best-acc=$acc"

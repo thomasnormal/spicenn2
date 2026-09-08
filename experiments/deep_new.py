@@ -3,11 +3,12 @@
 # Extends deep_fixes with: (A) analog layer-norm (divisive activity normalization between
 # layers, = the buildable competition primitive), and (C) stochastic weight noise (SGLD).
 # Baseline to beat: deep [8,8,8] gets train 58% / test 54% (chance 50%, can't even fit).
+from pathlib import Path
 import numpy as np, time
 import deep_fixes as df
 from mc_experiment import scale_fit, scale_apply, onehot
 from surrogate import relu_act, VC, Gs, VREFH, RTH, VREFO, RTO, HI, VG0, VT_REL, BETA_REL, RH
-kg,clamp=np.load('cal.npy')
+kg,clamp=np.load(Path(__file__).resolve().parent / "fixtures" / "cal.npy")
 
 def make_checker(n,seed,K=4,D=6):
     rng=np.random.default_rng(seed); uv=rng.uniform(0,1,(n,2))

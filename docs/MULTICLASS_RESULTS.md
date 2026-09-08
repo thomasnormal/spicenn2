@@ -1,6 +1,6 @@
 # Multi-class fully-transistor trainer — results
 
-Extends the working 2-input XOR in-circuit trainer (`xor_full.cir`) to a **parametric
+Extends the working 2-input XOR in-circuit trainer ([xor_full.cir](../circuits/xor_full.cir)) to a **parametric
 multi-class classifier** (D inputs, H hidden ReLU units, C output classes) with a
 **shared common-mode competition stage**. The forward pass, the transpose-read backward
 (summed over all C classes by KCL), and the OTA weight update all run continuously over one

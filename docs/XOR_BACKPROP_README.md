@@ -15,7 +15,7 @@ forward-only deck against the *real* output y):
 | output y | 0.23 | 1.01 | 0.60 | 0.36 |
 | target | 0 | 1 | 1 | 0 |
 
-**4/4 corners correct**, MSE 0.086 (averaged readout). See `xor_trans2_convergence.png`.
+**4/4 corners correct**, MSE 0.086 (averaged readout). See [xor_trans2_convergence.png](figures/xor_trans2_convergence.png).
 
 ### Honest caveats
 - The **(1,0) margin is soft** (~0.60, vs the other three corners which are crisp). It is
@@ -76,14 +76,14 @@ Treating the weights as noisy (which they are on real silicon) was tested:
 
 Reproducible toolchain (ngspice 42, numpy/matplotlib):
 - `gen_xor_full.py` - parameterized fully-transistor trainer (env-configurable;
-  `BWD=trans2` is the fully-transistor exact backward). Emits `xor_full.cir`.
+  `BWD=trans2` is the fully-transistor exact backward). Emits [xor_full.cir](../circuits/xor_full.cir).
 - `gen_infer.py` - env-aware forward-only frozen-weight deck (supports late-weight
   averaging `AVGW` and an inference-time perturbation `PERTURB` for robustness tests).
 - `score.py` - matches the 4 corners, samples settled y, reports MSE / corners.
 - `checkpoint_curve.py` - builds the honest checkpointed validation learning curve.
-- `plot_convergence.py` - renders `xor_trans2_convergence.png`.
-- `xor_full.cir` - the working deck (deterministic trans2, the config above).
-- `xor_trans2_convergence.png` - honest learning curve + frozen truth table.
+- `plot_convergence.py` - renders [xor_trans2_convergence.png](figures/xor_trans2_convergence.png).
+- [xor_full.cir](../circuits/xor_full.cir) - the working deck (deterministic trans2, the config above).
+- [xor_trans2_convergence.png](figures/xor_trans2_convergence.png) - honest learning curve + frozen truth table.
 
 To reproduce:
 ```
@@ -93,7 +93,7 @@ python3 gen_xor_full.py 600 0.3 5e-4 && ngspice -b xor_full.cir
 AVGW=30 python3 gen_infer.py && ngspice -b xor_infer.cir && python3 score.py result
 ```
 
-Component-characterization figures from earlier validation are retained: `real_synapse.png`
-(synapse forward multiply), `real_cells.png` (cell behaviors). The chasing-era convergence
+Component-characterization figures from earlier validation are retained: [real_synapse.png](figures/real_synapse.png)
+(synapse forward multiply), [real_cells.png](figures/real_cells.png) (cell behaviors). The chasing-era convergence
 figures have been removed; they did not measure the real output and were superseded by the
 checkpointed curve here.

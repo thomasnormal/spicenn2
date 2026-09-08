@@ -3,11 +3,12 @@
 # Each forward layer l is trained ONLY by its own auxiliary linear head -> target (a 1-hop,
 # shallow gradient where the analog approximate gradient actually works). No deep backprop
 # chain to get stuck. Final prediction = deepest head. Compare to shallow and to deep-backprop.
+from pathlib import Path
 import numpy as np, time
 import deep_fixes as df
 from mc_experiment import scale_fit, scale_apply, onehot
 from surrogate import VC, Gs, VREFH, RTH, VREFO, RTO, HI, VG0, VT_REL, BETA_REL, RH
-kg,clamp=np.load('cal.npy')
+kg,clamp=np.load(Path(__file__).resolve().parent / "fixtures" / "cal.npy")
 
 def relu_g(z):
     I=0.5*BETA_REL*np.clip(z-VT_REL,0,None)**2

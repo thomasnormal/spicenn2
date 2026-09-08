@@ -1,11 +1,12 @@
 #!/bin/bash
+SPICENN_ROOT=$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd) || exit 1
 # Stable in-circuit 10-class MNIST training (the zero-sum-target breakthrough, IDEAS2 #7).
 # Fixed-random nonlinear expansion (8x8 zscore -> N tanh features, fan-in 4) + a single trained
 # DIRECT linear readout, trained fully in ngspice with ZERO-SUM TARGETS that stop the multi-class
 # drift-collapse: TGHI=0.8, TGLO = vrefo - (TGHI-vrefo)/(C-1) = 0.467 for C=10.
 # Verified: N=96 -> 64.8% all-10-classes stable (was collapsing to 14% with one-hot targets).
 # RULES (learned the hard way): run ONE at a time, do NOT pkill (it races your own run).
-cd ~/spicenn2
+cd "$SPICENN_ROOT"
 N=${N:-96}; NTR=${NTR:-25}; NTE=${NTE:-40}; SLOTS=${SLOTS:-9000}; CG=${CG:-1.5e-3}
 python3 - "$N" "$NTR" "$NTE" <<'PY'
 import numpy as np, sys
@@ -28,9 +29,9 @@ print('N=%d ideal linear=%.1f%%'%(N,100*LogisticRegression(max_iter=400).fit((Xt
 PY
 SYNW=$(python3 -c "print(round(4*96/$N,2))")   # scale synapse current down as fan-in N grows
 B="D=$N C=10 DIRECT=1 INIT=0.1 INLO=0.3 INHI=1.7 VREFH=0.5 SYNW=$SYNW RTO=7e3 OWTW=20 OCMSUB=1 TGHI=0.8 TGLO=0.467"
-env $B DATAFILE=digits_train.npz SEED=1 python3 gen_mc.py $SLOTS 0.3 $CG >/dev/null
+env $B DATAFILE=digits_train.npz SEED=1 python3 "$SPICENN_ROOT/experiments/gen_mc.py" $SLOTS 0.3 $CG >/dev/null
 echo "MOS=$(grep -c '^M' mc.cir)  training $SLOTS slots..."
 T0=$(date +%s); ngspice -b mc.cir >/dev/null 2>&1; echo "train $(($(date +%s)-T0))s"
-env $B DATAFILE_TE=digits_test.npz AVGW=20 python3 gen_mc_infer.py >/dev/null
+env $B DATAFILE_TE=digits_test.npz AVGW=20 python3 "$SPICENN_ROOT/experiments/gen_mc_infer.py" >/dev/null
 ngspice -b mc_infer.cir >/dev/null 2>&1
-printf "N=%s C=10 zero-sum: " "$N"; C=10 python3 score_mc.py ""
+printf "N=%s C=10 zero-sum: " "$N"; C=10 python3 "$SPICENN_ROOT/experiments/score_mc.py" ""

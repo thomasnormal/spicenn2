@@ -15,16 +15,17 @@ git clone --depth 1 https://github.com/thomasnormal/spicenn2.git
 
 ## Retained assets
 
-- Root-level reference `.cir` decks are listed explicitly in `.gitignore`. These
+- Reference `.cir` decks live in `circuits/`. These
   include cell-characterization examples, the documented XOR trainer and inference
   decks, and the Xyce inference example. Many other decks are generated parameter
   sweeps or individual runs, so a `.cir` suffix alone does not identify source code.
 - `fastsim/` retains its characterization decks and numerical fixtures. In particular,
   `devmodel.py` reads `char.npz`, and `devnet.py` reads `devnet_tables.npz`,
   `cmld_tables.npz`, `gprod_grid.npz` and `gprod_gridCM.npz`. These are small reference
-  inputs rather than downloaded training datasets. `cal.npy` is also retained for
+  inputs rather than downloaded training datasets. `experiments/fixtures/cal.npy` is also retained for
   the historical deep-network experiment scripts.
-- Documentation figures, `figs/*.pdf`, compact published result summaries and paper
+- Documentation figures in `docs/figures/`, `figs/*.pdf`, compact published result summaries in
+  `docs/results/`, and paper
   `.tex` sources remain tracked. Compiled `paper/paper.pdf` and `position.pdf` do not.
 
 ## Regenerating local artifacts
@@ -33,7 +34,9 @@ git clone --depth 1 https://github.com/thomasnormal/spicenn2.git
 in the main README. Historical scripts under `experiments/` generate their own decks,
 weight snapshots and inference outputs. Some expect files from an earlier training
 step or separately prepared data; they are research scripts, not a uniform command-line
-interface. References in old findings documents to specific run files describe those
+interface. Shell launchers resolve their source scripts relative to the checkout;
+the former root-level `gen_mc.py`, `gen_mc_infer.py`, `score_mc.py` and `spectre_mc.py`
+were exact duplicates of the canonical files in `experiments/`. References in old findings documents to specific run files describe those
 experiments and do not imply that every generated file is distributed in a fresh clone.
 
 Download MNIST/CIFAR datasets separately into `data/` or the paths expected by the

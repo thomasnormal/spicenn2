@@ -38,10 +38,10 @@ be economical with it.
 
 ## What already exists and WORKS (your starting point)
 In `/mnt/user-data/outputs/`:
-- **`xor_full.cir`** — the working deterministic trainer deck. 2-input XOR, H=6 hidden ReLU units,
+- **[xor_full.cir](../circuits/xor_full.cir)** — the working deterministic trainer deck. 2-input XOR, H=6 hidden ReLU units,
   1 output. ~357 MOSFETs, zero B-sources, trains 4/4 (frozen truth table) in ngspice. THIS IS YOUR
   TEMPLATE. Read it.
-- **`gen_xor_full.py`** — the python generator that emits `xor_full.cir`. Currently hardcoded to
+- **`gen_xor_full.py`** — the python generator that emits [xor_full.cir](../circuits/xor_full.cir). Currently hardcoded to
   2 inputs / 1 output. THIS IS WHAT YOU GENERALIZE.
 - `gen_infer.py` — freezes learned weights and runs inference on the patterns. `score.py` — checks
   the truth table. `checkpoint_curve.py`, `plot_convergence.py` — validation curves.
