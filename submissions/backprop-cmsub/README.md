@@ -49,7 +49,10 @@ activation's historical 8 kΩ load to 0.7 V by its Thevenin equivalent.
 
 ## Reproduce
 
-From the repository root, choosing unused output paths:
+After the [Python setup](../../README.md) and
+[reference image download/loading](../../competition/container/README.md#reference-image-artifact),
+run from the repository root, choosing unused output paths. The scoring command
+uses Docker and the exact released image, not your locally installed ngspice.
 
 ```bash
 python3 submissions/backprop-cmsub/generate.py /tmp/backprop-regenerated.cir
